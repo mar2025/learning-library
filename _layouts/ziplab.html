@@ -15,18 +15,18 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <link rel="stylesheet" href="{{ '/ziplabs/common/css/normalize.min.css?v=' | append: site.github.build_revision | relative_url }}">
+    <link rel="preload" href="{{ '/ziplabs/common/css/normalize.min.css?v=' | append: site.github.build_revision | relative_url }}" as="style" onload="this.rel='stylesheet'">
     <link rel="stylesheet" href="{{ '/ziplabs/common/css/font-awesome.min.css?v=' | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" href="{{ '/ziplabs/common/css/obe-lite.css?v=' | append: site.github.build_revision | relative_url }}">
-    <script src="{{ '/ziplabs/common/js/jquery-1.11.0.min.js?v=' | append: site.github.build_revision | relative_url }}"></script>
-    <script src="{{ '/ziplabs/common/js/jquery-ui-1.10.4.custom.js?v=' | append: site.github.build_revision | relative_url }}"></script>
-    <script src="{{ '/ziplabs/common/js/jquery.tocify.jd.js?v=' | append: site.github.build_revision | relative_url }}"></script>
-    <script src='https://cdn.rawgit.com/showdownjs/showdown/1.6.2/dist/showdown.min.js'></script>
+    <script defer src="{{ '/ziplabs/common/js/jquery-1.11.0.min.js?v=' | append: site.github.build_revision | relative_url }}"></script>
+    <script defer src="{{ '/ziplabs/common/js/jquery-ui-1.10.4.custom.js?v=' | append: site.github.build_revision | relative_url }}"></script>
+    <script defer src="{{ '/ziplabs/common/js/jquery.tocify.jd.js?v=' | append: site.github.build_revision | relative_url }}"></script>
+    <script defer src='https://cdn.rawgit.com/showdownjs/showdown/1.6.2/dist/showdown.min.js'></script>
 
-    <script src="{{ '/ziplabs/common/js/ziplabs.jekyll.js?v=' | append: site.github.build_revision | relative_url }}"></script>
+    <script defer src="{{ '/ziplabs/common/js/ziplabs.jekyll.js?v=' | append: site.github.build_revision | relative_url }}"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 
 </head>
 
@@ -34,7 +34,7 @@
     <header>
         <div class="w1024" style="min-height:55px; display:block;">
             <a href="http://docs.oracle.com" class="oracle-logo">
-                <img src="../common/img/oracle_doc_logo.png" alt="Oracle Documentation" style="max-width: none;" height="22" width="236">
+                <img loading="lazy" src="../common/img/oracle_doc_logo.png" alt="Oracle Documentation" style="max-width: none;" height="22" width="236">
             </a>
         </div>
     </header>
@@ -42,7 +42,7 @@
 
     <div id="content">
         <h1>
-            <img src="../common/img/obe_tag.png" align="middle" alt="Oracle by Example branding" />
+            <img loading="lazy" src="../common/img/obe_tag.png" align="middle" alt="Oracle by Example branding" />
             <span id="mainTitle"></span>
         </h1>
         <div class="w1024" style="position:relative; margin-top:40px;">
