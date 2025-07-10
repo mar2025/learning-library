@@ -9,6 +9,8 @@
   <title>Oracle Workshops</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Vendor scripts are now bundled into a single file via esbuild -->
+  <!--
   <script defer src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
   <script defer src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.min.js"></script>
   <script defer src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-aria.min.js"></script>
@@ -17,6 +19,7 @@
   <script defer src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
   <script defer src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
   <script defer src='https://cdn.rawgit.com/showdownjs/showdown/1.6.2/dist/showdown.min.js'></script>
+  -->
   <link rel="preload" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css" as="style" onload="this.rel='stylesheet'">
   <link type="text/css" rel="preload" href="https://oracle.github.io/learning-library/workshops/common-content/css/solutionEngTemplate.css" as="style" onload="this.rel='stylesheet'">
   <link type="text/css" rel="preload" href="https://oracle.github.io/learning-library/workshops/common-content/css/workshop.css" as="style" onload="this.rel='stylesheet'">
@@ -122,7 +125,11 @@
         <a href="#" layout-margin layout-padding>^ Return to Top</a>
     </div>
 
+    <!-- Vendor scripts are now bundled into a single file via esbuild -->
+    <!--
     <script defer src='https://oracle.github.io/learning-library/workshops/common-content/js/workshop.js'></script>
+    -->
+    <script defer src="js/workshop.bundle.js"></script>
     <!-- <script src='https://derekoneil.github.io/WorkshopTemplate/workshops/workshop-template/js/workshop.js'></script> -->
     <!-- <script src='./js/workshop.js'></script> -->
 

@@ -1,0 +1,22 @@
+{
+  "name": "oracle-learning-library",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build pipeline for bundling and tree-shaking workshop assets",
+  "scripts": {
+    "build": "esbuild build/entry.js --bundle --minify --format=iife --target=es2018 --outfile=workshops/common-content/js/workshop.bundle.js --log-level=info"
+  },
+  "dependencies": {
+    "angular": "^1.8.2",
+    "angular-animate": "^1.8.2",
+    "angular-aria": "^1.8.2",
+    "angular-messages": "^1.8.2",
+    "angular-sanitize": "^1.8.2",
+    "angular-material": "^1.2.3",
+    "jquery": "^3.7.1",
+    "showdown": "^1.9.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}
