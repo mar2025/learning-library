@@ -1,0 +1,26 @@
+name: performance-budget
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci --legacy-peer-deps
+      - name: Build project
+        run: npm run build
+      - name: Start static server
+        run: npx serve -s workshops/common-content -l 5000 &
+      - name: Run Lighthouse CI
+        run: |
+          npx lhci autorun --upload.target=temporary-public-storage --collect.url=http://localhost:5000/index.html --assert.preset=lighthouse:recommended --assert.assertions="performance>=0.9,first-contentful-paint<=2000,largest-contentful-paint<=2500,total-byte-weight<=700"
