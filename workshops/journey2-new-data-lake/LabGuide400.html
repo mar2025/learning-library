@@ -1,0 +1,110 @@
+<p><img src="images/400/400.JPG" alt="" /><br />
+Updated: July 28, 2017 for OEHCS 0.10.2</p>
+<h1 id="lab-provisioning-oracle-event-hub-cloud-service">Lab: Provisioning Oracle Event Hub Cloud Service</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This lab will walk you through provisioning an instance of <strong>Oracle Event Hub Cloud Service (OEHCS)</strong>.  </p>
+<p>Oracle Event Hub Cloud Service combines the open source technology Apache Kafka with unique innovations from Oracle to deliver a complete platform for working with streaming data.</p>
+<p>Apache Kafka provides a distributed streaming data platform.  A Kafka platform is a cluster of one or more servers called nodes that store streams of records (messages) in categories called topics.  There are 3 key capabilities inherent in Kafka:</p>
+<ul>
+<li>It lets you publish and subscribe to the streams of records, in some ways similar to an email system</li>
+<li>It stores these streams of messages in a fault-tolerant way</li>
+<li>It allows for processing of these message streams as they occur</li>
+</ul>
+<p>The Oracle Event Hub Cloud Service is a managed Platform as a Service (PaaS) cloud-based offering that provides a highly available and scalable messaging platform for loading and analyzing streaming data. You can:</p>
+<ul>
+<li>Spin up multiple clusters and create topics in seconds, on demand, and then use it.</li>
+<li>Scale Out or Scale In clusters or Add/Remove partitions to elastically react to varying demands of your streaming data.</li>
+<li>Choose different cluster configurations depending on your needs.</li>
+<li>Use open REST APIs and CLIs to manage, use, and extend the service.</li>
+</ul>
+<p>Documentation for OEHCS can be found here: <a href="http://docs.oracle.com/cloud/latest/event-hub-cloud/index.html">http://docs.oracle.com/cloud/latest/event-hub-cloud/index.html</a> .  General info about Apache Kafka can be found here: <a href="https://kafka.apache.org/">https://kafka.apache.org/</a> .</p>
+<p>Please direct comments to: David Bayard (david.bayard@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to provision an instance of the OEHCS Platform</li>
+<li>Learn how to create topics for your OEHCS Platform</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Access to the Oracle Cloud My Services Dashboard with entitlement/quota to create an OEHCS instance</li>
+</ul>
+<h1 id="provision-the-oehcs-platform-instance">Provision the OEHCS Platform instance</h1>
+<p>The "OEHCS Platform" represents a scalable cluster that runs OEHCS.  You can create a single instance of the OEHCS Platform, and then define multiple Kafka topics that run against this platform instance.</p>
+<p>The "OEHCS Platform" is also sometimes referred to as "OEHCS Dedicated" because it is a dedicated cluster to your account.</p>
+<h2 id="create-a-new-oehcs-platform-instance">Create a new OEHCS Platform Instance</h2>
+<h3 id="step-1-connect-to-the-oracle-cloud-my-services-dashboard"><strong>STEP 1</strong>: Connect to the Oracle Cloud My Services Dashboard</h3>
+<p><img src="images/300/snap0011988.jpg" alt="" /> </p>
+<h3 id="step-2-navigate-to-the-oracle-event-hub-cloud-service---platform-page"><strong>STEP 2</strong>: Navigate to the Oracle Event Hub Cloud Service - Platform page</h3>
+<p>It may be listed in "Event Hub - Dedicated" in some versions.</p>
+<p><img src="images/400/snap0011999.jpg" alt="" />  </p>
+<h3 id="step-3-click-the-create-service-button"><strong>STEP 3</strong>: Click the Create Service button</h3>
+<p><img src="images/400/snap0012000.jpg" alt="" /> </p>
+<h3 id="step-4-fill-in-the-basic-service-details-and-click-next"><strong>STEP 4</strong>: Fill in the basic service details and click Next</h3>
+<ul>
+<li>You can pick any service name you want and do not have to match what is in the screenshot below.
+<img src="images/400/snap0012143.jpg" alt="" /> </li>
+</ul>
+<h3 id="step-5-fill-in-the-additional-service-details-and-click-next"><strong>STEP 5</strong>: Fill in the additional service details and click Next</h3>
+<ul>
+<li>Deployment Type: Choose Basic, which uses the least resources and is typical for development and test.</li>
+<li>SSH Public Key: You can use an existing key or create a new one.  Refer to the BDCS-CE or OEHCS documentation for more about working with SSH keys.</li>
+<li>Number of Nodes: Choose 1 for this lab.</li>
+<li>Compute Shape: Choose the smallest shape as that is all that is needed for this lab. It defaults to OC2M, but you can choose OC1M for this journey.</li>
+<li>Enable Rest Access: You can leave it unchecked as you don't need REST access in this lab.</li>
+</ul>
+<p><img src="images/400/OEHCSplatform.gif" alt="" /> </p>
+<h3 id="step-6-click-the-create-button-on-the-confirmation-page-to-start-the-oehcs-platform-provisioning"><strong>STEP 6</strong>: Click the Create button on the confirmation page to start the OEHCS Platform provisioning</h3>
+<ul>
+<li>Provisioning will now begin.  It can take 10 minutes for it to complete.</li>
+</ul>
+<p><img src="images/400/snap0012002.jpg" alt="" /> </p>
+<h3 id="step-7-once-provisioning-is-completed-click-on-the-name-of-the-instance-to-go-to-the-service-overview-page"><strong>STEP 7</strong>: Once provisioning is completed, click on the name of the instance to go to the Service Overview page</h3>
+<ul>
+<li>After provisioning is completed, the Service Overiew page has useful information including the <strong>Connect Descriptor</strong>.  You will use the Connect Descriptor later in the lab exercises.</li>
+</ul>
+<p><img src="images/400/snap0012003.jpg" alt="" /> </p>
+<h1 id="create-your-first-oehcs-topic-optional">Create your first OEHCS topic (optional)</h1>
+<p><strong>The "Create your first OEHCS topic" step is optional.  When you continue to the next Lab in the New Data Lake Journey, you will create a new OEHCS topic so you can wait till then if you want.</strong></p>
+<p>In this section, we will create a new Kafka topic in OEHCS.  Before we do so, a quick comment about OEHCS terminology.  The "OEHCS Platform" is the terminology for your dedicated OEHCS cluster.  A cluster will manage multiple topics.  We refer to individual topics as instances of "OEHCS".  Thus, to create a new topic you will create a new instance of "OEHCS" to run on the "OEHCS Platform" (dedicated cluster) you already created.</p>
+<h2 id="navigate-to-the-oracle-event-hub-cloud-service-via-the-oehcs-platform-page">Navigate to the Oracle Event Hub Cloud Service (via the OEHCS Platform page)</h2>
+<h3 id="step-1-pop-up-the-main-navigation-menu-using-the-icon-in-the-upper-left-and-select-oracle-event-hub-cloud-service---platform"><strong>STEP 1</strong>: Pop-up the main navigation menu (using the icon in the upper left) and select Oracle Event Hub Cloud Service - Platform</h3>
+<ul>
+<li><p><strong>Hint</strong>: You may need to navigate away to another service (such as BDCS-CE) and then navigate back in order to return to the top-level OEHCS-Platform page.</p></li>
+<li><p>It may be labelled Oracle Event Hub Cloud Service - Dedicated in certain releases </p></li>
+<li><p><img src="images/400/snap0012004.jpg" alt="" /> </p></li>
+</ul>
+<h3 id="step-2-from-the-top-level-oehcs-platform-page-use-the-pop-up-menu-to-the-right-of-the-oehcs---platform-label-to-navigate-to-the-oracle-event-hub-cloud-service---topics"><strong>STEP 2</strong>: From the top-level OEHCS Platform page, use the pop-up menu (to the right of the OEHCS - Platform label) to navigate to the "Oracle Event Hub Cloud Service - Topics"</h3>
+<p>It may be labelled "Oracle Event Hub Cloud Service" in some versions.</p>
+<ul>
+<li><img src="images/400/snap0012005.jpg" alt="" /> </li>
+<li>If this seems confusing, it helps to remember the distinction between "OEHCS Platform" which represents a dedicated Kafka cluster and "OEHCS Topics" which represent individual Kafka topics.  In other words, you have navigated from the screen where you manage the cluster itself (the "Platform" page) to where you will manage the individual topics you want to use.</li>
+</ul>
+<h2 id="create-your-first-oehcs-kafka-topic">Create your first OEHCS Kafka topic</h2>
+<h3 id="step-1-in-the-oracle-event-hub-cloud-service---topics-page-click-on-the-services-tab-if-it-is-not-already-selected"><strong>STEP 1</strong>: In the Oracle Event Hub Cloud Service - Topics page, click on the Services tab if it is not already selected.</h3>
+<p><img src="images/400/snap0012006.jpg" alt="" /> </p>
+<h3 id="step-2-click-the-create-service-button"><strong>STEP 2</strong>: Click the Create Service button</h3>
+<h3 id="step-3-fill-in-the-details-for-your-topic-and-click-next"><strong>STEP 3</strong>: Fill in the details for your topic and click Next</h3>
+<ul>
+<li>Service Name: enter a name like FirstTopic.</li>
+<li>Hosted On: Select the name of the OEHCS Dedicated instance you created earlier. </li>
+<li>Partitions: Choose 1 for this exercise.
+<img src="images/400/OEHCStopic.gif" alt="" /> </li>
+</ul>
+<h3 id="step-4-click-create-to-complete-the-wizard"><strong>STEP 4</strong>: Click Create to complete the wizard.</h3>
+<ul>
+<li>The topic will be created.  It will take a few seconds for the first partition to appear.</li>
+</ul>
+<h3 id="step-5-click-on-the-topic-name-to-pop-up-some-additional-details-about-your-topic-including-the-full-topic-name"><strong>STEP 5</strong>: Click on the topic name to pop-up some additional details about your topic, including the full topic name.</h3>
+<ul>
+<li>Specifically, it will show you the full name of your topic.  The full name will have your identity domain prefixed to the topic name.  You will need to use the full topic name is your consumer and provider code.</li>
+</ul>
+<p><img src="images/400/OEHCStopicdetails.gif" alt="" />  </p>
+<h1 id="what-you-learned">What you Learned</h1>
+<ul>
+<li>Learned how to provision an instance of the OEHCS Platform</li>
+<li>Learned how to create topics for your OEHCS Platform</li>
+</ul>
+<h1 id="next-steps">Next Steps</h1>
+<ul>
+<li>Proceed to the next Lab to learn how to add Oracle Event Hub Cloud Service to the our Lab architcture and how to leverage Spark Streaming</li>
+</ul>

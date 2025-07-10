@@ -1,0 +1,104 @@
+<h1 id="unit-2-using-sql-workshop">Unit 2: Using SQL Workshop</h1>
+<p>This exercise includes two hands-on-labs.</p>
+<p><strong>HOL 2-1: Loading the Tables and Data</strong>: In this lab, you use SQL Workshop to create the underlying database objects and data required for you to build the Demo Projects application.</p>
+<p><strong>HOL 2-2: Creating a Lookup Table</strong>: In this lab, you create a tabled named HARDWARE and load data in to the table. Then, you create a lookup table.</p>
+<h2 id="hol-2-1-loading-the-tables-and-data">HOL 2-1: Loading the Tables and Data</h2>
+<p>It is essential to have at least the tables defined in order for the Create Application wizard to generate pages in your application. In this hands-on-lab, you create the required database objects, and populate the tables with sample data.</p>
+<ol>
+<li><p>Use SQL Workshop to upload a script that creates the tables for the Demo Projects application. Perform the following steps:</p>
+<p>a) Click <strong>SQL Workshop</strong> and select <strong>SQL Scripts</strong>.</p>
+<p><img src="images/hol02/image3.png" alt="1a" /></p>
+<p>b) Click <strong>Upload</strong>.</p>
+<p>c) Click <strong>Choose File</strong>, navigate to the working directory where you extracted apex-course-labs.zip.
+  Locate the <strong>Project_Basic_Tables.sql</strong> file, and double-click the file or click the file and then click <strong>Open</strong>.</p>
+<p>d) Click <strong>Upload</strong>.</p>
+<p><img src="images/hol02/image4.png" alt="1d" /></p>
+<p>e) Review the uploaded script to see what tables will be created.
+  In the SQL Scripts list, click the <strong>Edit</strong> icon (pencil), to the left of the script you just uploaded.</p>
+<p><img src="images/hol02/image5.png" alt="1e" /></p>
+<p>f) Click the <strong>Run</strong> icon to the right of the script you uploaded.
+  <img src="images/hol02/image6.png" alt="1f" /></p>
+<p>Click <strong>Run Now</strong>.</p>
+<p>g) Click the <strong>View Results</strong> icon for the script you just ran.</p>
+<p><img src="images/hol02/image7.png" alt="1g" /></p>
+<p><img src="images/hol02/image8.png" alt="1h" /></p></li>
+<li><p>Currently the tables you created do not have any data. A script has been provided that creates an Oracle database package which can be run at any time to  insert or reset the data in the tables. Use SQL Workshop to upload a script that you can use to populate table data. Perform the following steps:</p>
+<p>a)  Click <strong>SQL Scripts</strong>. Click <strong>Upload</strong>.</p>
+<p>b)  Click <strong>Choose File</strong>, where you extracted apex-course-labs.zip.</p>
+<p>c)  Locate the <strong>Project_Data.sql</strong> file, and double-click the file or click the file and then click <strong>Open</strong>.</p>
+<p>d)  Click <strong>Upload</strong>.
+    <img src="images/hol02/image9.png" alt="" /></p>
+<p>e)  Click the <strong>Run</strong> icon to the right of the script you uploaded (top row).
+    <img src="images/hol02/image10.png" alt="" />
+    Click <strong>Run Now</strong>.</p>
+<p>f)  Click the View Results icon for the script you just ran (top row).
+    <img src="images/hol02/image11.png" alt="" /></p></li>
+
+<li><p>In step 1, you uploaded a package called DEMO_PROJECTS_DATA_PKG. However, this package has not yet been run so the tables you created still do not have any data. The SQL Commands facility, within SQL Workshop, allows a developer to run any valid SQL commands. You will run a SQL command to execute the data package and populate the tables. Use SQL Commands to execute n Oracle Database package. Perform the following steps:</p>
+<p>a)  Click the Up arrow, before SQL Scripts. 
+    <img src="images/hol02/image13.png" alt="3a" /></p>
+<p>b)  Click <strong>SQL Commands</strong>.
+    <img src="images/hol02/image14.png" alt="3b" /></p>
+<p>c)  Enter the following code:</p>
+<pre><code>begin demo\_projects\_data\_pkg.load\_sample\_data;
+
+end;
+</code></pre>
+<p>d)  Click <strong>Run</strong>.
+    <img src="images/hol02/image15.png" alt="3c" />
+    The Results show: Statement Processed.</p></li>
+<li><p>Use the Object Browser within SQL Workshop to review all of the database objects, such as the tables and packages you created, available in the underlying Oracle database schema which is associated with the Application Express workspace you logged into. Perform the following steps:</p>
+<p>a)  At the top of the page, select <strong>SQL Workshop</strong> and then select <strong>Object Browser</strong>.
+    <img src="images/hol02/image16.png" alt="3d" /></p>
+<p>b)  In Object Browser, select the <strong>DEMO_PROJ_TEAM_MEMBERS</strong> table, and then click on the <strong>Data</strong> tab.
+    <img src="images/hol02/image17.png" alt="4a" /></p>
+<p><strong>Note</strong>: There are a number of other tables listed, outside of those you created using the script file above. The APEX\$ tables are created by Application Express to store internal data specific to your workspace. Tables such as DEMO_CUSTOMERS were created when the Sample Database Application was installed. The Sample Database Application is installed by default when an Application Express Workspace is created.</p>
+<p>c)  To review the package you created, select Packages and select DEMO_PROJECTS_DATA_PKG. Click <strong>Body</strong> to review the primary PL/SQL rather than the specification.
+<img src="images/hol02/image18.png" alt="4b1" /><br />
+<strong>Note</strong>: This package includes complex PL/SQL code to insert images and replicate users entering in records. It is not important that you understand the PL/SQL code in this package, as you will not normally have to populate data in this matter. Generally, you would create the tables with no data and then use the application you build to insert the records.
+<img src="images/hol02/image19.png" alt="4b2" /></p></li>
+</ol>
+<hr />
+<h2 id="hol-2-2-creating-a-lookup-table">HOL 2-2: Creating a Lookup Table</h2>
+<p>In this hands-on-lab, you use the Data Workshop utility to create a table and populate the table with data. Once this table is created, you also create a lookup table.</p>
+<ol>
+<li><p>Click <strong>SQL Workshop &gt; Utilities &gt; Data Workshop</strong>.
+<img src="images/hol02/image20.png" alt="5a" /></p></li>
+<li><p>Click <strong>Data Load &gt;Spreadsheet Data</strong>. </p>
+<img src="images/hol02/image21.png" alt="5b" /></p></li>
+<li><p>The Load Data Wizard appears.
+Under Load To, select <strong>New Table</strong>, and under Load From, select <strong>Upload file</strong>.
+Click <strong>Next</strong>.
+<img src="images/hol02/image22.png" alt="5c" /></p></li>
+<li><p>Click <strong>Choose File</strong>, open the working directory where you extracted <strong>apex-course-labs.zip</strong>. Locate the <strong>hardware.csv</strong> file, and double-click the file or click the file and then click <strong>Open</strong>.
+Ensure that First row contains column names is selected, accept the remaining defaults, and click <strong>Next</strong>.
+<img src="images/hol02/image23.png" alt="5d" /></p></li>
+<li><p>Enter <strong>Hardware</strong> for Table Name, verify the table properties, and click <strong>Next</strong>.
+<img src="images/hol02/image24.png" alt="5e" /></p></li>
+<li><p>Accept the defaults on the Load Data - Primary Key page, and click <strong>Load Data</strong>.
+<img src="images/hol02/image25.png" alt="5f" /></p></li>
+<li><p>The new table is now created and is populated with the data.</p>
+<p>Click <strong>Object Browser</strong>.
+<img src="images/hol02/image26.png" alt="5g" /></p></li>
+<li><p>In the Object Selection pane, click <strong>Hardware</strong>.
+The Detail pane now shows details about Hardware table. For the Hardware table, review the column names and data types.
+Click <strong>Data</strong>.
+Now you see a report of the data contained in the Hardware table.
+<img src="images/hol02/image27.png" alt="5h" /></p></li>
+<li><p>You want to create a lookup table now. Perform the following steps:</p>
+<p>a)  Click <strong>Table</strong>. Click <strong>Create Lookup Table</strong>.
+<img src="images/hol02/image28.png" alt="6a" /></p>
+<p>b)  Select <strong>DEPARTMENT</strong> for Column. Click <strong>Next</strong>.
+<img src="images/hol02/image29.png" alt="6b" /></p>
+<p>c)  Accept the defaults on this page and click <strong>Next</strong>.
+<img src="images/hol02/image30.png" alt="6c" /></p>
+<p>d)  Click <strong>Create Lookup Table</strong>.
+<img src="images/hol02/image31.png" alt="6d" /></p>
+<p>e)  Review the table definition of <strong>DEPARTMENT_LOOKUP</strong> table.
+<img src="images/hol02/image32.png" alt="6e" /></p>
+<p>f)  In the Object Selection pane, click <strong>HARDWARE</strong>.
+Review the table details. Notice that the DEPARTMENT column has been extracted from the HARDWARE table and is now available in the DEPARTMENT_LOOKUP table.<br />
+<img src="images/hol02/image33.png" alt="6f" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol02/image34.png" alt="Snap3.jpeg" /></p>

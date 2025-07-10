@@ -1,0 +1,80 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the analytics part of the  <strong>iPaaS - Build a Quote to Order Process Workshop.</strong> This workshop will walk you through the analytics of the  of a typical Quote to Order process.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Business Analytics Process Cloud</li>
+</ul>
+<h1 id="-"> </h1>
+<h2 id="requirements-for-this-lab">Requirements for this lab</h2>
+<p>Your custom deployed process 'Quote to Order' </p>
+<h1 id="--1"> </h1>
+<h2 id="process-cloud-business-analytics">Process Cloud Business Analytics</h2>
+<p>In this section we are going to configure the Quote to Order process to gather statistics while in flight.</p>
+<p>Each step identify the role, and what the user in that specific role is trying to achieve. </p>
+<h3 id="step-1-instance-analytics"><strong>STEP 1</strong>: Instance Analytics</h3>
+<hr />
+<p><strong>Role: Mr User01-10, Process Owner</strong></p>
+<p><img src="images/personas/roger_frezia_sales_director.png" alt="" /></p>
+<p>User01-10, sales director and process owner wants to see what is happening to his Quote to Order processes, in a summarized customized view. </p>
+<hr />
+<p><strong>1.1</strong> Log into the Process Workspace using your user id [01-10].</p>
+<p><strong>1.2</strong> On the Process home page click the View Dashboards</p>
+<p><img src="images/400/Picture1.png" alt="" /></p>
+<p><strong>1.3</strong> On the following page, you will see two categories, Process Monitoring and Business Analytics.</p>
+<p><img src="images/400/Picture2.png" alt="" /></p>
+<p><strong>1.4</strong> Feel free to look at your current Processes, by clicking on the <code>Open</code>, <code>Workload</code>, <code>Trend</code> and <code>Close</code> graphs.</p>
+<p>Sample Trend Graph:</p>
+<p><img src="images/400/Picture3.png" alt="" /></p>
+<p>In the next section we are going to define what should be capture for each process instance, to be used in the business analytics graphs/reports.</p>
+<h3 id="step-2-defining-analytics-measures"><strong>STEP 2</strong>: Defining Analytics Measures</h3>
+<hr />
+<p><strong>Role: Mr User01-10, Process Owner</strong></p>
+<p><img src="images/personas/roger_frezia_sales_director.png" alt="" /></p>
+<p>User01-10, sales director and process owner wants extract the value of quotes per date</p>
+<hr />
+<p><strong>2.1</strong> Open your custom PCS Application in PCS Composer. </p>
+<p><strong>2.2</strong> Ensure that the process is in <em>Edit</em> mode by selecting the pencil icon in the top middle of the editor window.  If the process is not in edit mode, it will be shown in <em>Viewing</em> mode as shown below:</p>
+<p><img src="images/300/image070.png" alt="" /></p>
+<p><strong>2.3</strong> Click on the Indicators tab</p>
+<p><img src="images/400/Picture4.png" alt="" /></p>
+<p><strong>2.4</strong> In this step we are going to create a measure and dimension.</p>
+<p><strong>2.5</strong> Click on the white plus sign, next to Search, and select <em>Measure</em> from the list</p>
+<p><img src="images/400/Picture5.png" alt="" /></p>
+<p><strong>2.6</strong> Next, enter the name for the measure <code>quoteTotal</code> then select the <em>magnifying glass</em> icon so we can select a data object where the measure will be taken from.</p>
+<p><img src="images/400/Picture6.png" alt="" /></p>
+<p><strong>2.7</strong> Select the <code>quoteTotal</code> variable from the list, the select the <strong>OK</strong> button</p>
+<p><img src="images/400/Picture6a.png" alt="" /></p>
+<p><strong>2.8</strong> Select the <strong>OK</strong> button in the Measure definition dialog to complete the definition.</p>
+<p><img src="images/400/Picture6b.png" alt="" /></p>
+<p><strong>2.9</strong> Next, create a Dimension by clicking on the white plus sign again</p>
+<p><img src="images/400/Picture7.png" alt="" /></p>
+<p><strong>2.10</strong> Next, enter the name for the dimension <code>quoteDate</code> then select the <em>magnifying glass</em> icon so we can select a data object where the measure will be taken from.</p>
+<p><img src="images/400/Picture7a.png" alt="" /></p>
+<p><strong>2.11</strong> Select the <code>quoteDate</code> variable from the list, the select the <strong>OK</strong> button</p>
+<p><img src="images/400/Picture7b.png" alt="" /></p>
+<p><strong>2.12</strong> Select the <strong>OK</strong> button in the Dimension definition dialog to complete the definition.</p>
+<p><img src="images/400/Picture7c.png" alt="" /></p>
+<p><strong>2.13</strong> Next step is deploy the changed application. Click on the <strong>Save</strong> button, then <strong>Publish</strong></p>
+<p><img src="images/400/Picture8.png" alt="" /></p>
+<p><strong>2.14</strong> Create a new snapshot to deploy</p>
+<p><img src="images/400/Picture9.png" alt="" /></p>
+<p><strong>2.15</strong> Click on Test</p>
+<p><img src="images/400/Picture10.png" alt="" /></p>
+<p><strong>2.16</strong> Once again, ensure that the process is in <em>Edit</em> mode by selecting the pencil icon in the top middle of the editor window.  If the process is not in edit mode, it will be shown in <em>Viewing</em> mode as shown below:</p>
+<p><img src="images/400/Picture16.png" alt="" /></p>
+<p><strong>2.17</strong> Go ahead and do the deployment of your changed application, by clicking on the bottom deploy icon</p>
+<p><img src="images/400/Picture11.png" alt="" /></p>
+<p><strong>2.18</strong> Add yourself to all the roles, to allow you to act as all the different roles in the process flow.</p>
+<p><img src="images/400/Picture12.png" alt="" /></p>
+<p><strong>2.19</strong> Wait for the deployment to finish, then select the <strong>OK</strong> button on the <em>Application Deployed Successfully</em> dialog.</p>
+<p><img src="images/400/Picture13.png" alt="" /></p>
+<p><strong>2.20</strong> After the deployment completed, go back to the PCS Workspace, and then Dashboards. </p>
+<p><strong>2.21</strong> Select the Business Analytics Tab, then select the big green <code>Get Started</code> button in the middle of the screen.  Note that if this isn't your first query you won't get the big green button.</p>
+<p><img src="images/400/Picture17.png" alt="" /></p>
+<p><strong>2.22</strong> Create a new report, with the following values</p>
+<p><img src="images/400/Picture14.png" alt="" /></p>
+<p><strong>2.23</strong> Click on Untitled, and change the report name to Total Quotes per Week and click on save</p>
+<p><img src="images/400/Picture15.png" alt="" /></p>
+<p>Under the Reports section, you will see an entry for your report. The last step is to generate some information to be displayed in the report. To do this we have to start a couple of processes. See <strong>Lab 200</strong> <strong>STEP 1 (Optional)</strong> on a sample on how to create a couple of instances of your newly deployed application.</p>
+<p>Go ahead and create a couple of instances, and see how the report reflect the capture metrics in the process.</p>

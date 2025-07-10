@@ -1,0 +1,79 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="workshop-architecture-guide">Workshop Architecture Guide</h1>
+<h2 id="workshop-goal">Workshop Goal</h2>
+<ul>
+<li>To inform and understand the AppDev services provided to you in your trial account</li>
+<li>To understand the DevOps implications of these services</li>
+<li>To understand Oracle's support for Polyglot Development</li>
+<li>To build a modern microservice architecture in the cloud<ul>
+<li>Our Application will display a catalog of information provided by a catalog microservice that uses a MySQL DB. We will also leverage a currency microservice to provide exchange rate information for that catalog</li></ul></li>
+<li>To apply DevOps techniques for Automation to build, configure and deploy your applications to the cloud</li>
+</ul>
+<h2 id="workshop-technologies">Workshop Technologies</h2>
+<p>We will be executing the workshop running many different technologies behind the scenes, this section will outlne the main technologies we will be leveraging:</p>
+<ul>
+<li>Developer Cloud Service: is centralized hub of development and DevOps technologies and tools. Of which we will be using a few:<ul>
+<li>Git for source code</li>
+<li>Maven for build scripting</li>
+<li>Shell for build scripting</li>
+<li>Continuous Integration platform to run automated builds</li>
+<li>Continuous Delivery platform to run automated deploys</li></ul></li>
+<li>Our UI application:<ul>
+<li>Written in NodeJS</li>
+<li>Uses Oracle JET as a client side UI framework</li></ul></li>
+<li>Our MySQL microservice<ul>
+<li>Written in Java</li>
+<li>Leverages JAX-WS and Grizzly IO to provide the REST and embedded web services</li>
+<li>Leverages a backend MySQL Cloud Service instance</li></ul></li>
+<li>Our Currency Microservice<ul>
+<li>Built using Google's Go Programming Language</li>
+<li>Runs on a Docker container</li></ul></li>
+</ul>
+<h2 id="architecture-goal">Architecture Goal</h2>
+<p>To Build out a Catalog UI supported by multiple microservices - providing supporting data and currency calculations
+<img src="images/400/step29.png" alt="" /></p>
+<h3 id="lab-100">Lab 100</h3>
+<p>This is the first of several labs that are part of the DevOps Starter Kit. This workshop will walk you through building and deploying a Cloud Native project that will create and use several Microservices built using various technologies. You will be applying DevOps principles to build your applications, provision your services and automate deployment of your applications.</p>
+<h4 id="goal">Goal</h4>
+<p>Deploy the UI</p>
+<h4 id="objectives">Objectives</h4>
+<ul>
+<li>Create Initial Project</li>
+<li>Import UI application from GitHub</li>
+<li>Setup automated build to create application artifacts</li>
+<li>Setup an automated deployment to provision and deploy your application into the Oracle Cloud</li>
+</ul>
+<p><img src="images/100/target-architecture.png" alt="" /></p>
+<h3 id="lab-200">Lab 200</h3>
+<p>In Lab 200 we will be building and deploying our first microservice, this microservice will provide a RESTful interface for our catalog database. The microservice is built using Java and leverages lightweight libraries JAX-WS and Grizzly IO to create RESTful endpoints. In Lab 300 we will be wiring up a MySQL Database to the microservice.</p>
+<h4 id="goal-1">Goal</h4>
+<p>Deploy a Microservice</p>
+<h4 id="objectives-1">Objectives</h4>
+<ul>
+<li>Import microservice from GitHub</li>
+<li>Setup automated build to create application artifacts</li>
+<li>Setup an automated deployment to provision and deploy your application into the Oracle Cloud</li>
+<li>Bind your microservice to the UI</li>
+</ul>
+<p><img src="images/200/targeted-architecture.png" alt="" /></p>
+<h3 id="lab-300">Lab 300</h3>
+<p>In Lab 300 we will be adding a MySQL database to our microservice from lab 200. We will be using an automated build process to load our baseline schema onto the database after we have provisioned it.</p>
+<h4 id="goal-2">Goal</h4>
+<p>Wire the Microservice up to at MySQL Database</p>
+<h4 id="objectives-2">Objectives</h4>
+<ul>
+<li>Provision a MySQL Database</li>
+<li>Create the baseline schema</li>
+<li>Bind the database to your microservice from lab 200</li>
+</ul>
+<p><img src="images/300/targeted-architecture.png" alt="" /></p>
+<h3 id="lab-400">Lab 400</h3>
+<p>Welcome to lab 400. In this lab we will be completing our application architecture by deploying a Golang microservice on Docker. The service will be responsible to translating currencies on our UI.</p>
+<h4 id="goal-3">Goal</h4>
+<p>Deploy a second microserivce on a Docker image</p>
+<h4 id="objectives-3">Objectives</h4>
+<ul>
+<li>Setup your docker host on Container Cloud Service</li>
+<li>Deploy the microservices from it's Docker Hub build location</li>
+</ul>
+<p><img src="images/400/targeted-architecture.png" alt="" /></p>

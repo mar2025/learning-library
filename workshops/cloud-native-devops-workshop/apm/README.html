@@ -1,0 +1,341 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="deploying-apm-agent-and-setting-up-application-performance-monitoring">Deploying APM Agent and setting up Application Performance Monitoring</h2>
+<h3 id="introduction">Introduction</h3>
+<p>Oracle Application Performance Monitoring Cloud Service is a software-as-a service solution that provides deep visibility into your application performance from end-user experience, through application server requests, and down to application logs. With Oracle Application Performance Monitoring Cloud Service you can isolate problems before they impact your business, break down the barriers between Development and Operations teams and deliver better applications.</p>
+<p><img src="images/apm.architecture.png" alt="" /></p>
+<p>In this tutorial, we will integrate APM into a continuous delivery flow to automatically incorporate the setup and installation of the APM agent during the build process, to ensure that we have continuous telemetry. Using the Application Performance Monitoring Web User Interface you can monitor all necessary details about the demo application.</p>
+<p>Once this is setup, the APM will be introduced into the application automatically during the build  and we will be able to get telemetry without further thinking about the process of deploying agents.</p>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>Access Application Performance Monitoring Cloud Service</li>
+<li>Download the Agent Master Installer</li>
+<li>Incorporate APM Agent into an automated DevCS continuous delivery flow</li>
+<li>Set Up Application Performance Monitoring</li>
+<li>How to Use Application Performance Monitoring</li>
+<li>Manually deploy the APM Agent into Apache Tomcat</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Oracle Public Cloud Services account including:<ul>
+<li>Application Performance Monitoring Cloud Service</li>
+<li>Application Container Cloud Service</li>
+<li><a href="../springboot-sample/">springboot-sample Tutorial</a></li></ul></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<h4 id="complete-the-springboot-sample-tutorial">Complete the springboot-sample tutorial</h4>
+<p>Complete the <a href="../springboot-sample/">springboot-sample tutorial</a> to set up a continuous delivery pipeline from source control to ACCS deployment for our sample application.</p>
+<h4 id="prepare-notes">Prepare Notes</h4>
+<p>There will be a number of keys, urls, and URI strings that you will need to keep track of across the setup process. To keep this clear in your head, create a Snippet (in a separate browser window/tab) or a text file with the following template, which we will fill in as we go along.</p>
+<pre><code>Maven Base URL:
+Agent Install Zip Path:
+
+AGENTINSTALL_ZIP_URL:
+
+AGENT_REGISTRATION_KEY:
+
+URI Prefix:
+WAR_FILE:
+</code></pre>
+<p><img src="images/snippet.png" alt="" /></p>
+<h4 id="download-the-oracle-management-cloud-master-installer--registration-key">Download the Oracle Management Cloud Master Installer &amp; Registration Key</h4>
+<p>The master installer is the starting point for all client-side Oracle Management Cloud components, such as the gateway, Cloud Agent, and APM Agent. In order to integrate APM into our build, we will need to supply this installer to our build process. To do this, we will start by downloading the tenant-specific master installer.</p>
+<p>Download the master installer for your tenant and make note of a valid registration key. We will incorporate these into our build process to automatically deploy the agent.</p>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com">https://cloud.oracle.com/sign_in</a> and go to Dashboard Page. Click <strong>Launch APM</strong>.</p>
+<p>If you have separate Oracle Management Cloud Service access, for example in case of trial use the proper identity domain and credentials to login.</p>
+<p>Once you have reached the Oracle Cloud Management Cloud Welcome page click <strong>Application Navigator</strong> and on the drop down list select <strong>Administration</strong> -&gt; <strong>Agents</strong>
+<img src="images/01.apm.welcome.png" alt="" /></p>
+<p>On the left menu select <strong>Download</strong> and click on the green download icon.
+<img src="images/02.download.installer.png" alt="" /></p>
+<p>Save the AgentInstall.zip file.</p>
+<p>Locate a <strong>valid</strong> registration key with a large maximum that we will use for agent deployment. Click <strong>Registration Keys</strong> on the left side menu. Copy-paste your Registration Key value into your notes for AGENT<em>REGISTRATION</em>KEY.
+<img src="images/05.read.reg.key.png" alt="" /></p>
+<h4 id="upload-build-artifacts-to-maven">Upload Build Artifacts to Maven</h4>
+<p>Now that we have downloaded the necessary master installer, we will need to make it available to our automated build process. We will use the DevCS Maven repository for this purpose. By uploading the master installer to the Maven repository, our build scripts will be able to download and use it to integrate the necessary agent components into our application.</p>
+<p>Log into the Developer Cloud Service and navigate to the Maven repository's <strong>Upload</strong> page
+<img src="images/devcs-maven.png" alt="" /></p>
+<p>Upload the AgentInstall.zip that you downloaded previous from the Oracle Management Cloud UI.
+<img src="images/devcs-maven-upload.png" alt="" /></p>
+<p>Wait for the upload to complete successfully and then proceed to the next step.
+<img src="images/devcs-maven-upload-success.png" alt="" /></p>
+<h4 id="determine-the-url-for-the-maven-artifacts">Determine the URL for the Maven Artifacts</h4>
+<p>We will need to supply repository download URLs to the build scripts, which we will collect from the UI in this step.</p>
+<p>Return to Browse mode and then make note of the repository URL contained with the Distribution Management XML. Copy-paste this URL into your notes as <em>Maven Base URL</em>. Then, navigate to our artifact by clicking on the version number in the list of artifact directories.
+<img src="images/devcs-maven-url.png" alt="" /></p>
+<p>Now we're in the folder for our artifact. Click on the zip file and make note of the repository path. Copy-paste this path into your notes as <em>Agent Install Zip Path</em>.
+<img src="images/devcs-maven-path.png" alt="" /></p>
+<p>Append the <em>Agent Install Zip Path</em> to the end of the <em>Maven Base URL</em> that we just wrote down, correcting for any redundant slashes (/) in the full URL. Enter this full URL into your notes as AGENTINSTALL<em>ZIP</em>URL.</p>
+<h4 id="update-the-build">Update the Build</h4>
+<p>Now we'll return to our previous build and modify its configuration to run our APM-enabled build process. The script we are using here will package up the application as a Tomcat server based application and set up the APM agent automatically. The script will call maven to execute the springboot-sample code, and will additionally set up a Tomcat server and integrate APM into the Tomcat server. The deployment model in this case will be a WAR file based deployment, which means that our application will be served by Tomcat under a URI prefix derived from the WAR file name.</p>
+<p>First, come up with a short unique string (like your name or tenant identity domain) that will be used as the URI prefix for you application. Enter your chosen string as <em>URI Prefix</em> in your notes. Use the prefix as the name of your war file by appending ".war" to the end, like "trial021.war". Record this name as WAR_FILE in your notes.</p>
+<p>Return to the <code>springboot_build</code> build job and navigate to its <strong>Configure</strong> section. Add a new <strong>Execute shell</strong> build step. Refer back to the full URL to our installer within Maven, the registration key that we collected in the previous steps, and your chose war file name. Substitute them into the appropriate &lt;&gt; within the Command as follows:</p>
+<pre><code>export AGENTINSTALL_ZIP_URL=&lt;AGENTINSTALL_ZIP_URL from your notes&gt;
+export AGENT_REGISTRATION_KEY=&lt;AGENT_REGISTRATION_KEY from your notes&gt;
+export WAR_FILE=&lt;WAR_FILE from your notes&gt;
+cd apm
+./build.sh
+</code></pre>
+<p><img src="images/build-steps.png" alt="" /></p>
+<p>This build script will generate <code>apm/application.zip</code>, so we will need to update the <strong>Post Build</strong> configuration appropriately, and then <strong>Save</strong>
+<img src="images/build-post.png" alt="" /></p>
+<p>Return to our build screen and trigger a build using <strong>Build Now</strong>
+<img src="images/build-build.png" alt="" /></p>
+<p>Monitor the progress of the build in the console and wait for the build to complete successfully before moving on.</p>
+<h4 id="update-the-deploy">Update the Deploy</h4>
+<p>Since our file to archive has been changed, we will need to update the Deploy configuration to match.
+<img src="images/deploy-edit.png" alt="" /></p>
+<p>Ensure that <code>apm/application.zip</code> is specified as the Artifact. You may need to temporarily flip the <strong>Type</strong> to "On Demand" and pick you most recent build in order for the new artifact to show up, then return the type to "Automatic". Once done, <strong>Save</strong> the configuration.
+<img src="images/deploy-configuration.png" alt="" /></p>
+<p>A deployment should be immediately triggered. Monitor its progress and wait for it to complete successfully before proceeding.</p>
+<h4 id="validating-the-application">Validating the Application</h4>
+<p>Now let's make sure that the application deployment was successful and is returning telemetry.</p>
+<p>Point your browser at:</p>
+<p><code>https://&lt;your ACCS URL&gt;/&lt;URI prefix from your notes&gt;</code></p>
+<p>Verify that the springboot-sample looks the same as it did before.</p>
+<p>Next, let's what's going on in the page. In Chrome or Firefox, press Control-Shift-I to bring up the browser inspector. With the inspector open, visit the following URL:</p>
+<p><code>https://&lt;your ACCS URL&gt;/&lt;URI prefix&gt;/angular.html</code></p>
+<p>You should land on a sample single-page web app, and see in the Network tab of the inspector that there are calls to <code>collector</code>. Those calls represent browser telemetry being returned to APM.
+<img src="images/apm-browser.png" alt="" /></p>
+<p>Click on the various samples on this page to see what they do.</p>
+<h4 id="set-up-application-performance-monitoring">Set Up Application Performance Monitoring</h4>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com">https://cloud.oracle.com/sign_in</a> and go to Dashboard Page. Click <strong>Launch APM</strong>.</p>
+<p>If you have separate Oracle Management Cloud Service access, for example in case of trial use the proper identity domain and credentials to login.</p>
+<p>Once you have reached the Oracle Cloud Management Cloud Welcome page click <strong>Application Performance Monitoring</strong>.
+<img src="images/15.apm.welcome.png" alt="" /></p>
+<p>Now you can see the landing page of APM. This is a dashboard which contains the top metrics. Click the hamburger icon on the left side next to the <strong>Home</strong> text.
+<img src="images/16.apm.home.png" alt="" /></p>
+<p>Click the last <strong>Administration</strong> menu item.
+<img src="images/16.apm.home.admin.png" alt="" /></p>
+<p>Click the <strong>Application definitions</strong> menu item.
+<img src="images/17.apm.home.admin.application.png" alt="" /></p>
+<p>Here you can define new application definition. This definition ensures that your application(s) will have a single pane view. Click <strong>Create Application Definition</strong>.
+<img src="images/18.apm.app.def.png" alt="" /></p>
+<p>On the Application Specification dialog define the criteria which is unique to your application or environment. We will use the customized <em>URI Prefix</em> that we chose earlier as the identifier for our application. The Application Name can be anything but it is useful to use similar name to context path. Please note the Application Name can not contain '-'. Select <strong>Pages</strong> for criteria and choose <strong>URL</strong>. The pattern for URL should be <em>URI Prefix</em> from your notes. Check your application URL in the browser to find the right context path/criteria. Click <strong>OK</strong> for the criteria and then <strong>Save</strong> the Application Definition.
+<img src="images/19.app.spec.criteria.png" alt="" /></p>
+<p>Now go back to the Applications page using the left side menu. Click the hamburger icon and select the <strong>Back</strong> arrow then the <strong>Applications</strong> menu item.
+<img src="images/20.back.to.applications.png" alt="" /></p>
+<p><img src="images/20.back.to.applications.2.png" alt="" /></p>
+<p>Now you should see your newly defined Applications. Create some load (Ctrl+Refresh the applications page) on your applications to get some statistics.
+<img src="images/21.applications.png" alt="" /></p>
+<h4 id="generate-load">Generate Load</h4>
+<p>To generate a reasonable amount of data, do the following about 4-5 times per minute over a period of 5-10 minutes:</p>
+<ul>
+<li>Click on the different buttons on the page.</li>
+<li>Click the *<em>Compute</em> button a few extra times</li>
+<li>Try entering <code>1048576</code> into <strong>Return Array Index</strong> and see what comes back when you press <strong>Compute</strong>.</li>
+<li>Reload the page and do the above sequence a few more times</li>
+</ul>
+<h4 id="use-apm-to-understand-application-behavior">Use APM to Understand Application Behavior</h4>
+<p>Navigate back into your application in APM, and set the time frame to the last 15 minutes:
+<img src="images/apm-time.png" alt="" /></p>
+<p>Try use the product and navigate the APM UI answer the following questions:</p>
+<p>Can you figure out how much memory is allocated for each execution of the sum of random integers? Does this amount seem correct?
+<img src="images/apm-randomsum-samples.png" alt="" /></p>
+<p>Can you tell whether the quote functionality uses static data or makes a real external web service call?
+<img src="images/apm-quote.png" alt="" /></p>
+<p>Can you tell which button clicks result in AJAX calls and which do not? Can you determine the cause of the behavior when you click *<em>Compute</em> with 1048576 in <em>Return Array Index</em>?
+<img src="images/apm-eum-session.png" alt="" /></p>
+<p>This concludes the required parts of this tutorial.</p>
+<p><strong>Scroll down to check your answers!</strong></p>
+<h4 id="optional-installing-and-provisioning-apm-java-agent-on-apache-tomcat-or-other-java-ee-application-servers-manually">(Optional) Installing and Provisioning APM Java Agent on Apache Tomcat (or other Java EE application servers) Manually</h4>
+<pre><code>[oracle@localhost u01]$ unzip AgentInstall.zip -d /u01/apm_temp
+Archive:  AgentInstall.zip
+  inflating: /u01/apm_temp/AgentInstall.sh  
+  inflating: /u01/apm_temp/AgentInstall.bat  
+  inflating: /u01/apm_temp/README         
+[oracle@localhost u01]$
+</code></pre>
+<p>From the local directory where you have extracted the contents of the master installer ZIP file, change the permissions of <code>AgentInstall.sh</code>:</p>
+<pre><code>[oracle@localhost u01]$ cd /u01/apm_temp/
+[oracle@localhost apm_temp]$ chmod 755 AgentInstall.sh
+</code></pre>
+<p>Now run the following command to download the software:</p>
+<pre><code>[oracle@localhost apm_temp]$ ./AgentInstall.sh AGENT_TYPE=apm_java_as_agent STAGE_LOCATION=${STAGE_DIR} AGENT_REGISTRATION_KEY=${REG_KEY}
+Downloading apm agent software ...
+[oracle@localhost apm_temp]$
+</code></pre>
+<p>After you have downloaded and extracted the installer, install and provision the APM Java Agent in your application server domain running the <code>./ProvisionApmJavaAsAgent.sh -d ${DESTINATION}</code> command in the staging directory. Just for sure change the permissions for <code>ProvisionApmJavaAsAgent.sh</code>.</p>
+<pre><code>[oracle@localhost apm_temp]$ cd ${STAGE_DIR}
+[oracle@localhost apm_staging]$ chmod +x ProvisionApmJavaAsAgent.sh
+[oracle@localhost apm_staging]$ ./ProvisionApmJavaAsAgent.sh -d ${DESTINATION}
+ The current destination for provisioning the APM Java AS Agent is TOMCAT. This needs to be done with no-wallet option. Hence the installation will be done with no wallet.
+*************************************************************************
+Your settings are as follows:
+
+              Tenant_ID = usxxxxxxtrial
+            Destination = /u01/apache-tomcat-8.5.6
+        RegistrationKey = EQAAAA9idWlsdEluQUxDS2V5LjG5fm5XfcX985Q06kU2dZKhzVW8WocMgJIb63bDKqdZ072pnsoScmcpIjRxxxxxxxxxxxxxxxxxxx==
+
+Do you wish to proceed with these values? y
+Archive:  /u01/apm_staging/ApmAgent-1.10.zip
+   creating: apmagent/
+   creating: apmagent/config/
+  inflating: apmagent/config/AgentHttpBasic.properties  
+  inflating: apmagent/config/MetricCollector.json  
+  inflating: apmagent/config/BrowserAgent.json  
+  inflating: apmagent/config/AgentStartup.properties  
+  inflating: apmagent/config/Servlet.json  
+   creating: apmagent/lib/
+   creating: apmagent/lib/system/
+  inflating: apmagent/lib/system/instrumentor-2.2.0.1.jar  
+  inflating: apmagent/lib/system/ApmAgentInstrumentation.jar  
+  inflating: apmagent/lib/system/ApmProbeSystem.jar  
+   creating: apmagent/lib/action/
+  inflating: apmagent/lib/action/ApmProbeAction.jar  
+   creating: apmagent/lib/agent/
+  inflating: apmagent/lib/agent/jackson-core-asl-1.9.13.jar  
+  inflating: apmagent/lib/agent/jackson-jaxrs-1.9.13.jar  
+  inflating: apmagent/lib/agent/commons-logging-1.1.1.jar  
+  inflating: apmagent/lib/agent/httpcore-4.2.4.jar  
+  inflating: apmagent/lib/agent/ApmAgentUtility.jar  
+  inflating: apmagent/lib/agent/ApmAgentRuntime.jar  
+  inflating: apmagent/lib/agent/commons-codec-1.8.jar  
+  inflating: apmagent/lib/agent/jackson-mapper-asl-1.9.13.jar  
+  inflating: apmagent/lib/agent/jettison-1.3.4.jar  
+  inflating: apmagent/lib/agent/ApmEumFilter.jar  
+  inflating: apmagent/lib/agent/cmnutil.jar  
+  inflating: apmagent/lib/agent/httpclient-4.2.5.jar  
+  inflating: apmagent/lib/agent/agentToEngine.jar  
+  inflating: apmagent/lib/agent/jackson-xc-1.9.13.jar  
+  inflating: apmagent/lib/agent/ApmProbeRuntime.jar  
+*******************************************************************************
+So far, so good! Now, one more thing to do, which you will perform manually.
+You will need to modify your destination's start up script so that
+the APM instrumentation you have just laid down and configured will be invoked.
+
+Here's what you do:
+
+
+Weblogic :
+---------
+
+1. Make a backup copy of your startWebLogic.sh file:
+        % cd $DOMAIN_HOME/bin
+        % cp startWebLogic.sh startWebLogic.sh.orig
+
+2. Now edit the script with your favorite text editor (e.g. "vi"), and add the
+   -javaagent option to the set of JAVA_OPTIONS found therein, by adding the
+   following line right after the "setDomainEnv.sh" call:
+
+        JAVA_OPTIONS="${JAVA_OPTIONS} -javaagent:${DOMAIN_HOME}/apmagent/lib/system/ApmAgentInstrumentation.jar"
+
+3. Stop and restart your WebLogic Application Server. Note that you will use
+   the $DOMAIN_HOME/bin version of stopWebLogic.sh, but the $DOMAIN_HOME
+   version of startWebLogic.sh, even though you edited the $DOMAIN_HOME/bin
+   version. The "upper" level one will, in fact, invoke the "lower" level one:
+
+        % cd $DOMAIN_HOME/bin
+        % ./stopWebLogic.sh                        
+        % cd ..                                    
+        % nohup ./startWebLogic.sh &gt;&amp; startup.log &amp;
+
+4. Finally, if you have any Managed WebLogic Application Servers, stop and
+   restart them also:
+
+        % cd $DOMAIN_HOME/bin
+        % ./stopManagedWebLogic.sh {SERVER_NAME} {ADMIN_URL} {USER_NAME} {PASSWORD}                                                  
+        % nohup ./startManagedWebLogic.sh {SERVER_NAME} {ADMIN_URL} &gt;&amp; {SERVER_NAME}.log &amp;
+
+Tomcat :
+-------
+
+1. Make a backup copy of your Catalina.sh file:
+            % cd "$CATALINA_HOME/bin"
+            % cp catalina.sh catalina.sh.orig
+
+2. Now edit the script with your favorite text editor (e.g. "vi") , and add the
+   -javaagent option to the set of CATALINA_OPTS, by adding the
+   following line:
+
+         CATALINA_OPTS="${CATALINA_OPTS} -javaagent:\"${CATALINA_HOME}/apmagent/lib/system/ApmAgentInstrumentation.jar\""
+
+3. Stop and restart your Tomcat Server.
+
+        % cd "$CATALINA_HOME/bin"
+        % ./shutdown.sh
+        % ./startup.sh
+
+JBoss 7.x/Wildfly(Standlone Mode):
+----------
+
+1. Make a backup copy of your standalone.conf file:
+        % cd $JBOSS_HOME/bin
+    % cp standalone.conf standalone.conf.orig
+
+2. Now edit standalone.conf with your favorite text editor (e.g. "vi"), and search text 'JBOSS_MODULES_SYSTEM_PKGS'
+    Add  oracle.apmaas,org.jboss.logmanager to it.
+
+    If it was JBOSS_MODULES_SYSTEM_PKGS="org.jboss.byteman" then the new value will be JBOSS_MODULES_SYSTEM_PKGS="org.jboss.byteman,oracle.apmaas,org.jboss.logmanager"
+
+3. Go to the end of the file and add following statements
+
+    JAVA_OPTS="$JAVA_OPTS -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+
+    # Location and version of below jar files would be different for jboss versions. You can modify java opts with correct version of jar file. If files are not present then you can download the jars and modify paths of jar in below statements.
+
+    JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:&lt;JBOSS_HOME&gt;/modules/org/jboss/logmanager/main/jboss-logmanager-1.2.2.GA.jar:&lt;JBOSS_HOME&gt;/modules/org/jboss/logmanager/log4j/main/jboss-logmanager-log4j-1.0.0.GA.jar:&lt;JBOSS_HOME&gt;/modules/org/apache/log4j/main/log4j-1.2.16.jar"
+
+    JAVA_OPTS="$JAVA_OPTS -javaagent:&lt;JBOSS_HOME&gt;/apmagent/lib/system/ApmAgentInstrumentation.jar"
+
+4. Stop and restart your JBoss/Wildfly Server
+
+
+JBoss 7.x/Wildfly(Domain Mode):
+-----------------------
+
+1. Make a backup copy of your domain.conf file:
+        % cd $JBOSS_HOME/bin
+    % cp domain.conf domain.conf.orig
+
+2. Now edit domain.conf with your favorite text editor (e.g. "vi"), and search text 'JBOSS_MODULES_SYSTEM_PKGS'
+
+    Add  oracle.apmaas,org.jboss.logmanager to it.
+
+    If it was JBOSS_MODULES_SYSTEM_PKGS="org.jboss.byteman" then the new value will be JBOSS_MODULES_SYSTEM_PKGS="org.jboss.byteman,oracle.apmaas,org.jboss.logmanager"
+
+3. Go to the end of the file and add following statements
+
+    JAVA_OPTS="$JAVA_OPTS -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+
+    # Location and version of below jar files would be different for jboss versions. You can modify java opts with correct version of jar file. If files are not present then you can download the jars and modify paths of jar in below statements.
+
+    JAVA_OPTS="$JAVA_OPTS -Xbootclasspath/p:&lt;JBOSS_HOME&gt;/modules/org/jboss/logmanager/main/jboss-logmanager-1.2.2.GA.jar:&lt;JBOSS_HOME&gt;/modules/org/jboss/logmanager/log4j/main/jboss-logmanager-log4j-1.0.0.GA.jar:&lt;JBOSS_HOME&gt;/modules/org/apache/log4j/main/log4j-1.2.16.jar"
+
+    JAVA_OPTS="$JAVA_OPTS -javaagent:&lt;JBOSS_HOME&gt;/apmagent/lib/system/ApmAgentInstrumentation.jar"
+
+4. Stop and restart your JBoss/Wildfly Server
+
+
+Websphere :
+-----------------------
+
+1. From websphere admin console, click on Servers tab and  select the server on which you want to provision the APM Agent. Expand Java and Process Management tab and select Process Definition. Select Java Virtual Machine under Additional Properties tab.
+
+2. In Generic JVM arguments field, add the following line:
+    -javaagent:$WAS_HOME/apmagent/lib/system/ApmAgentInstrumentation.jar -Dws.ext.dirs=$WAS_HOME/apmagent/lib/agent/ApmEumFilter.jar
+
+3. Create a backup of $WAS_HOME/properties/server.policy file
+        % cd $WAS_HOME/properties
+    % cp server.policy server.policy.orig
+
+4. Add the following snippet in $WAS_HOME/properties/server.policy to grant permission to apmagent directory.
+
+        grant codeBase "file:$WAS_HOME/apmagent/-"
+        {
+        permission java.security.AllPermission;
+        };
+
+5. Restart the websphere server
+
+*******************************************************************************
+[oracle@localhost apm_staging]$
+</code></pre>
+<p>Now the local installation of Apache Tomcat is almost ready to run and includes APM agent. As you can see from the output you have to add <code>-javaagent:"${CATALINA_HOME}/apmagent/lib/system/ApmAgentInstrumentation.jar</code> to <code>CATALINA_OPTS</code> and restart the server.</p>
+<h4 id="answers">Answers</h4>
+<ol>
+<li><p><em>Can you figure out how much memory is allocated for each execution of the sum of random integers? Does this amount seem correct?</em>
+To figure out memory allocated for the sum of random integers, first identify the server request associated with the API, then take a look at an instance sample. Each instance carries the amount of memory allocated during the request. The amount should be correct, in that it should be around 4 megabytes, which would correspond to 1M integers in the array times 4 bytes each (32-bit ints in Java).</p></li>
+<li><p><em>Can you tell whether the quote functionality uses static data or makes a real external web service call?</em> To figure out whether the quote functionality uses static data or makes a real external web service call, identify the server request associated with this API, then look at its diagram. Outbound web service calls are there and you can see (1) that the service does make a web service call and (2) the URL that the web service call is made to, which is a real 3rd party service.</p></li>
+<li><p><em>Can you tell which button clicks result in AJAX calls and which do not? Can you determine the cause of the behavior when you click Compute with 1048576 in Return Array Index?</em> To see which button clicks result in AJAX calls and which do not, take a look at the Session List for one of your sessions and take a look at the ordering of clicks and ajax calls. Based on the path, you can identify which buttons were clicked and which clicks were followed by AJAX calls and which were not.</p></li>
+</ol>

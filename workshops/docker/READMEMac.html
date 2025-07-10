@@ -1,0 +1,88 @@
+<h1 id="workshop-overview-mac">Workshop Overview (Mac)</h1>
+<p><img src="images/studentguide/Title.png" alt="" /></p>
+<h2 id="overview">Overview</h2>
+<p>This Docker workshop will walk you through using common docker commands, download docker images, creating containers and deploying a full blown application. The first Lab starts by examining a docker environment and deploying a simple application UI (AlphaOffice). The second Lab expands on functionality by deploying and configuring a database of your choice (Oracle or MYSQL), creating a user and populating the user schema. Next, it has you deploy various supporting components of the AlphaOffice application (TwitterFeed, RESTClient that communicates to the database you configure, and the AlphaOffcieUI Node.js application). Finally in Lab 200 you will modify the UI container, save a new version and test your changes.</p>
+<ul>
+<li>All setup steps and lab replays have been posted on <a href="https://www.youtube.com/playlist?list=PLPIzp-E1msrYGLKIgW3njO3uUkvXD0bAH">youtube</a>. You can watch the videos to gain an overview of the workshop and what's required to successfully complete the labs.</li>
+</ul>
+<p><img src="images/studentguide/youtube.png" alt="" /></p>
+<h1 id="workshop-prerequisites">Workshop Prerequisites</h1>
+<p>This workshop requires some client software to be installed either on your laptop, or inside a virtual box image. Before begining please determine the best path for your circumstance.</p>
+<h2 id="_option-1-virtual-box-setup_"><em>Option 1: Virtual Box Setup</em></h2>
+<h3 id="step-1-obtain-a-docker-account"><strong>Step 1</strong>: Obtain a Docker Account</h3>
+<ul>
+<li>If you do not have a Docker Hub account please go to <a href="https://hub.docker.com/">Docker Hub</a>, fill out the fiels illustrated below and press signup.</li>
+</ul>
+<p><img src="images/studentguide/docker_signup.png" alt="" /></p>
+<h3 id="step-2-check-hardware-requirements"><strong>Step 2</strong>: Check Hardware Requirements</h3>
+<ul>
+<li><p>You will need a machine capable of running the workshop image within Oracle Virtual Box (MAC or PC / Minumum of 20GB of free storage / 8GB RAM)</p></li>
+<li><p>You will need full Administrator privileges on your machines, and in some cases will may need to turn on Hardware Virtualization in the BIOS.</p>
+<ul>
+<li>Hardware Virtualization needs to be enabled in the BIOS to properly run Virtual Box.  If you get virtualization errors, reboot into the BIOS and make sure that the setting to enable Hardware Virtualization is enabled. </li></ul></li>
+<li><p>The latest version of Virtual Box should be installed and tested prior to the workhop.</p></li>
+</ul>
+<h3 id="step-3-install-virtual-box-and-download-vm"><strong>STEP 3</strong>: Install Virtual Box and Download VM</h3>
+<ul>
+<li><p><a href="https://www.virtualbox.org/wiki/Downloads">Download</a> and install Virtual box </p></li>
+<li><p>Download all 7 parts of the workshop Linux VM into the same directory: <a href="https://publicdocs-corp.documents.us2.oraclecloud.com/documents/link/LF3AECCFE80C8B381E41E491F6C3FF17C1177E4725F3/folder/F81AC36043787ED102DC77DDF6C3FF17C1177E4725F3/_Docker_VM">Location of Virtual box OVA</a></p>
+<p><img src="images/studentguide/Picture31.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-download-and-install-7-zip-and-extract-ova-file"><strong>STEP 4</strong>: Download and install 7-zip and Extract OVA file</h3>
+<p>You will use 7-zip to reassemble the 7 part file. It will extract an OVF and VMDK file</p>
+<ul>
+<li><p><a href="http://www.7-zip.org/download.html">Download</a> and install 7-zip</p></li>
+<li><p>Run 7-zip and browse to the directory when you downloaded the multi-part file. <strong>Select</strong> the FIRST part and click <strong>Extract</strong>;</p>
+<p><img src="images/studentguide/Picture32.png" alt="" /></p></li>
+<li><p>Then click <strong>OK</strong>:</p>
+<p><img src="images/studentguide/Picture33.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-import-ovf-file"><strong>STEP 5</strong>: Import OVF File</h3>
+<ul>
+<li><p>Startup <strong>Oracle Virtual Box</strong></p>
+<p><img src="images/studentguide/Picture22.png" alt="" /></p></li>
+<li><p>From top left menu select <strong>File -> Import Appliance</strong></p>
+<p><img src="images/studentguide/Picture23.png" alt="" /></p></li>
+<li><p>Click on <strong>browse</strong> icon to select file to import.</p></li>
+<li><p>Navigate to the <strong>DockerWorkshop.ovf</strong> file, select it, and click <strong>Open</strong></p>
+<p><img src="images/studentguide/Picture24.png" alt="" /></p></li>
+<li><p>Once the File is selected click <strong>Next</strong> to continue.</p>
+<p><img src="images/studentguide/Picture25.png" alt="" /></p></li>
+<li><p>Keep all the defaults and click <strong>Import</strong></p>
+<p><img src="images/studentguide/Picture26.png" alt="" /></p></li>
+<li><p>Wait for import to complete. The time required to import will vary depending on the speed of your hard disk.</p>
+<p><img src="images/studentguide/Picture27.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-start-virtual-box-image"><strong>STEP 6</strong>: Start Virtual Box Image</h3>
+<ul>
+<li><p>After completion of the import, you should see the DockerWorkshop image in a Powered Off state. The default settings will work, but if you are familiar with Virtual Box, you are welcome to change any of the settings.</p>
+<p><img src="images/studentguide/Picture28.png" alt="" /></p></li>
+<li><p>With <strong>DockerWorkshop</strong> selected, click <strong>Start</strong>.</p>
+<p><img src="images/studentguide/Picture29.png" alt="" /></p></li>
+<li><p>After a few minutes you will have a running image that will be used for all of the labs.</p>
+<p><img src="images/studentguide/Picture30.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-begin-lab-100"><strong>STEP 7</strong>: Begin Lab 100</h3>
+<ul>
+<li><p>Click on the hamburger menu in the top left corner of the webpage.</p>
+<p><img src="images/studentguide/hamburger_5.png" alt="" /></p></li>
+<li><p>Select Lab 100 and begin the workshop.</p>
+<p><img src="images/studentguide/hamburger_4.png" alt="" /></p></li>
+</ul>
+<h2 id="_option-2-install-client-software-on-your-laptop_"><em>Option 2: Install Client Software on Your Laptop</em></h2>
+<h3 id="step-1-obtain-a-docker-account-1"><strong>Step 1</strong>: Obtain a Docker Account</h3>
+<ul>
+<li><p>If you do not have a Docker Hub account please go to <a href="https://hub.docker.com/">Docker Hub</a>, fill out the fields illustrated below and press signup.</p>
+<p><img src="images/studentguide/docker_signup.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-install-docker-on-your-mac-os"><strong>Step 2</strong>: Install Docker on your Mac OS</h3>
+<ul>
+<li>Navigate to <a href="https://docs.docker.com/install/">Docker Installation</a> and follow the instructions specific to Mac.</li>
+</ul>
+<h3 id="step-3-begin-lab-100"><strong>STEP 3</strong>: Begin Lab 100</h3>
+<ul>
+<li><p>Click on the hamburger menu in the top left corner of the webpage.</p>
+<p><img src="images/studentguide/hamburger_5.png" alt="" /></p></li>
+<li><p>Select Lab 100 and begin the workshop.</p>
+<p><img src="images/studentguide/hamburger_4.png" alt="" /></p></li>
+</ul>

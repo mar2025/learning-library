@@ -1,0 +1,384 @@
+<p><img src="images/200/image1.png" alt="" /></p>
+<p>Update March 28, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you will explore some common use cases for moving your data from on-premises to the cloud. There are multiple options for solving this data movement challenge. In this lab, we will use SQL*Developer and command line tools to clone and move a pluggable database from your on-premises database (your Virtual Machine) to your cloud database. You will also use standard Oracle Data Pump tools to export a schema from the on-premises database, and then import that data to your cloud database in a new schema. The final exercise uses the SQL Developer cart feature to quickly move data from the local database to the cloud using only the privileges of a normal schema owner.</p>
+<ul>
+<li>To log issues and view the Lab Guide source, go to the <a href="https://github.com/oracle/learning-library/tree/master/workshops/dbcs">github oracle</a> repository.</li>
+</ul>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Clone, unplug, transfer and plug the AlphaPDB pluggable database using SQL Developer.</p></li>
+<li><p>Export and import a schema using SQL Developer to execute Oracle Data Pump jobs.</p></li>
+<li><p>Export and import a small collection of tables using SQL Developer.</p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li><p>The following labs assume that the steps outlined in lab guide 100 have been completed.</p></li>
+<li><p>The SSH tunnels must be active in a terminal window.</p></li>
+</ul>
+<h1 id="cloud-migration-using-pluggable-databases">Cloud Migration Using Pluggable Databases</h1>
+<h2 id="configure-the-environment">Configure the Environment</h2>
+<h3 id="step-1--start-the-on-premise-oracle-database"><strong>STEP 1</strong>:  Start the on-premise Oracle Database</h3>
+<ul>
+<li><p>From the VNC Session desktop, locate and double-click on the <strong>StartDB</strong> icon.</p>
+<p><img src="images/200/image2.png" alt="" /></p></li>
+<li><p>It will take a minute for the Database to fully start. Once the Database has succesfully started, the Log Window will automatically close.</p></li>
+</ul>
+<h3 id="step-2--open-a-dba-navigator-connection-to-the-on-premise-database"><strong>STEP 2</strong>:  Open a <strong>DBA Navigator</strong> connection to the on-premise database</h3>
+<ul>
+<li><p>From the VNC Session desktop, locate and double-click on the <strong>SQL Developer</strong> icon. <strong><em>NOTE</em></strong>: The first time SQL Developer is brought up; it may take some time to instantiate.</p>
+<p><img src="images/200/image3.png" alt="" /></p></li>
+<li><p>Double-click the <strong>On-premises</strong> folder to expand the list of database connections. Please note the pre-configured connections to the on-premises database.</p>
+<p><img src="images/200/image4.png" alt="" /></p></li>
+<li><p>Select the <strong>View</strong> -&gt; <strong>DBA</strong> menu option from the top dropdown menu.</p>
+<p><img src="images/200/image5.png" alt="" /></p></li>
+<li><p>On the DBA tab, click the green plus icon to create a new connection.</p>
+<p><strong>Note</strong>: you may also right-click on Connections and select Add Connection.</p>
+<p><img src="images/200/image6.png" alt="" /></p></li>
+<li><p>Select the <strong>sys - CDB</strong> connection and click <strong>OK</strong>. </p>
+<p><strong>Note: sys - CDB</strong> is an “on-premises” database located on the Virtual Box Image.</p>
+<p><img src="images/200/image7.png" alt="" /></p></li>
+<li><p>Expand the <strong>sys - CDB connect</strong>, and then expand the <strong>Container Database</strong> tree item. Click on the <strong>ALPHAPDB</strong> pluggable database to show the details for the pluggable database.</p>
+<p><img src="images/200/image8.png" alt="" /></p></li>
+</ul>
+<h2 id="clone-the-alphapdb">Clone the ALPHAPDB</h2>
+<h3 id="step-3--clone-alphapdb"><strong>STEP 3</strong>:  Clone ALPHAPDB</h3>
+<ul>
+<li><p>In the DBA Navigator panel, right click on the ALPHAPDB pluggable database and select the <strong>Clone&nbsp;Pluggable&nbsp;Database…</strong> menu option.</p>
+<p><img src="images/200/image9.png" alt="" /></p></li>
+<li><p>Enter the following:</p>
+<p><strong>Database Name</strong>: <code>ALPHACLONE</code></p>
+<p><img src="images/200/image10.png" alt="" /></p></li>
+<li><p>Select <strong>Custom Names</strong> from File Name Conversions and review the Source File names - note the "<strong>/AlphaPDB/</strong>" directory name of the source file names. For a successful cloning operation, we must create new target files different than the source files.</p>
+<p><img src="images/200/image11.png" alt="" /></p>
+<p><strong>Note</strong>: At this point we could manually change all the target files to point to a different directory, but there is an easier way.</p></li>
+<li><p>Select <strong>Custom Expressions</strong> from the File Name Conversions drop down. Click the <strong>green plus icon</strong> and enter the source directory portion we want to change, followed by the target for the new files. </p>
+<p>Enter the following - please use the indicated upper and lower case letters:</p>
+<p><strong>Source File Pattern</strong>: <code>AlphaPDB</code></p>
+<p><strong>Target File Pattern</strong>: <code>AlphaClone</code></p>
+<p><img src="images/200/image12.png" alt="" /></p></li>
+<li><p>Review the SQL statement by clicking on the SQL tab - note the <strong><em>FILE<em>NAME</em>CONVERT</em></strong> clause mapping the existing files to new files in a new directory. Click the <strong>Apply</strong> button.</p>
+<p><img src="images/200/image13.png" alt="" /></p></li>
+<li><p>SQL Developer shows the action in-progress message for roughly 1-2 minutes followed by a success message. Click <strong>OK</strong> on the success message.</p>
+<p><img src="images/200/image14.png" alt="" />     <img src="images/200/image15.png" alt="" /></p></li>
+<li><p>Click on the <strong>ALPHACLONE</strong> database in the DBA navigator to see the status of the database.</p>
+<p><strong>Note</strong>: The cloned database shows an <strong>OPEN_MODE</strong> of <strong>MOUNTED</strong> indicating the database is plugged-in but is not open for access.</p>
+<p><img src="images/200/image16.png" alt="" /></p></li>
+<li><p>Click on the <strong>Data Files</strong> tab for the ALPHACLONE to review the data files created during the cloning operation.</p>
+<p><img src="images/200/image17.png" alt="" /></p></li>
+</ul>
+<h2 id="create-ssh-host">Create SSH Host</h2>
+<h3 id="step-4--create-ssh-and-sys-database-cloud-connections"><strong>STEP 4</strong>:  Create SSH and SYS Database Cloud Connections</h3>
+<ul>
+<li><p>First we need to setup a SSH host connection to the Database Cloud Service instance. From the top menu select <strong>View -> SSH</strong> to display SSH hosts panel on the left.</p>
+<p><img src="images/200/image18.png" alt="" />  <img src="images/200/image19.png" alt="" /></p></li>
+<li><p>Right click on <strong>SSH Hosts</strong> and select <strong>New SSH Host</strong>.</p>
+<p><img src="images/200/image20.png" alt="" /></p></li>
+<li><p>We will now configure an SSH connection to our DBCS instance</p>
+<p><strong>Name</strong>: <code>Alpha01A-DBCS</code></p>
+<p><strong>Host</strong>: <code>&lt;Database Image public IP you obtained in lab 100&gt;</code></p>
+<p><strong>Username</strong>: <code>oracle</code></p>
+<p><img src="images/200/image21.png" alt="" /></p></li>
+<li><p>Select <strong>Use key file</strong> and click <strong>Browse…</strong> Select file <strong>/u01/OPCWorkshop/lab/labkey</strong> and click <strong>Open</strong>.</p>
+<p><img src="images/200/image22.png" alt="" /></p></li>
+<li><p>Click <strong>Add a Local Port Forward</strong> and enter the following values:</p>
+<p><strong>Name</strong>: <code>Database</code></p>
+<p><strong>Host</strong>: <code>&lt;Database Image Public IP you obtained in lab 100&gt;</code></p></li>
+<li><p>Select <strong>Use specific local port</strong> and enter <strong>1530</strong></p>
+<p><strong>NOTE</strong>: We are using port 1530 since 1521 is already in use for our local database.</p>
+<p><img src="images/200/image23.png" alt="" /></p></li>
+<li><p>Verify the configuration and click <strong>OK</strong></p></li>
+</ul>
+<h3 id="step-5--create-a-sql-developer-connection-to-the-public-cloud-database-sys-schema"><strong>STEP 5</strong>:  Create a SQL Developer connection to the Public Cloud database SYS schema</h3>
+<ul>
+<li><p>Click the green plus sign <img src="images/200/image24.png" alt="" /> in the <strong>Connections</strong> window to create a new connection; enter the following connection details:</p>
+<p><strong>Connection Name</strong>:    <code>sys - OPCDBCS</code></p>
+<p><strong>Username</strong>:           <code>sys</code></p>
+<p><strong>Password</strong>:           <code>Alpha2014_</code></p>
+<p><strong>Check</strong>               "Save Password"</p>
+<p><strong>Optionally select a color for the connection</strong></p>
+<p><strong>ConnectionType</strong>:     <code>SSH</code></p>
+<p><strong>Role</strong>:               <code>SYSDBA</code></p>
+<p><strong>Service Name</strong>:       <code>ORCL.&lt;Your ID Domain&gt;.oraclecloud.internal</code></p>
+<p><img src="images/200/image25.jpeg" alt="" /></p></li>
+<li><p>Click <strong>Test</strong> to confirm the information was entered correctly.</p>
+<p><img src="images/200/image26.jpeg" alt="" /></p></li>
+<li><p>Click <strong>Connect</strong> to save the connection information which opens a new SQL&nbsp;Worksheet.</p>
+<p><img src="images/200/image27.png" alt="" /></p></li>
+</ul>
+<h2 id="copy-the-clone-pluggable-database-to-the-cloud">Copy the Clone Pluggable Database to the Cloud</h2>
+<h3 id="step-6--copy-alphaclone-pluggable-database-to-the-cloud"><strong>STEP 6</strong>:  Copy ALPHACLONE pluggable database to the Cloud</h3>
+<ul>
+<li><p>Using the SQL Developer top menu, click on <strong>View -> Task Progress</strong> to open up the Task Progress window.</p></li>
+<li><p>In the DBA window right-click on <strong>ALPHACLONE</strong> and select “<strong>Clone PDB to Oracle Cloud</strong>”</p>
+<p><img src="images/200/image28.png" alt="" /></p></li>
+<li><p>Verify the defaults and include your Public Cloud Connection. Click <strong>Apply</strong>.</p>
+<p><strong>Source PDB</strong>:             <code>ALPHACLONE</code></p>
+<p><strong>Destination Connection</strong>: <code>sys - OPCDBCS</code></p>
+<p><strong>Action after clone</strong>:     <code>RePlug</code></p>
+<p><img src="images/200/image29.jpeg" alt="" /></p></li>
+<li><p>You will note in the Task Progress window the progress of moving the datafiles over to the cloud database. This task will take about a minute to complete. <strong><em>Note: An Error/Warning will display</em></strong> at the end of this task, which is <strong>Normal</strong>.</p>
+<p><img src="images/200/image30.jpeg" alt="" /></p></li>
+<li><p>Upon completion, a couple of pop ups will reveal Plugin Violations. This is because the patch level of the local ALPHACLONE pluggable database is different than the Container database in the cloud. We will remedy this shortly. Click <strong>OK</strong> as <strong>each</strong> of the popups is received. The datafiles are transferred despite what the pop up implies.</p>
+<p><img src="images/200/image31.jpeg" alt="" />  <img src="images/200/image32.jpeg" alt="" /></p></li>
+</ul>
+<h3 id="step-7--access-em-express-for-the-cloud-database"><strong>STEP 7</strong>:  Access EM Express for the Cloud database</h3>
+<ul>
+<li><p>Open <strong>Chrome</strong> by clicking the icon on the menu bar or the Desktop.</p>
+<p><img src="images/200/image33.png" alt="" /></p></li>
+<li><p>Enter the following URL into the Address bar or click the "<strong>EM Express - DB</strong>" link in the header bar - note: when using localhost:5500 in the URL below, your browser request is routed through the ssh proxy you loaded in a terminal window in Lab 100. If for some reason that window was closed, or is not working, you should refer back to lab 100:</p>
+<p>https://localhost:5500/em</p>
+<p><img src="images/200/image34.png" alt="" /></p></li>
+<li><p>Enter the following login credentials, check the "<strong>as sysdba</strong>" box and click the Login button:</p>
+<p><strong>User Name</strong>:  <code>sys</code></p>
+<p><strong>Password</strong>:   <code>Alpha2014_</code></p>
+<p><strong>Check</strong>: <code>as sysdba</code></p>
+<p><img src="images/200/image35.png" alt="" /></p></li>
+</ul>
+<h3 id="step-8--plug-the-alpha-clone-database-into-the-cloud-database"><strong>STEP 8</strong>:  Plug the Alpha Clone database into the Cloud database</h3>
+<ul>
+<li><p>From the Database Home page, click the <strong>CDB(1 PDBs)</strong> link located in the Status panel.</p>
+<p><img src="images/200/image36.png" alt="" /></p></li>
+<li><p>Open the <strong>Actions</strong> list in the <strong>Containers</strong> panel, and select the <strong>Plug</strong> command</p>
+<p><img src="images/200/image37.png" alt="" /> <img src="images/200/image38.png" alt="" /></p></li>
+<li><p>Enter the following on the Plug PDB dialog box and then click the <strong>OK</strong> button:</p>
+<p><strong>Metadata File</strong>:  <code>/u02/app/oracle/oradata/ORCL/ALPHACLONE/ALPHACLONE.XML</code></p>
+<p><strong>Uncheck</strong> the <strong>Resuse source datafile location from Metadata File</strong> check box</p>
+<p><strong>Source Datafile Location</strong>: <code>/u02/app/oracle/oradata/ORCL/ALPHACLONE</code></p>
+<p><img src="images/200/image39.jpeg" alt="" /></p></li>
+<li><p>The Processing message displays for the 2 minutes (approximately) required to plug the database into the container. Click the <strong>OK</strong> button when the Confirmation message displays.</p>
+<p><img src="images/200/image40.png" alt="" /> <img src="images/200/image41.png" alt="" /></p></li>
+<li><p>Notice the database is now in the list of Containers. <strong>There will be Violations because of the patch level mismatch between the original source Pluggable database and the Cloud Container database</strong>.</p>
+<p><img src="images/200/image42.png" alt="" /></p></li>
+<li><p>Using your open Terminal window, you now need to SSH into your Cloud database server. An Example is shown below. Substitute <strong>your Cloud database server IP address</strong>:</p>
+<pre><code>ssh -o ServerAliveInterval=60 -i /u01/OPCWorkshop/lab/labkey oracle@&lt;your-IP-address&gt;
+</code></pre>
+<p><img src="images/200/image43.png" alt="" /></p></li>
+<li><p>We'll need to run “<strong>datapatch</strong>” to apply any missing patches. It should run with no errors.</p>
+<p><strong>Note: If it complains the first time about not being able to determine the current opatch status, then wait a minute until it's had time to pick up the newly cloned pluggable database and retry.</strong></p>
+<pre><code>$ORACLE_HOME/OPatch/datapatch -verbose
+</code></pre>
+<p><img src="images/200/image44.jpeg" alt="" /></p>
+<p><img src="images/200/image45.jpeg" alt="" /></p></li>
+</ul>
+<h3 id="step-9--upgrade-pdb"><strong>STEP 9</strong>:  Upgrade PDB</h3>
+<ul>
+<li><p>If the error message is “<strong>The pluggable databases that need to be patched must be in upgrade mode</strong>” complete this Upgrade PDB Step. If not, move to the next step titled <strong>(Close and Reopen ALPHACLONE PDB)</strong>.</p>
+<p><img src="images/200/image46.png" alt="" /></p></li>
+<li><p>Connect to container database using SQL Plus and place the database in <strong>upgrade mode</strong>. Once completed run <strong>datapatch</strong> again and you should have no errors.</p>
+<pre><code>sqlplus / as sysdba
+alter pluggable database ALPHACLONE close;
+alter pluggable database ALPHACLONE open upgrade;
+exit
+
+$ORACLE_HOME/OPatch/datapatch -verbose
+</code></pre>
+<p><img src="images/200/image47.png" alt="" /></p>
+<p><img src="images/200/image48.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10--close-and-reopen-the-alphaclone-pdb"><strong>STEP 10</strong>:  Close and Reopen the ALPHACLONE PDB</h3>
+<ul>
+<li><p>The final step is to close and reopen the ALPHACLONE pluggable database. Go back to EM Express, with the ALPHACLONE row highlighted (DO NOT CLICK THE ALPHACLONE LINK). Select <strong>Actions -> Close</strong>.</p>
+<p><img src="images/200/image49.jpeg" alt="" /></p></li>
+<li><p>Take the defaults and Click <strong>OK</strong>.</p>
+<p><img src="images/200/image50.jpeg" alt="" /></p></li>
+<li><p>Close the Confirmation pop up by clicking <strong>OK</strong>.</p></li>
+<li><p>Now reopen the pluggable database via <strong>Actions -> Open</strong>. Take the default to open it Read / Write. Click <strong>OK</strong>.</p>
+<p><img src="images/200/image51.jpeg" alt="" /></p></li>
+<li><p>Close the Confirmation pop up by clicking <strong>OK</strong>.</p></li>
+<li><p>Refresh the browser page using the refresh icon in the top right corner.</p>
+<p><img src="images/200/image52.jpeg" alt="" /></p></li>
+<li><p>You will note that the violations are now gone for ALPHACLONE.</p>
+<p><img src="images/200/image53.png" alt="" /></p></li>
+<li><p>Click the <strong>ALPHACLONE</strong> container name link to review the database
+information.</p>
+<p><img src="images/200/image54.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11--create-a-sql-developer-connection-to-the-public-cloud-database-alphaclone-schema"><strong>STEP 11</strong>:  Create a SQL Developer connection to the Public Cloud database ALPHACLONE schema</h3>
+<ul>
+<li><p>Back in SQL Developer, click the green plus sign <img src="images/200/image24.png" alt="" /> in the Connections window to create a new connection; enter the following connection details:</p>
+<p><strong>Connection Name</strong>:    <code>Alpha Clone - DBCS</code></p>
+<p><strong>Username</strong>:           <code>alpha</code></p>
+<p><strong>Password</strong>:           <code>oracle</code></p>
+<p><strong>Check</strong> "Save Password"</p>
+<p><strong>Optionally select a color for the connection</strong></p>
+<p><strong>ConnectionType</strong>:     <code>SSH</code></p>
+<p><strong>Service Name</strong>:       <code>alphaclone.&lt;Your ID Domain&gt;.oraclecloud.internal</code></p>
+<p><img src="images/200/image55.png" alt="" /></p></li>
+<li><p>Click <strong>Test</strong> to confirm the information was entered correctly.</p>
+<p><img src="images/200/image56.png" alt="" /></p></li>
+<li><p>Click <strong>Connect</strong> to save the connection information and open a new SQL&nbsp;Worksheet.</p>
+<p><img src="images/200/image57.png" alt="" /></p></li>
+</ul>
+<h1 id="cloud-migration-using-data-pump">Cloud Migration Using Data Pump</h1>
+<h2 id="export-the-alpha-schema">Export the Alpha Schema</h2>
+<h3 id="step-12--create-a-local-data-pump-directory"><strong>STEP 12</strong>:  Create a Local Data Pump Directory</h3>
+<p><strong>Note</strong>: The default Data Pump directory object, DATA_PUMP_DIR, does not work with PDBs. Data Pump requires an explicit directory object within the PDB that is exporting or importing schemas or tables.</p>
+<ul>
+<li><p>In the Connections Tab inside the "<strong>On-Premise</strong>" folder navigate to the <strong>Alpha - PDB > Directories</strong> item, right-mouse click and select <strong>Create&nbsp;Directory…</strong></p>
+<p><img src="images/200/image58.png" alt="" /></p></li>
+<li><p>Enter the following values and click <strong>Apply</strong>. Remember to use the SQL tab to review the actual DDL statement. Click <strong>OK</strong> to dismiss the confirmation.</p>
+<p><strong>Directory Name</strong>:             <code>alpha_backup_dir</code> (not case sensitive)</p>
+<p><strong>Database Server Directory</strong>:  <code>/u01/OPCWorkshop</code></p>
+<p><strong>NOTE:</strong> Sometimes an error msg shows up saying it cannot create the directory. Just right-click on <strong>Alpha - PDB</strong> and do a <strong>Disconnect</strong> and then a <strong>Reconnect</strong>. This is because if you were connected before doing the UNMOUNT / REMOUNT during the previous "cloning" of the pdb container the connection information is lost and you have to ReConnect from within the Connections window</p>
+<p><img src="images/200/image59.jpeg" alt="" /></p>
+<p><img src="images/200/image60.png" alt="" /></p>
+<p><img src="images/200/image61.png" alt="" /></p>
+<p><img src="images/200/image62.png" alt="" /></p></li>
+</ul>
+<h3 id="step-13--create-and-run-a-data-pump-export-job-using-sql-developer"><strong>STEP 13</strong>:  Create and run a Data Pump Export job using SQL Developer</h3>
+<ul>
+<li><p>In the DBA Window, <strong>Add Connection</strong> by clicking on the Green Plus sign.</p>
+<p><img src="images/200/image63.png" alt="" /></p></li>
+<li><p>Select the <strong>Alpha - PDB</strong> connection and click the <strong>OK</strong> button.</p>
+<p><img src="images/200/image64.png" alt="" /></p></li>
+<li><p>Expand <strong>Alpha - PDB</strong>, expand <strong>Data Pump</strong>, then right-mouse-click on <strong>Export Jobs,</strong> and then select <strong>Data&nbsp;Pump&nbsp;Export&nbsp;Wizard…</strong> menu item.</p>
+<p><img src="images/200/image65.png" alt="" /></p></li>
+<li><p>For this export, select <strong>Schemas</strong> type and click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image66.png" alt="" /></p></li>
+<li><p>Select the <strong>ALPHA</strong> schema and move it to the right-hand column. Click <strong>Next</strong>.</p>
+<p><img src="images/200/image67.png" alt="" /></p></li>
+<li><p>We are not filtering out any object so simply click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image68.png" alt="" /></p></li>
+<li><p>We are not applying any “where” clauses to table data, so simply click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image69.png" alt="" /></p></li>
+<li><p>We do want a log for this export, and just like the actual export file, we must pick a directory from the list of directories in the database. Select <strong>ALPHA_BACKUP_DIR</strong> from the list and click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image70.png" alt="" /></p></li>
+<li><p>The most important selection for any Data Pump operation is choosing the directory where the export file will be written. Select <strong>ALPHA_BACKUP_DIR</strong> from the Directories drop down list. Then, select the <strong>Delete Existing Dump Files</strong> radio button and click the <strong>Next</strong> button. </p>
+<p><strong>Note</strong>: Data Pump always uses a server side directory for all export or import operations.</p>
+<p><img src="images/200/image71.png" alt="" /></p></li>
+<li><p>Data Pump jobs can be scheduled to run at any time and on any desired times of the day, week or year. For this lab, the job will be run immediately - click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image72.png" alt="" /></p></li>
+<li><p>On the Summary panel, click the <strong>PL/SQL</strong> tab to review the job definition. Review the PL/SQL use of Oracle Supplied PL/SQL subprograms for Data Pump. Click the <strong>Finish</strong> button to create the job.</p>
+<p><img src="images/200/image73.png" alt="" />     <img src="images/200/image74.png" alt="" /></p></li>
+<li><p>For a brief time, SQL Developer shows a progress dialog while it creates the job in the database. Note: the import actually runs as a job in the database so this message is only about creating and scheduling the export.</p>
+<p><img src="images/200/image75.png" alt="" /></p></li>
+<li><p>While the job is running, you may view status information by clicking on the export job added to the DBA Navigator panel. It may take a couple of minutes so click the <strong>Refresh</strong> <img src="images/200/image76.jpeg" alt="" /> icon until the job is completed (NOT RUNNING).</p>
+<p><img src="images/200/image77.png" alt="" />     <img src="images/200/image78.png" alt="" /></p></li>
+</ul>
+<h3 id="step-14--copy-the-export-data-pump-file-to-the-server"><strong>STEP 14</strong>:  Copy the export Data Pump file to the server</h3>
+<ul>
+<li><p>Start a new Terminal window using the top panel icon.</p>
+<p><img src="images/200/image79.png" alt="" /></p></li>
+<li><p>Using the following commands to print the working directory (<strong>pwd</strong>), list the directory (<strong>ls</strong>) contents and review the Data Pump log file.</p>
+<p>Enter the following commands:</p>
+<pre><code>pwd
+ls
+cat EXPDAT.LOG
+</code></pre>
+<p><img src="images/200/image80.png" alt="" /></p>
+<p><img src="images/200/image81.png" alt="" /></p></li>
+<li><p>Use the following secure copy (<strong>scp</strong>) command to transfer the Data Pump export to the DBCS server. </p>
+<p><strong>Note:</strong> the tilde (~) represents the oracle user's home directory.</p>
+<p>Enter the following command using your Database Service's Public IP address identified in Lab 100:</p>
+<pre><code>scp -i lab/labkey EXPDAT01.DMP oracle@{your public IP}:~
+</code></pre>
+<p><img src="images/200/image82.png" alt="" /></p></li>
+</ul>
+<h2 id="import-alpha-to-a-new-schema">Import Alpha to a new Schema</h2>
+<h3 id="step-15--create-a-directory-in-the-alpha-clone-pdb"><strong>STEP 15</strong>:  Create a directory in the Alpha Clone PDB</h3>
+<ul>
+<li><p>Back in SQL Developer in the Connection panel, expand the <strong>Alpha Clone - DBCS</strong> connection. Right-mouse-click on the <strong>Directories</strong> tree item and select the <strong>Create &nbsp;Directory…</strong> menu item.</p>
+<p><img src="images/200/image83.png" alt="" /></p></li>
+<li><p>Enter the following values and click the <strong>Apply</strong> button. Click <strong>OK</strong> to dismiss the confirmation message. This lets the database access the same directory where the Data Pump export file was copied.</p>
+<p><strong>Directory Name</strong>:             <code>alpha_import_dir</code></p>
+<p><strong>Database Server Directory</strong>:  <code>/home/oracle</code></p>
+<p><img src="images/200/image84.png" alt="" />     <img src="images/200/image85.jpeg" alt="" /></p></li>
+</ul>
+<h3 id="step-16--create-the-data-pump-import-job"><strong>STEP 16</strong>:  Create the Data Pump Import job</h3>
+<ul>
+<li><p>To access the Data Pump features, we need to add the clone connection to the DBA Navigator. Click on the Add Connection icon on the DBA Navigator panel</p>
+<p><img src="images/200/image63.png" alt="" /></p></li>
+<li><p>Select the <strong>Alpha Clone - DBCS</strong> connection and click the <strong>OK</strong> button.</p>
+<p><img src="images/200/image86.png" alt="" /></p></li>
+<li><p>Expand <strong>Alpha Clone - DBCS</strong> &gt; <strong>Data Pumps</strong>, Right-mouse on the <strong>Import Jobs</strong> menu item, and select <strong>Data Pump Import Wizard…</strong> menu item.</p>
+<p><img src="images/200/image87.png" alt="" /></p></li>
+<li><p>Select <strong>Schemas</strong> and the <strong>ALPHA_IMPORT_DIR</strong> then click <strong>Next</strong>.</p>
+<p><img src="images/200/image88.png" alt="" /></p></li>
+<li><p>There is some wait time while the database locates and scans the import file in the selected directory.</p>
+<p><img src="images/200/image89.png" alt="" /></p></li>
+<li><p>Move the <strong>ALPHA</strong> schema from the left to the right column and click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image90.png" alt="" /></p></li>
+<li><p>For this lab, we are creating a new schema, so we will enter the new schema name as the destination. Under the Re-Map Schemas section click <strong>Add Row</strong>. Enter the following values and click the <strong>Next</strong> button.</p>
+<p><strong>Source</strong>:         <code>ALPHA</code>     (should be defaulted)</p>
+<p><strong>Destination</strong>:    <code>ALPHA_COPY</code></p>
+<p><img src="images/200/image91.png" alt="" /></p></li>
+<li><p>We want to see the log output so we will select the same directory as the import file directory. Select <strong>ALPHA_IMPORT_DIR</strong> and click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image92.png" alt="" /></p></li>
+<li><p>For this lab, we will execute the import immediately. In a real-world scenario, this job could be refreshing a development database daily. Click the <strong>Next</strong> button.</p>
+<p><img src="images/200/image93.png" alt="" /></p></li>
+<li><p>Click the PL/SQL tab to review the small program that establishes the import job. Click the <strong>Finish</strong> button to create the job.</p>
+<p><img src="images/200/image94.png" alt="" /> <img src="images/200/image95.png" alt="" /></p></li>
+<li><p>For a period of time, SQL Developer shows a progress dialog while the job is created. Remember, the job does not run locally so this is only the progress of creating the job in the database.</p>
+<p><img src="images/200/image75.png" alt="" /></p></li>
+<li><p>Locate and click on the job name to see the detailed status as the job runs. When the job completes, the database automatically removes the job. You will need to use the <strong>Refresh</strong> icon <img src="images/200/image76.jpeg" alt="" /> to see when the job finishes. The Job <strong>State</strong> will display <strong>NOT RUNNING</strong> when the Job has successfully completed.</p>
+<p><img src="images/200/image96.png" alt="" /></p>
+<p><img src="images/200/image97.png" alt="" /></p></li>
+<li><p>If you desire to verify that the ALPHA_COPY schema is the same as the ALPHA schema, feel free to create a connection and compare.</p></li>
+</ul>
+<h1 id="cloud-migration-using-sql-developer-carts">Cloud Migration Using SQL Developer Carts</h1>
+<h2 id="sql-developer-carts">SQL Developer Carts</h2>
+<h3 id="step-17--create-a-new-cart"><strong>STEP 17</strong>:  Create a new Cart</h3>
+<p>The SQL Developer Cart is a convenient method for organizing the deployment of database objects and data from one database to another. In this trivial example, we want to update the data of just the CUSTOMERS and PRODUCTS table in the development cloud database. More elaborate usages of the cart can help package entire application deployments, including pre and post processes from multiple data sources.</p>
+<ul>
+<li><p>Show the Cart using the <strong>View -> Cart</strong> menu option.</p>
+<p><img src="images/200/image98.png" alt="" /></p></li>
+<li><p>If Cart_1 is not already created (it should be), Click on the <strong>New Cart</strong> icon.</p>
+<p><img src="images/200/image99.png" alt="" /></p></li>
+<li><p>Drag the <strong>CUSTOMERS</strong> table from the <strong>On-premise</strong> &gt; <strong>Alpha - PDB</strong> connection to the cart.</p>
+<p><img src="images/200/image100.png" alt="" /></p></li>
+<li><p>Now drag the <strong>PRODUCTS</strong> table to the cart.</p>
+<p><img src="images/200/image102.png" alt="" /></p></li>
+<li><p>Include a script that runs before any other Cart activity. For this lab, we are disabling all the referential integrity constraints so we can delete and insert data without regard to foreign keys on our tables. In the Cart window click <strong>drop down arrow</strong> next to the <strong>green plus</strong> “+” and select <strong>Add Initial Script</strong></p>
+<p><img src="images/200/image103.png" alt="" /></p></li>
+<li><p>Click the <strong>Browse…</strong> button.</p>
+<p><img src="images/200/image104.png" alt="" /></p></li>
+<li><p>Locate the following file and click <strong>Open</strong>:</p>
+<pre><code>/u01/OPCWorkshop/lab/disable-constraints.sql
+</code></pre>
+<p><img src="images/200/image105.png" alt="" /></p></li>
+<li><p>Click <strong>OK</strong>.</p></li>
+<li><p>Click <strong>drop down arrow</strong> next to the <strong>green plus</strong> “+” again and select <strong>Add Final Script</strong> that is included at the last operation performed during the cart operations. <strong>Note: there can only be one Initial or Final script in a Cart.</strong></p>
+<p><img src="images/200/image106.png" alt="" /></p></li>
+<li><p>Click the <strong>Browse…</strong> button</p>
+<p><img src="images/200/image104.png" alt="" /></p></li>
+<li><p>Locate the following file and click <strong>Open</strong>:</p>
+<pre><code>/u01/OPCWorkshop/lab/enable-constraints.sql
+</code></pre>
+<p><img src="images/200/image107.png" alt="" /></p></li>
+<li><p>Click <strong>OK</strong>.</p></li>
+<li><p>We are not creating any tables in this lab; uncheck the <strong>DDL</strong> column heading.</p>
+<p><img src="images/200/image108.png" alt="" /></p></li>
+<li><p>We want to move the data; check the <strong>Data</strong> column heading.</p>
+<p><img src="images/200/image109.png" alt="" /></p></li>
+<li><p>Before we can overwrite the new rows in the CUSTOMERS table, we need to truncate the table. Click in the <strong>Scripts</strong> cell for the CUSTOMERS table and then click the <strong>pencil icon</strong>.</p>
+<p><img src="images/200/image110.png" alt="" /></p></li>
+<li><p>Check the <strong>Before Load</strong> box, then click the <strong>Browse…</strong> button and select the following file then click <strong>OK</strong>:</p>
+<pre><code>/u01/OPCWorkshop/lab/truncate-customers.sql
+</code></pre>
+<p><img src="images/200/image111.png" alt="" /></p></li>
+<li><p>Repeat the operation for the PRODUCTS table; click the <strong>pencil icon</strong> on the products row.</p>
+<p><img src="images/200/image112.png" alt="" /></p></li>
+<li><p>Click the <strong>Before Load</strong> button, then click on the <strong>Browse</strong>… button and select the following file then click <strong>OK</strong>:</p>
+<pre><code>/u01/OPCWorkshop/lab/truncate-products.sql
+</code></pre>
+<p><img src="images/200/image113.png" alt="" /></p></li>
+</ul>
+<h3 id="step-18--export-the-cart"><strong>STEP 18</strong>:  Export the Cart</h3>
+<ul>
+<li><p>Now that the cart is complete, click the <strong>Export Cart</strong> toolbar icon to generate the script of all the elements we inserted in the cart.</p>
+<p><img src="images/200/image114.png" alt="" /></p></li>
+<li><p>Click the <strong>Apply</strong> button to generate script. Note: the selections on this page may be saved and later reused if the cart is regularly used the same way.</p>
+<p><img src="images/200/image115.png" alt="" /></p></li>
+<li><p>If the file already exists, SQL Developer asks you to confirm overwriting it with new content. If show, click the <strong>Yes</strong> button.</p>
+<p><img src="images/200/image116.png" alt="" /></p></li>
+<li><p>Review the contents of the script, paying particular attention to the SQL statements inserted based on the scripts we included.</p>
+<p><img src="images/200/image117.png" alt="" /></p></li>
+<li><p>Now run the script by clicking the <strong>Run Script</strong> icon and selecting the <strong>Alpha&nbsp;Clone -&nbsp;DBCS</strong> connection. Click <strong>OK</strong>.</p>
+<p><img src="images/200/image118.png" alt="" /></p></li>
+<li><p>SQL Developer shows a progress bar while the script runs. Depending on your window layout, you may see the command output scrolling by while the script runs.</p>
+<p><img src="images/200/image119.png" alt="" /></p></li>
+<li><p>When the script is complete, review the script output looking for the execution of both the script elements and the DML statements.</p>
+<p><img src="images/200/image120.png" alt="" /></p></li>
+<li><p>This Lab is completed.</p></li>
+</ul>

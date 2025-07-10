@@ -1,0 +1,74 @@
+<p><img src="images/200/200.JPG" alt="" /><br />
+Updated: December 20, 2017 for BDC Version 17.4.6</p>
+<h1 id="lab-200-getting-to-know-big-data-cloud">Lab 200: Getting to know Big Data Cloud</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This lab will walk you through getting to know <strong>Oracle Big Data Cloud (BDC)</strong>, also known as Oracle Big Data Cloud Service - Compute Edition (BDCS-CE).  </p>
+<p>You will use the Notebook feature of BDC to run a series of tutorials that show you different aspects of functionality.  In this lab, you will learn how to work with the <strong>Zeppelin Notebook</strong>.  You will also be introduced to the New York City Citi Bike dataset that we will use for experimentation.  You will see how we can download some sample data and upload it to the <strong>Oracle Cloud Storage Object Store</strong>.  And finally, another tutorial will show you how to interact with <strong>Hive</strong>.   </p>
+<p>Notebooks are used to explore and visualize data in an iterative and easily documented fashion. Oracle Big Data Cloud Service - Compute Edition uses Apache Zeppelin as its notebook interface and coding environment.  Information about Zeppelin can be found here: <a href="https://zeppelin.apache.org/">https://zeppelin.apache.org/</a> .  </p>
+<p>Please direct comments to: David Bayard (david.bayard@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to import notes into the BDC Notebook</li>
+<li>Learn how to work with the BDC Notebook</li>
+<li>Learn about the Citi Bike dataset and upload it to Oracle CLoud Storage Object Store</li>
+<li>Learn how to work with Hive</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>A running BDC instance and Storage Cloud Object Store instance, created as per the instructions in lab 100.  These instructions included the use of a special "bootstrap.sh" script which sets up the BDC environment for this workshop.</li>
+</ul>
+<h1 id="connect-to-the-bdc-console">Connect to the BDC Console</h1>
+<h2 id="steps">Steps</h2>
+<h3 id="step-1-navigatelogin-to-the-oracle-cloud-my-services-dashboard"><strong>STEP 1</strong>: Navigate/login to the Oracle Cloud My Services Dashboard</h3>
+<ul>
+<li><img src="images/300/snap0011988.jpg" alt="" /> </li>
+</ul>
+<h3 id="step-2-navigate-to-the-my-services-page-for-your-bdc-cluster"><strong>STEP 2</strong>: Navigate to the My Services page for your BDC cluster</h3>
+<ul>
+<li><img src="images/300/snap0011989.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-3-launch-the-big-data-cluster-console"><strong>STEP 3</strong>: Launch the Big Data Cluster Console</h3>
+<ul>
+<li>Launch the Big Data Cluster Console for your BDC cluster.  If this is your first time, you will likely need to allow your browser to accept the self-signed certificate for the web console application.</li>
+<li>You will be asked to provide a username/password.  Use the username and password you defined earlier when you created the BDC instance (the username defaults to bdcsce_admin). 
+<img src="images/300/firstLogin.gif" alt="" /></li>
+</ul>
+<h1 id="learn-the-basics-of-the-bdc-notebook">Learn the basics of the BDC Notebook</h1>
+<h2 id="open-and-run-the-first-tutorial-note-in-the-notebook">Open and run the first Tutorial note in the notebook</h2>
+<h3 id="step-1-click-on-the-notebook-tab"><strong>STEP 1</strong>: Click on the Notebook tab.</h3>
+<p><img src="images/200/snap0012200.jpg" alt="" /> </p>
+<h3 id="step-2-expand-the-journeys-folder--then-expand-the-new-data-lake-folder--then-click-on-the-title-of-the-tutorial-1-notebook-basics-note"><strong>STEP 2</strong>: Expand the Journeys folder.  Then expand the New Data Lake folder.  Then click on the title of the "Tutorial 1 Notebook Basics" note.</h3>
+<p><strong>If you do not see the "Journeys" folder or the "Extras" folder, then the bootstrap.sh script did not work correctly.  If this happened, most likely there was a problem with how you uploaded the bootstrap.sh and/or the exact syntax you specified for the Storage Cloud location when you provisioned your BDC instance.  Sorry, but you will want to delete your instance and re-follow the Lab 100 instructions again paying close attention to the instructions around bootstrap and Storage Cloud.</strong></p>
+<h3 id="step-3-read-and-follow-the-instructions-in-tutorial-1"><strong>STEP 3</strong>: Read and follow the instructions in Tutorial 1</h3>
+<ul>
+<li>The paragraphs of the note are displayed. </li>
+</ul>
+<p>Please walk through the paragraphs one by one. Read through the content of the paragraphs as you get to them. There is much useful information in the paragraphs that is not reproduced into these instructions.
+<img src="images/200/snap0012202.jpg" alt="" /> </p>
+<h1 id="learn-about-the-citi-bike-dataset-and-upload-it-to-object-store">Learn about the Citi Bike Dataset and upload it to Object Store</h1>
+<h2 id="open-and-run-the-second-tutorial-note-in-the-notebook">Open and run the second Tutorial note in the notebook</h2>
+<h3 id="step-1-click-on-the-notebook-tab-expand-the-journeys-folder--then-expand-the-new-data-lake-folder-then-click-on-tutorial-2-to-open-it"><strong>STEP 1</strong>: Click on the Notebook tab. Expand the Journeys folder.  Then expand the New Data Lake folder. Then click on Tutorial 2 to open it.</h3>
+<p><img src="images/200/snap0012195.jpg" alt="" /> </p>
+<h3 id="step-2-read-and-follow-the-instructions-in-tutorial-2"><strong>STEP 2</strong>: Read and follow the instructions in Tutorial 2</h3>
+<ul>
+<li>The paragraphs of the note are displayed. </li>
+</ul>
+<p>Please walk through the paragraphs one by one. Read through the content of the paragraphs as you get to them. There is much useful information in the paragraphs that is not reproduced into these instructions.</p>
+<h1 id="learn-how-to-work-with-hive">Learn how to work with Hive</h1>
+<h2 id="open-and-run-the-third-tutorial-note-in-the-notebook">Open and run the third Tutorial note in the notebook</h2>
+<h3 id="step-1-click-on-the-notebook-tab-expand-the-journeys-folder--then-expand-the-new-data-lake-folder-then-click-on-tutorial-3-to-open-it"><strong>STEP 1</strong>: Click on the Notebook tab. Expand the Journeys folder.  Then expand the New Data Lake folder. Then click on Tutorial 3 to open it.</h3>
+<p><img src="images/200/snap0012196.jpg" alt="" /> </p>
+<h3 id="step-2-read-and-follow-the-instructions-in-tutorial-3"><strong>STEP 2</strong>: Read and follow the instructions in Tutorial 3</h3>
+<ul>
+<li>The paragraphs of the note are displayed. </li>
+</ul>
+<h1 id="what-you-learned">What you Learned</h1>
+<ul>
+<li>Learned how to work with the BDC Notebook</li>
+<li>Learned about the Citi Bike dataset and how to upload it to the Oracle Cloud Storage Object Store</li>
+<li>Learned how to work with Hive</li>
+</ul>
+<h1 id="next-steps">Next Steps</h1>
+<ul>
+<li>Proceed to the next Lab to learn about Spark and Spark SQL</li>
+</ul>

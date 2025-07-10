@@ -1,0 +1,127 @@
+<h1 id="unit-3-creating-a-database-application">Unit 3: Creating a Database Application</h1>
+<p>This exercise includes three hands-on-labs.</p>
+<p><strong>HOL 3-1 Creating a Database Application from Scratch</strong>: In this hands-on-lab, you create a database Web application, Demo Projects. You will extend and improve this application later.</p>
+<p><strong>HOL 3-2 Creating a Database Application from a Spreadsheet</strong>: In this hands-on lab, you use a spreadsheet to create a database Web application, Budget App. You do not extend this application but will use in a later exercise.</p>
+<p><strong>HOL 3-3 Creating a Websheet Application</strong>: In this hands-on lab, you create a Websheet application for the Tech Sales Team daily reporting.</p>
+<h2 id="hol-3-1-creating-a-database-application-from-scratch">HOL 3-1: Creating a Database Application from Scratch</h2>
+<p>In this lab, you create the initial application using the Create Application wizard to define multiple pages. Now that you have created the underlying tables, you are ready to create a desktop application. You will be adding reports and forms for the tables you created.</p>
+<p>Generally, when developing an application you will not know all of the pages required at the beginning. Therefore, you will only generate a select number of pages initially, and then use the wizard to add additional pages as required. However, for this exercise you will generate most of the pages required for the application up front.</p>
+<ol>
+<li><p>Using the Create Application Wizard, create the Demo Projects application. Navigate to <strong>App Builder</strong> and then click <strong>Create</strong>. </br>
+<img src="images/hol03/image3.png" alt="1a" /></p></li>
+<li><p>Click <strong>Desktop</strong>.
+<img src="images/hol03/image4.png" alt="1b" /></p></li>
+<li><p>For Name, enter <strong>Demo Projects</strong>. Accept the remaining defaults and click <strong>Next</strong>.
+<img src="images/hol03/image5.png" alt="1c" /></p></li>
+<li><p>Next, add Report and Form page types for the following tables:</p>
+<ul>
+<li><p>DEMO_PROJ_TEAM_MEMBERS</p></li>
+<li><p>DEMO_PROJECTS</p></li>
+<li><p>DEMO_PROJ_MILESTONES</p></li>
+<li><p>DEMO_PROJ_TASKS</p>
+<p>Click <strong>Add Page</strong>.
+<img src="images/hol03/image6.png" alt="1d" /></p></li></ul>
+<p>For Page Type, select <strong>Report and Form</strong> and then enter/select the following:</p>
+<ul>
+<li><p>Table Name: <strong>DEMO_PROJ_TEAM_MEMBERS</strong></p></li>
+<li><p>Report Type: <strong>Interactive Grid</strong></p></li>
+<li><p>Form Page Mode: <strong>Modal Dialog</strong></p></li></ul>
+<p>Then, click <strong>Add Page</strong>.
+<img src="images/hol03/image7.png" alt="1e" /></p></li>
+<li><p>Add Report and Form page type for the DEMO_PROJECTS table.</p>
+<p>Click <strong>Add Page</strong>. For Page Type, select <strong>Report and Form</strong> and then enter/select the following:</p>
+<ul>
+<li><p>Table Name: <strong>DEMO_PROJECTS</strong></p></li>
+<li><p>Report Type: <strong>Interactive Grid</strong></p></li>
+<li><p>Form Page Mode: <strong>Modal Dialog</strong></p></li></ul>
+<p>Then, click <strong>Add Page</strong>.</p></li>
+<li><p>Add Report and Form page type for the DEMO_PROJ_MILESTONES table.</p>
+<p>Click <strong>Add Page</strong>. For Page Type, select <strong>Report and Form</strong> and then enter/select the following:</p>
+<ul>
+<li><p>Table Name: <strong>DEMO_PROJ_MILESTONES</strong></p></li>
+<li><p>Report Type: <strong>Interactive Grid</strong></p></li>
+<li><p>Form Page Mode: <strong>Modal Dialog</strong></p></li></ul>
+<p>Then, click <strong>Add Page</strong>.</p></li>
+<li><p>Add Report and Form page type for the DEMO_PROJ_TASKS table. The form page mode for DEMO_TASKS should be generated as a normal page rather than a modal dialog.</p>
+<p>Click <strong>Add Page</strong>. For Page Type, select <strong>Report and Form</strong> and then enter/select the following:</p>
+<ul>
+<li><p>Table Name: <strong>DEMO_PROJ_TASKS</strong></p></li>
+<li><p>Report Type: <strong>Interactive Grid</strong></p></li>
+<li><p>Form Page Mode: <strong>Normal</strong></p></li></ul>
+<p>Then, click <strong>Add Page</strong>.</p></li>
+<li><p>Verify that your screen matches the following image. You must create these pages in the order shown to ensure that they correspond with instructions later in this tutorial. If your screen does not look the same as the illustration below, use the X icon to the right of each page to delete problem pages and restart Step 2. Do not delete the Home page.
+<img src="images/hol03/image8.png" alt="1f" /></p>
+<p>Click <strong>Create Application</strong>. On the confirmation page, click <strong>Create Application</strong>.</p></li>
+<li><p>Click <strong>Run Application</strong>. Then, log in using your Workspace username and password.
+<img src="images/hol03/image9.png" alt="1g" /></p></li>
+<li><p>Your screen should look like the following:
+<img src="images/hol03/image10.png" alt="1h" /></p></li>
+</ol>
+<h2 id="hol-3-2-creating-a-database-application-from-a-spreadsheet">HOL 3-2: Creating a Database Application from a Spreadsheet</h2>
+<p>In this lab, you use a spreadsheet to create a database application.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and click <strong>Create</strong>.
+<img src="images/hol03/image11.png" alt="2a" /></p></li>
+<li><p>Select <strong>From a Spreadsheet</strong>.
+<img src="images/hol03/image12.png" alt="2b" /></p></li>
+<li><p>Select <strong>Upload file, comma separate (*.csv) or tab delimited</strong> for Import From, and click <strong>Next</strong>.
+<img src="images/hol03/image13.png" alt="2c" /></p></li>
+<li><p>Click <strong>Choose File</strong>. Navigate to your working directory and double-click <strong>budget.csv</strong>. Then, click <strong>Next</strong>.
+<img src="images/hol03/image14.png" alt="2d" /></p></li>
+<li><p>Enter <strong>Project_Budget</strong> for Table Name. Verify the data types for each of the columns. Make sure that START_DATE and END_DATE columns have DATE Data Type. Click <strong>Next</strong>.
+<img src="images/hol03/image15.png" alt="5e" /></p></li>
+<li><p>For Application Options, accept the defaults (Report Type: Interactive Report) and click <strong>Create Application</strong>.
+<img src="images/hol03/image16.png" alt="2f" /></p></li>
+<li><p>Click <strong>Run Application</strong>.</p>
+<img src="images/hol03/image17.png" alt="2g" /></p></li>
+<li><p>Enter your Workspace Username and Password. Click <strong>Log In</strong>.</p>
+<img src="images/hol03/image18.png" alt="2h" /></p></li>
+<li><p>Review the Budget App application that you just created.
+<img src="images/hol03/image19.png" alt="2i" /></p></li>
+</ol>
+<h2 id="hol-3-3-creating-a-websheet-application">HOL 3-3: Creating a Websheet Application</h2>
+<p>Tech Sales Team management want to track the daily status of the sales executives. You help them create a Websheet application. Once created, managers add pages for daily status and executives simply enter their daily status online by logging in to the Websheet application.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and click <strong>Create</strong>. </p>
+<img src="images/hol03/image20.png" alt="3a" /> </p></li>
+<li><p>Click <strong>Websheet</strong>. </p>
+<img src="images/hol03/image21.png" alt="3b" /> </p></li>
+<li><p>Enter <strong>Team Status</strong> for Name, deselect the <strong>Include Getting Started Guide</strong> checkbox and click <strong>Create Websheet</strong>.
+<img src="images/hol03/image22.png" alt="3c" /></p></li>
+<li><p>Click <strong>Run Websheet</strong>.</p>
+<img src="images/hol03/image23.png" alt="3d" /></p></li>
+<li><p>Enter user Workspace Username and password. Click <strong>Sign In</strong>.</p>
+<img src="images/hol03/image24.png" alt="3e" /></p></li>
+<li><p>You want to rename the Home Page. Click <strong>Edit</strong> and select <strong>Edit Page</strong>.
+<img src="images/hol03/image25.png" alt="3f" /></p></li>
+<li><p>Enter <strong>Tech Sales Team Daily Report</strong> for Name and click <strong>Apply Changes</strong>.</p>
+<img src="images/hol03/image26.png" alt="3g" /></p></li>
+<li><p>You want to add a new section on the page. Under <strong>Control Panel</strong>, click <strong>New Section</strong>.</p>
+<img src="images/hol03/image27.png" alt="3h" /></p></li>
+<li><p>You want to add a text section so that you can enter some instructions. Select <strong>Text</strong> and click <strong>Next</strong>.</p>
+<img src="images/hol03/image28.png" alt="3i" /></p></li>
+<li><p>Select <strong>Create single text section</strong> for Method, enter <strong>Daily Report</strong> for Title. Under Content, click the <strong>Expand Toolbar</strong> button to expand the toolbar. Enter text and click <strong>Create Section</strong>.</p>
+<img src="images/hol03/image29.png" alt="3j" /></p></li>
+<li><p>You want to add a navigation section now. Under Control Panel, click <strong>New Section</strong>.</p>
+<img src="images/hol03/image30.png" alt="3k" /></p></li>
+<li><p>Select <strong>Navigation</strong> and click <strong>Next</strong>.
+<img src="images/hol03/image31.png" alt="3l" /></p></li>
+<li><p>You want to include page navigation to enable navigation across daily status report pages. Select <strong>Page Navigation</strong> for Navigation Type and click <strong>Next</strong>.</p>
+<img src="images/hol03/image32.png" alt="3m" /></p></li>
+<li><p>Enter text for Title and click <strong>Create Section</strong>.
+<img src="images/hol03/image33.png" alt="3n" /></p></li>
+<li><p>Now you see the navigation has been created. You can create status report for each day as a page.
+<img src="images/hol03/image34.png" alt="3o" /> 
+</p>For example, as you add daily status report pages, your home page will look like:
+<img src="images/hol03/image35.png" alt="3s" /></p></li>
+<li><p>You can view your Websheet in Presentation mode. Click the Presentation button to the top right of the Websheet.
+<img src="images/hol03/image36.png" alt="3t1" /></p></li>
+<li><p>You are now on the home page. To navigate to the next section, click the <strong>&lt;</strong> button.
+<img src="images/hol03/image37.png" alt="3t2" /></p></li>
+<li><p>To return to the normal mode, click <strong>X</strong>.
+<img src="images/hol03/image38.png" alt="3t3" /></p>
+<p>You can also expand this application further by adding different sections, data grids. To learn more about Websheets, navigate to <strong>Packaged Apps &gt; All</strong> and install <strong>Sample Websheet AnyCo IT Department</strong>.\
+To perform the next hands-on-lab, you need to switch to the App Builder window.</p></li>
+</ol>
+<hr />
+<p><img src="images/hol03/image39.png" alt="Snap3.jpeg" /></p>

@@ -1,0 +1,128 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="supplimental-guide">Supplimental Guide</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In this supplemental guide we will cover extra features that can be applied to this workshop.</p>
+<p>Please direct comments to: Cam Crockett (cam.crockett@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Connect Eclipse to Developer Cloud Service</li>
+<li>Build Automation for adding Bindings in Applciaiton Cotnainer Cloud Service</li>
+<li>Add Build automation for Container Cloud Service</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Eclipse with Oracle's OEPE plugin: <a href="google.ca">Download Here</a></li>
+</ul>
+<h2 id="connect-eclipse-to-developer-cloud-serivce">Connect Eclipse to Developer Cloud Serivce</h2>
+<p>Connecting via a local IDE to Oracle Developer Cloud Service will be covered in a supplimenal guide</p>
+<h3 id="verify-your-version-of-the-java-jdk">Verify your version of the Java JDK</h3>
+<p>Eclipse requires that you have the <strong>JDK 8</strong> installed.</p>
+<h4 id="jdk-verification-on-a-mac">JDK Verification on a MAC</h4>
+<p><strong>Note</strong>: Eclipse requires that you have the a Java JDK 8 installed. Even if you have a JRE version 8, you still need to verify that you have a JDK 8 installed. </p>
+<ul>
+<li>Open Terminal window and execute the following command: </li>
+</ul>
+<pre><code>ls /Library/java/JavaVirtualMachines/
+</code></pre>
+<ul>
+<li>If you do not have a JDK 1.8 folder, you will need to download the <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK 8</a> from the Oracle Technology Network website, and install.</li>
+</ul>
+<h4 id="jdk-verification-on-windows">JDK Verification on Windows</h4>
+<ul>
+<li>On Windows, open a <strong>cmd</strong> window and enter <code>java -version</code> </li>
+</ul>
+<pre><code>C:\Users\usr&gt;java -version
+java version "1.8.0_121"
+Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
+Java HotSpot(TM) Client VM (build 25.121-b13, mixed mode, sharing)
+</code></pre>
+<ul>
+<li>If JDK/<strong>Java version 1.8</strong> is not installed,  you will need to download a <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK</a> from the Oracle Technology Network website, and install.</li>
+</ul>
+<h3 id="download-and-install-eclipse">Download and Install Eclipse</h3>
+<h4 id="download-eclipse">Download Eclipse</h4>
+<p><strong><em>Note</em></strong>: If you already have Eclipse installed, you will still want to install and use the version documented below, for this version of Eclipse contains the <strong>Oracle Enterprise Pack for Eclipse</strong>, which will be used during the workshop.</p>
+<ul>
+<li><p>Got to the <a href="http://www.oracle.com/technetwork/developer-tools/eclipse/downloads/index.html">Eclipse</a> installation website</p></li>
+<li><p>Accept the <strong>licensing agreement</strong>, and then select the <strong>Neon</strong> version of Eclipse required for your operating system.</p>
+<p><img src="images/prerequisite/Picture1.png" alt="" /></p></li>
+<li><p>Once you’ve downloaded eclipse, extract the zip file and install.</p></li>
+</ul>
+<h4 id="optionally-configure-proxies-if-behind-a-firewall">Optionally Configure Proxies (if behind a firewall)</h4>
+<p>If you are running Eclipse behind a firewall and need to configure the proxy setting, there are several updates to be made. First, you need to ensure that Eclipse’s proxy is set, next you need to update the maven proxy setting, and then finally, you need to ensure that the Oracle Plugin will work with your proxy settings.</p>
+<ul>
+<li><p>To set configure Eclipse’s proxy, open Eclipse and navigate to the Properties menu. Depending on the operating system, this drop down is found either from the <strong>Eclipse > Preferences, or Window > Preferences</strong></p>
+<p><img src="images/prerequisite/Picture2.png" alt="" /></p></li>
+<li><p>From the preferences panel, enter “<strong>proxy</strong>” into the search window, and click on <strong>Network Connections</strong>. Select <strong>Native</strong> for the Active Provider. This setting works well, but it requires that you have the proxy setting configured correctly on the system running Eclipse – e.g. Windows, MAC OS or Linux. Selecting Manual should also work, but some of the plugins require the underlying operating system’s proxy to be configured.</p>
+<p><img src="images/prerequisite/Picture3.png" alt="" /></p></li>
+<li><p>To test that your connection works, select the menu option <strong>Window > Show View > Other</strong></p>
+<p><img src="images/prerequisite/Picture4.png" alt="" /></p></li>
+<li><p>Type “<strong>web</strong>” in the search field, select <strong>Internal Web Browser</strong> and click on <strong>OK</strong></p>
+<p><img src="images/prerequisite/Picture5.png" alt="" /></p></li>
+<li><p>Enter a <strong>URL</strong> into the browser and press <strong>enter</strong> to test your proxy settings.</p>
+<p><img src="images/prerequisite/Picture6.png" alt="" /></p></li>
+</ul>
+<h4 id="optionally-update-the-eclipse--maven-proxy-if-behind-a-firewall">Optionally Update the Eclipse / Maven proxy (if behind a firewall)</h4>
+<ul>
+<li><p>From the <strong>Eclipse > Preference or Window > Preferences</strong> panel, enter <strong>Maven</strong> into the search box. Click on the Maven User Settings. Make note of the directory where the settings.xml file is to be located. In the example below, the Maven User Settings are to be located in the <strong>/home/oracle/.m2</strong> directory</p>
+<p><img src="images/prerequisite/Picture7.png" alt="" /></p></li>
+<li><p>Close Eclipse    </p></li>
+<li><p>If the directory does not exist where the settings.xml file is to be located, <strong>create the directory</strong>. In this example, we will create the <strong>.m2</strong> directory. </p></li>
+<li><p>Also, create the <strong>settings.xml</strong> file, if it does not exist. Add the following to the settings.xml file (NOTE: you will need to use your correct <strong>Host, Port, nonProxyHosts, username and Password settings</strong>):</p></li>
+</ul>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"&gt;
+  &lt;proxies&gt;
+    &lt;proxy&gt;
+      &lt;active&gt;true&lt;/active&gt;
+      &lt;protocol&gt;http&lt;/protocol&gt;
+      &lt;username&gt;proxyuser&lt;/username&gt;
+      &lt;password&gt;proxypass&lt;/password&gt;
+      &lt;host&gt;www-proxy.us.oracle.com&lt;/host&gt;
+      &lt;port&gt;80&lt;/port&gt;
+      &lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;
+    &lt;/proxy&gt;
+    &lt;proxy&gt;
+      &lt;active&gt;true&lt;/active&gt;
+      &lt;protocol&gt;https&lt;/protocol&gt;
+      &lt;username&gt;proxyuser&lt;/username&gt;
+      &lt;password&gt;proxypass&lt;/password&gt;
+      &lt;host&gt;www-proxy.us.oracle.com&lt;/host&gt;
+      &lt;port&gt;80&lt;/port&gt;
+      &lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;
+    &lt;/proxy&gt;
+    &lt;/proxies&gt;
+&lt;/settings&gt;
+</code></pre>
+<ul>
+<li>Reload Eclipse to use the new maven settings</li>
+</ul>
+<h3 id="connect-to-your-cloud-via-oracle-cloud-plugin">Connect to your cloud via Oracle Cloud Plugin</h3>
+<ul>
+<li>Open Eclipse OEPE</li>
+<li>Open the Oracle Cloud view</li>
+<li>Add a new connection</li>
+<li>Enter your cloud service details and credentials</li>
+<li>Traverse the Developer serivces</li>
+</ul>
+<h3 id="import-project-from-developer-cloud-service">Import Project from Developer Cloud Service</h3>
+<ul>
+<li>Open Developer Cloud Service</li>
+<li>Open Code</li>
+<li>Right click on the git repository your want to edit and select Activate</li>
+<li>Right click on activated code and import project</li>
+</ul>
+<blockquote>
+  <p>Note: Only the MySQLMicroservice is an Eclipse project, the rest should be loaded as general projects</p>
+</blockquote>
+<h2 id="create-an-automated-build-for-adding-serivce-bindings">Create an Automated build for Adding serivce bindings</h2>
+<p><em>coming soon</em></p>
+<h2 id="create-an-automated-docker-build-for-your-currencymicroservice-from-developer-cloudservice">Create an Automated docker build for your CurrencyMicroservice from Developer CloudService</h2>
+<p><em>coming soon</em></p>
+<h2 id="automate-mysql-provisioning">Automate MySQL Provisioning</h2>
+<p><em>coming soon</em></p>
+<h2 id="automate-mysql-schema-migrations-using-flywaydb">Automate MySQL Schema Migrations using FlywayDB</h2>
+<p><em>coming soon</em></p>
+<h2 id="add-in-apm-tooling-with-oracle-management-cloud">Add in APM Tooling with Oracle Management Cloud</h2>
+<p><em>coming soon</em></p>

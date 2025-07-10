@@ -1,0 +1,224 @@
+<h2 id="on-premise-environment-needed-for-some-of-the-labs">On premise environment needed for some of the labs</h2>
+<p>There are two options how you can prepare that environment:</p>
+<ul>
+<li>By importing distributed by Oracle Virtual Box image. Contact your local oracle representative or Maciej.Gruszka@oracle.com</li>
+<li>By creation your own nevironment</li>
+</ul>
+<h4 id="how-to-create-own-environment">How to create own environment</h4>
+<p>You need to install the following software:</p>
+<table>
+<thead>
+<tr>
+<th>Software</th>
+<th>Expected path</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JDK7</td>
+<td>/usr/java/jdk1.7.0_XX/</td>
+<td>We used JDK7u79 so the path in the VBox was /usr/java/jdk1.7.0_79/</td>
+</tr>
+<tr>
+<td>JDK8</td>
+<td>/usr/java/jdk1.8.0_XX/</td>
+<td>We used JDK8u60 so the path in the VBox was /usr/java/jdk1.8.0_60/</td>
+</tr>
+<tr>
+<td>Maven</td>
+<td>/u01/wins/wls1221/oracle<em>common/modules/org.apache.maven</em>3.2.5</td>
+<td>Can be other location. Make sure it is added to PATH.</td>
+</tr>
+<tr>
+<td>Local clone of remote repository</td>
+<td>/u01/content/cloud-native-devops-workshop</td>
+<td></td>
+</tr>
+<tr>
+<td>Weblogic Server 10.3.6</td>
+<td>/u01/wins/wls1036/</td>
+<td>We used WLS 10.3.6.0.0</td>
+</tr>
+<tr>
+<td>WebLogic Server 12.2.1</td>
+<td>/u01/wins/wls1221/</td>
+<td>We used WLS 12.2.1.0.0</td>
+</tr>
+<tr>
+<td>Domain To Partition  Conversion Tool</td>
+<td>/u01/dpct</td>
+<td></td>
+</tr>
+<tr>
+<td>Oracle DataBase 12c</td>
+<td>/u01/app/oracle/product/12.1.0/dbhome_1/</td>
+<td>The PDB name: <strong>PDBORCL</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="modifying-environmentproperties-file">Modifying environment.properties file</h4>
+<p>To operate all scripts agains your own Oracle Public Cloud environment you need to set up file <code>environment.properties</code> in the <code>/u01/content/cloud-native-devops-workshop/cloud-utils</code> (YOUR<em>LOCAL</em>GIT<em>REPO</em>CLONE/cloud-utils) folder.
+We have prepared two samples <code>environment.properties.us2</code> and <code>environment.properties.emea2</code> that you could customize and copy to <code>environment.properties</code> file.</p>
+<p>The table below describes the meaning of variables stored in that file:</p>
+<table>
+<thead>
+<tr>
+<th>Property name</th>
+<th>Property Value</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Account properties</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>opc.base.url</td>
+<td>jcs.emea.oraclecloud.com</td>
+<td>For <strong>EMEA</strong> datacenter. For <strong>US</strong> use: jaas.oraclecloud.com</td>
+</tr>
+<tr>
+<td>opc.identity.domain</td>
+<td>YOUR IDENTITY DOMAIN</td>
+<td>Identity domain.</td>
+</tr>
+<tr>
+<td>opc.username</td>
+<td>YOUR USERNAME</td>
+<td>Cloud username</td>
+</tr>
+<tr>
+<td>opc.password</td>
+<td>YOUR PASSWORD</td>
+<td>Cloud password</td>
+</tr>
+<tr>
+<td><strong>Storage and container properties</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>opc.storage.generic.url</td>
+<td>storage.oraclecloud.com</td>
+<td>Generic storage URL to determine your storage REST endpoint</td>
+</tr>
+<tr>
+<td>opc.storage.container</td>
+<td>YOUR STORAGE CONTAINER NAME</td>
+<td>Container name only.</td>
+</tr>
+<tr>
+<td><strong>SSH key properties</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ssh.user</td>
+<td>opc</td>
+<td></td>
+</tr>
+<tr>
+<td>ssh.public.key</td>
+<td></td>
+<td>Copy the content of your <strong>publicKey</strong> file generated during Database Cloud Service creation.</td>
+</tr>
+<tr>
+<td>ssh.passphrase</td>
+<td></td>
+<td>The passphrase belongs to privateKey. Leave empty if there is no passphrase.</td>
+</tr>
+<tr>
+<td>ssh.privatekey</td>
+<td></td>
+<td>The name of your file contains private key generated during Database Cloud Service creation. Make sure that the file is in the <strong>YOUR<em>LOCAL</em>GIT<em>REPO</em>CLONE/cloud-utils</strong> (in case provided VBox it is: /u01/content/cloud-native-devops-workshop/cloud-utils) folder. Most likely its name: <strong>privateKey</strong></td>
+</tr>
+<tr>
+<td><strong>Java Cloud Service properties</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>jcs.base.url</td>
+<td>jaas.oraclecloud.com</td>
+<td></td>
+</tr>
+<tr>
+<td>jcs.rest.url</td>
+<td>/paas/service/jcs/api/v1.1/instances/</td>
+<td></td>
+</tr>
+<tr>
+<td>jcs.instance.1</td>
+<td>YOUR JCS INSTANCE NAME</td>
+<td>Name of the Java Cloud Service instance.</td>
+</tr>
+<tr>
+<td>jcs.instance.admin.user.1</td>
+<td>USER NAME FOR WEBLOGIC ADMIN</td>
+<td>Defined during JCS creation. Most likely <strong>weblogic</strong></td>
+</tr>
+<tr>
+<td>jcs.instance.admin.password.1</td>
+<td>PASSWORD NAME FOR WEBLOGIC ADMIN</td>
+<td>Defined during JCS creation.</td>
+</tr>
+<tr>
+<td><strong>Database Cloud Service properties</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>dbcs.base.url</td>
+<td>dbcs.emea.oraclecloud.com</td>
+<td>For EMEA. For US datacenter: dbaas.oraclecloud.com</td>
+</tr>
+<tr>
+<td>dbcs.rest.url</td>
+<td>/paas/service/dbcs/api/v1.1/instances/</td>
+<td></td>
+</tr>
+<tr>
+<td>dbcs.instance.1</td>
+<td>YOUR DBCS INSTANCE NAME</td>
+<td>Name of the Database Cloud Service instance.</td>
+</tr>
+<tr>
+<td>dbcs.instance.sid.1</td>
+<td>ORCL</td>
+<td></td>
+</tr>
+<tr>
+<td>dbcs.instance.pdb1.1</td>
+<td>PDB1</td>
+<td>!If you have changed the default (<strong>PDB1</strong>) during Database Cloud Service creation change to that.</td>
+</tr>
+<tr>
+<td>dbcs.dba.name</td>
+<td>USER NAME FOR DBA</td>
+<td>Defined during DBCS creation. Most likely it is <strong>sys</strong>.</td>
+</tr>
+<tr>
+<td>dbcs.dba.password</td>
+<td>PASSWORD FOR DBA</td>
+<td>Defined during DBCS creation.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="creation-of-the-storage-dbcs-and-jcs">Creation of the Storage DBCS and JCS</h4>
+<p>If your OPC account is just fresh created account - no storage, no DBCS instance, no JCS instance - then modify in the <code>environment.properties</code> only three variables:</p>
+<ul>
+<li>opc.identity.domain</li>
+<li>opc.username</li>
+<li>opc.password</li>
+</ul>
+<p>and first execute the following scripts:</p>
+<pre><code>$ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/cloud.utils
+$ [oracle@localhost cloud.utils]$ mvn install -Dgoal=generate-ssh-keypair
+  (...) 
+$ [oracle@localhost cloud.utils]$ mvn install -Dgoal=jcs-create-auto
+  (...)
+</code></pre>
+<p>It would create for you all needed instances on Java Cloud and Database Cloud Service. Please note the private key (required to access to the service's VM) generated in the <code>YOUR_LOCAL_GIT_REPO_CLONE/cloud-utils</code> folder and named <code>pk.openssh</code> by default. The generated public key pair can be found in your <code>environment.properties</code> file at the <code>ssh.public.key</code> property.</p>

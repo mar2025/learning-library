@@ -1,0 +1,216 @@
+<h2 id="commonimagescustomerlogopng"><img src="../../common/images/customer.logo.png" alt="" /></h2>
+<h1 id="oracle-cloud-native-devops-workshop">ORACLE Cloud-Native DevOps workshop</h1>
+<h2 id="build-nodejs-mongodb-container-packaged-application-using-wercker-and-deploy-to-oracle-container-cloud-service">Build Node.js-MongoDB container packaged application using Wercker and deploy to Oracle Container Cloud Service</h2>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p><strong>Wercker</strong> is a Docker-Native CI/CD  Automation platform for Kubernetes &amp; Microservice Deployments. Wercker is integrated with Docker containers, which package up application code and can be easily moved from server to server. Each build artifact can be a Docker container. The user can take the container from the Docker Hub or his private registry and build the code before shipping it. Its SaaS platform enables developers to test and deploy code often. They can push software updates incrementally as they are ready, rather than in bundled dumps. It makes it easier for coders to practice continuous integration, a software engineering practice in which each change a developer makes to the codebase is constantly tested in the process so that software doesn’t break when it goes live.</p>
+<p><strong>Oracle Container Cloud Service</strong> provides an easy and quick way to create an enterprise-grade container infrastructure. It delivers comprehensive tooling to compose, deploy, orchestrate and manage Docker container-based applications on the Oracle Public Cloud. It is designed to provision a ready to run containerized infrastructure quickly, that can be used as a test infrastructure, with a limited lifespan, or operated as a production environment for long running container applications.</p>
+<p>Oracle Container Cloud Service provides feature called stack. The stack comprises all of the necessary configuration for running a set of services in a coordinated way, managed as a single entity, plus default deployment options. Note that stacks themselves are neither containers nor images running in containers, but rather are high-level configuration objects that you can create, deploy, and manage using Oracle Container Cloud Service.</p>
+<p>In this example, stack contains a MongoDB container and the containerized sample Node.js application.</p>
+<p><strong>Architecture</strong>
+<img src="images/wercker.occs.png" alt="" /></p>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>create Wercker application (CI/CD) to build, package and push Node.js sample application to Docker public repository</li>
+<li>create Oracle Container Cloud Service based on containerized Node.js sample application</li>
+<li>create Oracle Container Cloud Stack which contains the Node.js sample application and MongoDB services.</li>
+<li>deploy stack to Oracle Container Cloud Service</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="https://github.com">Github</a> account</li>
+<li><a href="https://cloud.oracle.com">Oracle Public Cloud Service</a> account including Container Cloud Service</li>
+<li><a href="https://cloud.docker.com/">Docker</a> account to have Docker registry.</li>
+</ul>
+<hr />
+<h4 id="create-oracle-container-cloud-service-instance">Create Oracle Container Cloud Service instance</h4>
+<p>If you already have Container Cloud Service instance you can skip this step.</p>
+<p>First create Oracle Container Cloud Service. Sign in to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. Select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. Find the Container tile and click the hamburger icon. In the dropdown menu click <strong>Open Service Console</strong>.</p>
+<p><img src="images/01.dashboard.png" alt="" /></p>
+<p>If it is the first time you launch this console then click <strong>Go To Console</strong> button on the Wizard page. Otherwise click immediately the <strong>Create Service</strong> button.</p>
+<p><img src="images/02.create.occs.png" alt="" /></p>
+<p>On the details page configure the service.</p>
+<ul>
+<li><strong>Service Name</strong>: name of the instance. E.g. <em>testOCCS</em></li>
+<li><strong>Description</strong>: short description of the service. Can be anything which describes the purpose of this service.</li>
+<li><strong>SSH Public Key</strong>: to connect to the worker and master nodes you need to define your public key of your SSH keypair. Press the <strong>Edit</strong> button. In case if you already have one and you want to use that select the public key file or copy of that content into Key Value textfield. Otherwise and for test purposes I recommend to generate a new one. Select <strong>Create a New Key</strong> option and click <strong>Enter</strong>. A popup dialog will open which enables to download the newly generated key pair. It is important to have this key pair for later usage of this service. In case if you lost or forget where you saved the key pair you can <a href="https://docs.oracle.com/cloud/latest/computecs_common/OCSUG/GUID-65AA23D4-5F57-4EF6-9704-C8E16932C0AD.htm#OCSUG233">add new one</a> using the My Services Dashboard.
+<img src="images/04.ssh.key.png" alt="" /></li>
+<li><strong>Metering Frequency</strong>: based on your subscription. Leave the default.</li>
+<li><strong>Admin Username</strong>: administrator's username of Container Cloud Service's console. You can leave the default.</li>
+<li><strong>Admin Password</strong>: administrator's password. Please note the password what you choose.</li>
+<li><strong>Worker node Compute Shape</strong>: the capacity of the service. For this sample the minimum is more than enough.</li>
+<li><strong>Number of worker nodes</strong>: The number of worker nodes which run the Docker containers. For this sample the default 1 node is enough. One node can execute more containers even if that share one OCPU only. Every worker node has a public IP address assigned what makes the running application publicly available.</li>
+<li><strong>Worker node data volume size (GB)</strong>: Leave the default.</li>
+</ul>
+<p>Once all the details are configured click <strong>Next</strong>.</p>
+<p><img src="images/03.occs.details.png" alt="" /></p>
+<p>Check again the configuration and submit the instance provision request by clicking <strong>Next</strong>.</p>
+<p><img src="images/05.occs.confirm.png" alt="" /></p>
+<p>While the Container Cloud Service provisioning completes move forward to sign up Docker and create Wercker continous integration setup. </p>
+<h4 id="sign-up-to-docker">Sign up to Docker</h4>
+<p>If you already have Docker account you can skip this step.</p>
+<p>Go to <a href="https://cloud.docker.com/">https://cloud.docker.com/</a> than choose your <em>Docker ID</em> enter your email address and a desired password. Click <strong>Sign up</strong>.</p>
+<p><img src="images/06.docker.signup.png" alt="" /></p>
+<p>Now check your inbox and you should get a similar email. Click the <strong>Confirm Your Email</strong> button.</p>
+<p><img src="images/07.docker.activation.png" alt="" /></p>
+<p>You can login now using your new Docker account.</p>
+<h4 id="fork-nodejs-sample-sources-into-your-github-repository">Fork Node.js sample sources into your github repository</h4>
+<p>First make sure you are signed in to <a href="https://github.com">https://github.com</a> using your account and than go to <a href="https://github.com/nagypeter/nodejs-mongodb-crud">https://github.com/nagypeter/nodejs-mongodb-crud</a>. In case you don't have Github account then please <a href="https://github.com/join?source=header-home">sign up</a>.</p>
+<p>Now click <strong>Fork</strong>.</p>
+<p><img src="images/08.fork.git.repo.png" alt="" /></p>
+<p>When the fork is done move to the next step.</p>
+<h4 id="sign-up-to-wercker-using-your-github-account">Sign up to Wercker using your Github account</h4>
+<p>When the import is done go to <a href="https://app.wercker.com">https://app.wercker.com</a> and sign up using your github account. Click the <strong>LOG IN WITH GITHUB</strong> button.</p>
+<p><img src="images/10.app.wercker.signup.png" alt="alt text" /></p>
+<p>If you use the same browser where you are already signed in to github then it will go directly to <em>Authorize application</em> github page. If not then enter your github's credentials to sign in to github. Click the <strong>Authorize application</strong> button to accept Wercker's request. You can revoke Wercker's authorization request anytime using your github's profile settings.</p>
+<p><img src="images/11.authorize.wercker.in.github.png" alt="alt text" /></p>
+<p>After the successfull authorization you will be redirected to <em>https://app.wercker.com</em>.</p>
+<h4 id="create-wercker-application-to-build-docker-container-including-nodejs-sample-application">Create Wercker Application to build Docker container including Node.js sample application</h4>
+<p>Now here is the time to create your Wercker application. Wercker acts as continuous integration tool which will produce and push a complete Docker container including the Node.js sample application bits.</p>
+<p>Go back to the Wercker's welcome page and click <strong>Create your first application</strong> button or the <strong>+Create</strong> dropdown list and select <em>Application</em>.</p>
+<p><img src="images/12.create.application.png" alt="alt text" /></p>
+<p>First select the repository you want to use as sources. By default it will show your Github provider and the available repositories. Select <em>node-mongodb-crud</em> and click <strong>Use selected repo</strong>.</p>
+<p><img src="images/13.select.repo.png" alt="alt text" /></p>
+<p>In case of private repositories you should define the access method. Since the the sample repository created as public you can leave the default checkout method. Click <strong>Next step</strong>.</p>
+<p><img src="images/14.wercker.application.details.2.png" alt="alt text" /></p>
+<p>Finally you can choose whether your application is public or not. We recommend to leave default which means the application will be private. Click <strong>Finish</strong> to create your application.</p>
+<p><img src="images/15.wercker.application.details.3.png" alt="alt text" /></p>
+<p>The next page offers to generate specific wercker.yml based on the application's language. This sample application already has one so click the <strong>trigger a build now</strong> link.</p>
+<p><img src="images/16.wercker.start.first.build.png" alt="alt text" /></p>
+<p>Now the default <em>build</em> pipeline starts to run which is a simple <em>npm install</em> -defined in <em>wercker.yml</em>- to get necessary node modules for Node.js sample application. The result should be successfull. You can open each step (on the right side) to get more details.</p>
+<p><img src="images/17.wercker.first.build.png" alt="alt text" /></p>
+<p>Before you move forward please inspect the <em>wercker.yml</em>. The source is available under your github repository. Open a new browser (tab) and go directly to <em>https://github.com/<YOUR_GITHUB_USERNAME>/nodejs-mongodb-crud/blob/master/wercker.yml</em>. The configuration should be the same:</p>
+<pre><code>box: node:6.10
+build:
+  steps:
+    # A step that executes `npm install` command
+    - npm-install
+push:
+  steps:
+    # Push to public docker repo
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag:  $DOCKER_TAG
+        repository: $DOCKER_REPOSITORY
+        registry: https://index.docker.io/v1/
+        cmd: node pipeline/source/app.js
+</code></pre>
+<p>The <em>wercker.yml</em> defines the configuration of your automation pipelines with a collection of Steps that you wish to execute.
+In your <em>wercker.yml</em> you can specify any pipeline you like. There is one special pipeline called <code>dev</code> which will only be executed when running it with the CLI using the wercker dev command. Examples of pipeline names: <em>build-base-container</em>, <em>build</em>, <em>push-to-registry</em>, etc.</p>
+<p>A pipeline can have its own base box (Docker container), like in this example the <em>node:6.10</em> official Node Docker container. You can use different base boxes per pipeline.</p>
+<p>As you can see in this configuration we have the default pipeline <em>build</em> which executes the <em>npm-install</em> build and a <em>push</em> step which is not a reserved pipeline. You will create <em>push</em> pipeline in the next step. This is why you couldn't see the Docker push step in the first build.</p>
+<p>Please also note the environment variables usage. After the <em>push</em> pipeline you will create these variables and set the values.</p>
+<p>Now switch to <strong>Workflows</strong> tab.</p>
+<p><img src="images/18.workflow.add.pipeline.png" alt="alt text" /></p>
+<p>As mentioned upon creating a project in Wercker, it creates a <em>build</em> Workflow with a Git hook which executes a build pipeline. This means whenever you push changes into your github repository then a new build will be triggered. Now add a new pipeline what will do the Docker container image push to your Docker registry. Click <em>Add new pipeline</em>.</p>
+<ul>
+<li><strong>Name</strong>: <em>push-docker</em> (but can be anything else)</li>
+<li><strong>YML Pipeline name</strong>: it has to be <em>push</em>, because we already defined this pipeline in  the <em>wercker.yml</em>.</li>
+<li><strong>Hook type</strong>: leave default to ignore Git push. You will add this pipeline after build what has already this configuration.</li>
+</ul>
+<p>Finally click <strong>Create</strong>.</p>
+<p><img src="images/19.pipeline.details.png" alt="alt text" /></p>
+<p>On the detail page of the new <em>push-docker</em> pipeline you can immediately add the required environment variables.</p>
+<ul>
+<li><strong>DOCKER_USERNAME</strong> = your Docker username</li>
+<li><strong>DOCKER_PASSWORD</strong> = your Docker password</li>
+<li><strong>DOCKER_TAG</strong> = latest</li>
+<li><strong>DOCKER_REPOSITORY</strong> = <YOUR_DOCKER_USERNAME>/nodejs-mongodb-crud</li>
+</ul>
+<p>When you need to add new variable click <strong>Add</strong> button which saves the current row and add a new one. You can use the <strong>Protected</strong> tick box to store safely your value e.g. password.</p>
+<p><img src="images/20.pipeline.parameters.png" alt="alt text" /></p>
+<p>To go back workflow editor click <strong>Workflows</strong> tab again and start to edit your workflow. Click the blue plus icon after the <em>build</em> pipeline to add the previosly created <em>push-docker</em> pipeline. Leave the default * for branches and select the <em>push-docker</em> pipeline from the <strong>Execute pipeline</strong> dropdown list. Click <strong>Add</strong>.</p>
+<p><img src="images/21.connect.pipelines.png" alt="alt text" /></p>
+<p>To execute the workflow go back to <strong>Runs</strong> and select the last successful build.</p>
+<p><img src="images/22.select.build.png" alt="alt text" /></p>
+<p>Click the <strong>Action</strong> button and select the <strong>Execute this pipeline again</strong> menu item.</p>
+<p><img src="images/23.execute.again.png" alt="alt text" /></p>
+<p>Enter a proper message to easily identify later the reason of the run and Push the <strong>Execute pipeline</strong> button.</p>
+<p><img src="images/24.execute.again.png" alt="alt text" /></p>
+<p>Click Runs tab again and verify the successful run of the <em>build</em> and <em>push-docker</em> pipelines.</p>
+<p><img src="images/25.successful.run.png" alt="alt text" /></p>
+<p>When the build and push-docker is done go back to the browser (tab) where you logged in to <a href="https://cloud.docker.com">https://cloud.docker.com</a>. Click on <strong>Repositories</strong>.</p>
+<p><img src="images/26.docker.repositories.png" alt="alt text" /></p>
+<p>Now you should see a new image called <YOUR_DOCKER_USERNAME>/nodejs-mongodb-crud. This image based on the box defined in <em>wercker.yml</em> but Wercker baked the Node.js sample application into this image during the workflow. Which results a test/production/etc. ready container.</p>
+<p><img src="images/27.docker.repo.image.png" alt="alt text" /></p>
+<p>In the next step you will deploy your new container on Oracle Container Cloud Service using  this Docker repository.</p>
+<h4 id="create-oracle-container-cloud-service-based-on-nodejs-sample-application-container">Create Oracle Container Cloud Service based on Node.js sample application container</h4>
+<p>Find your browser (tab) where you created Container Cloud Service at the beginning of this lab. If you hit the timeout or lost the browser (tab) then sign in again to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. Select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. Find the Container tile and click the hamburger icon. In the dropdown menu click <strong>Open Service Console</strong>.</p>
+<p><img src="images/01.dashboard.png" alt="" /></p>
+<p>Now you have to see your <em>testOCCS</em> (or different if you specified other name) Container Cloud Service instance ready. Click on the hamburger icon on the left and select <strong>Container Console</strong> from the dropdown menu.</p>
+<p><img src="images/30.occs.open.admin.console.png" alt="alt text" /></p>
+<p>Due to the reason that the certification hasn't been setup you will get a security warning. Ignore that and allow to open the page. Enter the Administrator's credential for your Container Cloud Service. If you followed the guide the username has to be <em>admin</em>. Click <strong>Login</strong>.</p>
+<p><img src="images/31.occs.console.login.png" alt="alt text" /></p>
+<p>First you need to define your new Service. The new service will comprise all of the necessary configuration for running your Docker container on a host, plus default deployment options. Click <strong>Services</strong> on the left navigation menu than click <strong>New Service</strong> button.</p>
+<p><img src="images/32.occs.create.service.png" alt="alt text" /></p>
+<p>Enter the following parameters to define your new service:</p>
+<ul>
+<li><strong>Service Name</strong>: <em>employee-nodejs</em></li>
+<li><strong>Service Description</strong>: anything to describe your service.</li>
+<li><strong>Image</strong>: <em>YOUR_DOCKER_USERNAME/nodejs-mongodb-crud</em> (the name of your Docker image stored in your registry) see previos step when checked your Docker registry.</li>
+<li><strong>Ports</strong>: first opt in the Ports on the right side. Then it will populate Ports attribute list.</li>
+</ul>
+<p><img src="images/33.service.details.png" alt="alt text" /></p>
+<p>When <em>Ports</em> <strong>+Add</strong> button appears click to define port mapping. This port mapping enables internal docker container's port redirection to different port on the host. Node.js sample application configured to listen on 3000 what you will map to host's 8091 port.</p>
+<ul>
+<li><strong>Host Port</strong>: 8091</li>
+<li><strong>Container Port</strong>: 3000</li>
+<li><strong>Protocol</strong>: TCP</li>
+</ul>
+<p>Click <strong>Save</strong>.</p>
+<p><img src="images/34.service.ports.png" alt="alt text" /></p>
+<p>Click <strong>Save</strong> on service details page to save the service.</p>
+<p><img src="images/35.service.save.png" alt="alt text" /></p>
+<h4 id="create-oracle-container-cloud-service-stack-to-manage-nodejs-sample-and-mongodb-services-containers-as-a-single-application">Create Oracle Container Cloud Service Stack to manage Node.js sample and MongoDB services (containers) as a single application</h4>
+<p>Now Wercker built Node.js sample application container available as service. MongoDB by default created so you can create your stack. Click the <strong>Stack</strong> menu on the left side and than click <strong>New Stack</strong> button.</p>
+<p><img src="images/36.create.stack.png" alt="alt text" /></p>
+<p>Enter the Stack name: <em>employee-nodejs-mongodb</em>. Than drag and drop <strong>MongoDB</strong> service to the grid area.</p>
+<p><img src="images/37.drag.and.drop.mongodb.png" alt="alt text" /></p>
+<p>The MongoDB service configuration page opens. Leave the default settings and click <strong>Save</strong>.</p>
+<p><img src="images/38.mongodb.configuration.png" alt="alt text" /></p>
+<p>Find the <em>employee-nodejs</em> service and drag and drop to the grid area. The service configuration page opens. Check in the <strong>Links</strong> option. Scroll down in the Builder area and click the <strong>+Add</strong> button next to the <em>Links</em>.</p>
+<p><img src="images/39.nodejs.configuration.png" alt="alt text" /></p>
+<p>Here you need to configure the (network) link between the containers. <em>Service</em> refers to the defined Container Cloud Service which is MongoDB if you haven't changed the MongoDB configuration in the previous step. Finally <em>Alias</em> is the host name of the service. This is what needed to configure MongoDB driver to access MongoDB instance from Node.js sample application service. Click <strong>Save</strong>.</p>
+<p><img src="images/40.links.png" alt="alt text" /></p>
+<p>Click <strong>Save</strong> to update <em>employee-nodejs</em> configuration for this stack.</p>
+<p><img src="images/41.save.nodejs.config.png" alt="alt text" /></p>
+<p>Check the diagram and click Save to create <em>employee-nodejs-mongodb</em> stack.</p>
+<p><img src="images/42.stack.complete.png" alt="alt text" /></p>
+<h4 id="deploy-oracle-container-cloud-stack-and-test-the-employee-nodejs-sample-application">Deploy Oracle Container Cloud Stack and test the Employee Node.js sample application</h4>
+<p>Stack is ready, so it is time to deploy and test the Employee Node.js sample application. Find the newly created <em>employee-nodejs-mongodb</em> stack and click the green <strong>Deploy</strong> button.</p>
+<p><img src="images/43.deploy.stack.png" alt="alt text" /></p>
+<p>Leave the default configuration for orchestration and click <strong>Deploy</strong>.</p>
+<p><img src="images/44.deploy.configuration.png" alt="alt text" /></p>
+<p>The stack deployment detail page opens. Wait until the stack is up and running. Everything should be green except the red Stop button. If you carefully watch the startup process you can see when the Oracle Container Cloud Service pulls the <em>johnlsmith/nodejs-mongodb-crud</em> image from Docker hub.</p>
+<p>To test the application you need to get the host environment's public IP address. Click on the Hostname where the <em>employee-nodejs</em> service deployed.</p>
+<p><img src="images/45.stack.is.up.png" alt="alt text" /></p>
+<p>Find and note the public_ip address attribute.</p>
+<p><img src="images/46.host.ip.png" alt="alt text" /></p>
+<p>Open a new browser (tab) and enter or copy the host's public IP address and append the configured 8091 port. For example: <code>141.144.137.89:8091</code> You have to get the following webpage below. To test MongoDB click <strong>Add New Employee</strong> button.</p>
+<p><img src="images/47.application.add.employee.png" alt="alt text" /></p>
+<p>Enter a name, title and <strong>Save</strong>.</p>
+<p><img src="images/48.employee.details.png" alt="alt text" /></p>
+<h4 id="change-the-employee-nodejs-sample-application">Change the Employee Node.js sample application</h4>
+<p>To modify something small on the application's home page open a new browser (tab) and edit for example <em>https://github.com/<YOUR_GITHUB_USERNAME>/nodejs-mongodb-crud/blob/master/views/index.jade</em> file.Click the Edit icon.</p>
+<p><img src="images/49.index.jade.png" alt="alt text" /></p>
+<p>Modify the following part:</p>
+<pre><code>h1 &lt;strong&gt;Node.js + MongoDB app&lt;/strong&gt;
+</code></pre>
+<p>Include your name for example:</p>
+<pre><code>h1 &lt;strong&gt;Node.js + MongoDB app running on Oracle Container Cloud&lt;/strong&gt;
+</code></pre>
+<p>Enter a commit message and click <strong>Commit changes</strong> button.</p>
+<p><img src="images/50.index.jade.commit.png" alt="alt text" /></p>
+<p>Find your browser (tab) where Wercker is already opened and check the progress of the build started by the commit.</p>
+<p><img src="images/51.wercker.progress.png" alt="alt text" /></p>
+<p>When the build and push are done go back to the Oracle Container Cloud Services console and select the Containers item on the left side menu. Find the container which <strong>name</strong> contains <em>employee-nodejs</em> string. <strong>Stop</strong> that container.</p>
+<p><img src="images/52.occs.containers.stop.png" alt="alt text" /></p>
+<p>When the container has stopped DO NOT remove. </p>
+<p><img src="images/53.occs.containers.stopped.png" alt="alt text" /></p>
+<p>The default configuration of the stack will remove and than immediately deploy again the missing service. Click on the Deployment which name contains <em>employee-nodejs-mongodb</em>. (If in the meantime <em>employee-nodejs</em> service appears again you can use it's deployment link too since these services are part of the same stack.)</p>
+<p><img src="images/54.deployment.details.png" alt="alt text" /></p>
+<p>It navigates to the <em>employee-nodejs-mongodb</em> stack deployment details page. If you enough quick you can see when Oracle Container Cloud Service pull the new version of the image from Docker hub. Wait until the service is up and running and everything is green on the detail page.</p>
+<p><img src="images/55.deplyment.details.png" alt="alt text" /></p>
+<p>Change the browser (tab) where the Employee sample application was opened and reload the page and check the title changes.</p>
+<p><img src="images/56.application.changed.png" alt="alt text" /></p>
+<p>Please note the data still available because MongoDB service runs in a different container.</p>

@@ -1,0 +1,66 @@
+<p><img src="images/500/500.JPG" alt="" /><br />
+Updated: December 20, 2017 for BDC Version 17.4.6</p>
+<h1 id="lab-event-hub-cloud-service-with-big-data-cloud">Lab: Event Hub Cloud Service with Big Data Cloud</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you will learn how to stream data into <strong>Oracle Event Hub Cloud Service (OEHCS)</strong> and process it with <strong>Spark Streaming</strong> on <strong>Oracle Big Data Cloud</strong>.  </p>
+<p>Oracle Event Hub Cloud Service combines the open source technology Apache Kafka with unique innovations from Oracle to deliver a complete platform for working with streaming data.  Documentation for OEHCS can be found here: <a href="http://docs.oracle.com/cloud/latest/event-hub-cloud/index.html">http://docs.oracle.com/cloud/latest/event-hub-cloud/index.html</a>.  General info about Apache Kafka can be found here: <a href="https://kafka.apache.org/">https://kafka.apache.org/</a>.</p>
+<p>The integration between OEHCS and BDC leverages Spark Streaming to easily process the live streams of data from OEHCS.  In particular, while Spark Streaming can work with multiple types of sources, we will be using Spark Streaming's support for Kafka as OEHCS leverages Kafka internally.  Documentation about Spark Streaming can be found here: <a href="http://spark.apache.org/docs/2.1.0/streaming-programming-guide.html">http://spark.apache.org/docs/2.1.0/streaming-programming-guide.html</a>.  And the integration with Kafka here: <a href="https://spark.apache.org/docs/2.1.0/streaming-kafka-integration.html">https://spark.apache.org/docs/2.1.0/streaming-kafka-integration.html</a></p>
+<p>Please direct comments to: David Bayard (david.bayard@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to setup OEHCS to communicate with BDC</li>
+<li>Learn how to create a topic in OEHCS</li>
+<li>Learn how to write a producer to stream data to OEHCS</li>
+<li>Learn how to consume data from OEHCS with Spark Streaming</li>
+<li>Learn how to use Spark SQL with streaming data</li>
+<li>Learn how to write streaming data to the Object Store</li>
+<li>Learn how to use streaming data to update a Live Map</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>A running BDC instance and Storage Cloud Object Store instance, created as per the instructions in Lab 100.  These instructions included the use of a special "bootstrap.sh" script which setup the BDC environment for this workshop.</li>
+<li>You completed Lab 200 Getting to know BDC, Lab 300 More BDC, and Lab 400 OEHCS Provisioning</li>
+</ul>
+<h1 id="connect-to-the-bdc-console">Connect to the BDC Console</h1>
+<h2 id="steps">Steps</h2>
+<h3 id="step-1-navigatelogin-to-the-oracle-cloud-my-services-dashboard"><strong>STEP 1</strong>: Navigate/login to the Oracle Cloud My Services Dashboard</h3>
+<p><img src="images/300/snap0011988.jpg" alt="" /> </p>
+<h3 id="step-2-navigate-to-the-my-services-page-for-your-bdc-cluster"><strong>STEP 2</strong>: Navigate to the My Services page for your BDC cluster</h3>
+<p><img src="images/300/snap0011989.jpg" alt="" />  </p>
+<h3 id="step-3-launch-the-big-data-cluster-console"><strong>STEP 3</strong>: Launch the Big Data Cluster Console</h3>
+<p><img src="images/300/snap0012205.jpg" alt="" />  </p>
+<h1 id="work-with-oehcs-and-spark-streaming">Work with OEHCS and Spark Streaming</h1>
+<h2 id="open-and-run-the-tutorial-1-working-with-oehcs-and-spark-streaming-tutorial-note-in-the-notebook">Open and run the "Tutorial 1 Working with OEHCS and Spark Streaming" Tutorial note in the notebook</h2>
+<h3 id="step-1-click-on-the-notebook-tab-expand-the-journeys-folder--then-expand-the-new-data-lake-folder-then-expand-the-streaming-folder"><strong>STEP 1</strong>: Click on the Notebook tab. Expand the Journeys folder.  Then expand the New Data Lake folder. Then expand the Streaming folder.</h3>
+<p><img src="images/500/snap0013444.jpg" alt="" /> </p>
+<h3 id="step-2-click-on-the-tutorial-1-working-with-oehcs-and-spark-streaming-tutorial-to-open-it"><strong>STEP 2</strong>: Click on the "Tutorial 1 Working with OEHCS and Spark Streaming" Tutorial to open it.</h3>
+<p><img src="images/500/snap0012212.jpg" alt="" /> </p>
+<h3 id="step-3-read-and-follow-the-instructions-in-the-tutorial"><strong>STEP 3</strong>: Read and follow the instructions in the Tutorial</h3>
+<p>The paragraphs of the note are displayed. </p>
+<p>Please walk through the paragraphs one by one. Read through the content of the paragraphs as you get to them. There is much useful information in the paragraphs that is not reproduced into these instructions.</p>
+<p><strong>Pay attention to the instructions in the Tutorial note.  They will ask you to do a few steps outside of the notebook.  These steps need to be completed for the remaining steps to work properly.</strong></p>
+<p><img src="images/500/snap0012214.jpg" alt="" /> </p>
+<h1 id="run-the-citi-bike-live-map-demonstration">Run the Citi Bike Live Map Demonstration</h1>
+<h2 id="open-and-run-the-citi-bike-live-map-with-spark-streaming-note-in-the-notebook">Open and run the "Citi Bike Live Map with Spark Streaming" note in the notebook</h2>
+<h3 id="step-1-click-on-the-notebook-tab-expand-the-journeys-folder--then-expand-the-new-data-lake-folder-then-expand-the-streaming-folder-then-expand-the-demo-folder"><strong>STEP 1</strong>: Click on the Notebook tab. Expand the Journeys folder.  Then expand the New Data Lake folder. Then expand the Streaming folder. Then expand the Demo folder.</h3>
+<p><img src="images/500/snap0013445.jpg" alt="" /> </p>
+<h3 id="step-2-click-citi-bike-live-map-with-spark-streaming-note-to-open-it"><strong>STEP 2</strong>: Click "Citi Bike Live Map with Spark Streaming" note to open it.</h3>
+<p><img src="images/500/snap0012014.jpg" alt="" /> </p>
+<h3 id="step-3-read-and-follow-the-instructions-in-the-demonstration-note"><strong>STEP 3</strong>: Read and follow the instructions in the Demonstration note.</h3>
+<p>The paragraphs of the note are displayed. </p>
+<p>Please walk through the paragraphs one by one. Read through the content of the paragraphs as you get to them. There is much useful information in the paragraphs that is not reproduced into these instructions.</p>
+<p><img src="images/500/DemoLiveMap.gif" alt="" /> </p>
+<h1 id="what-you-learned">What you Learned</h1>
+<ul>
+<li>Learned how to setup OEHCS to communicate with BDC</li>
+<li>Learned how to create a topic in OEHCS</li>
+<li>Learned how to write a producer to stream data to OEHCS</li>
+<li>Learned how to consume data from OEHCS with Spark Streaming</li>
+<li>Learned how to use Spark SQL with streaming data</li>
+<li>Learned how to write streaming data to the Object Store</li>
+<li>Learned how to use streaming data to update a Live Map</li>
+</ul>
+<h1 id="next-steps">Next Steps</h1>
+<ul>
+<li>Experiment with your own data</li>
+</ul>

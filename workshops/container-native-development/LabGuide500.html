@@ -1,0 +1,144 @@
+<p><img src="images/500/header.png" alt="" />  </p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the fifth lab that is part of the <strong>Oracle Public Cloud Container Native Development workshop.</strong> This workshop will walk you through the process of moving an existing application into a containerized CI/CD pipeline and deploying it to a Kubernetes cluster in the Oracle Public Cloud.</p>
+<p>You will take on 2 personas during the workshop.&nbsp;The <strong>Lead Developer Persona</strong> will be responsible for configuring the parts of the automated build and deploy process that involve details about the application itself. The <strong>DevOps Engineer Persona</strong> will configure the parts of the automation involving the Kubernetes infrastructure.&nbsp;To containerize and automate the building and deploying of this application you will make use of Wercker Pipelines for CI/CD, Docker Hub for a container registry, and Terraform for provisioning a Kubernetes cluster on Oracle Cloud Infrastructure.</p>
+<p>During this lab, you will take on the <strong>Lead Developer Persona</strong> and extend your application using a serverless function. You will install an Fn Server on your Kubernetes cluster, download your function code from GitHub, try out your function locally, deploy your function to the Fn Server on Kubernetes, and test it in the product catalog application.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<p><strong>Extend Your Application Using a Function</strong></p>
+<ul>
+<li>Run Your Function Locally</li>
+<li>Start an Fn Server on Your Local Machine</li>
+<li>Clone the Function Repository</li>
+<li>Deploy the Function Locally</li>
+<li>Test the Function Using curl</li>
+<li>Deploy Your Function to Fn on Kubernetes</li>
+<li>Install Helm on Your Local Machine</li>
+<li>Deploy Fn Server to Kubernetes Using Helm</li>
+<li>Deploy Your Function to Fn Server on Kubernetes</li>
+<li>Test Your Function in the Product Catalog</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires:</li>
+<li>an Oracle-provided VirtualBox or Cloud-hosted Client Image</li>
+<li>an Oracle Public Cloud account that will be supplied by your instructor, or a Trial Account</li>
+<li>a <a href="https://github.com/join">GitHub account</a></li>
+<li>a <a href="https://hub.docker.com/">Docker Hub account</a></li>
+</ul>
+<h1 id="extend-your-application-using-a-function">Extend Your Application Using a Function</h1>
+<h2 id="run-your-function-locally">Run Your Function Locally</h2>
+<h3 id="step-1-start-an-fn-server-on-your-local-machine"><strong>STEP 1</strong>: Start an Fn Server on Your Local Machine</h3>
+<ul>
+<li><p>Since you are using the Oracle-provided client image, <strong>Fn is pre-installed</strong> for you. Let's start up a local Fn Server. From a terminal, run <code>fn start</code>.</p>
+<p><img src="images/500/8.png" alt="" /></p></li>
+<li><p>You should see the Fn logo printed to the console, as well as a message indicating the port that the Fn Server is using: <code>Fn serving on ':8080'</code>. From a browser, navigate to <strong><a href="http://localhost:8080">http://localhost:8080</a></strong>, substituting the port listed in the log message for 8080 if it differs. You should see a 'hello world' message in your browser, confirming that the Fn Server is up and running. If you do not see this message, but did not receive an error, don't be concerned - continue with the next step.</p>
+<p><img src="images/500/9.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-clone-the-function-repository"><strong>STEP 2</strong>: Clone the Function Repository</h3>
+<ul>
+<li><p>Now we're ready to get a copy of the image resizing function and test it out on our local Fn Server. From a new <strong>terminal window</strong>, clone the Git repository into the home directory using the following command:</p>
+<p><code>cd ~ &amp;&amp; git clone https://github.com/derekoneil/image-resize.git &amp;&amp; cd image-resize</code></p>
+<p><img src="images/500/10.png" alt="" /></p></li>
+</ul>
+<p><strong>NOTE</strong>: Functions deployed to Fn are packaged in Docker containers. You can use any programming language to write your functions, and you can deploy them to any Fn Server -- local, running on your server, or hosted in the cloud. The function you just cloned actually involves no code at all, it is simply a Dockerfile that installs and executes the open source command line tool ImageMagick. Using functions like this is a quick and easy way to convert open source or command line tools to auto-scaling web services.</p>
+<h3 id="step-3-deploy-the-function-locally"><strong>STEP 3</strong>: Deploy the Function Locally</h3>
+<ul>
+<li><p>Now that you have the function 'code', you can deploy it to the local Fn Server you started earlier by running the following command in your terminal window:</p>
+<p><code>fn deploy --app imgconvert --local</code></p></li>
+</ul>
+<p><strong>NOTE</strong>: The <code>--app imgconvert</code> tells Fn to create a new application named imgconvert and associate this function with it. In general, the application can be named anything you like, but by default the name will show up in the function URL. Since the product catalog application is expecting the app to be named <code>imgconvert</code>, don't alter the name.</p>
+<p><img src="images/500/11.png" alt="" /></p>
+<h3 id="step-4-test-the-function-using-curl"><strong>STEP 4</strong>: Test the Function Using curl</h3>
+<ul>
+<li>With the function deployed to our local Fn Server, we can use <strong>curl</strong> to test it. Execute the following command while still in the image-resize directory in your terminal window:</li>
+</ul>
+<p><code>curl -X POST --data-binary @"sample-image.jpg" -H "Content-Type: application/octet-stream" http://localhost:8080/r/imgconvert/resize128 &gt; thumbnail.jpg</code></p>
+<p><img src="images/500/12.png" alt="" /></p>
+<ul>
+<li><p>Open both the <strong>original and resized images</strong> using one of the following commands to verify that the function did it's job -- which is to resize the image to 128px x 128px. <em>NOTE:</em> You can also use your OS's file explorer to open the images if the command below does not work.</p>
+<p><code>eog sample-image.jpg &amp; eog thumbnail.jpg &amp;</code></p>
+<p><img src="images/500/13.png" alt="" /></p></li>
+<li><p>Now that we've tested our function locally, it's time to set up a remote Fn Server on Kubernetes and deploy our function to the cloud.</p></li>
+</ul>
+<h2 id="deploy-your-function-to-fn-on-kubernetes">Deploy Your Function to Fn on Kubernetes</h2>
+<h3 id="step-5-deploy-fn-server-to-kubernetes-using-helm"><strong>STEP 5</strong>: Deploy Fn Server to Kubernetes Using Helm</h3>
+<ul>
+<li><p>Since you are using the Oracle-provided client image, the <strong>fn-helm installer</strong> has been downloaded for you. Change directories to the installer with the following command:</p>
+<p><code>cd ~/fn-helm</code></p></li>
+<li><p>Retrieve the correct version of the Helm chart by running the following command:</p>
+<p><code>git checkout 4e4988</code></p></li>
+<li><p>Specify the version of Fn we want to install by modifying the <code>values.yaml</code> file using this command:</p>
+<p><code>sed -i.bak 's/fnproject\/fnserver:latest/fnproject\/fnserver:0.3.327/' fn/values.yaml</code></p></li>
+<li><p>Initialize Helm and upgrade the server-side version (Tiller) by running:</p>
+<p><code>helm init --upgrade</code></p></li>
+<li><p>Prepare the <strong>dependencies</strong> of the Fn chart by running:</p>
+<p><code>helm dep build fn</code></p>
+<p><img src="images/500/4.png" alt="" /></p></li>
+<li><p>By default, the server-side component of Helm (Tiller) does not have permissions to perform actions in the <code>default</code> namespace. Create a Service Account and bind to the Cluster Admin role to allow Tiller access. <strong>NOTE</strong>: In a production environment, you would want to restrict Tiller to a more limited role than Cluster Admin.</p></li>
+</ul>
+<pre><code class="bash language-bash">  kubectl create serviceaccount --namespace kube-system tiller
+  kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+  kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'      
+  helm init --service-account tiller --upgrade
+</code></pre>
+<ul>
+<li><p>Install the <strong>Fn chart</strong> by running the following command. <strong>NOTE</strong> <em>DO NOT</em> change the name of the release, <code>my-release</code>. This name becomes part of the Kubernetes service name, which is used for DNS routing. If the name is changed, the product catalog application will not be able to communicate with the deployed function.</p>
+<p><code>helm install --name my-release fn</code></p>
+<p><img src="images/500/5.png" alt="" /></p></li>
+<li><p>As directed by the output of the install command, set the <code>FN_API_URL</code> environment variable by waiting for the load balancer to be provisioned and using its external IP address in the URL.</p></li>
+<li><p>To check the status of the load balancer from the command line, run the following command. <strong>Note</strong>, you can use Ctrl-C to stop the command running, and re-run to again check if the External-IP field is populated:</p>
+<p><code>kubectl get svc --namespace default -w my-release-fn-api</code></p>
+<p><img src="images/500/14.png" alt="" /></p></li>
+<li><p>Once the <strong>External-IP</strong> field is populated (which could take up to 5 minutes), set the <strong>FN<em>API</em>URL</strong> environment variable using the following command:</p>
+<pre><code class="bash language-bash">export FN_API_URL=http://$(kubectl get svc --namespace default my-release-fn-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):80
+</code></pre>
+<p><img src="images/500/16.png" alt="" /></p>
+<p><strong>NOTE</strong>: You can also find out the API URL from the [Kubernetes dashboard](). To check the status of the load balancer from the [Kubernetes dashboard](), click <strong>Services</strong> from the left side navigation menu and look at the <strong>External endpoints</strong> column of the <strong>my-release-fn-api</strong> service.   </p>
+<p><img src="images/500/15.png" alt="" /></p></li>
+<li><p>Verify that the environment variable was set correctly by running the following command. Note that your IP address will differ from the screenshot.</p>
+<p><code>echo $FN_API_URL</code></p>
+<p><img src="images/500/17.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-deploy-your-function-to-fn-server-on-kubernetes"><strong>STEP 6</strong>: Deploy Your Function to Fn Server on Kubernetes</h3>
+<ul>
+<li><p>In the same <strong>terminal window</strong> from the previous step, change directories to cloned function directory from <strong>STEP 2</strong>.</p>
+<p><code>cd ~/image-resize</code></p>
+<p><img src="images/500/18.png" alt="" /></p></li>
+<li><p>Since we are pushing to a remote Fn Server, Fn will use Docker Hub as the container registry. We need to set the FN_REGISTRY environment variable to tell Fn which Docker Hub user to push to. In the following command, _replace "your-docker-hub-registry"_ with the name of your Docker Hub registry (not your Docker Hub email address):</p>
+<p><code>export FN_REGISTRY=your-docker-hub-registry</code></p>
+<p><img src="images/500/26.png" alt="" /></p></li>
+<li><p>Log in to <strong>Docker Hub</strong> by running the following command and entering your Docker Hub <strong>username and password</strong> at the prompts:</p>
+<p><code>docker login</code></p>
+<p><img src="images/500/27.png" alt="" /></p></li>
+<li><p><strong>Deploy the function</strong> (and application) to the remote Fn Server using the same command you used in <strong>STEP 3</strong>, but without the --local flag.</p>
+<p><code>fn deploy --app imgconvert</code></p>
+<p><img src="images/500/19.png" alt="" /></p></li>
+<li><p>Test the function using <strong>curl</strong>, but this time using the URL of the remote Fn Server:</p></li>
+</ul>
+<pre><code class="bash language-bash">  curl -X POST --data-binary @"sample-image.jpg" -H "Content-Type: application/octet-stream" $FN_API_URL/r/imgconvert/resize128 &gt; thumbnail-remote.jpg
+</code></pre>
+<p><img src="images/500/20.png" alt="" /></p>
+<ul>
+<li><p>Open <strong>thumbnail-remote.jpg</strong> (using the same method you used in the local test) to verify the function was successful:</p>
+<p><code>eog thumbnail-remote.jpg</code></p>
+<p><img src="images/500/21.png" alt="" /></p></li>
+<li><p>Our function is deployed and available on our remote Fn Server, which is running in our Kubernetes cluster. The last thing to verify is that the product catalog application is able to find and use our function. Let's test out the upload image feature.</p></li>
+</ul>
+<h3 id="step-7-test-your-function-in-the-product-catalog"><strong>STEP 7</strong>: Test Your Function in the Product Catalog</h3>
+<ul>
+<li>Open the <strong>product catalog</strong> website in a browser. If you don't have the URL, you can look in the Kubernetes dashboard for the <strong>external endpoint</strong> of the product-catalog-service, or you can run the following command from your terminal window:</li>
+</ul>
+<pre><code class="bash language-bash">  echo http://$(kubectl get svc --namespace default product-catalog-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):$(kubectl get svc --namespace default product-catalog-service -o jsonpath='{.spec.ports[0].port}')
+</code></pre>
+<p><img src="images/500/22.png" alt="" /></p>
+<ul>
+<li><p>Click any of the <strong>product images</strong> to open the detail view.</p>
+<p><img src="images/500/23.png" alt="" /></p></li>
+<li><p>In the <strong>Upload an image</strong> pane, click <strong>Choose file</strong>. Select an image (the sample image or any other) and click <strong>open</strong>. NOTE: if running on Linux, you can do a <code>pwd</code> command to show your current directory where the sample-img.jpg file is located.</p>
+<p><img src="images/500/24.png" alt="" /></p></li>
+<li><p>You'll see a loading spinner in the upload pane while your browser uploads the full size image to the product catalog server. The product catalog server invokes your function (resolved using Kubernetes DNS service at the URL <code>http://my-release-fn-api/r/imgconvert/resize128</code>). The thumbnail is returned to the product catalog server, which passes it back to your browser to be displayed. If everything worked correctly, you'll see the generated thumbnail displayed in the upload pane.</p>
+<p><img src="images/500/25.png" alt="" /></p></li>
+<li><p>Congratulations! You've just used the Fn Project to create and deploy a new serverless function to extend your application!</p></li>
+</ul>
+<p><strong>You have completed the Container Native Application Development Workshop</strong></p>

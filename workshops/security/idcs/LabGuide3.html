@@ -1,0 +1,62 @@
+<h1 id="multi-factor-authentication">Multi-Factor Authentication</h1>
+<p><img src="images/3/header.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>Oracle Public Cloud Identity Cloud Service workshop.</strong> This workshop will walk you through the multi-factor authentication capabilities in Identity Cloud Service (IDCS).</p>
+<p>When a user signs in to an application, they are prompted for their user name and password, which is the first factor – something that they know. With <strong>Multi Factor Authentication (MFA)</strong> enabled in Oracle Identity Cloud Service (IDCS), the user is then required to provide a second type of verification. This is called <strong>2-Step Verification</strong>.</p>
+<p>The two factors work together to add an additional layer of security by using either additional information or a second device to verify the user’s identity and complete the login process.</p>
+<p>In this lab, you will enable multi-factor authentication in IDCS and verify the configuration by enrolling for SMS text messages.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h2 id="persona">Persona</h2>
+<p>Administrators, End-Users</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Configure MFA<ul>
+<li>Enable MFA</li>
+<li>Enroll in MFA - Text Message (SMS)</li>
+<li>Verify MFA</li></ul></li>
+</ul>
+<h2 id="configure-mfa">Configure MFA</h2>
+<h3 id="step-1-enable-mfa"><strong>STEP 1</strong>: Enable MFA</h3>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li><p>Go to IDCS Admin Console -&gt; <strong>Security</strong> tab. Select <strong>MFA</strong> from the Sidebar to the left.</p></li>
+<li><p>Select <code>All Users</code> for the label <strong>Select the users that you want to enable MFA for:</strong></p></li>
+<li><p>Select all the options for <strong>Select the factors that you want to enable:</strong></p>
+<p><img src="images/3/MFA-1.png" alt="" /></p></li>
+<li><p>Keep all other parameters to their Default values. Click on <strong>Save</strong></p>
+<p><img src="images/3/MFA-2.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-enroll-in-mfa---text-message-sms"><strong>STEP 2</strong>: Enroll in MFA - Text Message (SMS)</h3>
+<p><code>(Persona: End-Users)</code></p>
+<p><em><strong>Note</strong>: After MFA is enabled, when an end-user logs in to IDCS, she is provided with MFA enrollment option. Since the default settings has enrollment as  <strong>Optional</strong>, user can <strong>Skip</strong> the enrollment. In that case, she will not be prompted for enrollment next time she logs in IDCS. However, she can do so from the <strong>My Profile</strong> page after login.</em></p>
+<ul>
+<li><p>Login to IDCS as <strong>dcrane</strong></p>
+<p><img src="images/3/MFA-3.png" alt="" /></p></li>
+<li><p>On the <strong>Enable 2-Step Verification</strong> page after login to IDCS, click on <strong>Enable</strong></p>
+<p><img src="images/3/MFA-4.png" alt="" /></p></li>
+<li><p>Select the method <strong>Mobile Number</strong></p></li>
+<li><p>Provide your mobile number and click on <strong>Send</strong></p>
+<p><img src="images/3/MFA-5.png" alt="" /></p></li>
+<li><p>Access the text message on your mobile and note the 6-digit One-time code on the message.</p>
+<p><img src="images/3/MFA-6.png" alt="" /></p></li>
+<li><p>Provide the 6-git code on the enrollment page and click on <strong>Verify</strong></p>
+<p><img src="images/3/MFA-7.png" alt="" /></p></li>
+<li><p>Verify that the success enrollment message is displayed. Click on <strong>Done</strong></p>
+<p><img src="images/3/MFA-8.png" alt="" /></p>
+<p><img src="images/3/MFA-9.png" alt="" /></p></li>
+<li><p>Logout from IDCS</p></li>
+</ul>
+<h3 id="step-3-verify-mfa"><strong>STEP 3</strong>: Verify MFA</h3>
+<p><code>(Persona: End-Users)</code></p>
+<ul>
+<li><p>Login to IDCS as <strong>dcrane</strong></p>
+<p><img src="images/3/MFA-3.png" alt="" /></p></li>
+<li><p>Verify that IDCS prompts for <strong>2-Step Verification</strong> challenge</p>
+<p><img src="images/3/MFA-10.png" alt="" /></p></li>
+<li><p>Access the text message on your mobile and note the 6-digit One-time code on the message.</p>
+<p><img src="images/3/MFA-11.png" alt="" /></p></li>
+<li><p>Provide the 6-git code on the challenge page and click on <strong>Verify</strong></p>
+<p><img src="images/3/MFA-12.png" alt="" /></p></li>
+<li><p>Verify that <strong>dcrane</strong> successfully logs in </p>
+<p><img src="images/3/MFA-9.png" alt="" /></p></li>
+</ul>

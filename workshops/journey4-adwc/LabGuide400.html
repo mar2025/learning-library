@@ -1,0 +1,120 @@
+<p><img src="images/400/TITLE400.png" alt="" /></p>
+<p>Updated: April 6, 2018</p>
+<h1 id="adwc-lab-400-query-external-data">ADWC Lab 400: Query External Data</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you will be querying files on the Oracle Cloud Infrastructure Object Storage (OCI) directly without loading them to your database.</p>
+<p><strong>Note:</strong> Make sure you have completed <a href="https://millerhoo.github.io/journey4-adwc/workshops/journey4-adwc/LabGuide300.md" target="_blank">Lab 300: Loading Data</a> before you take this lab. Because you will use the data files on the OCI Object Storage and the credential object from Lab 300 in this lab.</p>
+<p>To <strong>log issues</strong>, click <a href="https://github.com/millerhoo/journey4-adwc/issues/new">here</a> to go to the github oracle repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Learn how to create external tables on top of files residing on the object store</p></li>
+<li><p>Learn how to query external data by the external tables</p></li>
+<li><p>Learn how to create data warehouse user </p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li><p>The following lab requires an Oracle Public Cloud account. You may your own cloud account, a cloud account that you obtained through a trial, or a training account whose details were given to you by an Oracle instructor.</p></li>
+<li><p>Oracle SQL Developer (see Lab100 for more specifics on the version of SQL Developer and how to install and configure it).</p></li>
+</ul>
+<h1 id="querying-external-data">Querying External Data</h1>
+<h2 id="steps">Steps</h2>
+<h3 id="step-1-create-external-tables-with-dbms_cloud">STEP 1: Create External Tables with DBMS_CLOUD</h3>
+<ul>
+<li><p>Connected as your user in SQL Developer, copy and paste <a href="./scripts/400/create_external_tables.txt" target="_blank">this code snippet</a> to SQL Developer worksheet.  </p>
+<p>Use the <strong>create_external_table</strong> procedure of the <strong>DBMS_CLOUD</strong> package to create external tables on the files (<strong>sales.gz.csv</strong>, <strong>customers.csv</strong>, and <strong>products.txt</strong>) staged in your object store. Note that you are still using the same credential and the URLs of flies on OCI Object Storage you used when loading data in the previous lab.</p>
+<ul>
+<li>At the top of the script, specify the Object Store base URL in the definition of the <strong>base_URL</strong> variable.
+<img src="./images/400/snap0014527.jpg" alt="" /></li></ul></li>
+
+<li><p><strong>Run the script</strong>.</p>
+<p>Now you have external tables for the sample data pointing to files in the object store. Any query against the external tables will return the same result as against the original tables.</p></li>
+</ul>
+<h3 id="step-2-querying-external-data">STEP 2: Querying External Data</h3>
+<ul>
+<li><p>Copy and paste <a href="./scripts/400/query_external_data.txt" target="_blank">this code snippet</a> to SQL Developer worksheet. We only replaced the original table names <TABLE_NAME> with <TABLE_NAME_EXT> in the sample query.<br />
+<img src="images/400/Picture400-4.png" alt="" /></p></li>
+<li><p><strong>Run the script</strong>. It will return the same result as against the original tables.</p></li>
+</ul>
+<h3 id="step-3-exploring-oracle-database-json-features">STEP 3: Exploring Oracle Database JSON features</h3>
+<ul>
+<li><p>Copy and paste <a href="./scripts/400/query_json_data.txt" target="_blank">this code snippet</a> to SQL Developer worksheet.
+<img src="images/400/snap0014671.jpg" alt="" /></p></li>
+<li><p><strong>Run the script</strong>. It shows an example of querying json data stored on the Object Store using the Oracle Database's JSON features,  Learn more about JSON in the database <a href="https://docs.oracle.com/en/database/oracle/oracle-database/18/adjsn/json-in-oracle-database.html">here</a>.</p></li>
+</ul>
+<h3 id="step-4-creating-an-external-table-using-the-sql-developer-import-wizard">STEP 4: Creating an external table using the SQL Developer Import Wizard</h3>
+<ul>
+<li><p>Click on ‘<strong>Tables</strong>’ in your user schema object tree. Clicking the right mouse button opens the context-sensitive menu in SQL Developer; select ‘<strong>Import Data</strong>’:</p>
+<p><img src="./images/400/snap0014672.jpg" alt="" /></p></li>
+<li><p>The Data Import Wizard is started. Enter the following information:</p>
+<ul>
+<li><p>Select <strong>Oracle Cloud Storage</strong> as source for the data load</p></li>
+<li><p>Enter the URL of <strong>channels_error.csv</strong> as the file to load. You constructed the URL in data loading lab. For example, the URL might look something like:</p>
+<p>https://swiftobjectstorage.us-ashburn-1.oraclecloud.com/v1/dbayard00/ADWCLab/channels_error.csv</p></li>
+<li><p>Select the Credential you previously created for authentication with the Object Store, <strong>OBJ_STORE_CRED</strong></p></li>
+<li><p>Click the <strong>Preview</strong> button</p></li></ul></li>
+</ul>
+<p>After clicking preview, you will likely get a warning about the format which we will fix next.</p>
+<p><img src="./images/400/snap0014673.jpg" alt="" /></p>
+<ul>
+<li><p>Now we will fix the file format settings.</p>
+<ul>
+<li><p>Click OK to close the Invalid format window if you have not already.</p></li>
+<li><p>Change the delimiter to the semicolon ;</p></li></ul></li>
+</ul>
+<p>The data should now look much better.</p>
+<p><img src="./images/400/snap0014674.jpg" alt="" /></p>
+<p>When you are satisfied with the data preview, click <strong>NEXT</strong>.</p>
+<ul>
+<li><p>On the Import Method page, change the Import Method to External Table.</p></li>
+<li><p>Define the table name as CHANNELS_EXT</p></li>
+<li><p>Click <strong>NEXT</strong> to advance to the next page of the wizard.</p></li>
+</ul>
+<p><img src="./images/400/snap0014675.jpg" alt="" /></p>
+<ul>
+<li><p>On the Column Definition page, you can control how the fields of the file map to columns in the table.  You can also adjust certain properties.</p>
+<ul>
+<li>You should not need to change any column definitions, so click <strong>NEXT</strong>.</li></ul></li>
+</ul>
+<p><img src="./images/400/snap0014676.jpg" alt="" /></p>
+<ul>
+<li>The last screen before the final data load enables you to test a larger row count than the sample data of the beginning of the wizard to see whether the previously made decisions are satisfying for your data load. Note that we are not loading any data when iterating back and forth between this screen and previous ones. Select <strong>TEST RESULTS</strong> and look at the log, the data you would load, any mistakes and how the external table definition looks like based on your inputs.</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When done with your investigation, click <strong>NEXT</strong>.</p>
+<p><img src="./images/400/snap0014677.jpg" alt="" /></p>
+<ul>
+<li><p>The final screen reflects all your choices made in the Wizard. Click <strong>FINISH</strong> to create the external table CHANNELS_EXT.</p></li>
+<li><p>Finally, test your new external table by running a query like this:</p></li>
+</ul>
+<pre><code>    select * from channels_ext;
+</code></pre>
+<p><img src="./images/400/snap0014678.jpg" alt="" /></p>
+<h3 id="bonus-step-create-data-warehouse-user">BONUS STEP: Create Data Warehouse User</h3>
+<ul>
+<li>Using your existing connection in SQL Developer, create a new user named <strong>dwuser</strong> using the following commands.</li>
+</ul>
+<pre><code>CREATE USER dwuser IDENTIFIED BY "Welcome_123!";
+GRANT DWROLE to dwuser;
+</code></pre>
+<ul>
+<li>Note that the database role DWROLE includes the privileges required by a typical DW developer. The privileges in DWROLE are the following. You can grant additional database privileges if needed.</li>
+</ul>
+<pre><code>CREATE ANALYTIC VIEW
+CREATE ATTRIBUTE DIMENSION
+ALTER SESSION
+CREATE HIERARCHY
+CREATE JOB
+CREATE MINING MODEL
+CREATE PROCEDURE
+CREATE SEQUENCE
+CREATE SESSION
+CREATE SYNONYM
+CREATE TABLE
+CREATE TRIGGER
+CREATE TYPE
+CREATE VIEW
+READ,WRITE ON directory DATA_PUMP_DIR
+EXECUTE privilege on the PL/SQL package DBMS_CLOUD 
+</code></pre>
+<ul>
+<li>You are now ready to move to the next lab.</li>
+</ul>

@@ -1,0 +1,305 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="scale-updown-application-container-service-using-user-interface-and-psm-cli-tool">Scale up/down Application Container Service using user interface and psm CLI tool</h2>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>Oracle Application Container Cloud Service includes Oracle Java SE Cloud Service and Oracle Node Cloud Service. It provides a lightweight infrastructure so that you can run Java SE 7, Java SE 8, and Node.js applications in the Oracle Cloud.</p>
+<p>Oracle offers a PaaS Service Manager (PSM) Command Line Interface (CLI) that enables users of Oracle Application Container Cloud Service, Oracle Database Cloud Service, and Oracle Java Cloud Service to create, monitor and manage their service instances from a command shell or script.</p>
+<p>For more information about PSM see the <a href="https://docs.oracle.com/cloud/latest/jcs_gs/jcs_cli.htm">documentation</a>.</p>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>how to install and configure PaaS Service Manager Command Line Interface (psm CLI)</li>
+<li>scale up Application Cloud Service instance using user interface</li>
+<li>scale down Application Cloud Service instance using psm command line interface tool.</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="http://curl.haxx.se/download.html">cURL command-line tool</a>. Usually cURL is already included in most of the Linux distributions and easy to install to Windows. You can use other tool to invoke REST API to download the latest version of the tool. (To install cURL is not scope of this documentation.)</li>
+<li>Python 3.3 or later. (To install Pyhton is not scope of this documentation.)</li>
+<li><a href="../accs-tomcat/README.md">Deploy Tomcat sample application to Oracle Application Container Cloud</a></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<h4 id="download-the-latest-version-of-command-line-tool">Download the latest version of command line tool</h4>
+<p>First identify your REST API server name. If you log in to your Oracle cloud account with a US data center, use <strong>psm.us.oraclecloud.com</strong> otherwise, use <strong>psm.europe.oraclecloud.com</strong>.</p>
+<p>Use cURL to send a request. The format is:</p>
+<pre><code>curl -X GET -u username:password -H X-ID-TENANT-NAME:&lt;identitydomain&gt; https://&lt;rest-server&gt;/paas/core/api/v1.1/cli/&lt;identitydomain&gt;/client -o /u01/psmcli.zip
+</code></pre>
+<p>This will write the response to a file named <code>psmcli.zip</code>.</p>
+<p>Open a terminal and execute the cURL command above with your credentials, identity domain identifier and REST API server name. REST </p>
+<pre><code>[oracle@localhost Desktop]$ curl -X GET -u john.i.smith@xxxxx.com:password -H X-ID-TENANT-NAME:hujohni https://psm.europe.oraclecloud.com/paas/core/api/v1.1/cli/hujohni/client -o /u01/psmcli.zip
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                               Dload  Upload   Total   Spent    Left  Speed
+100 45968  100 45968    0     0  10993      0  0:00:04  0:00:04 --:--:-- 10999
+[oracle@localhost Desktop]$
+</code></pre>
+<p>Change to directory <code>/u01</code> and list directory to check the downloaded psmcli.zip file.</p>
+<pre><code>[oracle@localhost Desktop]$ cd /u01
+[oracle@localhost u01]$ ls
+app  content  dpct  oepe-12.2.1.4.201608161938  psmcli.zip  python  wins
+</code></pre>
+<h4 id="installing-the-command-line-interface">Installing the Command Line Interface</h4>
+<p>Install the PaaS CLI as a Python package.</p>
+<p>Open a terminal, change to directory or make sure you are in directory <code>/u01</code> and use the PIP tool to install the CLI Python package.</p>
+<pre><code>[oracle@localhost Desktop]$ cd /u01
+[oracle@localhost Desktop]$ sudo -H /u01/python/bin/pip3 install -U psmcli.zip
+Processing ./psmcli.zip
+Collecting requests&lt;=2.8.1,&gt;=2.7.0 (from psmcli==1.1.7)
+  Downloading requests-2.8.1-py2.py3-none-any.whl (497kB)
+    100% |████████████████████████████████| 501kB 469kB/s 
+Collecting keyring&lt;=5.6,&gt;=5.4 (from psmcli==1.1.7)
+  Downloading keyring-5.6.tar.gz (69kB)
+    100% |████████████████████████████████| 71kB 1.0MB/s 
+Collecting colorama==0.3.3 (from psmcli==1.1.7)
+  Downloading colorama-0.3.3.tar.gz
+Collecting PyYAML==3.11 (from psmcli==1.1.7)
+  Downloading PyYAML-3.11.zip (371kB)
+    100% |████████████████████████████████| 378kB 725kB/s 
+Installing collected packages: requests, keyring, colorama, PyYAML, psmcli
+  Running setup.py install for keyring ... done
+  Running setup.py install for colorama ... done
+  Running setup.py install for PyYAML ... done
+  Running setup.py install for psmcli ... done
+Successfully installed PyYAML-3.11 colorama-0.3.3 keyring-5.6 psmcli-1.1.7 requests-2.8.1
+You are using pip version 8.1.1, however version 8.1.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+[oracle@localhost u01]$
+</code></pre>
+<h4 id="configuring-the-command-line-interface">Configuring the Command Line Interface</h4>
+<p>Prior to running CLI commands, configure your connection to the Oracle cloud.</p>
+<p>Open a terminal and run the <code>setup</code> command. When prompted, enter your cloud user name, password, and identity domain. For example:</p>
+<pre><code>[oracle@localhost u01]$ psm setup
+Username: john.i.smith@xxxxx.com
+Password: 
+Retype Password: 
+Identity domain: hujohni
+Region [us]: emea
+Output format [json]: 
+----------------------------------------------------
+'psm setup' was successful. Available services are:
+  o MySQLCS : Oracle Oracle MySQL Cloud Service
+  o accs : Oracle Application Container Cloud Service
+  o dbcs : Oracle Database Cloud Service
+  o ggcs : Oracle GoldenGate Cloud Service
+  o jcs : Oracle Java Cloud Service
+  o stack : Cloud Stack Manager
+----------------------------------------------------
+[oracle@localhost u01]$
+</code></pre>
+<p>The CLI provides help text for each available command. Use the help (or h) parameter to:</p>
+<p>View the available services in your configured cloud account. For example:</p>
+<pre><code>[oracle@localhost u01]$ psm help
+
+DESCRIPTION
+      A command line tool to interact with Oracle Cloud Platform Services (PaaS)
+
+SYNOPSIS
+      psm &lt;service&gt; &lt;command&gt; [parameters]
+
+AVAILABLE SERVICES
+  o MySQLCS
+       Oracle Oracle MySQL Cloud Service
+  o accs
+       Oracle Application Container Cloud Service
+  o dbcs
+       Oracle Database Cloud Service
+  o ggcs
+       Oracle GoldenGate Cloud Service
+  o jcs
+       Oracle Java Cloud Service
+  o stack
+       Cloud Stack Manager
+  o setup
+       Configure psm client options
+  o update
+       Update psm client to latest version
+  o log
+       View or update psm client log level
+  o help
+       Show help
+
+AVAILABLE PARAMETERS
+  -v, --version  
+       Show current version of psm client
+
+[oracle@localhost u01]$ 
+</code></pre>
+<h4 id="scale-up-application-cloud-service-instance-using-user-interface">Scale up Application Cloud Service instance using user interface</h4>
+<p>Go to your Application Container Cloud Service console. If your console is not yet opened then sign in to <a href="../common/sign.in.to.oracle.cloud.md">https://cloud.oracle.com/sign-in</a> to <a href="https://cloud.oracle.com">https://cloud.oracle.com</a>. On the dashboard open the Application Container Cloud Service Console.
+<img src="images/dashboard.accs.instances.png" alt="" /></p>
+<p>Click the link <strong>tomcat</strong> to open Application Container Cloud Service detail page.</p>
+<p><img src="images/accs.scale.00.png" alt="" /></p>
+<p>The Overview page shows the assigned resources to the service. Modify RAM configuration from 1 to 2 GB. The Apply will appear, click the button. </p>
+<p><img src="images/accs.scale.01.png" alt="" /></p>
+<p>Confirm the scaling operation, click Apply. The service will restart to apply changes. </p>
+<p><img src="images/accs.scale.02.png" alt="" /></p>
+<p>During the restart a sand glass appears in the Application Container Cloud icon. The process takes few minutes. To update the pages click on refresh icon.</p>
+<p><img src="images/accs.scale.03.png" alt="" /></p>
+<p>Once the restart ready the sand glass will disappear and the RAM size will show the requested value.</p>
+<p><img src="images/accs.scale.04.png" alt="" /></p>
+<h4 id="scale-down-application-cloud-service-instance-using-psm-command-line-interface-tool">Scale down Application Cloud Service instance using psm command line interface tool</h4>
+<p>To scale down (back) the instance you will use psm tool. Open a terminal and list your application(s) deployed on Application Container Cloud Service. Execute the <code>psm accs apps</code> command to list the applications.</p>
+<pre><code>[oracle@localhost cloud.demos]$ psm accs apps
+{
+    "applications":[
+        {
+            "identityDomain":"hujohni",
+            "appId":"7c0ab2ad-a1c3-482c-8542-add237657212",
+            "name":"tomcat",
+            "status":"RUNNING",
+            "createdBy":"john.i.smith@freemail.hu",
+            "creationTime":"2016-08-28T08:02:46.503+0000",
+            "lastModifiedTime":"2016-08-28T08:02:46.458+0000",
+            "subscriptionType":"MONTHLY",
+            "instances":[
+                {
+                    "name":"web.1",
+                    "status":"RUNNING",
+                    "memory":"2G",
+                    "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/instances/web.1"
+                }
+            ],
+            "runningDeployment":{
+                "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
+                "deploymentStatus":"READY",
+                "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
+            },
+            "lastestDeployment":{
+                "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
+                "deploymentStatus":"READY",
+                "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
+            },
+            "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat",
+            "webURL":"https://tomcat-hujohni.apaas.em2.oraclecloud.com"
+        }
+    ]
+}
+[oracle@localhost cloud.demos]$ 
+</code></pre>
+<p>You should see the <strong>tomcat</strong> application and the previously configured 2 GB memory. Now use the tool the scale down the service. First check what is the usage of the <code>accs scale</code> command. </p>
+<pre><code>[oracle@localhost cloud.demos]$ psm accs scale help
+
+DESCRIPTION
+  Scale an Oracle Application Container Cloud Service instance for a specified
+  application to change instance count and memory limit
+
+SYNOPSIS
+  psm accs scale [parameters]
+       -n, --app-name &lt;value&gt;
+       [-i, --instances &lt;value&gt;]
+       [-m, --memory &lt;value&gt;]
+       [-of, --output-format &lt;value&gt;]
+
+AVAILABLE PARAMETERS
+  -n, --app-name    (string)
+       Name of the application
+
+  -i, --instances    (integer)
+       Number of instances
+
+  -m, --memory    (string)
+       Memory limit
+
+  -of, --output-format    (string)
+       Desired output format. Valid values are [json, html]
+
+EXAMPLES
+  psm accs scale -n ExampleApp -i 2 -m 2G
+
+[oracle@localhost cloud.demos]$ 
+</code></pre>
+<p>Note that you can always get help by executing <code>&lt;command&gt; help</code>.</p>
+<p>According to the help to scale down the memory you need to define the name of the application and the memory limit.</p>
+<pre><code>[oracle@localhost cloud.demos]$ psm accs scale -n tomcat -m 1G
+{
+    "processes":[
+        {
+            "processName":"web",
+            "instances":[
+                {
+                    "name":"web.1",
+                    "status":"RUNNING",
+                    "memory":"2G",
+                    "instanceURI":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/instances/web.1"
+                }
+            ]
+        }
+    ],
+    "identityDomain":"hujohni",
+    "applicationDetails":"tomcat"
+}
+Job ID : 1919648
+[oracle@localhost cloud.demos]$ 
+</code></pre>
+<p>The job has been created to resize the memory of the service. To check what is happening with your application get the details using psm. Execute <code>psm accs app -n tomcat</code>:</p>
+<pre><code>[oracle@localhost cloud.demos]$ psm accs app -n tomcat
+{
+    "identityDomain":"hujohni",
+    "appId":"7c0ab2ad-a1c3-482c-8542-add237657212",
+    "name":"tomcat",
+    "status":"RUNNING",
+    "createdBy":"john.i.smith@freemail.hu",
+    "creationTime":"2016-08-28T08:02:46.503+0000",
+    "lastModifiedTime":"2016-08-28T08:02:46.458+0000",
+    "subscriptionType":"MONTHLY",
+    "instances":[
+        {
+            "name":"web.1",
+            "status":"RUNNING",
+            "memory":"1G",
+            "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/instances/web.1"
+        }
+    ],
+    "runningDeployment":{
+        "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
+        "deploymentStatus":"READY",
+        "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
+    },
+    "lastestDeployment":{
+        "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
+        "deploymentStatus":"READY",
+        "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
+    },
+    "currentOngoingActivity":"Scaling Application",
+    "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat",
+    "webURL":"https://tomcat-hujohni.apaas.em2.oraclecloud.com",
+    "message":[
+        "Initialized application scaling from 1x2G to 1x1G...",
+        "Deployed application(v1) for instance(1G) web.1..."
+    ]
+}
+[oracle@localhost cloud.demos]$ 
+</code></pre>
+<p>If you could catch the restart process you can see the current ongoing operation: <code>"Initialized application scaling from 1x2G to 1x1G..."</code>. This command also usefult to get detailed information about your service using command line interface. Execute couple of times this command and once the restart is ready you should see similar output:</p>
+<pre><code>[oracle@localhost cloud.demos]$ psm accs app -n tomcat
+{
+  "identityDomain":"hujohni",
+  "appId":"7c0ab2ad-a1c3-482c-8542-add237657212",
+  "name":"tomcat",
+  "status":"RUNNING",
+  "createdBy":"john.i.smith@freemail.hu",
+  "creationTime":"2016-08-28T08:02:46.503+0000",
+  "lastModifiedTime":"2016-08-28T08:02:46.458+0000",
+  "subscriptionType":"MONTHLY",
+  "instances":[
+      {
+          "name":"web.1",
+          "status":"RUNNING",
+          "memory":"1G",
+          "instanceURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/instances/web.1"
+      }
+  ],
+  "runningDeployment":{
+      "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
+      "deploymentStatus":"READY",
+      "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
+  },
+  "lastestDeployment":{
+      "deploymentId":"5075e814-3430-45b2-9b02-61ec88f4b8ea",
+      "deploymentStatus":"READY",
+      "deploymentURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat/deployments/5075e814-3430-45b2-9b02-61ec88f4b8ea"
+  },
+  "appURL":"https://psm.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/hujohni/tomcat",
+  "webURL":"https://tomcat-hujohni.apaas.em2.oraclecloud.com"
+}
+[oracle@localhost cloud.demos]$ 
+</code></pre>
+<p>Now the <strong>tomcat</strong> application is ready again to serve requests using 1GB memory.</p>

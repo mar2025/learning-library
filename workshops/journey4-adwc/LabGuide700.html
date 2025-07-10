@@ -1,0 +1,292 @@
+<p><img src="images/700/TITLE700.png" alt="" /></p>
+<p>Updated: March 21, 2018</p>
+<h1 id="lab-700-using-oracle-machine-learning-notebooks">Lab 700: Using Oracle Machine Learning Notebooks</h1>
+<h2 id="introduction">Introduction</h2>
+<p>During this lab you will be using the new Oracle Machine Learning (OML) notebook application provided with ADWC. This browser-based application provides a web interface to run SQL queries and scripts, which can be grouped together within a notebook. Notebooks can be used to build single reports, collections of reports, and dashboards. OML provides a simple way to share workbooks with other OML users.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to create OML Users</li>
+<li>Learn how to run a SQL Statement</li>
+<li>Learn how to share notebooks</li>
+<li>Learn how to create and run SQL scripts</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account. You may use your own cloud account, a cloud account that you obtained through a trial, or a training account whose details were given to you by an Oracle instructor.</li>
+</ul>
+<h1 id="creating-oml-users">Creating OML Users</h1>
+<p>The first step is to create two new users.</p>
+<h2 id="steps">Steps</h2>
+<h3 id="step-1-creating-oml-users">Step 1: Creating OML Users</h3>
+<ul>
+<li>Go back to the Cloud Console and open the Instances screen. Find your database, click the action menu and select <strong>Service Console</strong>.</li>
+</ul>
+<p><img src="./images/700/Picture700-1.png" alt="" /></p>
+<ul>
+<li>Log in to the service with your admin password.</li>
+</ul>
+<p><img src="./images/700/Picture700-2.png" alt="" /></p>
+<ul>
+<li>Go to the <strong>Administration</strong> tab and click <strong>Manage Oracle ML Users</strong> to go to the OML user management page - this page will allow
+you to manage OML users.</li>
+</ul>
+<p><img src="./images/700/Picture700-3.png" alt="" /></p>
+<p>This will open a new tab within your browser that asks you for a username and password.</p>
+<ul>
+<li>Enter <strong>admin</strong> as the username and use the password you specified when provisioning your ADWC instance.</li>
+</ul>
+<p><img src="./images/700/Picture700-4.png" alt="" /></p>
+<p><strong>Note</strong> that you do not have to go to this page using the same steps every time, you can bookmark this Oracle ML Notebook Admin URL and access it directly later.</p>
+<ul>
+<li>Click <strong>Create</strong> button to create a new OML user. Note that this will also create a new database user with the same name. This newly created user will be able to use the OML notebook application. Note that you can also enter an email address to send an email confirmation to your user (<em>for this lab you can use your own personal email address</em>) when creating the user.</li>
+</ul>
+<p><img src="./images/700/Picture700-5.png" alt="" /></p>
+<ul>
+<li>Enter the required information for this user, name the user as <strong>omluser1</strong>. If you supplied a valid <strong>email address</strong>, a welcome email should arrive within a few minutes to your Inbox. Click the <strong>Create</strong> button, in the top-right corner of the page, to create the user.</li>
+</ul>
+<p><img src="./images/700/Picture700-7.png" alt="" /></p>
+<ul>
+<li>Below is the email which each user receives welcoming them to the OML application. It includes a direct link to the OML application
+for that user which they can bookmark.</li>
+</ul>
+<p><img src="./images/700/Picture700-8.png" alt="" /></p>
+<ul>
+<li>After you click <strong>Create</strong> you will see that user listed in the Users section.</li>
+</ul>
+<p><img src="./images/700/Picture700-9.png" alt="" /></p>
+<ul>
+<li>Using the same steps, create another user named <strong>omluser2</strong>.</li>
+</ul>
+<p><img src="./images/700/Picture700-10.png" alt="" /></p>
+<p>You will use these two users later in this workshop.</p>
+<h1 id="exploring-the-oml-home-page">Exploring the OML Home Page</h1>
+<h2 id="steps-1">Steps</h2>
+<h3 id="step-2-signing-into-oml">Step 2: Signing into OML</h3>
+<ul>
+<li>Using the link from your welcome email, from Oracle Global Accounts, you can now sign-in to OML. Copy and paste the <strong>application link</strong> from the email into your browser and sign-in to OML.</li>
+</ul>
+<p><strong>Note:</strong> If you have not specified an email address you can click the Home icon on the top right of Oracle Machine Learning User administration page to go to OML home page.</p>
+<p><img src="./images/700/Picture700-11.png" alt="" /></p>
+<ul>
+<li>Use your new user account <strong>omluser1</strong>:</li>
+</ul>
+<p><img src="./images/700/Picture700-12.png" alt="" /></p>
+<p>Once you have successfully signed in to OML the application home page will be displayed.</p>
+<h3 id="step-3-overview-of-oml-home-page">Step 3: Overview of OML Home Page</h3>
+<ul>
+<li>The grey menu bar at the top of the screen provides links to the main OML menus for the application (left corner) and the
+workspace/project and user maintenance on the right-hand side.</li>
+</ul>
+<p><img src="./images/700/Picture700-13.png" alt="" /></p>
+<ul>
+<li>On the home page the main focus is the “<strong>Quick Actions</strong>” panel. The main icons in this panel provide shortcuts to the main OML pages for running queries and managing your saved queries.</li>
+</ul>
+<p><img src="./images/700/Picture700-14.png" alt="" /></p>
+<ul>
+<li>All your work is automatically saved – i.e. there is no “Save” button when you are writing scripts and/or queries.</li>
+</ul>
+<h3 id="step-4-understanding-the-key-concepts">Step 4: Understanding the Key concepts</h3>
+<ul>
+<li><p>What is a Workspace?</p>
+<p>A workspace is an area where you can store your projects. Each workspace can be shared with other users so they can collaborate with you. For collaborating with other users, you can provide different levels of permission such as&nbsp;Viewer, Developer and Manager – these will be covered in more detail later in this lab. You can create multiple workspaces.</p></li>
+<li><p>What is a Project?</p>
+<p>A project is a container for organizing your notebooks. You can create multiple projects.</p></li>
+<li><p>What is a Notebook?</p>
+<p>A notebook is a web-based interface for building reports and dashboards using a series of pre-built data visualizations which can then be shared with other OML users. Each notebook can contain one or SQL queries and/or SQL scripts. Additional non-query information can be displayed using special markdown tags (an example of these tags will be shown later).</p></li>
+</ul>
+<h1 id="running-a-sql-statement">Running a SQL Statement</h1>
+<h2 id="steps-2">Steps</h2>
+<h3 id="step-5-opening-a-new-sql-query-scratchpad">Step 5: Opening a new SQL query scratchpad</h3>
+<ul>
+<li>From the home page click on the “<strong>Run SQL Statement</strong>” link in the Quick Actions panel to open a new SQL query scratchpad.</li>
+</ul>
+<p><img src="./images/700/Picture700-15.png" alt="" /></p>
+<ul>
+<li>The following screen should appear:</li>
+</ul>
+<p><img src="./images/700/Picture700-16.png" alt="" /></p>
+<ul>
+<li>The white panel below the main title (SQL Query Scratchpad – this name is automatically generated) is an area known as “paragraph”. Within a scratchpad you can have multiple paragraphs. Each paragraph can contain one SQL statement or a SQL script.</li>
+</ul>
+<p><img src="./images/700/Picture700-17.png" alt="" /></p>
+<ul>
+<li>In the SQL paragraph area copy and paste <a href="./scripts/700/new_SQL_query_scratchpad.txt" target="_blank">this code snippet</a>. Your screen should now look like this:</li>
+</ul>
+<p><img src="./images/700/Picture700-18.png" alt="" /></p>
+<ul>
+<li>Press the icon shown in the red box to execute the SQL statement and display the results in a tabular format:</li>
+</ul>
+<p><img src="./images/700/Picture700-19.png" alt="" /></p>
+<p><img src="./images/700/Picture700-20.png" alt="" /></p>
+<h3 id="step-6-changing-the-report-type">Step 6: Changing the report type</h3>
+<ul>
+<li>Using the report menu bar you can change the table to a graph and/or export the result set to a CSV or TSV file.</li>
+</ul>
+<p><img src="./images/700/Picture700-21.png" alt="" /></p>
+<ul>
+<li><p>When you change the report type to one of the graphs, then a <strong>Settings</strong> link will appear to the right of the menu which
+allows you to control the layout of columns within the graph.</p></li>
+<li><p>Click on the <strong>bar graph</strong> icon to change the output to a bar graph (see below)</p></li>
+</ul>
+<p><img src="./images/700/Picture700-22.png" alt="" /></p>
+<ul>
+<li>Click on the <strong>Settings</strong> link to unfold the settings panel for the graph.</li>
+</ul>
+<p><img src="./images/700/Picture700-23.png" alt="" /></p>
+<ul>
+<li><p>To add a column to one of the <strong>Keys</strong>, <strong>Groups</strong> of <strong>Values</strong> panels just drag and drop the column name into the required panel.</p></li>
+<li><p>To remove a column from the Keys, Groups of Values panel just click on the <strong>x</strong> next to the column name displayed in the relevant
+panel.</p></li>
+</ul>
+<h3 id="step-7-changing-the-layout-of-the-graph">Step 7: Changing the layout of the graph</h3>
+<ul>
+<li><p>With the graph settings panel visible:</p>
+<ul>
+<li><p>Remove all columns from the both the <strong>Keys</strong> and <strong>Values</strong> panels.</p></li>
+<li><p>Drag and drop <strong>MONTH</strong> into the Keys panel</p></li>
+<li><p>Drag and drop <strong>REVENUE</strong> into the Values panel</p></li>
+<li><p>Drag and drop <strong>AVG_12M_REVENUE</strong> into the Values panel</p></li></ul></li>
+</ul>
+<p>The report should now look like the one shown below.</p>
+<p><img src="./images/700/Picture700-24.png" alt="" /></p>
+<h3 id="step-8-tidying-up-the-report">Step 8: Tidying up the report</h3>
+<ul>
+<li><p>Click on the <strong>Settings</strong> link to hide the layout controls.</p></li>
+<li><p>Click on the <strong>Hide editor</strong> button which is to the right of the "Run this paragraph" button.</p></li>
+</ul>
+<p><img src="./images/700/Picture700-25.png" alt="" /></p>
+<ul>
+<li>Now only the output is visible.</li>
+</ul>
+<p><img src="./images/700/Picture700-26.png" alt="" /></p>
+<h1 id="saving-the-scratchpad-as-a-new-notebook">Saving the Scratchpad as a New Notebook</h1>
+<h2 id="steps-3">Steps</h2>
+<h3 id="step-9-saving-the-scratchpad-as-a-new-notebook">Step 9: Saving the Scratchpad as a New Notebook</h3>
+<p>The SQL Scratchpad in the previous section is simply a default type notebook with a system generated name. But we can change the name of the scratchpad we have just created <strong>SQL Query Scratchpad</strong>.</p>
+<ul>
+<li>Click on the <strong>Back</strong> link in the top left corner of the Scratchpad window to return to the OML home page.</li>
+</ul>
+<p><img src="./images/700/Picture700-27.png" alt="" /></p>
+<ul>
+<li>Notice that in the <strong>Recent Activities</strong> panel there is a potted history of what has happened to your SQL scratchpad “notebook”.</li>
+</ul>
+<p><img src="./images/700/Picture700-28.png" alt="" /></p>
+<ul>
+<li>Click on <strong>Go to Notebooks</strong> in the <strong>Quick Actions</strong> panel</li>
+</ul>
+<p><img src="./images/700/Picture700-29.png" alt="" /></p>
+<ul>
+<li>The <strong>Notebooks</strong> page will be displayed:</li>
+</ul>
+<p><img src="./images/700/Picture700-30.png" alt="" /></p>
+<ul>
+<li>Let’s rename our SQL Scratchpad notebook to something more informative. Click on text in the <strong>comments</strong> column to select
+the scratchpad so we can rename it. After you click, the “SQL Query Scratchpad” will become selected and the menu buttons above will
+activate.</li>
+</ul>
+<p><img src="./images/700/Picture700-31.png" alt="" /></p>
+<p><img src="./images/700/Picture700-32.png" alt="" /></p>
+<ul>
+<li>Click on the <strong>Edit</strong> button to pop-up the settings dialog for this notebook and enter the information as shown in the image below
+(<em>note that the connection information is read-only because this is managed by Autonomous Data Warehouse Cloud</em>):</li>
+</ul>
+<p><img src="./images/700/Picture700-33.png" alt="" /></p>
+<ul>
+<li>Click <strong>OK</strong> to save your notebook. You will see that your SQL Query Scratchpad notebook is now renamed to the new name you specified.</li>
+</ul>
+<p><img src="./images/700/Picture700-34.png" alt="" /></p>
+<h1 id="sharing-notebooks">Sharing notebooks</h1>
+<h2 id="steps-4">Steps</h2>
+<h3 id="step-10-logging-in-to-oml-as-the-second-oml-omluser2-user">Step 10: Logging in to OML as the second OML (OMLUSER2) user</h3>
+<p>By default, when you create a notebook it’s only visible to you.</p>
+<p>To make it available to other users you need to share the workspace containing the notebook. You can create new workspaces and projects to organize your notebooks for ease of use and to share with other users.</p>
+<p>To demonstrate the sharing process let’s begin by logging in to OML as our second OML (OMLUSER2) user and checking if any notebooks are
+available.</p>
+<ul>
+<li>Click on your user name in the top right corner (<strong>OMLUSER1</strong>) and select “<strong>Sign Out</strong>”.</li>
+</ul>
+<p><img src="./images/700/Picture700-35.png" alt="" /></p>
+<ul>
+<li>Now sign-in as OML user <strong>OMLUSER2</strong> using the password you entered at the beginning of this workshop:</li>
+</ul>
+<p><img src="./images/700/Picture700-36.png" alt="" /></p>
+<p><img src="./images/700/Picture700-37.png" alt="" /></p>
+<p>Notice that you have no activity listed in the <strong>Recent Activities</strong> panel on your OML home page and you don’t have any notebooks.</p>
+<ul>
+<li>Hint – click on the <strong>Go to Notebooks</strong> link in the <strong>Quick Actions</strong> panel:</li>
+</ul>
+<p><img src="./images/700/Picture700-38.png" alt="" /></p>
+<ul>
+<li>Repeat the previous steps to logout of OML and sign into OML as <strong>OMLUSER1</strong>.</li>
+</ul>
+<h3 id="step-11-changing-workspace-permissions">Step 11: Changing Workspace Permissions</h3>
+<ul>
+<li>From the OML home page, click on link <strong>OML Project (OML Workspace)</strong> link in the top right corner on the OML home page to
+display the workspace-project menu. Then select <strong>Workspace Permissions</strong>.</li>
+</ul>
+<p><img src="./images/700/Picture700-39.png" alt="" /></p>
+<ul>
+<li><p>The permissions dialog box will appear (see below).</p>
+<ul>
+<li><p>In the dialog box next to the <strong>Add Permissions</strong> text type <strong>OMLUSER2</strong> (use uppercase).</p></li>
+<li><p>Set the permission type to <strong>Viewer</strong> (this means read-only access to the workspace, project and notebook).</p></li></ul></li>
+<li><p><strong>Note:</strong></p>
+<ul>
+<li><p>A “Developer” would have read-only access to the workspace, project but could add new notebooks, update and delete existing notebooks and schedule jobs to refresh a notebook.</p></li>
+<li><p>A “Manager” would have read-only access to the workspace, can create update and delete projects, add new notebooks, update and delete existing notebooks and schedule jobs to refresh a notebook.</p></li></ul></li>
+</ul>
+<p><img src="./images/700/Picture700-40.png" alt="" /></p>
+<ul>
+<li>Click the <strong>Add</strong> button to add the user <strong>OMLUSER2</strong> as a read-only viewer of the workspace. Your form should look like this:</li>
+</ul>
+<p><img src="./images/700/Picture700-41.png" alt="" /></p>
+<ul>
+<li>Finally, click the <strong>OK</strong> button.</li>
+</ul>
+<h3 id="step-12-accessing-shared-notebooks">Step 12: Accessing shared notebooks</h3>
+<ul>
+<li><p>Now repeat the process you followed at the start of this section and sign-out of OML and sign-in to OML again as user <strong>OMLUSER2</strong>.</p></li>
+<li><p>First thing to note is that the <strong>Recent Activities</strong> panel below the <strong>Quick Links</strong> panel now shows all the changes user OMLUSER1
+made within the workspace OML-Workspace.</p></li>
+</ul>
+<p><img src="./images/700/Picture700-42.png" alt="" /></p>
+<ul>
+<li>As user <strong>OMLUSER2</strong> you can now run the <strong>Sales Analysis Over Time</strong> notebook by clicking on <strong>the blue-linked text</strong> in the <strong>Recent Activities</strong> panel (<em>note that your recent activity will be logged under the banner labelled “Today”</em>).</li>
+</ul>
+<p><img src="./images/700/Picture700-43.png" alt="" /></p>
+<ul>
+<li>The notebook will now open:</li>
+</ul>
+<p><img src="./images/700/Picture700-44.png" alt="" /></p>
+<h1 id="creating-and-running-sql-scripts">Creating and running SQL scripts</h1>
+<h2 id="steps-5">Steps</h2>
+<h3 id="step-13-getting-started-with-scripts">Step 13: Getting Started with Scripts</h3>
+<ul>
+<li><p>Log out from user OMLUSER2 and log in as OMLUSER1.
+The “Run SQL Statement” link on the home page allows you to run a single query in a paragraph. To be able to run scripts you can use the “Create a SQL Script” link on the home page.</p></li>
+<li><p>On the OML home page click <strong>Create a SQL Script</strong> link within the <strong>Quick Actions</strong> panel.</p></li>
+</ul>
+<p><img src="./images/700/Picture700-45.png" alt="" /></p>
+<ul>
+<li>A new <strong>SQL scratchpad</strong> will be created with the <strong>%script</strong> identifier already selected, this identifier allows you to run
+multiple SQL statements.</li>
+</ul>
+<p><img src="./images/700/Picture700-46.png" alt="" /></p>
+<p>Notice that the script paragraph does not have any menus to control the display and formatting of the output. You can, however, use SQL SET commands to control how data is formatted for display.</p>
+<h3 id="step-14-creating-and-running-a-sql-script">Step 14: Creating and running a SQL script</h3>
+<p>In this section we are going to use a script from a SQL pattern matching tutorial, <a href="https://livesql.oracle.com/apex/livesql/file/tutorial_EWB8G5JBSHAGM9FB2GL4V5CAQ.html" target="_blank">Sessionization with MATCH_RECOGNIZE and JSON</a>, on the free Oracle <a href="http://livesql.oracle.com/" target="_blank">livesql.oracle.com</a> site. This script shows how to use the SQL pattern matching <strong>MATCH_RECOGNIZE</strong> feature for sessionization analysis based on <strong>JSON</strong> web log files.</p>
+<ul>
+<li>Copy and paste <a href="./scripts/700/Sessionization_with_MATCH_RECOGNIZE_and_JSON.txt" target="_blank">this code snippet</a> into the <strong>%script</strong> paragraph. After pasting the above code into the script paragraph it should look something like this:</li>
+</ul>
+<p><img src="./images/700/Picture700-47.png" alt="" /></p>
+<ul>
+<li>You can then run the script/paragraph and the output will appear below the code that makes up the script.</li>
+</ul>
+<p><img src="./images/700/Picture700-19.png" alt="" /></p>
+<ul>
+<li>The result should look something like this:</li>
+</ul>
+<p><img src="./images/700/Picture700-48.png" alt="" /></p>
+<ul>
+<li>You have completed all of the steps in this lab.</li>
+</ul>

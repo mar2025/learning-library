@@ -1,0 +1,472 @@
+<h1 id="unit-9-creating-application-page-controls">Unit 9: Creating Application Page Controls</h1>
+<p>This exercise includes four hands-on-labs. The labs cover creating and updating page items, adjusting button properties, and making the form pages visually appealing. You also create and use Dynamic and Static List of Values.</p>
+<p><strong>HOL 9-1 Updating the Team Members Pages</strong>: In this hands-on lab, you update the page items on the form, and create a new collapsible sub-region to include the audit details.</p>
+<p><strong>HOL 9-2 Updating the Projects Pages</strong>: In this hands-on lab, you update the page items on the form, and create a new collapsible sub-region by copying it from another page in the application. You also create and use dynamic list of values.</p>
+<p><strong>HOL 9-3 Updating the Milestones Pages</strong>: This hands-on lab covers updating item properties, creating and using dynamic and static list of values.</p>
+<p><strong>HOL 9-4 Updating the Tasks Pages</strong>: In this hands-on lab, you create a new page item, update existing items on the form, and create a collapsible sub-region. You also use the list of values created as shared components.</p>
+<h2 id="hol-9-1-updating-the-team-members-pages">HOL 9-1 Updating the Team Members Pages</h2>
+<p>In this lab, you update the page items on the form page. You create an Audit Details collapsible sub-region on the form page. You make the form page visually appealing. This lab also covers updating the button properties and adjusting the button display on the interactive grid.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Demo Projects</strong> application.
+In the navigation menu, click <strong>Demo Proj Team Members</strong>.
+In the Developer Toolbar, click <strong>Edit Page 2</strong>.</p></li>
+<li><p>By default, buttons are positioned in the region they are associated with. Move the Create button at the top of the page to the Breadcrumbs region. In the Rendering tree, locate the CREATE button under Content Body. Click and hold the <strong>CREATE</strong> button and drag it up into the Breadcrumbs region. </br>
+<img src="images/hol09/image3.png" alt="1a" /></p></li>
+<li><p>The CREATE button will appear as a child within its own Region Buttons folder.
+<img src="images/hol09/image4.png" alt="1b" /></p></li>
+<li><p>In the Property Editor:</p>
+<ul>
+<li><p>Identification: Label - enter <strong>Add Team Member</strong></p></li>
+<li><p>Layout: Button Position - select <strong>Create</strong></p></li>
+<li><p>Appearance: Hot - select <strong>Yes</strong></p></li></ul>
+<p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>. </br>
+<img src="images/hol09/image5.png" alt="1c" /></p></li>
+<li><p>Navigate back to page designer. You want to view Page 3 now. In the toolbar, click the <strong>Navigate to next page</strong> arrow.
+<img src="images/hol09/image6.png" alt="1d" /></p></li>
+<li><p>The generated page includes a page item for every column in the Demo_Proj_Team_Members tables. You need to make the following changes:</p>
+<ul>
+<li><p>Make the Username and Full Name fields mandatory. If either of these fields are left blank when the record is saved, then an error message should display</p></li>
+<li><p>You expect users to enter multiple lines of information into the Profile field. Therefore, you need to convert the Profile item type to Textarea</p></li>
+<li><p>Alter the Photo Blob field to support file upload to a table</p></li>
+<li><p>Since the other photo fields are populated when a file is uploaded, these items must be hidden from users</p></li></ul>
+<p>Perform the following steps:</p>
+<p>a)  In the Rendering tree, under Content Body, expand the <strong>Items</strong> node. Press and hold the Ctrl key to select more than one item. Select <strong>P3_USERNAME</strong> and <strong>P3_FULL_NAME</strong> .</p>
+<p>b)  In the Property Editor, for Appearance &gt; Template, select <strong>Required</strong>.
+    For Validation &gt; Value Required, select <strong>Yes</strong>.
+    <img src="images/hol09/image7.png" alt="1e" /></p>
+<p>c)  In the Rendering tree, click the <strong>P3_PROFILE</strong> item.
+    In the Property Editor: Identification: Type - select <strong>Textarea</strong> 
+    <img src="images/hol09/image8.png" alt="1f" /></p>
+<p>d)  In the Rendering tree, click the P3_PHOTO_BLOB item. For Label, enter <strong>Photo</strong>.
+    <img src="images/hol09/image9.png" alt="1g" /></p>
+<p>e)  In the Layout, hold the Ctrl key and click these items to select more than one: <strong>P3_PHOTO_FILENAME</strong>, <strong>P3_PHOTO_MIMETYPE</strong>, <strong>P3_PHOTO_CHARSET</strong>, and <strong>P3_PHOTO_LAST_UPDATED</strong>.
+    In the Property Editor under Identification, click the Type Quick Pick button and select <strong>Hidden</strong>. </br>
+    <img src="images/hol09/image10.png" alt="1h" /></p></li>
+<li><p>The tables you created earlier include audit columns for storing when and who created and last updated each record. End users should never be allowed to enter data into these columns. Furthermore, these columns should not display when the user creates a new record.
+Given that audit information is only reviewed occasionally, it is preferable to add these columns into a separate, collapsible region, so they can be reviewed when necessary, but do not take up excessive screen real estate the majority of time.
+Reconfigure the audit columns to be <em>Display Only</em> and place them in a conditional sub-region.
+In the Rendering tree, right-click <strong>Edit DEMO_PROJ_TEAM_MEMBERS</strong> and select <strong>Create Sub Region</strong>.
+<img src="images/hol09/image11.png" alt="1i" /></p></li>
+<li><p>In the Property Editor, for the New region: Identification: Title - enter <strong>Audit Details</strong>.
+For Appearance&gt;Template, select <strong>Collapsible</strong>.
+Click <strong>Use Template Defaults, Expanded, Scroll-Default</strong>.
+<img src="images/hol09/image12.png" alt="1j" /></p></li>
+<li><p>In the Template Options dialog, select <strong>Collapsed</strong> for Default State.
+Select <strong>Remove UI Decoration</strong> for Style, and click <strong>OK</strong>.
+<img src="images/hol09/image13.png" alt="1k" /></p></li>
+<li><p>In the property editor, navigate to Server-side Condition. For Type, select <strong>Item is NOT NULL</strong>. Select <strong>P3_ID</strong> from the Item list.
+<img src="images/hol09/image14.png" alt="1l" /></p></li>
+<li><p>Move the audit columns into the new region. From the Rendering tree or Grid Layout, hold the Ctrl key and click these items to select them: <strong>P3_CREATED</strong>, <strong>P3_CREATED_BY</strong>, <strong>P3_UPDATED</strong>, and <strong>P3_UPDATED_BY</strong>.
+In the property editor, for Identification &gt; Type, select <strong>Display Only</strong>.
+For Layout &gt; Region, select <strong>..Audit Details</strong>.
+Click <strong>Save</strong>.
+<img src="images/hol09/image15.png" alt="1m" /></p></li>
+<li><p>Page 3 is a dialog and so you cannot run it directly. Navigate to the application runtime environment. In the navigation menu, click <strong>Demo Proj Team Members</strong>.
+Notice the <strong>Add Team Member</strong> button.
+In the report, select a team member record to view the improved modal dialog.
+<img src="images/hol09/image16.png" alt="1n" />
+<img src="images/hol09/image17.png" alt="1o" /></p></li>
+</ol>
+<h2 id="hol-9-2-updating-the-projects-pages">HOL 9-2 Updating the Projects Pages</h2>
+<p>In this lab, you update the page items on the form page. This lab covers creating and using List of Values. You create both static and dynamic list of values. You create an Audit Details collapsible sub-region on the form page.</p>
+<ol>
+<li><p>In the application runtime environment, click <strong>Demo Projects</strong>.
+Then, in the Developer toolbar, click <strong>Edit Page 4</strong>.</p></li>
+<li><p>The Project Lead column is currently displaying an identifier instead of the team member's name. Defining a List of Values within Shared Components enables the same control to be used on this page and also the form page for projects.
+In Page Designer, click the <strong>Shared Components</strong> button, found on the right side of the toolbar (not in the Rendering tree).
+<img src="images/hol09/image18.png" alt="2a" /></p></li>
+<li><p>Under Other Components, click <strong>List of Values</strong>.
+<img src="images/hol09/image19.png" alt="2b" /></p></li>
+<li><p>Then, click <strong>Create</strong>.</p></li>
+<li><p>For Create List of Values, select <strong>From Scratch</strong> and click <strong>Next</strong>.</p></li>
+<li><p>Enter <strong>Team Members</strong> for Name, select <strong>Dynamic</strong> for Type, and click <strong>Next</strong>.
+<img src="images/hol09/image20.png" alt="2c" /></p></li>
+<li><p>For Query, replace the existing SQL with the following and click <strong>Create List of Values</strong>.</p>
+<pre><code> select full_name as display,
+ id as return 
+ from demo_proj_team_members   
+ order by 1                                 
+</code></pre>
+<p><img src="images/hol09/image21.png" alt="2d" /></p></li>
+<li><p>Click <strong>Edit Page 4</strong> on the toolbar, to return to Page Designer.
+<img src="images/hol09/image22.png" alt="2e" /></p></li>
+<li><p>In the Rendering tree, expand the <strong>Columns</strong> node under the DEMO_PROJECTS region.
+Click the <strong>PROJECT_LEAD</strong> column.</p></li>
+<li><p>In the property editor:</p></li>
+</ol>
+<ul>
+<li>Identification &gt; Type: select <strong>Select List</strong></li>
+<li>Heading &gt; Alignment: select <strong>Start</strong></li>
+<li>Layout &gt; Column Alignment: select <strong>Start</strong></li>
+<li>List of Values &gt; Type: select <strong>Shared Component</strong></li>
+<li>List of Values: select <strong>Team Members</strong>
+Click <strong>Save</strong>.
+<img src="images/hol09/image23.png" alt="2f" /></li>
+</ul>
+<ol>
+<li><p>It would look more aesthetically pleasing to place the Create button at the top of the page.
+In the Layout, locate the Breadcrumbs region. Note that there are several elements surrounded by dotted lines. These are placeholders for buttons.
+Locate the DEMO_PROJECTS region. Click and hold the <strong>Create</strong> button and drag it up to the Breadcrumbs region and into the Create placeholder.
+<img src="images/hol09/image24.png" alt="2g" />
+<img src="images/hol09/image25.png" alt="2h" /></p></li>
+<li><p>In the property editor, enter <strong>Create Project</strong> for label.
+Under Appearance, select <strong>Yes</strong> for Hot.</p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p></li>
+<li><p>Your screen might look like:
+<img src="images/hol09/image26.png" alt="2i" /></p></li>
+<li><p>You need to update page items on the Maintain Project form page. Click a project name and then in the Developer Toolbar, click <strong>Edit Page 5</strong>.</p></li>
+<li><p>In the Layout, under Content Body, click the <strong>P5_NAME</strong> item. In the Property Editor:</p>
+<ul>
+<li><p>Appearance: Template – select <strong>Required</strong></p></li>
+<li><p>Appearance: Width – enter <strong>60</strong></p></li>
+<li><p>Validation: Value Required – select <strong>Yes</strong>
+<img src="images/hol09/image27.png" alt="2j1" /></p></li></ul></li>
+<li><p>In the Layout, under Content Body, click the <strong>P5_DESCRIPTION</strong> item. In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Type – select <strong>Text Area</strong></p></li>
+<li><p>Appearance: Width – enter <strong>70</strong> </br>
+<img src="images/hol09/image28.png" alt="2j2" /></p></li>
+</ul>
+<ol>
+<li>In the Layout, under Content Body, click the <strong>P5_PROJECT_LEAD</strong> item. In the Property Editor:</li>
+</ol>
+<ul>
+<li><p>Identification: Type– select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type – select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values – select <strong>Team Members</strong></p></li>
+<li><p>List of Values: Display Extra Values – select <strong>No</strong></p></li>
+<li><p>List of Values: Null Display Value – enter <strong>-Select Team Member-</strong>
+<img src="images/hol09/image29.png" alt="2j3" /></p></li>
+</ul>
+<ol>
+<li>Next define a static list of statuses. You can not define a dynamic list, as you did for TEAM_MEMBERS, as there is no separate table which stores the statuses. In the Layout, locate the <strong>P5_STATUS</strong> item.
+In the Property Editor:</li>
+</ol>
+<ul>
+<li><p>Identification: Type: select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type: select <strong>Static Values</strong></p></li>
+<li><p>List of Values: Static Values – enter <strong>STATIC2:Assigned,In-Progress,Completed</strong></p></li>
+<li><p>List of Values: Display Extra Values – select <strong>No</strong></p></li>
+<li><p>List of Values: Display Null Value – select <strong>No</strong></p>
+<p><strong>Note</strong>: By specifying STATIC2 the records will be displayed in the order entered, rather than in alphabetic order.</p>
+<p><img src="images/hol09/image30.png" alt="2j4" /></p></li>
+</ul>
+<ol>
+<li><p>Click the <strong>P5_COMPLETED_DATE</strong> item.
+In the property editor, under Appearance, select <strong>Required</strong> for Template.
+Then, click <strong>Save</strong>. </br>
+<img src="images/hol09/image31.png" alt="2j5" /></p></li>
+<li><p>In the lab HOL 9-1, you created a sub-region called Audit Details for the Maintain Team Member page (Page 3). Since the four items included in that region are the same as those on the Maintain Project page and are associated with the exact same database columns, you can copy them to the Maintain Project page. This approach is easier than creating a new region and updating the items. Copying the region will also copy the previously defined template and template options. </br>
+Delete the four audit items before copying the Audit Details region to this page. If you do not delete them, the item names in the copied Audit Details region will be renamed with a unique name (for example, P5_CREATED will be renamed to P5_CREATED_1) to ensure all page items have unique names. Although this renaming will not break the page processing, Oracle does not recommend this approach. </br>
+In the Layout, hold the Ctrl key and select the items: <strong>P5_CREATED</strong>, <strong>P5_CREATED_BY</strong>, <strong>P5_UPDATED</strong>, and <strong>P5_UPDATED_BY</strong>. </br>
+Then, right-click and select <strong>Delete</strong>. </br>
+<img src="images/hol09/image32.png" alt="2k1" /></p>
+<p>Click <strong>Save</strong>. </br></p></li>
+<li><p>In page designer, navigate to <strong>Page 3</strong>.</p></li>
+<li><p>In the Rendering tree, right-click the <strong>Audit Details</strong> sub region and select <strong>Copy to other Page….</strong>
+<img src="images/hol09/image33.png" alt="2k2" /></p></li>
+<li><p>Enter <strong>5</strong> for To Page and select <strong>Yes</strong> for Copy Region Items. Click <strong>Next</strong>.
+<img src="images/hol09/image34.png" alt="2k3" /></p></li>
+<li><p>Click <strong>Copy</strong>.
+<img src="images/hol09/image35.png" alt="2k4" /></p></li>
+<li><p>In Page Designer, navigate back to <strong>Page 5</strong>.</p></li>
+<li><p>In the Rendering tree, select the <strong>Audit Details</strong> sub region.
+In the Property Editor, for Layout: Parent Region select <strong>Edit DEMO_PROJECTS</strong>.
+<img src="images/hol09/image36.png" alt="2k5" /></p></li>
+<li><p>Now, reposition the buttons. Under Rendering &gt; Buttons &gt; Region Buttons, select <strong>CANCEL</strong>. In the property editor, for Layout: Button Position select <strong>Previous</strong>.
+Click <strong>Save</strong>.
+<img src="images/hol09/image37.png" alt="2k6" /></p></li>
+<li><p>Navigate to the Demo Projects application runtime environment.
+In the navigation menu, click <strong>Demo Projects</strong>.
+Click a project name. Notice the modified dialog. Expand the Audit Details node.
+<img src="images/hol09/image38.png" alt="2k7" /></p></li>
+</ol>
+<h2 id="hol-9-3-updating-the-milestones-pages">HOL 9-3 Updating the Milestones Pages</h2>
+<p>In this lab, you update the page items on the form page. You create the Audit Details collapsible sub-region by copying it from another page in the application. You make the form page visually appealing. This lab also covers creating and using list of values.</p>
+<ol>
+<li><p>In the Demo Projects application runtime environment, click <strong>Demo Proj Milestones</strong> in the navigation menu.
+In the Developer Toolbar, click <strong>Edit Page 6</strong>.</p></li>
+<li><p>The Project Id column is currently displaying an identifier instead of the project name. Defining a List of Values within Shared Components enables the same control to be used on this page, the form page for milestones, and the task pages.
+In Page Designer, click <strong>Shared Components</strong> found on the right on the toolbar.</p></li>
+<li><p>Under Other Components, click <strong>List of Values</strong>.</p></li>
+<li><p>Click <strong>Copy</strong>.
+<img src="images/hol09/image39.png" alt="3a" /></p></li>
+<li><p>Select <strong>Team Members-Dynamic</strong> from Copy List of Values.
+Enter <strong>Projects</strong> for New List of Values Name.
+Click <strong>Copy</strong>.</p></li>
+<li><p>Click the Projects List of Values entry.
+<img src="images/hol09/image40.png" alt="3b" /></p></li>
+<li><p>For Query, replace the existing SQL with the following.</p>
+<pre><code>  select name as display
+
+  , id as return
+
+  from demo_projects
+
+  order by 1
+</code></pre>
+<p>Click <strong>Apply Changes</strong>.</p></li>
+<li><p>Click <strong>Edit Page 6</strong> on the toolbar, to return to Page Designer.
+<img src="images/hol09/image41.png" alt="3c" /></p></li>
+<li><p>In the Rendering tree, expand the Columns node under the DEMO_PROJ_MILESTONES region.
+Select the <strong>PROJECT_ID</strong> column.
+In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>PROJECTS</strong></p></li>
+<li><p>Heading: Heading - enter <strong>Project</strong></p></li>
+<li><p>Layout: Column Alignment - select <strong>start</strong></p></li></ul>
+<p><img src="images/hol09/image42.png" alt="3d1" /></br>
+<img src="images/hol09/image43.png" alt="3d2" /></p></li>
+<li><p>The Name column is ambiguous and should be relabeled.
+In the Rendering tree, click the Name column.
+In the Property Editor, for Heading enter <strong>Milestone</strong>.</p></li>
+<li><p>Reposition the CREATE button to the top of the page.
+Locate the DEMO_PROJ_MILESTONES region and select the <strong>Create</strong> button.</p></li>
+<li><p>In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Label - enter <strong>Create Milestone</strong></p></li>
+<li><p>Layout: Region - select <strong>Breadcrumbs</strong></p></li>
+<li><p>Layout: Button Position - select <strong>Create</strong></p></li>
+<li><p>Appearance: Hot - select <strong>Yes</strong></p>
+<p><img src="images/hol09/image44.png" alt="3e" /></p></li>
+</ul>
+<ol>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.
+<img src="images/hol09/image45.png" alt="3f" /></p></li>
+<li><p>Click a project name. In the Developer Toolbar, click <strong>Edit Page 7</strong>.</p></li>
+<li><p>Update the page items. Under Rendering, expand Items, select the <strong>P7_PROJECT_ID</strong> item. In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>Label: Label - enter <strong>Project</strong></p></li>
+<li><p>Appearance: Template - select <strong>Required</strong></p></li>
+<li><p>Validation: Value Required - select <strong>Yes</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>PROJECTS</strong></p></li>
+<li><p>List of Values: Display Extra Values - select <strong>No</strong></p></li>
+<li><p>List of Values: Null Display Value - enter <strong>– Select Project –</strong> </br></p>
+<p><img src="images/hol09/image46.png" alt="3g1" /> </br>
+<img src="images/hol09/image47.png" alt="3g2" /></p></li>
+</ul>
+<ol>
+<li>In the Rendering tree, select the <strong>P7_NAME</strong> item. In the Property Editor:</li>
+</ol>
+<ul>
+<li><p>Label: Label - enter <strong>Milestone</strong></p></li>
+<li><p>Appearance: Template - select <strong>Required</strong></p></li>
+<li><p>Appearance: Width - enter <strong>60</strong></p></li>
+<li><p>Validation: Value Required - select <strong>Yes</strong></p></li>
+</ul>
+<ol>
+<li>In the Layout, select the <strong>P7_DESCRIPTION</strong> item. In the Property Editor:</li>
+</ol>
+<ul>
+<li><p>Identification: Type - select <strong>Textarea</strong></p></li>
+<li><p>Appearance: Width - enter <strong>70</strong></p></li>
+</ul>
+<ol>
+<li><p>Delete the four audit items from the Maintain Milestone page. Under Rendering, hold the Ctrl key and select the items: <strong>P7_CREATED</strong>, <strong>P7_CREATED_BY</strong>, <strong>P7_UPDATED</strong>, and <strong>P7_UPDATED_BY</strong>.
+Then, right-click and select <strong>Delete</strong>.
+<img src="images/hol09/image48.png" alt="3h" />
+Click <strong>Save</strong>.</p></li>
+<li><p>Copy the Audit Details region from Page 3 to Page 7. In page designer, navigate to <strong>Page 3</strong>.</p></li>
+<li><p>In the Rendering tree, right-click the <strong>Audit Details</strong> sub region and select <strong>Copy to other Page….</strong>
+<img src="images/hol09/image33.png" alt="2k2" /></p></li>
+<li><p>Enter <strong>7</strong> for To Page and select <strong>Yes</strong> for Copy Region Items. Click <strong>Next</strong>.</p></li>
+<li><p>Click <strong>Copy</strong>.</p></li>
+<li><p>In Page Designer, navigate back to <strong>Page 7</strong>.</p></li>
+<li><p>In the Rendering tree, select the <strong>Audit Details</strong> sub region. In the Property Editor, for Layout: Parent Region select <strong>Edit DEMO_PROJ_MILESTONES</strong>. </br>
+<img src="images/hol09/image49.png" alt="3I" /></p></li>
+<li><p>Now, reposition the buttons. Under Rendering &gt; Buttons &gt; Region Buttons, select <strong>CANCEL</strong>. In the property editor, for Layout: Button Position select <strong>Previous</strong>.</p></li>
+<li><p>Click <strong>Save</strong>.
+Navigate to the application runtime environment and click <strong>Demo_Proj_Milestones</strong>.
+Click any milestone to see the modified dialog.
+<img src="images/hol09/image50.png" alt="3j" /></p></li>
+</ol>
+<h2 id="hol-9-4-updating-the-tasks-pages">HOL 9-4 Updating the Tasks Pages</h2>
+<p>In this lab, you update the page items on the form page. You use list of values created as shared components. This lab also covers creating a new page item on the form page. You make the form page visually appealing.</p>
+<ol>
+<li><p>In the Demo Projects application runtime environment, click Demo Proj Tasks in the navigation menu.
+In the Developer Toolbar, click <strong>Edit Page 8</strong>.</p></li>
+<li><p>The Project Id, Milestone Id, and Assignee columns are currently displaying identifiers instead of the names. You already created a List of Values for projects and assignees (Team Members). Therefore, you only need to create a List of Values for milestones.
+In Page Designer, click <strong>Shared Components</strong> found on the right on the toolbar.</p></li>
+<li><p>Under Other Components, click <strong>List of Values</strong>.</p></li>
+<li><p>Click <strong>Copy</strong>.</p></li>
+<li><p>Select <strong>Projects-Dynamic</strong> from Copy List of Values.
+Enter <strong>Milestones</strong> for New List of Values Name.
+Click <strong>Copy</strong>.
+<img src="images/hol09/image51.png" alt="4a" /></p></li>
+<li><p>Click the <strong>Milestones</strong> List of Values entry.</p></li>
+<li><p>For Query, replace the existing SQL with the following.</p>
+<pre><code>  select name as display
+
+  , id as return
+
+  from demo_proj_milestones
+
+  order by 1
+</code></pre>
+<p><img src="images/hol09/image52.png" alt="4b" /> </br>
+Click <strong>Apply Changes</strong>.</p></li>
+<li><p>Click <strong>Edit Page 8</strong> on the toolbar, to return to Page Designer.</p></li>
+<li><p>In the Rendering tree, locate the DEMO_PROJ_TASKS region. Expand the <strong>Columns</strong> node, and click the <strong>ASSIGNEE</strong> column. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>TEAM MEMBERS</strong></p></li>
+<li><p>Layout: Column Alignment - select <strong>start</strong></p></li></ul>
+<p><img src="images/hol09/image53.png" alt="4c" /></p></li>
+<li><p>In the Rendering tree, click the <strong>PROJECT_ID</strong> column. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>PROJECTS</strong></p></li>
+<li><p>Heading: Heading - enter <strong>Project</strong></p></li>
+<li><p>Layout: Column Alignment - select <strong>start</strong></p></li></ul></li>
+<li><p>In the Rendering tree, click the <strong>MILESTONE_ID</strong> column. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>MILESTONES</strong></p></li>
+<li><p>Heading: Heading - enter <strong>Milestone</strong></p></li>
+<li><p>Layout: Column Alignment - select <strong>start</strong></p></li></ul></li>
+<li><p>The Name column is ambiguous and should be relabeled. In the Rendering tree, click the <strong>NAME</strong> column.
+In the Property Editor, for Heading enter <strong>Task.</strong></p></li>
+<li><p>The IS_COMPLETE_YN column should be relabeled and the values should be Yes / No, rather than Y / N. To change the displayed value, you can either modify the SQL Source for the report, or define a List of Values.
+In the Rendering tree, select the <strong>DEMO_PROJ_TASKS</strong> region.</p></li>
+<li><p>For the SQL Query, replace "IS_COMPLETE_YN", with the following:</p>
+<p><code>decode (IS\_COMPLETE\_YN, 'Y', 'Yes', 'No') as "IS\_COMPLETE\_YN",</code></p>
+<p><img src="images/hol09/image54.png" alt="4d" /></p></li>
+<li><p>In the Rendering tree, click the <strong>IS_COMPLETE_YN</strong> column.
+In the Property Editor, for Heading enter <strong>Completed?</strong></p></li>
+<li><p>Reposition the CREATE button to the top of the page. Locate the <strong>DEMO_PROJ_TASKS</strong> region.
+Select the <strong>Create</strong> button.
+In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Label - enter <strong>Create Task</strong></p></li>
+<li><p>Layout: Region - select <strong>Breadcrumbs</strong></p></li>
+<li><p>Layout: Button Position - select <strong>Create</strong></p></li>
+<li><p>Appearance: Hot - select <strong>Yes</strong></p>
+<p><img src="images/hol09/image55.png" alt="4e" /></p></li>
+</ul>
+<ol>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p></li>
+<li><p>In the interactive grid, rearrange the Task and Assignee columns so that Task is displayed first followed by Assignee.
+Then, click <strong>Actions &gt; Report &gt; Save</strong>. The default report is saved for all users.</p></li>
+<li><p>Your screen should look like:
+<img src="images/hol09/image56.png" alt="4f" /></p></li>
+<li><p>In the interactive grid, click a task. Then, in the Developer Toolbar, click <strong>Edit Page 9</strong>.</p></li>
+<li><p>Update the page items. The first requirement is to shuffle the page items, using drag and drop in either the Rendering tree or the Layout, such that the items are in the following order:</p></li>
+</ol>
+<ul>
+<li><p>P9_PROJECT_ID</p></li>
+<li><p>P9_MILESTONE_ID</p></li>
+<li><p>P9_NAME</p></li>
+<li><p>P9_DESCRIPTION</p></li>
+<li><p>P9_ASSIGNEE</p></li>
+<li><p>P9_START_DATE</p></li>
+<li><p>P9_END_DATE</p></li>
+<li><p>P9_IS_COMPLETE_YN</p>
+<p><img src="images/hol09/image57.png" alt="5a" /></p></li>
+</ul>
+<ol>
+<li><p>Under Rendering, select the <strong>P9_PROJECT_ID</strong> item. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>Label: Label - enter <strong>Project</strong></p></li>
+<li><p>Appearance: Template - select <strong>Required</strong></p></li>
+<li><p>Validation: Value Required - select <strong>Yes</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>PROJECTS</strong></p></li>
+<li><p>List of Values: Display Extra Values - select <strong>No</strong></p></li>
+<li><p>List of Values: Null Display Value - enter <strong>– Select Project –</strong></p></li></ul></li>
+<li><p>The Milestones item should be defined as a Cascading List of Values, whereby only the milestones for the currently selected Project item are displayed. In the Layout, under Content Body, click the <strong>P9_MILESTONE_ID</strong> item. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>Label: Label - enter <strong>Milestone</strong></p></li>
+<li><p>List of Values: Type - select <strong>SQL Query</strong></p></li>
+<li><p>List of Values: SQL Query - cut and paste the following:</p>
+<pre><code>  select name as display, id as return
+
+  from demo_proj_milestones
+
+  where project_id = :P9_PROECT_ID
+
+  order by 1
+</code></pre></li>
+<li><p>List of Values: Display Extra Values - select <strong>No</strong></p></li>
+<li><p>List of Values: Null Display Value - enter <strong>- Select Milestone -</strong></p></li>
+<li><p>List of Values: Cascading LOV Parent Item(s) - select <strong>P9_PROJECT_ID</strong></p></li></ul>
+<p><strong>Note</strong>: You cannot use the MILESTONES List of Values for this item, as this query needs to limit the milestone records returned to those for the selected project, using P9_PROJECT_ID. </br>
+<img src="images/hol09/image58.png" alt="5b" /></br>
+<img src="images/hol09/image59.png" alt="5c" /></p></li>
+<li><p>In the Rendering tree, click the <strong>P9_NAME</strong> item. In the Property Editor:</p>
+<ul>
+<li><p>Label: Label - enter <strong>Task</strong></p></li>
+<li><p>Appearance: Template - select <strong>Required</strong></p></li>
+<li><p>Appearance: Width - enter <strong>60</strong></p></li>
+<li><p>Validation: Value Required - select <strong>Yes</strong></p></li></ul></li>
+<li><p>In the Layout, click the <strong>P9_DESCRIPTION</strong> item. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Textarea</strong></p></li>
+<li><p>Appearance: Width - enter <strong>70</strong></p></li></ul></li>
+<li><p>In the Grid Layout, under Content Body, click the <strong>P9_ASSIGNEE</strong> item. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Select List</strong></p></li>
+<li><p>List of Values: Type - select <strong>Shared Component</strong></p></li>
+<li><p>List of Values: List of Values - select <strong>TEAM_MEMBERS</strong></p></li>
+<li><p>List of Values: Display Extra Values - select <strong>No</strong></p></li>
+<li><p>List of Values: Null Display Value - enter <strong>- Select Assignee –</strong></p></li></ul></li>
+<li><p>In the Rendering tree, click the <strong>P9_IS_COMPLETE_YN</strong> item. In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Type - select <strong>Switch</strong></p></li>
+<li><p>Label: Label - enter <strong>Completed?</strong></p>
+<p><img src="images/hol09/image60.png" alt="5d" /></p></li>
+</ul>
+<ol>
+<li><p>Delete the four audit items from the Maintain Milestone page. In the Rendering tree, hold the Ctrl key and click these to select them all: <strong>P9_CREATED</strong>, <strong>P9_CREATED_BY</strong>, <strong>P9_UPDATED</strong>, and <strong>P9_UPDATED_BY</strong>.
+Then, right-click and select <strong>Delete</strong>.</p></li>
+<li><p>Click <strong>Save</strong>.</p></li>
+<li><p>Copy the Audit Details region from Page 3 to Page 9. In page designer, navigate to <strong>Page 3</strong>.</p></li>
+<li><p>In the Rendering tree, right-click the <strong>Audit Details</strong> sub region and select <strong>Copy to other Page….</strong>
+<img src="images/hol09/image33.png" alt="2k2" /></p></li>
+<li><p>Enter <strong>9</strong> for To Page and select <strong>Yes</strong> for Copy Region Items. Click <strong>Next</strong>.</p></li>
+<li><p>Click <strong>Copy</strong>.</p></li>
+<li><p>In Page Designer, navigate back to <strong>Page 9</strong>.</p></li>
+<li><p>In the Rendering tree, select the <strong>Audit Details</strong> sub region.
+In the Property Editor, for Parent Region select <strong>Edit DEMO_PROJ_TASKS</strong>.
+Click <strong>Save</strong>.</p></li>
+<li><p>Given that the Maintain Task page is a normal page, rather than a modal page, you can simply click <strong>Save and Run Page</strong> to review the page.
+<img src="images/hol09/image61.png" alt="5e" /></p></li>
+<li><p>The Maintain Task displays the region title Edit DEMO_TASKS and also has a border around the region. Click <strong>Edit Page 9</strong> in the Develop Toolbar, to return to Page Designer.</p></li>
+<li><p>In the Rendering tree, click the <strong>Edit DEMO_TASKS</strong> region. In the Property Editor, click the Template Options button.
+<img src="images/hol09/image62.png" alt="5f" /></p></li>
+<li><p>In the Template Options dialog, input the following:</p>
+<ul>
+<li><p>Header - select Hidden but accessible</p></li>
+<li><p>Style - select Remove UI Decoration</p></li></ul>
+<p>Click <strong>OK</strong>.
+<img src="images/hol09/image63.png" alt="5g" /></p></li>
+<li><p>It would also be beneficial to include the Milestone Due Date on the page so it can be compared to the Task End Date. To facilitate this add a display only item and then populate the item based on the selected Milestone.
+In the Layout, click the bottom divider to display the Gallery. In the Gallery, click <strong>Items</strong> and locate <strong>Display Only</strong>.
+<img src="images/hol09/image64.png" alt="5h" /></p></li>
+<li><p>Click and hold <strong>Display Only</strong> and drag it to the left of the <strong>P9_MILESTONE_ID</strong> in the Layout.</p>
+<p>You will need to hover to the left of the existing item before the dark yellow box displays next to the existing item.
+<img src="images/hol09/image65.png" alt="5i" /></p></li>
+<li><p>Set the attributes for the new item. In the Property Editor:</p>
+<ul>
+<li><p>Identification: Name - enter <strong>P9_MILESTONE_DUE_DATE</strong></p></li>
+<li><p>Label: Label - enter <strong>Due Date</strong></p></li>
+<li><p>Settings: Save Session State - select <strong>No</strong></p></li>
+<li><p>Source: Type - select <strong>Null</strong></p></li></ul>
+<p><strong>Note</strong>: This item is display only and is not based on a Database Column. As such it is very important to not save session state for this item and to set the source type appropriately.</br>
+<img src="images/hol09/image66.png" alt="5j" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol09/image67.png" alt="Snap3.jpeg" /></p>

@@ -1,0 +1,205 @@
+<h1 id="unit-10-adding-computations-processes-and-validations">Unit 10: Adding Computations, Processes, and Validations</h1>
+<p>This exercise includes four hands-on-labs.</p>
+<p>HOL 10-1 uses the Demo Projects application.</p>
+<p>HOL 10-2, HOL 10-3, and HOL 10-4 use the Budget App application.</p>
+<p><strong>HOL 10-1 Implementing Validations on the Maintain Project Page</strong>: In this lab, you create and use validations on the Maintain Project page.</p>
+<p><strong>HOL 10-2 Creating and Using a Computation</strong>: In this lab, you create a computation that changes the value of a field entered using the form to uppercase after the page is submitted</p>
+<p><strong>HOL 10-3 Creating and Using a Process</strong>: This lab covers creating an After Submit process on the Project Budget form page</p>
+<p><strong>HOL 10-4 Creating and Using Validations</strong>: In this hands-on lab, you create a not null validation and a validation to ensure that the item is numeric.</p>
+<h2 id="hol-10-1-implementing-validations-on-the-maintain-project-page">HOL 10-1: Implementing Validations on the Maintain Project Page</h2>
+<p>In this lab, you add validations to the Maintain Projects page so that when a user changes the status to Completed, they add the Completed Date and that it is not forward-dated.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Demo Projects</strong> application.
+In the navigation menu, click <strong>Demo Projects</strong> and then in the Interactive Grid, click a project name.
+In the Developer Toolbar, click <strong>Edit Page 5</strong>.</p></li>
+<li><p>In the page designer, click the <strong>Processing</strong> tab.
+Right-click <strong>Validating</strong> and select <strong>Create Validation</strong>.</br>
+<img src="images/hol10/image3.png" alt="7a" /> </br>
+In the central pane, click the <strong>Help</strong> tab. </br></p>
+<p><strong>Note</strong>: The help text displays the currently selected attribute in the Property Editor (right pane). For example, clicking on the Validation Type attribute label (not the select list) displays a list of all the available options, together with a description of when each option will pass (not display the error message) or fail (displays the error message).</p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification: Name - enter <strong>Completed Date is Not Null</strong></p></li>
+<li><p>Validation: Type - select <strong>Item is NOT NULL</strong></p></li>
+<li><p>Validation: Item - select <strong>P5_COMPLETED_DATE</strong></p></li>
+<li><p>Error: Error Message - select the Error Message attribute label (not the data entry area), at which point the Help pane will display the help text for Error Message. On the Help pane under Examples, copy and paste <strong>#LABEL# must have some value.</strong> into the Property Editor attribute</p></li>
+<li><p>Condition: Type - select <strong>Item = Value</strong></p></li>
+<li><p>Condition: Item - select <strong>P5_STATUS_CD</strong></p></li>
+<li><p>Condition: Value - enter <strong>Completed</strong></p>
+<p><strong>Note</strong>: This condition ensures that the validation only fires when the Status item is <em>Completed</em>.
+<img src="images/hol10/image4.png" alt="7b" /> </br></p></li></ul>
+<p><img src="images/hol10/image5.png" alt="7e" /></p>
+<p><strong>Note</strong>: The #LABEL# text within the Error Message will be substituted with the Label of the associated item. In this manner, if the item label is updated the error message will also reflect the updated value. This improves consistency and prevents messages having an out of date label reference.</p></li>
+<li><p>In the Processing pane, right-click <strong>Validating</strong> and select <strong>Create Validation</strong>.</p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification: Name - enter <strong>Completed Date is not Forward Dated</strong></p></li>
+<li><p>Validation: PL/SQL Expression - enter <strong>:P5_COMPLETED_DATE &lt;= sysdate</strong></p></li>
+<li><p>Error: Error Message - enter <strong>#LABEL# cannot be forward dated</strong></p></li>
+<li><p>Error: Associated Item - select <strong>P5_COMPLETED_DATE</strong></p></li>
+<li><p>Condition: Type - select <strong>Item is NOT NULL</strong></p></li>
+<li><p>Condition: Item - select <strong>P5_COMPLETED_DATE</strong></p></li></ul>
+<p><img src="images/hol10/image6.png" alt="7d" /> </br></p>
+<p><img src="images/hol10/image7.png" alt="7f" /> </br></p></li>
+<li><p>Now that you created the two validations, you want to verify if they work as expected. Navigate to the Demo Projects application runtime environment.
+In the navigation menu, click <strong>Demo Projects</strong>. Then, select a project name.</p></li>
+<li><p>Try out these functions to see how the page responds:</p>
+<ul>
+<li>Save a record with a Status of Completed and no Completion Date - An error message should be displayed.</li></ul>
+<p><img src="images/hol10/image8.png" alt="7f1" /></p>
+<ul>
+<li>Save a record with a Completion Date in the future - An error message should be displayed.</li></ul>
+<p><img src="images/hol10/image9.png" alt="7f2" /></p></li>
+</ol>
+<h2 id="hol-10-2-creating-and-using-a-computation">HOL 10-2: Creating and Using a Computation</h2>
+<p>In this lab, you create a computation that changes the Assigned To value entered using the form to uppercase after the page is submitted.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Budget App</strong> application.</p></li>
+<li><p>In the navigation menu, click <strong>PROJECT_BUDGET</strong>. This is the interactive report that has been created when you created the application using a spreadsheet in HOL 3-2.</p></li>
+<li><p>Create an After Submit PL/SQL Expression computation on the P2_ASSIGNED_TO item. The PL/SQL expression should be: <strong>upper(:P2_ASSIGNED_TO)</strong>. Test the page to see that the Assigned To is stored as uppercase.</p>
+<p>Perform the following steps:</p>
+<p>a)  In the PROJECT_BUDGET interactive report, click the <strong>Edit</strong> icon (pencil) for any record.
+    Then, in the Developer Toolbar, click <strong>Edit Page 2</strong>.
+    <img src="images/hol10/image10.png" alt="1a" /></p>
+<p>b)  In the page designer, click <strong>Page Processing</strong>.
+    Right-click <strong>After Submit</strong> and select <strong>Create Computation</strong>.</p>
+<p><img src="images/hol10/image11.png" alt="1b" /></p>
+<p>c)  In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Item Name: Select <strong>P2_ASSIGNED_TO</strong></p></li>
+<li><p>Execution Options &gt; Point: Select <strong>After Submit</strong></p></li>
+<li><p>Computation &gt; Type: Select <strong>PL/SQL Expression</strong></p></li></ul>
+<p>d)  Computation &gt; PL/SQL Expression: Enter <strong>upper(:P2_ASSIGNED_TO)</strong>
+    <img src="images/hol10/image12.png" alt="1c" />
+    Click <strong>Save</strong>.</p>
+<p>e)  This is a dialog page and so you cannot run this directly. You need to first run interactive report page.
+    Navigate to application runtime environment and click <strong>PROJECT_BUDGET</strong> in the navigation menu and then click the edit icon for a record.
+    <img src="images/hol10/image13.png" alt="1d" /></p>
+<p>f)  Click <strong>Apply Changes</strong>. The data is submitted now.
+    <img src="images/hol10/image14.png" alt="1e" /></p>
+<p>g)  Navigate to application runtime environment and click <strong>PROJECT_BUDGET</strong> in the navigation menu and then click the edit icon for the same record that you did in step e above. Notice that the value for Assigned To is stored in uppercase.
+    <img src="images/hol10/image15.png" alt="1f" /></p></li>
+</ol>
+<h2 id="hol-10-3-creating-and-using-a-process">HOL 10-3: Creating and Using a Process</h2>
+<p>In this lab, you create a process to insert a record into a table called AUDIT_DETAILS every time a project is added.</p>
+<ol>
+<li><p>You want to create an After Submit process on the Project Budget form page. Whenever a user adds a new project by using this form, the user details are stored in the AUDIT_DETAILS table.</p>
+<p>Perform the following steps:</p>
+<p>a)  View <strong>Page 2</strong> in page designer</p>
+<p>b)  Click the Processing tab, and navigate to Processing &gt; Processes.
+    Select <strong>Process Row of PROJECT_BUDGET</strong>.
+    In the property editor:</p>
+<ul>
+<li><p>Settings &gt; Return Key Into Item: Select <strong>P2_ID</strong></p></li>
+<li><p>Success Message &gt; Success Message: Enter <strong>Project added successfully!</strong></p>
+<p>Click <strong>Save</strong>.</p>
+<p><img src="images/hol10/image16.png" alt="2a" /></p></li></ul></li>
+<li><p>Navigate to SQL Workshop and create the AUDIT_DETAILS table.</p>
+<p>a)  Click <strong>SQL Workshop</strong> and select <strong>SQL Commands</strong>.
+    <img src="images/hol10/image17.png" alt="2b" /></p>
+<p>b)  Copy the following SQL and paste it in the SQL Commands area and click <strong>Run</strong>.</p>
+<pre><code>  CREATE table "AUDIT_DETAILS" (
+
+ "ID" NUMBER,
+
+ "CREATED_BY" VARCHAR2(60),
+
+"CREATED_ON" DATE,
+
+constraint "AUDIT_DETAILS_PK" primary key ("ID")
+
+)
+</code></pre>
+<p><img src="images/hol10/image18.png" alt="2c" /></p>
+<p>c)  The table is created. Now, navigate to the window or tab of the Budget App application runtime environment.
+    In the navigation menu, click <strong>PROJECT_BUDGET</strong>.\
+    Click the Edit icon for a record and then in the Developer Toolbar, click <strong>Edit Page 2</strong>.</p></li>
+<li><p>Click the <strong>Processing</strong> tab.
+Navigate to Processing, right-click <strong>Processes</strong> and select <strong>Create Process</strong>.
+<img src="images/hol10/image19.png" alt="3a" /></p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Name: Enter <strong>Audit Details</strong></p></li>
+<li><p>Identification &gt; Type: Select <strong>PL/SQL Code</strong></p></li>
+<li><p>Source &gt; PL/SQL Code: Copy and paste the following code:</p>
+<p><code>INSERT INTO audit_details VALUES(:P2_ID,:APP_USER, sysdate);</code></p></li>
+<li><p>Execution Options &gt; Sequence: Enter <strong>40</strong></p></li>
+<li><p>Execution Options &gt; Point: Select <strong>Processing</strong></p></li>
+<li><p>Success Message &gt; Success Message: Enter <strong>Success!</strong></p></li>
+<li><p>Error &gt; Error Message: Enter <strong>Error!</strong></p></li>
+<li><p>Server-side Condition &gt; When Button Pressed: Select <strong>CREATE</strong></p></li></ul>
+<p>Click <strong>Save</strong>. </br>
+<strong>Note</strong>: The sequence of this process should be the one immediately after the Process Row of PROJECT_BUDGET process.</p>
+<p><img src="images/hol10/image20.png" alt="3b" /> </br></p>
+<p><img src="images/hol10/image21.png" alt="3c" /></p></li>
+<li><p>Now, you want to verify if the processes are working. In the page designer toolbar, click the Navigate to Previous Page arrow.
+<img src="images/hol10/image22.png" alt="5a" /> </br>
+Then, click <strong>Save and Run Page</strong>. </p></li>
+<li><p>Click the <strong>Create</strong> button.
+<img src="images/hol10/image23.png" alt="5b" /></p></li>
+<li><p>In the Project Budget dialog, enter values for each of the fields and click <strong>Create</strong>.</p>
+<ul>
+<li>Project: <strong>New Packaged App</strong></li>
+<li>Task Name: <strong>Prepare requirements doc</strong></li>
+<li>Start Date: <strong>15-Feb-17</strong></li>
+<li>End Date: <strong>20-Feb-17</strong></li>
+<li>Status: <strong>Open</strong></li>
+<li>Assigned To: <strong>Pam King</strong></li>
+<li>Cost: <strong>500</strong></li>
+<li>Budget: <strong>800</strong></li></ul>
+<p><img src="images/hol10/image24.png" alt="5c" /></p></li>
+<li><p>The record is created now. In the Developer Toolbar, click <strong>Home</strong>.</p></li>
+<li><p>Click <strong>SQL Workshop</strong>. Then, click <strong>Object Browser</strong>.
+Under Tables, select <strong>AUDIT_DETAILS</strong>.
+Click <strong>Data</strong>.
+Notice that the user details have been added to the table.
+<img src="images/hol10/image25.png" alt="5d" /></p></li>
+</ol>
+<h2 id="hol-10-4-creating-and-using-validations">HOL 10-4: Creating and Using Validations</h2>
+<p>In this lab, you create two validations on the Project Budget form page. The first validation you create ensures that the project field is not null. The second one ensures that the value entered for cost is only numeric.</p>
+<ol>
+<li><p>Navigate to the window or tab of the Budget App application runtime environment.
+In the navigation menu, click <strong>PROJECT_BUDGET</strong>.
+Click the Edit icon for a record and then in the Developer Toolbar, click <strong>Edit Page 2</strong>.</p></li>
+<li><p>You want to create two validations. The first validation is to ensure that the Project field is not null.
+In the page designer, click the <strong>Processing</strong> tab.
+Right-click <strong>Validating</strong> and select <strong>Create Validation</strong>. </br>
+<img src="images/hol10/image26.png" alt="6a" /></p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Name: Enter <strong>Project is not null</strong></p></li>
+<li><p>Validation &gt; Type: Select <strong>Item is NOT NULL</strong></p></li>
+<li><p>Validation &gt; Item: Select <strong>P2_PROJECT</strong></p></li>
+<li><p>Error &gt; Error Message: Enter <strong>Project is not null!</strong></p></li>
+<li><p>Error &gt; Display Location: Select <strong>Inline in Notification</strong></p></li></ul>
+<p><img src="images/hol10/image27.png" alt="6b" /></p></li>
+<li><p>You need to create another validation to ensure that the value entered for Cost should be only numeric.
+Under Processing, right-click <strong>Validating</strong> and select <strong>Create Validation</strong>.</p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Name: Enter <strong>Cost should be numeric</strong></p></li>
+<li><p>Validation &gt; Type: Select <strong>Item is numeric</strong></p></li>
+<li><p>Validation &gt; Item: Select <strong>P2_COST</strong></p></li>
+<li><p>Error &gt; Error Message: Enter <strong>Cost should be numeric</strong></p></li>
+<li><p>Error &gt; Display Location: Select <strong>Inline with Field</strong></p></li>
+<li><p>Error &gt; Associated Item: Select <strong>P2_COST</strong></p></li></ul>
+<p>Click <strong>Save</strong>.</p>
+<p><img src="images/hol10/image28.png" alt="6c" /></p></li>
+<li><p>Now, you can test to verify if the validations work. Navigate to the application run time environment.
+In the navigation menu, click <strong>PROJECT_BUDGET</strong>.
+Then, click <strong>Create</strong>.</p></li>
+<li><p>In the Project Budget dialog, enter the following and then click the <strong>Create</strong> button.</p>
+<ul>
+<li><p>Task Name: <strong>Prepare requirements doc</strong></p></li>
+<li><p>Start Date: <strong>14-Feb-17</strong></p></li>
+<li><p>End Date: <strong>22-Feb-17</strong></p></li>
+<li><p>Status: <strong>Open</strong></p></li>
+<li><p>Assigned To: <strong>Pam King</strong></p></li>
+<li><p>Cost: <strong>abcd12</strong></p></li>
+<li><p>Budget: <strong>3000</strong></p></li></ul>
+<p><img src="images/hol10/image29.png" alt="6d" /></p>
+<p>Notice that the errors are displayed.
+Click <strong>Cancel</strong>.</p></li>
+</ol>
+<hr />
+<p><img src="images/hol10/image30.png" alt="Snap3.jpeg" /></p>

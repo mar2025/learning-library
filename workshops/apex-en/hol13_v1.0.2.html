@@ -1,0 +1,245 @@
+<h1 id="unit-13-implementing-security-in-your-application">Unit 13: Implementing Security in your Application</h1>
+<p>Application security is very important in the majority of applications, except for "Public" applications. You must ensure users enter valid credentials, generally username and password (Authentication), and that once logged in that each user has appropriate rights within the application (Authorization).</p>
+<p>This exercise includes three hands-on-labs.</p>
+<p>HOL 13-1 uses the Demo Projects application.</p>
+<p>HOL 13-2 and 13-3 use the Budget App application.</p>
+<p><strong>HOL 13-1 Creating and Using an Authorization Scheme</strong>: In this lab, you create an authorization scheme to ensure only people entered as Team Members can log into the Demo Projects application. You create a user and verify if the user can access the application.</p>
+<p><strong>HOL 13-2 Creating and Using an Authentication Scheme</strong>: In this hands-on lab, you create an Open Door Credentials authentication scheme and make it current. You test the authentication scheme and then switch back to the default Application Express Authentication scheme.</p>
+<p><strong>HOL 13-3 Controlling User Access by Using the Access Control Administration</strong>: In this hands-on lab you create three different users as Administrator, Developer and End User. You create an Access Control Administration page, set the application mode to restrict access and add these users to the Access Control list. Finally, you apply the authorization scheme to pages and verify if users are allowed or denied access.</p>
+<h2 id="hol-13-1-creating-and-using-an-authorization-scheme">HOL 13-1: Creating and Using an Authorization Scheme</h2>
+<p>In this hands-on lab, you create an authorization scheme to ensure only people entered as Team Members can log into the Demo Projects application. You apply the authorization scheme to the application properties.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Demo Projects</strong> application.
+In the Developer Toolbar, click Application &lt;<em>n</em>&gt;.</p></li>
+<li><p>In the application home page, click <strong>Shared Components</strong>.
+Under Shared Components &gt; Security, click <strong>Authorization Schemes</strong>. </br>
+<img src="images/hol13/image3.png" alt="1a" /></p></li>
+<li><p>Click <strong>Create</strong>.
+<img src="images/hol13/image4.png" alt="1b" /></p></li>
+<li><p>For Create Authorization Scheme, select <strong>From Scratch and c</strong>lick <strong>Next</strong>.
+<img src="images/hol13/image5.png" alt="1c" /></p></li>
+<li><p>For Details, input the following:</p>
+<ul>
+<li><p>Name - enter <strong>Team Members</strong></p></li>
+<li><p>Schema Type - select <strong>Exists SQL Query</strong></p></li>
+<li><p>SQL Query - copy and paste the following:</p>
+<pre><code>  select 1
+
+  from demo_proj_team_members
+
+  where upper(username) = upper(:APP_USER)
+</code></pre></li>
+<li><p>Identify error message displayed when scheme violated - enter <strong>You must be a team member to use this application</strong>.</p></li></ul>
+<p>Click <strong>Create Authorization Scheme</strong>.</p>
+<p><strong>Note</strong>: <strong>:APP_USER</strong> is a built-in application item that returns the username of the currently logged in user.</p>
+<p><img src="images/hol13/image6.png" alt="1d" /></p></li>
+<li><p>The Team Members authorization scheme is created now.
+Rather than applying the authorization scheme to every page, apply the scheme to the application properties.</p>
+<p>Click the <strong>Shared Components</strong> breadcrumb entry.</p>
+<p>Alternatively, on the toolbar, click the Shared Components button, which is located in the top-right and contains a triangle, circle, and square in its icon.
+<img src="images/hol13/image7.png" alt="1e" /></p></li>
+<li><p>Under Security, click <strong>Security Attributes</strong>.</p>
+<p><img src="images/hol13/image8.png" alt="1f" /></p></li>
+<li><p>Click the <strong>Authorization</strong> tab.
+For Authorization Scheme, select <strong>Team Members</strong> from the list.
+Click <strong>Apply Changes</strong>.
+<img src="images/hol13/image9.png" alt="1g" /></p></li>
+<li><p>In order to test the authorization scheme it is necessary to create a new user account.</p>
+<p>In the Application Express toolbar, click <strong>Administration</strong>, identified by a user icon with a spanner, then select <strong>Manage Users and Groups</strong>.</p>
+<p><img src="images/hol13/image10.png" alt="1h" /></p></li>
+<li><p>Click <strong>Create User</strong>.</p>
+<p>To create a user, input the following:</p></li>
+</ol>
+<ul>
+<li><p>Username - enter unauthorized</p></li>
+<li><p>Email Address - enter unauthorized@email.com</p></li>
+<li><p>Password - enter unauthorized</p></li>
+<li><p>Confirm Password - enter unauthorized</p></li>
+<li><p>Require Change of Password on First Use - No</p>
+<p>Click <strong>Create User</strong>.
+<img src="images/hol13/image11.png" alt="1i" />
+<img src="images/hol13/image12.png" alt="1j" /></p></li>
+</ul>
+<ol>
+<li><p>Navigate to the runtime environment (tab or window). Click <strong>Logout</strong> in the navigation bar (top left).</p></li>
+<li><p>On the Log In page, for Username enter <strong>unauthorized</strong>, and for Password enter <strong>unauthorized</strong>.
+Click <strong>Log In</strong>. </br>
+<img src="images/hol13/image13.png" alt="1j1" /></p></li>
+<li><p>Verify the access denied message is displayed. </br>
+Click <strong>OK</strong>. </br>
+<img src="images/hol13/image14.png" alt="1j2" /></p></li>
+<li><p>On the Log In page, enter your username and password credentials that you use to log into the App Builder. </br></p>
+<p>Click <strong>Log In</strong>.</p></li>
+</ol>
+<h2 id="hol-13-2-creating-and-using-an-authentication-scheme">HOL 13-2: Creating and Using an Authentication Scheme</h2>
+<p>In this hands-on lab, you create an authentication scheme named Open Door Credentials in the Budget App application. Upon creation, this scheme becomes Current Scheme by default. You test this scheme by logging in to the application. Finally, you switch back to Application Express Authentication scheme.</p>
+<ol>
+<li><p>In the App Builder, click <strong>Budget App</strong> application.</p></li>
+<li><p>Navigate to <strong>Shared Components</strong>.
+Under Security, click <strong>Authentication Schemes</strong>. </br>
+<img src="images/hol13/image15.png" alt="2a" /></p></li>
+<li><p>You want to create an authentication scheme. Click <strong>Create</strong>.
+<img src="images/hol13/image16.png" alt="2b" /></p></li>
+<li><p>For Create Scheme, select <strong>Based on a pre-configured scheme from the gallery</strong>, and click <strong>Next</strong>.</p>
+<p><img src="images/hol13/image17.png" alt="2c" /></p></li>
+<li><p>For Name, enter <strong>Open Door Credentials</strong>.
+For Scheme Type, select <strong>Open Door Credentials</strong> from the list.
+Click <strong>Create Authentication Scheme</strong>.
+<img src="images/hol13/image18.png" alt="2d" /></p></li>
+<li><p>In the toolbar, click the <strong>Run Page</strong> icon.
+If you are already logged in, then click Logout to perform the next step.</p></li>
+<li><p>Enter your Username and click <strong>Login</strong>.
+<img src="images/hol13/image19.png" alt="2e" /></p></li>
+<li><p>The Home page is displayed.
+In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.
+<img src="images/hol13/image20.png" alt="2f" />
+Your application might display the Vita (Copy) Theme Style. Click the <strong>Customize</strong> link at the bottom of the page, select <strong>Vita</strong> for Theme Style and click <strong>Apply Changes</strong>.</p></li>
+<li><p>You want to switch back to the Application Express Authentication scheme.
+In the application home page, click <strong>Shared Components</strong>. </br>
+<img src="images/hol13/image21.png" alt="2g" /></p></li>
+<li><p>Under Security, click <strong>Authentication Schemes</strong>. </br>
+<img src="images/hol13/image22.png" alt="2h" /></p></li>
+<li><p>Click <strong>Application Express Authentication</strong> in the report.
+<img src="images/hol13/image23.png" alt="2i" /></p></li>
+<li><p>Click <strong>Make Current Scheme</strong>.
+<img src="images/hol13/image24.png" alt="2j" /></p></li>
+<li><p>The Application Express Authentication scheme is now activated as current authentication scheme.
+<img src="images/hol13/image25.png" alt="2k" /></p></li>
+<li><p>In the toolbar, click the <strong>Run Page</strong> icon. Then, click <strong>Logout</strong>.</p></li>
+<li><p>Notice that the authentication scheme has changed. Enter your username and password and click <strong>Log In</strong>.</p></li>
+</ol>
+<h2 id="hol-13-3-controlling-user-access-by-using-the-access-control-administration">HOL 13-3: Controlling User Access by Using the Access Control Administration</h2>
+<p>In this hands-on lab, you first create an access control page and set the application mode to restrict access. Then, you create the access control list and assign the Budget App application components to an authorization scheme.</p>
+<ol>
+<li><p>If you are in the application runtime environment, switch to the window or tab for App Builder environment.</p></li>
+<li><p>In the Application Express toolbar, click <strong>Administration</strong> and select <strong>Manage Users and Groups</strong>.
+<img src="images/hol13/image26.png" alt="3a" /></p></li>
+<li><p>Create the following users to add to the Access Control List.</p>
+<ul>
+<li><p>apex_admin: Workspace Administrator</p></li>
+<li><p>apex_dev: Developer</p></li>
+<li><p>apex_user: End User</p></li></ul>
+<p>Click <strong>Create User</strong>.</p></li>
+<li><p>Enter the following information and click <strong>Create and Create Another</strong>.</p>
+<ul>
+<li><p>Username: <strong>apex_admin</strong></p></li>
+<li><p>Email Address: <strong>apex.admin@oracle.com</strong></p></li>
+<li><p>Select <strong>Yes</strong> for User is a workspace administrator</p></li>
+<li><p>Password: <strong>apexadmin</strong></p></li>
+<li><p>Confirm Password: <strong>apexadmin</strong></p></li>
+<li><p>Select <strong>No</strong> for Require Change of Password on First Use.
+<img src="images/hol13/image27.png" alt="3b1" /> </br></p>
+<p><img src="images/hol13/image28.png" alt="3b2" /></p>
+<p><img src="images/hol13/image29.png" alt="3c2" /></p></li></ul></li>
+<li><p>Enter the following information and click <strong>Create and Create Another</strong>.</p>
+<ul>
+<li><p>Username: <strong>apex_dev</strong></p></li>
+<li><p>Email Address: <strong>apex.dev@oracle.com</strong></p></li>
+<li><p>Select <strong>No</strong> for User is a workspace administrator</p></li>
+<li><p>Select <strong>Yes</strong> for User is a developer</p></li>
+<li><p>Password: <strong>apexdev</strong></p></li>
+<li><p>Confirm Password: <strong>apexdev</strong></p></li>
+<li><p>Select <strong>No</strong> for Require Change of Password on First Use.</p></li></ul></li>
+<li><p>Enter the following information and click <strong>Create User</strong>.</p>
+<ul>
+<li><p>Username: <strong>apex_user</strong></p></li>
+<li><p>Email Address: <strong>apex.user@oracle.com</strong></p></li>
+<li><p>Select <strong>No</strong> for User is a workspace administrator</p></li>
+<li><p>Select <strong>No</strong> for User is a developer</p></li>
+<li><p>Password: <strong>apexuser</strong></p></li>
+<li><p>Confirm Password: <strong>apexuser</strong></p></li>
+<li><p>Select <strong>No</strong> for Require Change of Password on First Use.</p></li></ul></li>
+<li><p>You see users in the list now. Click <strong>App Builder</strong>.
+<img src="images/hol13/image30.png" alt="3d" /></p></li>
+<li><p>In the report, click the <strong>Budget App</strong> application.
+<img src="images/hol13/image31.png" alt="3e" /></p></li>
+<li><p>In the application home page, click <strong>Create Page</strong>.
+<img src="images/hol13/image32.png" alt="3f" /></p></li>
+<li><p>Select <strong>Access Control</strong> for Page Type, and click <strong>Next</strong>.
+<img src="images/hol13/image33.png" alt="3g" /></p></li>
+<li><p>Click <strong>Next</strong>.
+<img src="images/hol13/image34.png" alt="3h" /></p></li>
+<li><p>Select <strong>Create a new navigation menu entry</strong>.
+Enter <strong>Access Control</strong> for New Navigation Menu Entry and click <strong>Next</strong>.
+<img src="images/hol13/image35.png" alt="3i" /></p></li>
+<li><p>On the Confirmation page, click <strong>Create</strong>.
+<img src="images/hol13/image36.png" alt="3j" /></p></li>
+<li><p>In the Page Designer, click <strong>Save and Run Page</strong>.</p></li>
+<li><p>The Access Control page is displayed. Now, you set the application mode.
+For Application Mode, select the <strong>Restricted access. Only users defined in the access control list are allowed.</strong> radio button.
+Then, click <strong>Set Application Mode</strong>.
+<img src="images/hol13/image37.png" alt="3k" /></p></li>
+<li><p>Now, add users to the access control list. You add the three users you created in a previous step and also your workspace administrator username.</p>
+<ul>
+<li><p>apex_admin is the administrator and so can modify anything including the user privileges</p></li>
+<li><p>apex_dev is the developer and is allowed to edit application data. However, this user cannot change the application administration settings</p></li>
+<li><p>apex_user is the end user and can only view the application but cannot make any changes to the data</p></li>
+<li><p>&lt;your username&gt; is the administrator.</p></li></ul>
+<p>Click <strong>Add User</strong>.
+<img src="images/hol13/image38.png" alt="3l" /></p></li>
+<li><p>Enter <strong>apex_admin</strong> for Username, select <strong>Administrator</strong> for Privilege and click <strong>Add User</strong>.</p></li>
+<li><p>Enter <strong>apex_dev</strong> for Username, select <strong>Edit</strong> for Privilege and click <strong>Add User</strong>.</p></li>
+<li><p>Enter <strong>apex_user</strong> for Username, select <strong>View</strong> for Privilege and click <strong>Add User</strong>.</p></li>
+<li><p>Enter &lt;<em>your username</em>&gt; for Username, select <strong>Administrator</strong> for Privilege and click <strong>Apply Changes</strong>.
+<img src="images/hol13/image39.png" alt="3m" /></p></li>
+<li><p>Now, you are ready to define and apply the authorization schemes to each application component.</p>
+<ul>
+<li><p>Users with the Administrator privilege can make any changes, including administering the Budget App application</p></li>
+<li><p>Users with the Edit privilege can modify the data in the report but cannot make changes to the application mode and the access control list.</p></li>
+<li><p>Users with the View privilege can review the interactive report, but cannot modify the data.</p></li></ul>
+<p>In the application runtime environment, click <strong>Project_Budget</strong> in the navigation menu.
+In the Developer Toolbar, click <strong>Edit Page 1</strong>.</p></li>
+<li><p>Under Rendering, expand Regions. Under the Project Budget region, select <strong>Attributes</strong>.
+In the property editor, locate Authorization Scheme and select <strong>access control-edit</strong> from the list.
+<img src="images/hol13/image40.png" alt="3n" /></p></li>
+<li><p>You want the Create Button to appear only if the user has either the Edit or Administrator privilege. Under Rendering, locate Region Buttons and select <strong>CREATE</strong>.
+In the property editor, navigate to Security and select <strong>access control-edit</strong> for Authorization Scheme.
+Click <strong>Save</strong>.
+<img src="images/hol13/image41.png" alt="3o" /></p></li>
+<li><p>You also want to protect against direct access to the Project Budget form dialog page. Though you restrict end users from editing the interactive report on the Home page, they can still access the Project Budget form page by entering the correct URL in the browser. To avoid this, you must restrict the Form page access to only users with the Edit and Administrator privilege.</p>
+<p>In the page designer, click <strong>Navigate to Next Page</strong> arrow in the toolbar.
+You are now viewing the Project Budget form page in page designer.</p></li>
+<li><p>Under Rendering, select <strong>Page 2: Project Budget</strong>.
+Under Rendering, navigate to <strong>Security</strong> and select <strong>access control-edit</strong> for Authorization Scheme.
+Click <strong>Save</strong>.
+<img src="images/hol13/image42.png" alt="3p" /></p></li>
+<li><p>Users with the Administrator privilege can only make changes to the access control list. Therefore, you must set the authorization scheme for the Access Control Administration page accordingly.</p>
+<p>In the page designer, enter the Access Control Administration page number in the Page Finder and click <strong>Go</strong>.
+<img src="images/hol13/image43.png" alt="4a" /></p></li>
+<li><p>Under Rendering, select Page&lt;<em>n</em>&gt;: Access Control Administration Page.
+In the property editor, navigate to Security and select <strong>access control-administrator</strong> for Authorization Scheme.
+Click <strong>Save</strong>.
+<img src="images/hol13/image44.png" alt="3q" /></p></li>
+<li><p>In the page designer, enter <strong>1</strong> in the Page Finder and click <strong>Go</strong>.
+<img src="images/hol13/image45.png" alt="4b" /></p></li>
+<li><p>In the page designer, click <strong>Save and Run Page</strong>.
+If you are logged in, click <strong>Logout</strong> before performing the next step.</p></li>
+<li><p>Enter <strong>apex_dev</strong> for Username and <strong>apexdev</strong> for Password and click <strong>Log In</strong>.
+<img src="images/hol13/image46.png" alt="3dev" /></p></li>
+<li><p>Notice that apex_dev can edit the interactive report, and also create a new project.
+In the navigation menu, click <strong>Access Control</strong>.</p>
+<p><img src="images/hol13/image47.png" alt="3r1" /></p></li>
+<li><p>Notice that you receive an error as you need the Administrator privilege to use the Access Control Administration page.
+Click <strong>OK</strong>.
+<img src="images/hol13/image48.png" alt="3r2" /></p></li>
+<li><p>Click <strong>Logout</strong>.
+<img src="images/hol13/image49.png" alt="3r3" /></p></li>
+<li><p>Now log in by entering <strong>apex_user</strong> for Username and <strong>apexuser</strong> for password.</p></li>
+<li><p>Notice that you cannot edit the interactive report and also cannot create a new project now.
+<img src="images/hol13/image50.png" alt="3s1" /></p></li>
+<li><p>Now, in your browser, change the page number in the URL to try to access the Project Budget form page. The Project Budget form is Page 2.
+For example, if your URL is http://<hostname>:8080/apex/f?p=106:1, then change it to http://<hostname>:8080/apex/f?p=106:2 </br>
+Press the <strong>&lt;Enter&gt;</strong> key.</p></li>
+<li><p>Notice that you receive an error as the form page can be accessed only if you have either the Edit or the Administrator privilege. </br>
+<img src="images/hol13/image51.png" alt="3s2" /> </br>
+Click <strong>OK</strong>. </br>
+Then, click <strong>Logout</strong>. </br></p></li>
+<li><p>Now log in by entering <strong>apex_admin</strong> for Username and <strong>apexadmin</strong> for password.</p></li>
+<li><p>Notice that you can now edit the interactive report, and also create a project. In the navigation menu, click <strong>Access Control</strong>.
+<img src="images/hol13/image52.png" alt="3t1" /></p></li>
+<li><p>As you have the Administrator privilege, you can access the Access Control Administration page.
+In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.
+<img src="images/hol13/image53.png" alt="3t2" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol13/image54.png" alt="Snap3" /></p>

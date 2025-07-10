@@ -1,0 +1,344 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="development-lifecycle-management-using-eclipse-ide-oracle-enterprise-pack-for-eclipse-and-oracle-developer-cloud-service">Development lifecycle management using Eclipse IDE (Oracle Enterprise Pack for Eclipse) and Oracle Developer Cloud Service</h2>
+<h3 id="introduction">Introduction</h3>
+<p>This tutorial based on standardized developer workflow using Oracle Developer Cloud Service. The intent is to showcase how a team starting on the Oracle Developer Cloud Service would collaborate to address change management use-case.</p>
+<p>One of the biggest change using cloud native applications after on-premise, silo type application architecture is to configure dependencies between services. For example application deployed on Application Cloud Container need to access to e.g. service running on Java Cloud Service. In the cloud world especially wrong approach to write the specific endpoint and even the configuration into the application's source code. Service endpoints (e.g. IP address, URL) can change quickly. To keep application architecture flexible Application Container Cloud Service provides <strong>Service Bindings</strong>. You can add service bindings to other subscribed Oracle Cloud services (e.g. Java Cloud Service and Database Cloud Service) using the Application Console or define in the <code>deployment.json</code> metadata file.</p>
+<p><img src="images/service.bindings.png" alt="" /></p>
+<p>In this tutorial the change (new feature) for the Spring Boot demo application is to create new page which prints a REST call response. The REST endpoint is hosted on Java Cloud Service. </p>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>Create issue/task using Oracle Developer Cloud Service user interface</li>
+<li>Open/Close issue/task using OEPE Cloud Tooling</li>
+<li>Add changes to the source code and push to remote (DevCS hosted) repository</li>
+<li>How continuous integration can be triggered by source code changes</li>
+<li>Create service bindings for Application Container Cloud Service</li>
+<li>Check Application Cloud Container redeployment using OEPE Cloud Tooling</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="../springboot-sample/create.devcs.project.md">Create Oracle Developer Cloud Service project for Spring Boot application</a></li>
+<li><a href="../springboot-sample/devcs.accs.ci.md">Create continuous build integration using Oracle Developer Cloud Service and Oracle Application Container Cloud Service</a></li>
+<li><a href="../oepe/setup.oepe.md">Using Eclipse IDE (Oracle Enterprise Pack for Eclipse) with Oracle Developer Cloud Service</a></li>
+<li><a href="../jcs-deploy/README.md">Deploy Java EE sample application to Oracle Java Cloud Service using Admin console</a></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<h4 id="create-issue-using-oracle-developer-cloud-service-user-interface">Create Issue using Oracle Developer Cloud Service user interface</h4>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. On the dashboard open the Developer Cloud Service Console.</p>
+<p><img src="images/change.00.png" alt="" /></p>
+<p>Open the Spring Boot project and click Issues tab. Click <strong>New Issue</strong>.</p>
+<p><img src="images/change.01.png" alt="" /></p>
+<p>Enter properties of the new task. The new task will be to create new page in Spring Boot demo application to show TechCo products using that <a href="../jcs-deploy/README.md">application</a>'s REST interface. You can use values on the picture but the point is only to create new Issue assigned to your account which can be used to simulate task assignement to specific user. So make sure the Owner of the Issue is assigned to your account name.</p>
+<p><img src="images/change.02.png" alt="" /></p>
+<p>Now switch to OEPE to check your tasks. If your OEPE is already opened and cloud connection is activeted then you can see Eclipse notification about the assignement. To open the task  in OEPE click on notification link or activate your cloud connection and open myOracleCloud(cloud connaction name) -&gt; Developer -&gt; springboot(DevCS project name) -&gt; Issues -&gt; Mine</p>
+<p><img src="images/change.03.png" alt="" /></p>
+<p>Double click on the task to open details. Scroll down and ACCEPT the assignement. Click <strong>Submit</strong> and start the development.</p>
+<p><img src="images/change.04.png" alt="" /></p>
+<h4 id="implement-new-feature-in-the-application">Implement new feature in the application</h4>
+<p>As first step add required dependencies to the Maven project. These dependencies the <code>org.apache.httpcomponents</code> to make REST call and <code>org.glassfish.javax.json</code> to process JSON formatted response. Open the pom.xml. Select Dependencies view of the project file and click <strong>Add…</strong> to add the dependencies.</p>
+<p><img src="images/change.05.png" alt="" /></p>
+<p>The <code>org.apache.httpcomponents</code> properties are the following:</p>
+<ul>
+<li><strong>Group Id</strong>: org.apache.httpcomponents</li>
+<li><strong>Artifact Id</strong>: httpclient</li>
+<li><strong>Version</strong>: 4.5</li>
+</ul>
+<p>Click <strong>OK</strong>.</p>
+<p><img src="images/change.06.png" alt="" /></p>
+<p>The <code>org.glassfish.javax.json</code> properties are the following:</p>
+<ul>
+<li><strong>Group Id</strong>: org.glassfish</li>
+<li><strong>Artifact Id</strong>: javax.json</li>
+<li><strong>Version</strong>: 1.0.4</li>
+</ul>
+<p>Click <strong>OK</strong>.</p>
+<p><img src="images/change.07.png" alt="" /></p>
+<p>The result for the <code>pom.xml</code> should look like the following:</p>
+<p><img src="images/change.08.png" alt="" /></p>
+<p>Here is the time to code. In the <em>springbootdemo</em> project open the <strong>Java Resources -> src/main/java -> com.example.springboot.config -> WebConfig.java</strong> and copy or write the view controller registration of the new page in the <code>public void addViewControllers(ViewControllerRegistry registry)</code> method:</p>
+<pre><code>registry.addViewController("/restcall").setViewName("restcall");
+</code></pre>
+<p>The WelcomeController.class should look like as the following:</p>
+<pre><code>package com.example.springboot.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+
+@EnableWebMvc
+@ComponentScan
+@Configuration
+public class WebConfig extends WebMvcConfigurerAdapter {
+
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
+        "classpath:/META-INF/resources/", "classpath:/resources/",
+        "classpath:/static/", "classpath:/public/" };
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("welcome");
+        registry.addViewController("/env").setViewName("environment");
+        registry.addViewController("/heap").setViewName("heap");
+        registry.addViewController("/cpu").setViewName("cpu");
+        registry.addViewController("/restcall").setViewName("restcall");
+    }
+
+    @Bean
+    public InternalResourceViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/views/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
+    }
+
+    @Bean
+    // Only used when running in embedded servlet
+    public DispatcherServlet dispatcherServlet() {
+        return new DispatcherServlet();
+    }
+
+    @Override
+    public void configureDefaultServletHandling(
+            DefaultServletHandlerConfigurer configurer) {
+        configurer.enable();
+    }
+}
+</code></pre>
+<p>In the OEPE:</p>
+<p><img src="images/change.09.png" alt="" /></p>
+<p>This part above route the <code>/restcall</code> path to the new JSP page. Now create this new page. In  the <strong>Deployed Resources -> webapp -> WEB-INF -> views</strong> create a new JSP page. Right click  the <strong>views</strong> folder and select <strong>New -> JSP File</strong></p>
+<p><img src="images/change.10.png" alt="" /></p>
+<p>If the <strong>JSP File</strong> item is not available select <strong>Other…</strong> then find <strong>JSP File</strong> in the wizard dialog. Click Next.</p>
+<p><img src="images/change.11.png" alt="" /></p>
+<p>Enter name: <code>restcall.jsp</code> and click <strong>Finish</strong>.</p>
+<p><img src="images/change.12.png" alt="" /></p>
+<p>The new page will open in the editor using Design View. In the source code window select all and replace to the following:</p>
+<pre><code>&lt;%@ page language="java" contentType="text/html; charset=UTF-8"
+  pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;
+&lt;%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+
+&lt;%@ page import="java.io.InputStreamReader" %&gt;
+&lt;%@ page import="java.security.cert.CertificateException" %&gt;
+&lt;%@ page import="java.security.cert.X509Certificate" %&gt;
+
+&lt;%@ page import="javax.json.Json" %&gt;
+&lt;%@ page import="javax.json.JsonArray" %&gt;
+&lt;%@ page import="javax.json.JsonObject" %&gt;
+&lt;%@ page import="javax.json.JsonReader" %&gt;
+&lt;%@ page import="javax.net.ssl.SSLContext" %&gt;
+
+&lt;%@ page import="org.apache.http.client.methods.CloseableHttpResponse" %&gt;
+&lt;%@ page import="org.apache.http.client.methods.HttpGet" %&gt;
+&lt;%@ page import="org.apache.http.conn.ssl.NoopHostnameVerifier" %&gt;
+&lt;%@ page import="org.apache.http.conn.ssl.SSLConnectionSocketFactory" %&gt;
+&lt;%@ page import="org.apache.http.impl.client.CloseableHttpClient" %&gt;
+&lt;%@ page import="org.apache.http.impl.client.HttpClientBuilder" %&gt;
+&lt;%@ page import="org.apache.http.impl.client.HttpClients" %&gt;
+&lt;%@ page import="org.apache.http.ssl.SSLContexts" %&gt;
+&lt;%@ page import="org.apache.http.ssl.TrustStrategy" %&gt;
+
+&lt;html lang="en-US" &gt;
+&lt;head&gt;&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+&lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"&gt;
+&lt;meta http-equiv="Content-Type" content="UTF-8"&gt;
+
+&lt;style&gt;
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+&lt;/style&gt;
+
+&lt;title&gt;About Oracle Application Container Cloud&lt;/title&gt;
+
+&lt;/head&gt;
+&lt;body style="padding: 10px; border: 10px;"&gt;
+Spring Boot application demo.
+&lt;br&gt;
+&lt;h2&gt;REST call to Oracle Java Cloud Service from Oracle Application Container Cloud&lt;/h2&gt;
+&lt;hr&gt;
+&lt;div&gt;
+&lt;% 
+final String JCS_URL = "JAAS_SECURE_CONTENT_URL";
+final String JCS_PORT = "JCS_PORT";
+final String TECHCO_REST_PATH = "TECHCO_REST_PATH";
+String sURL = System.getenv().get(JCS_URL);
+String restPath;
+String port;
+
+if (System.getenv().get(TECHCO_REST_PATH) != null) {
+  restPath = System.getenv().get(TECHCO_REST_PATH);
+} else {
+  restPath = "/TechCo-ECommerce/rest/products/all";
+}
+
+if (System.getenv().get(JCS_PORT) != null) {
+  port = ":" + System.getenv().get(JCS_PORT);
+} else {
+  port = "";
+}
+
+
+  if (sURL == null) {
+    out.write("&lt;p&gt;&lt;b&gt;Java Cloud Service Instance bindings&lt;/b&gt; (" + JCS_URL + "): &lt;mark&gt;Not defined.&lt;/mark&gt;&lt;/p&gt;");
+    out.write("&lt;p&gt;Please create service binding for application deployed on Oracle Application Container Cloud.&lt;/p&gt;");
+  } else {
+
+    out.write("&lt;p&gt;&lt;b&gt;Java Cloud Service Instance bindings (" + JCS_URL + "):&lt;/b&gt; &lt;mark&gt;" + sURL + "&lt;/mark&gt;&lt;/p&gt;");
+
+    try {
+      SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
+
+              @Override
+              public boolean isTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+                  return true;
+              }
+          }).build();
+
+      SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+
+      HttpClientBuilder builder = HttpClients.custom().setSSLSocketFactory(sslsf);
+      CloseableHttpClient httpclient = builder.build();
+    HttpGet httpGet = new HttpGet(sURL + port + restPath);
+
+    out.write("&lt;p&gt;&lt;b&gt;Execute REST call:&lt;/b&gt; &lt;mark&gt;" + sURL + port + restPath + "&lt;/mark&gt;&lt;/p&gt;");
+    CloseableHttpResponse restResponse = httpclient.execute(httpGet);
+
+    out.write("&lt;p&gt;&lt;b&gt;HTTP Response:&lt;/b&gt; " + restResponse.getStatusLine() + "&lt;/p&gt;");
+
+    if (restResponse.getStatusLine().getStatusCode() == 200) {
+      if (restResponse.getEntity() != null) {
+
+        out.write("&lt;p&gt;&lt;b&gt;HTTP Content (formatted):&lt;/b&gt;&lt;/p&gt;");
+        out.write("&lt;p&gt;");
+        out.write("&lt;table&gt;");
+        out.write("  &lt;tr&gt;");
+        out.write("    &lt;th&gt;Product Name&lt;/th&gt;");
+        out.write("    &lt;th&gt;Product Description&lt;/th&gt;");
+        out.write("  &lt;/tr&gt;");
+
+        InputStreamReader is = new InputStreamReader((restResponse.getEntity().getContent()));
+        JsonReader rdr = Json.createReader(is);
+        JsonObject obj = rdr.readObject();
+        JsonArray results = obj.getJsonArray("products");
+        for (JsonObject result : results.getValuesAs(JsonObject.class)) {
+
+          out.write("  &lt;tr&gt;");
+          out.write("    &lt;td&gt;");      
+          out.write(result.getInt("productId") + " " + result.getString("productName"));
+          out.write("    &lt;/td&gt;");
+          out.write("    &lt;td&gt;");
+          out.write(result.getString("productDescription"));
+          out.write("    &lt;/td&gt;");
+          out.write("  &lt;/tr&gt;");
+        }
+        out.write("&lt;table&gt;");
+        out.write("&lt;/p&gt;");
+      }
+    } else {
+      out.write("&lt;br&gt;&lt;b&gt;Reason:&lt;/b&gt; " + restResponse.getStatusLine().getReasonPhrase());
+    }
+  } catch (Exception e) {
+    out.write("&lt;p style=color:red;&gt;&lt;b&gt;Exception:&lt;/b&gt;&lt;/p&gt;&lt;br&gt;" + e.getMessage());
+    e.printStackTrace();
+  }
+  }
+
+%&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>The result would be the following in OEPE:</p>
+<p><img src="images/change.13.png" alt="" /></p>
+<p>Now build the application. Right click on <code>pom.xml</code> and select <strong>Run As -> Maven install</strong></p>
+<p><img src="images/change.14.png" alt="" /> </p>
+<p>You can see the result of a successfull build the console view.</p>
+<p><img src="images/change.15.png" alt="" /></p>
+<h4 id="push-changes-to-remote-developer-cloud-services-project-hosted-repository">Push changes to remote (Developer Cloud Service's project hosted) repository</h4>
+<p>After the implementation and successful smoke test (which is out of scope of this tutorial because of length) you need to push your changes to the remote repository. Right click on project and select <strong>Team -> Commit…</strong></p>
+<p><img src="images/change.16.png" alt="" /></p>
+<p>Git Staging view is displayed. First drag-and-drop the <code>restcall.jsp</code> to <em>Staged Changes</em> area where you can already find <code>pom.xml</code> and <code>WebConfig.java</code>. You don't need to add Eclipse specific files created in the local Git repository. Type a commit message. Please note when you type (in this case) Task 1 then that will change to a link. The reason that the OEPE Cloud Tooling realized that this is an existing task in the Issue tracking system and creates a link to the issue in the commit message. You can check later on the Developer Cloud Service user interface. Enter your name and Cloud username (email address). Click <strong>Commit and Push…</strong></p>
+<p><img src="images/change.17.png" alt="" /></p>
+<p>In the Push dialog leave the default master branch and click <strong>OK</strong>.</p>
+<p><img src="images/change.18.png" alt="" /></p>
+<p>Now change back to the browser and check the Build page in the Oracle Developer Cloud Service project. You should see that a new build (in our case: <em>springboot_build</em>) has been fired by the Git changes.</p>
+<p><img src="images/change.19.png" alt="" /></p>
+<p>Once the job is done change to the tab to Deploy and you can see that a new deployment has been started too. If you remember the Deployment was configured to redeploy every time when a new successful build artifact is ready.</p>
+<p><img src="images/change.21.png" alt="" /></p>
+<p>After the successful deployment to the Application Container Cloud Service a new entry appears on the righ side about the result. Hopefully it shows the Deployment Succeeded. To access to the application click on the link next to the <em>Deploy to ACCS</em>.</p>
+<p><img src="images/change.22.png" alt="" /></p>
+<p>The application's welcome page has not changed.</p>
+<p><img src="images/change.20.png" alt="" /></p>
+<p>Now hit your new page. Append to the URL <code>/restcall</code>.</p>
+<p><img src="images/change.23.png" alt="" /></p>
+<p>You can see the new page, but there is no result at this moment because you have no bindings to reach the TechCo application running on Java Cloud Service.</p>
+<h4 id="create-java-cloud-service-bindings-for-application-deloyed-on-application-container-cloud-service">Create Java Cloud Service bindings for application deloyed on Application Container Cloud Service</h4>
+<p>First test the TechCo application's REST interface. In the browser open a new tab and go to the Java Cloud Service console. If there is no Dashboard or other service console opened then <a href="../common/sign.in.to.oracle.cloud.md">sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. On the dashboard open the Java Cloud Service Console.</p>
+<p><img src="images/create.jcs.00.png" alt="" /> </p>
+<p>Click the name of the service instance to which the application is deployed.</p>
+<p><img src="images/deploy.jcs.26.png" alt="" /></p>
+<p>On the service instance details pages, find the list of nodes, and take note of the public IP address for the virtual machine that contains the Administration Server and Managed Server.</p>
+<p><img src="images/deploy.jcs.27.png" alt="" /></p>
+<p>Open a browser and write the following URL: <code>http://&lt;public-ip-address&gt;/TechCo-ECommerce/rest/products/all</code>. What you can see is the JSON formatted response of the REST interface to query all products. This is what SpringBoot application will invoke and print the result on its ne page.</p>
+<p><img src="images/change.24.firefox.png" alt="" /></p>
+<p>Go back to browser where Application Container Cloud Service console is open. If there is no such browser go to Java Cloud Service console page and use Dashboard button to navigate Application Cloud Container Service console. If there is no any Oracle Cloud Service related console opened then <a href="../common/sign.in.to.oracle.cloud.md">sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a> and open again the Application Container Cloud Service console.</p>
+<p><img src="images/accs.dashboard.png" alt="" /></p>
+<p>Click on the service name to manage the instance.</p>
+<p><img src="images/change.25.png" alt="" /></p>
+<p>Click Deployments tile and then Add new <em>Service Bindings</em>.</p>
+<p><img src="images/change.26.png" alt="" /></p>
+<p>Configure the service bindings with the following properties:</p>
+<ul>
+<li><strong>Service Type</strong>: Java Cloud Service</li>
+<li><strong>Service Name</strong>: techco (the name of JCS instance where the TechCo application is deployed)</li>
+<li><strong>Username</strong> and <strong>Password</strong>: Cloud credentials</li>
+</ul>
+<p><img src="images/change.27.png" alt="" /></p>
+<p>Click <strong>Apply Edits</strong> to restart the service. This may take some time.</p>
+<p><img src="images/change.28.png" alt="" /></p>
+<p>When the restart ready (use refresh button to update the information) switch to browser which shows the SpringBoot application's new page: <code>https://springboot-demo-&lt;identitydomain&gt;.apaas.&lt;datacenter&gt;.oraclecloud.com/restcall</code>. You can easily find the URL at Application Container Cloud Service console or ACCS instance's detail page.</p>
+<p><img src="images/change.29.png" alt="" /></p>
+<p>If the Service Bindings creation was successful the SpringBoot demo application can invoke TechCo application's REST interface (using the bindings) and you should see the product list result printed in HTML table.</p>
+<h4 id="close-issue-using-oepe-cloud-tooling">Close Issue using OEPE Cloud Tooling</h4>
+<p>The new feature has been implemented so you can change your task's state to Resolved. Go back to OEPE and open your task if it is not opened already.</p>
+<p><img src="images/change.30.png" alt="" /></p>
+<p>In the detail view scroll down enter new description and change state to Resolved.</p>
+<p><img src="images/change.31.png" alt="" /></p>
+<h4 id="check-changes-using-oracle-developer-cloud-service-user-interface">Check changes using Oracle Developer Cloud Service user interface</h4>
+<p>Now change to browser where Oracle Developer Cloud Service is open. If you have closed then <a href="../common/sign.in.to.oracle.cloud.md">sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. On the dashboard open the Developer Cloud Service Console.
+<img src="images/change.00.png" alt="" /></p>
+<p>On the Home page you can see the recent activities. Check what has happened with your project. If the page remained opened refresh to get the latest entries. You can see the changes you made on the task assigned. Scroll down and find the log entry related to code changes pushed to master branch in <code>&lt;projectname&gt;.git</code> (<em>springboot.git</em>) repository. The Git icon <img src="images/git.icon.png" alt="" /> can help to find this event. Click on the link named with the identifier of the git changes.</p>
+<p><img src="images/change.32.png" alt="" /></p>
+<p>This link redirects you to the Code page where you can see the modifications belong to the specific git identifier. Scroll down to check what changes have happened on the source code.</p>
+<p><img src="images/change.33.png" alt="" /></p>
+<p>On the top right area you can see the comment of the Git commit. If you remember when you entered <em>Task 1</em> into the comment it was converted to link immediately. It is happened because Developer Cloud Service recognized as a valid Issue identifier. Now click the <strong>Task 1</strong> link to jump the related issue. You can modify the issue if you need, but in a typical development workflow the QA team will test the Fixed issues and step forward to Verified or Reopened status depending on the test result.</p>
+<p><img src="images/change.34.png" alt="" /></p>
+<p>Please note that in a project, you can define products, components, owners of components, releases, and tags, of your project before creating and assigning issues to project members. You can define multiple product categories, components, and sub-components; customize the releases; provide custom tags; and add custom fields for your project. For more information see the <a href="http://docs.oracle.com/cloud/latest/devcs_common/CSDCS/GUID-FFB070E5-DA29-43EB-A0CA-3FA8BB3FC3E1.htm#CSDCS3146">documentation</a>.</p>

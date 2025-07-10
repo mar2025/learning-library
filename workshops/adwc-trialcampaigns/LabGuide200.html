@@ -1,0 +1,172 @@
+<h1 id="introduction">Introduction</h1>
+<p>This is the second of several labs that are part of the <strong>Oracle Autonomous Data Warehouse Cloud Workshop</strong>. This workshop will walk you through several use cases of using an autonomous data warehouse.</p>
+<p>This lab walks you through some examples using the Oracle
+Autonomous Data Warehouse Cloud with Object Storage. You will create and Object Storage bucket, upload data files, and use SQL developer to query those data files.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to use OCI Object Storage<ul>
+<li>Create buckets</li>
+<li>Upload Files</li></ul></li>
+<li>Learn how to use SQL Developer with ADWC and Object Storage<ul>
+<li>Copy object storage file data to internal tables in Autonomous Data Warehouse Cloud using SQL Developer</li>
+<li>Create external tables that reference files in object storage</li></ul></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud trial account.</li>
+</ul>
+<h1 id="oracle-cloud-infrastructure-oci-object-storage">Oracle Cloud Infrastructure (OCI) Object Storage</h1>
+<p>Oracle Object Storage is a web-based interface that provides the ability to accelerate a broad range of high performance applications with your choice of high IO block storage, and durable, high-throughput object storage.</p>
+<p>Key features of OCI Object Storage:</p>
+<ul>
+<li>Persistent IO-intensive block storage and high-throughput object storage options to handle multiple application types, and data at different lifecycle stages.</li>
+<li>Each is manageable through the console and by CLI.</li>
+</ul>
+<h2 id="creation-and-upload">Creation and Upload</h2>
+<h3 id="step-1-access-oracle-cloud-infrastructure"><strong>STEP 1</strong>: Access Oracle Cloud Infrastructure</h3>
+<ul>
+<li><p>Log into your Oracle cloud account</p></li>
+<li><p>Click on the hamburger menu icon on the top left of the dashboard screen</p></li>
+<li><p>Expand <strong>Services</strong> and click on <strong>Compute</strong></p>
+<p><img src="./images/200/14.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-access-the-object-storage-console"><strong>STEP 2</strong>: Access the Object Storage Console.</h3>
+<ul>
+<li><p>Select the <strong>Storage</strong> tab in the navigation bar</p>
+<p><img src="./images/200/2.png" alt="" /></p></li>
+<li><p>Select <strong>Object Storage</strong> in the side menu</p>
+<p><img src="./images/200/3.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-create-object-storage-bucket"><strong>STEP 3</strong>: Create Object Storage Bucket</h3>
+<ul>
+<li><p>Select <strong>Create Bucket</strong></p>
+<p><img src="./images/200/4.png" alt="" /></p></li>
+<li><p>Enter the following information:</p></li>
+<li><p><strong>Bucket Name</strong> - &lt;yourname&gt;OS. &lt;&lt; Prefix your storage bucket name with a unique name (you can use your name, for example), e.g. JackOS. Since all users will be using the same cloud account, it is important that you use a unique bucket name.</p></li>
+<li><p><strong>Storage Tier</strong> - Standard &lt;&lt; Do not select Archive as this tier will store its data differently.</p></li>
+</ul>
+<p>Select <strong>Create Bucket</strong>.</p>
+<pre><code>![](./images/200/5.png)
+</code></pre>
+<h3 id="step-4--upload-files-to-your-storage-bucket"><strong>STEP 4</strong>:  Upload files to your storage bucket.</h3>
+<ul>
+<li><p>Here we will download two files. One CSV and one JSON file. In later steps, we will use SQL Developer to query the data inside these files.</p></li>
+<li><p>Download Insurance.csv from github repository:</p>
+<ul>
+<li>Open the following link in a new tab: https://raw.githubusercontent.com/unofficialoraclecloudhub/autonomous-campaign/master/workshops/adwc-trialcampaigns/objectstorage/Insurance.csv</li>
+<li>Right Click anywhere on browser page and select <strong>Save as…</strong></li>
+<li>Save file</li></ul></li>
+<li><p>Download colors.json from github repository:</p></li>
+<li><p>Open the following link in a new tab: https://raw.githubusercontent.com/unofficialoraclecloudhub/autonomous-campaign/master/workshops/adwc-trialcampaigns/objectstorage/colors.json</p></li>
+<li><p>Right Click anywhere on browser page and select <strong>Save as…</strong></p></li>
+<li><p>Go back to OCI Object Storage Console</p></li>
+<li><p>Select your bucket name in the list of buckets. i.e. &lt;yourname&gt;OS</p>
+<p><img src="./images/200/6.png" alt="" /></p></li>
+<li><p>Let's upload the CSV file.</p></li>
+<li><p>Select <strong>Upload Object</strong></p>
+<p><img src="./images/200/7.png" alt="" /></p></li>
+<li><p>Select <strong>Browse</strong> and select your recently saved csv file.</p>
+<p><img src="./images/200/8.png" alt="" /></p></li>
+<li><p>Select <strong>Upload Object</strong> and the popup will disappear.</p></li>
+<li><p>Now lets upload the Json file.</p></li>
+<li><p>Select <strong>Upload Object</strong></p>
+<p><img src="./images/200/7.png" alt="" /></p></li>
+<li><p>Select <strong>Browse</strong> and select your recently saved json file.</p>
+<p><img src="./images/200/8.png" alt="" /></p></li>
+<li><p>Select <strong>Upload Object</strong> and the popup will disappear.</p></li>
+</ul>
+<h3 id="step-5-retrieve-swift-password"><strong>STEP 5</strong>: Retrieve swift password.</h3>
+<ul>
+<li><p>Click the drop down with username logged in, and select <strong>User Settings</strong>.</p>
+<p><img src="./images/200/9.png" alt="" /></p></li>
+<li><p>Select <strong>Swift Passwords</strong>.</p>
+<p><img src="./images/200/10.png" alt="" /></p></li>
+<li><p>Select <strong>Generate Password</strong>.</p>
+<p><img src="./images/200/11.png" alt="" /></p></li>
+<li><p>Give a brief description, i.e. "dbms cloud api credential" and Select <strong>Generate Password</strong></p>
+<p><img src="./images/200/12.png" alt="" /></p></li>
+<li><p>Record / Copy the newly generated password for the next step.</p></li>
+</ul>
+<p>Next, we are going to use our Autonomous Data Warehouse Cloud instance connected with SQL Developer to interact with the data files residing in our recently create Object Storage bucket.</p>
+<h2 id="querying-data-files-in-object-storage">Querying Data Files in Object Storage</h2>
+<h3 id="step-6--connect-autonomous-data-warehouse-cloud-instance-to-data-in-object-storage"><strong>STEP 6</strong>:  Connect Autonomous Data Warehouse Cloud instance to data in Object Storage</h3>
+<ul>
+<li><p>Go to the SQL Developer console that you connected in a previous lab. Here's a reference to that lab section: https://github.com/unofficialoraclecloudhub/autonomous-campaign/blob/master/workshops/adwc-trialcampaigns/LabGuide100.md#connecting-to-the-database-using-sql-developer</p></li>
+<li><p>Use DBMS<em>CLOUD API to create credentials. For more information about DBMS</em>CLOUD, please refer to this: https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/dbmscloud-reference.html#GUID-52C9974C-D95E-4E41-AFBD-0FC4065C029A</p></li>
+</ul>
+<p>As the user you created, run the following command, replacing <strong>oci-username</strong> with your OCI username, and <strong>swift-password</strong> with the swift password you generated in step 6</p>
+<pre><code>set define off
+begin
+  DBMS_CLOUD.create_credential(
+    credential_name =&gt; 'OBJ_STORE_CRED',
+    username =&gt; '&lt;oci-username&gt;',
+    password =&gt; '&lt;swift-password&gt;'
+  );
+end;
+/
+</code></pre>
+<p>This commands utilizes DBMS Cloud API to store your swift password as a credential when your Autonomous Data Warehouse Cloud / SQL Developer tries to connect to Object Storage.</p>
+<h3 id="step-7--create-an-internal-table-for-csv-file"><strong>STEP 7</strong>:  Create an internal table for CSV file</h3>
+<p>Now that we have set up an Object Storage bucket and connected SQL Developer to our Autonomous Data Warehouse Cloud, we can start interacting with the data files that we uploaded. It is possible to copy file data to internal tables or connect to the file through an external table. In this lab we will do both.</p>
+<ul>
+<li>Create the schema for your internal table.</li>
+</ul>
+<pre><code>CREATE TABLE INSURANCE (policyID NUMBER(20), statecode VARCHAR(20), county VARCHAR(20));
+</code></pre>
+<ul>
+<li><p>Use DBMS<em>CLOUD PL/SQL procedure to copy the data into the new tables. <strong>Note:</strong> you will need to replace <strong>region</strong> , <strong>tenant</strong> , and <strong>bucket</strong> in the file</em>uri_list parameter. You can find tenancy and region here:</p>
+<p><img src="./images/200/13.png" alt="" /></p></li>
+</ul>
+<p>Use this information for the <strong>file<em>uri</em>list</strong> parameter in the DBMS_CLOUD function.</p>
+<pre><code>begin
+ dbms_cloud.copy_data(
+    table_name =&gt;'INSURANCE',
+    credential_name =&gt;'OBJ_STORE_CRED',
+    file_uri_list =&gt;'https://swiftobjectstorage.&lt;region&gt;.oraclecloud.com/v1/&lt;tenant&gt;/&lt;bucket&gt;/Insurance.csv',
+    format =&gt; json_object('delimiter' VALUE ',')
+ );
+end;
+/
+</code></pre>
+<p>Now you can query this table and retrieve data that previously only existed in Object Storage.</p>
+<h3 id="step-8--create-an-external-table-for-csv-file"><strong>STEP 8</strong>:  Create an external table for CSV file</h3>
+<p>If for whatever reason you'd like to keep your data in Object Storage, you can create external tables. Instead of storing the data, it will store the connection to Object Storage so that it can quickly retrieve the data.</p>
+<p><strong>Note:</strong> you will need to replace <strong>region</strong>, <strong>tenant</strong> , and <strong>bucket</strong> in the file<em>uri</em>list parameter.</p>
+<p>Go back to Oracle Cloud Infrastructure Console to get the information about tenancy and region</p>
+<p><img src="./images/200/13.png" alt="" /></p>
+<p>Then in SQL Developer, run the following PL/SQL scripts.</p>
+<pre><code>begin
+ dbms_cloud.create_external_table(
+    table_name =&gt;'INSURANCE_EXT_CSV',
+    credential_name =&gt;'OBJ_STORE_CRED',
+    file_uri_list =&gt;'https://swiftobjectstorage.&lt;region&gt;.oraclecloud.com/v1/&lt;tenant&gt;/&lt;bucket&gt;/Insurance.csv',
+    format =&gt; json_object('delimiter' VALUE ','),
+    column_list =&gt; 'policyID NUMBER(20), statecode VARCHAR(20), county VARCHAR(20)'
+ );
+end;
+/
+</code></pre>
+<p><img src="./images/200/15.png" alt="" /></p>
+<p>Now you can query this external table the same way you would query an internal table.</p>
+<h3 id="bonus-step-query-json-data"><strong>BONUS STEP</strong>: Query JSON data</h3>
+<p>One of the benefits of the Oracle Database 18c that powers Autonomous Data Warehouse Cloud is the ability to natively query JSON data. With Object Storage and the DBMS_CLOUD API in SQL Developer, you can query external JSON files.</p>
+<ul>
+<li>Create external table for JSON file</li>
+</ul>
+<pre><code>begin
+ dbms_cloud.create_external_table(
+    table_name =&gt;'COLORS_EXT_JSON',
+    credential_name =&gt;'OBJ_STORE_CRED',
+    file_uri_list =&gt;'https://swiftobjectstorage.&lt;region&gt;.oraclecloud.com/v1/&lt;tenant&gt;/&lt;bucket&gt;/colors.json',
+    column_list =&gt; 'co_document VARCHAR(32767)'
+ );
+end;
+/
+</code></pre>
+<p>Notice that there's only one column for the json document. To query this data, use the following syntax:</p>
+<pre><code>select co.co_document from COLORS_EXT_JSON co;
+</code></pre>
+<pre><code>select co.co_document.colors.color from COLORS_EXT_JSON co;
+</code></pre>
+<p>For more information about JSON querying, please refer to this: https://docs.oracle.com/database/121/ADXDB/json.htm</p>
+<p>This is the end of Lab 200. You can proceed with <a href="LabGuide300.md">Lab 300: Creating Visulization using ADWC</a>. </p>

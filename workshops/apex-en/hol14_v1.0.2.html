@@ -1,0 +1,433 @@
+<h1 id="unit-14-adding-additional-pages-to-your-application">Unit 14: Adding Additional Pages to your Application</h1>
+<p>This exercise includes five hands-on-labs and uses the Demo Projects application.</p>
+<p><strong>HOL 14-1 Creating and Customizing a Calendar</strong>: In this lab, you add a Calendar in the Demo Projects application. Later, you edit the calendar attributes and enable the drag and drop functionality.</p>
+<p><strong>HOL 14-2 Adding the Project Tasks Chart:</strong> In this hands-on lab, you first create a blank page named Reports. You select Reports as the Parent Navigation Menu Entry when you create all the three charts and the Project Tree page in this application. This lab covers creating the Project Tasks chart to review the completed and incomplete tasks.</p>
+<p><strong>HOL 14-3 Adding the Project Milestones Chart</strong>: In this lab, you create the Project Milestones chart to depict past milestones and future milestones. You create a copy of the Project Tasks chart and then edit the chart attributes including the source query.</p>
+<p><strong>HOL 14-4 Adding the Project Leads Chart</strong>: In this hands-on lab you create the Project Leads chart to depict the completed and incomplete tasks for each of the team members.</p>
+<p><strong>HOL 14-5 Adding the Project Tree</strong>: In this hands-on lab you create a blank page and then create a Tree region. This lab also covers updating the Demo Projects application navigation menu. To perform the steps in this lab, you need the Project_Tree.sql file which is included in the apex-course-labs.zip.</p>
+<p>The instructions in this exercise use the following page numbers:</p>
+<ul>
+<li><p>Page 16: Reports</p></li>
+<li><p>Page 18: Project Tree</p></li>
+<li><p>Page 19: Tasks Review</p></li>
+<li><p>Page 20: Milestones Review</p></li>
+<li><p>Page 21: Team Members Review</p></li>
+</ul>
+<h2 id="hol-14-1-creating-and-customizing-a-calendar">HOL 14-1: Creating and Customizing a Calendar</h2>
+<p>In this hands-on lab, you create an authorization scheme to ensure only people entered as Team Members can log into the Demo Projects application. You apply the authorization scheme to the application properties.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and in the report, click <strong>Demo Projects</strong> application.</p></li>
+<li><p>In the application home page, click <strong>Create Page</strong>.</p></li>
+<li><p>Select <strong>Calendar</strong> page type and click <strong>Next</strong>.
+<img src="images/hol14/image3.png" alt="1a" /></p></li>
+<li><p>Enter <strong>Calendar</strong> for Page Name, select <strong>Breadcrumb</strong> for Breadcrumb, and click <strong>Next</strong>.
+<img src="images/hol14/image4.png" alt="1b" /></p></li>
+<li><p>For Navigation Preference, select the <strong>Create a new navigation menu entry</strong> radio button.
+Click <strong>Next</strong>.</p>
+<p><img src="images/hol14/image5.png" alt="1c" /></p></li>
+<li><p>Select <strong>Table</strong> for Source, <strong>DEMO_PROJ_TASKS</strong> for Table/View Name.
+Click Next.
+<img src="images/hol14/image6.png" alt="1d" /></p></li>
+<li><p>Select <strong>NAME</strong> for Display Column, and <strong>END_DATE</strong> for End Date Column.
+Click <strong>Create</strong>.
+<img src="images/hol14/image7.png" alt="1e" /></p></li>
+<li><p>Click <strong>Save and Run Page</strong>.</p>
+<p><img src="images/hol14/image8.png" alt="1f" />
+In the Developer Toolbar, click <strong>Edit Page 10</strong>.</p></li>
+<li><p>The Calendar page displays the region title Calendar, and also has a border around the region.
+In the Rendering tree, locate the Calendar region. Click <strong>Calendar</strong>.</p>
+<p>In the Property Editor, click the <strong>Template Options</strong> button.
+<img src="images/hol14/image9.png" alt="1g" /></p></li>
+<li><p>In the Template Options dialog, input the following:</p>
+<ul>
+<li><p>Header - select <strong>Hidden but accessible</strong></p></li>
+<li><p>Style - select <strong>Remove UI Decoration</strong></p></li></ul>
+<p>Click <strong>OK</strong>. </br>
+<img src="images/hol14/image10.png" alt="1h" /></p></li>
+<li><p>Click <strong>Save and Run Page</strong>.
+<img src="images/hol14/image11.png" alt="1i" />
+In the Developer Toolbar, click <strong>Application&lt;<em>n</em>&gt;</strong>.</p></li>
+<li><p>You want to update the navigation menu. In the application home page, click <strong>Shared Components</strong>.</p></li>
+<li><p>Under Navigation, click <strong>Lists</strong>.</p></li>
+<li><p>Under Lists, click <strong>Desktop Navigation Menu</strong>. </br>
+<img src="images/hol14/image12.png" alt="1l" /></p></li>
+<li><p>Under List Details, click <strong>Calendar</strong>.
+<img src="images/hol14/image13.png" alt="1m" /></p></li>
+<li><p>On the Calendar list entry, for Image/Class enter <strong>fa-calendar</strong>.
+Click <strong>Apply Changes</strong>.
+<img src="images/hol14/image14.png" alt="1n" /></p></li>
+<li><p>In the Application Express toolbar, click <strong>Run Page 10</strong>. </br>
+<img src="images/hol14/image15.png" alt="1o" /></p></li>
+<li><p>In the navigation menu, notice the new icon. In the Developer Toolbar, click <strong>Edit Page 10</strong>.
+<img src="images/hol14/image16.png" alt="1u" /></p></li>
+<li><p>You need to add the Create and View / Edit links. In the Rendering tree, locate the Calendar region.
+Click <strong>Attributes</strong> under the Calendar region.</p>
+<p>In the Property Editor, locate Create Link and click <strong>No Link Defined</strong>.
+<img src="images/hol14/image17.png" alt="1q" /></p></li>
+<li><p>In the Link Builder – Create Link dialog, select <strong>9</strong> for Page, and enter <strong>9</strong> for Clear Cache.
+Click <strong>OK</strong>.
+<img src="images/hol14/image18.png" alt="1r" /></p></li>
+<li><p>In the Property Editor, locate View/Edit Link and click <strong>No Link Defined</strong>.
+<img src="images/hol14/image19.png" alt="1s" /></p></li>
+<li><p>In the Link Builder – View / Edit Link dialog, input the following:</p>
+<ul>
+<li><p>Page - select <strong>9</strong> <strong>- Maintain Task</strong></p></li>
+<li><p>Name - select <strong>P9_ID</strong></p></li>
+<li><p>Value - select <strong>ID</strong> or enter <strong>&ID.</strong></p></li>
+<li><p>Clear Cache - enter <strong>9</strong></p></li></ul>
+<p>Click <strong>OK</strong>.</p>
+<p><img src="images/hol14/image20.png" alt="1t" /></p></li>
+<li><p>You can enable calendar drag and drop by using the component attribute Drag and Drop. Your SQL query must select a primary key column and you must have set the Primary Key Column calendar attribute. Then enter the PL/SQL code to update the event row in the database in the Drag and Drop PL/SQL Code attribute. That PL/SQL code typically performs a SQL update on the database table - the bind variables :APEX$PK_VALUE., :APEX$NEW_START_DATE and :APEX$NEW_END_DATE contain the dragged events primary key value as well as the new start and new end timestamp.</p>
+<ul>
+<li><p>In the property editor, navigate to Primary Key Column, and select <strong>ROWID</strong>.</p></li>
+<li><p>Select <strong>Yes</strong> for Enable Drag and Drop.</p></li>
+<li><p>For Drag and Drop PL/SQL Code, copy and paste the following code:</p>
+<pre><code>  begin
+
+  update DEMO_PROJ_TASKS
+
+  set start_date = to_date(:APEX$NEW_START_DATE, 'YYYYMMDDHH24MISS'),
+
+  end_date = to_date(:APEX$NEW_END_DATE, 'YYYYMMDDHH24MISS')
+
+  where ROWID = :APEX$PK_VALUE;
+
+  end;
+</code></pre></li></ul>
+<p>Then, click <strong>Save</strong>.</p>
+<p><img src="images/hol14/image21.png" alt="calendar" /></p></li>
+<li><p>Click <strong>Save and Run Page</strong>.
+<img src="images/hol14/image16.png" alt="1u" /></p></li>
+<li><p>In the Developer Toolbar, click <strong>Application&lt;<strong><em>n</em></strong>&gt;</strong>.</p></li>
+</ol>
+<h2 id="hol-14-2-adding-the-project-tasks-chart">HOL 14-2: Adding the Project Tasks Chart</h2>
+<p>In this hands-on lab, first you create a blank page named Reports. You select Reports as the Parent Navigation Menu Entry for all of the three charts and the Tree page you create in the Demo Projects application.</p>
+<ol>
+<li><p>First, create a blank page in the Demo Projects application. In the application home page, click <strong>Create Page</strong>.</p></li>
+<li><p>Select <strong>Blank Page</strong> and click <strong>Next</strong>.</p></li>
+<li><p>Enter <strong>Reports</strong> for Name, select <strong>Breadcrumb</strong> for Breadcrumb, and click <strong>Next</strong>.</p>
+<p><img src="images/hol14/image22.png" alt="2_1" /></p></li>
+<li><p>Select <strong>Create a new navigation menu entry</strong> for Navigation Preference.
+Click <strong>Next</strong>.
+<img src="images/hol14/image23.png" alt="2_2" /></p></li>
+<li><p>On the confirmation page, click <strong>Finish</strong>.</p></li>
+<li><p>In the page designer toolbar, click <strong>Shared Components</strong>. (not Page Shared Components). </br>
+<img src="images/hol14/image24.png" alt="2_4" /></p></li>
+<li><p>Under Navigation, select <strong>Lists</strong>. </br>
+<img src="images/hol14/image25.png" alt="2_5" /></p></li>
+<li><p>Under Lists, select <strong>Desktop Navigation Menu</strong>. </br>
+<img src="images/hol14/image26.png" alt="2_6" /></p></li>
+<li><p>Under List Details, select <strong>Reports</strong>.</p>
+<p><img src="images/hol14/image27.png" alt="2_7" /></p></li>
+<li><p>For Image/Class, enter <strong>fa-bar-chart</strong>.
+Click <strong>Apply Changes</strong>.
+<img src="images/hol14/image28.png" alt="2_8" /></p></li>
+<li><p>In the Application Express toolbar, click <strong>Run Page 16</strong>. </br>
+ <img src="images/hol14/image29.png" alt="2_9" /></p></li>
+<li><p>Notice the icon for Reports in the navigation menu.
+Now you add charts to the Demo Projects application.
+In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.
+<img src="images/hol14/image30.png" alt="2_10" /></p></li>
+<li><p>In the application home page, click <strong>Create Page</strong>.
+<img src="images/hol14/image31.png" alt="2_11" /></p></li>
+<li><p>Select <strong>Bar</strong> for Chart Type and click <strong>Next</strong>.
+<img src="images/hol14/image32.png" alt="2b" /></p></li>
+<li><p>Enter <strong>Tasks Review</strong> for Page Name.
+Select <strong>Breadcrumb</strong> for Breadcrumb and <strong>Reports (Page 16)</strong> for Parent Entry and click <strong>Next</strong>.
+<img src="images/hol14/image33.png" alt="2c" /></p></li>
+<li><p>Select <strong>Create a new navigation menu entry</strong> for Navigation Preference.
+Select <strong>Reports</strong> for Parent Navigation Menu Entry and click <strong>Next</strong>.
+<img src="images/hol14/image34.png" alt="2d" /></p></li>
+<li><p>For Source Type, select <strong>SQL Query</strong>.
+Copy and paste the following code in to <strong>SQL Query</strong>:</p>
+<pre><code>  select p.id
+
+  , p.name as label
+
+  , (select count('x') from demo_proj_tasks t
+
+  where p.id = t.project_id
+
+  and nvl(t.is_complete_yn,'N') = 'Y'
+
+  ) value
+
+  , 'Completed Tasks' series
+
+  , p.created
+
+  from demo_projects p
+
+  UNION ALL
+
+  select p.id
+
+  , p.name as label
+
+  , (select count('x') from demo_proj_tasks t
+
+  where p.id = t.project_id
+
+  and nvl(t.is_complete_yn,'N') = 'N'
+
+  ) value
+
+  , 'Incompleted Tasks' series
+
+  , p.created
+
+  from demo_projects p
+
+  order by 5
+</code></pre>
+<p>Then, click <strong>Next</strong>.</p>
+<p><img src="images/hol14/image35.png" alt="2e" /></p></li>
+<li><p>For Column Mapping, select the following:</p>
+<ul>
+<li><p>Orientation: Horizontal</p></li>
+<li><p>Label Column: LABEL</p></li>
+<li><p>Value Column: VALUE</p></li></ul>
+<p>Click <strong>Create</strong>.
+<img src="images/hol14/image36.png" alt="2f" /></p></li>
+<li><p>In the page designer, rename the chart region title as <strong>Project Tasks</strong>.
+<img src="images/hol14/image37.png" alt="2g" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Tasks and select <strong>Attributes</strong>.
+In the property editor, under Appearance, select <strong>Yes</strong> for Stack.
+Under Layout, enter <strong>500</strong> for Maximum Width.
+<img src="images/hol14/image38.png" alt="2h" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Tasks &gt; Series and select <strong>Series 1</strong>.
+In the property editor, navigate to Column Mapping and select <strong>SERIES</strong> for Series Name.
+<img src="images/hol14/image39.png" alt="2i" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Tasks &gt; Axes and select <strong>x</strong>.
+In the property editor, enter <strong>Project</strong> for Title.
+<img src="images/hol14/image40.png" alt="2j" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Tasks &gt; Axes and select <strong>y</strong>. </br>
+In the property editor, enter <strong>Tasks</strong> for Title.</br>
+Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</br>
+<img src="images/hol14/image41.png" alt="2k" /></p></li>
+<li><p>The chart is displayed.
+In the Developer Toolbar, click <strong>Edit Page 19</strong>.
+<img src="images/hol14/image42.png" alt="project_tasks_chart" /></p></li>
+</ol>
+<h2 id="hol-14-3-adding-the-project-milestones-chart">HOL 14-3: Adding the Project Milestones Chart</h2>
+<p>In this hands-on lab, you create a bar chart to show the past and future milestones .</p>
+<ol>
+<li><p>View Page 19: Tasks Review in page designer. In the page designer, on the toolbar, click the <strong>Create</strong> (+) icon and select <strong>Page as Copy</strong>. 
+<img src="images/hol14/image43.png" alt="new1" /></p></li>
+<li><p>For Create a page as a copy of, select <strong>Page in this application</strong> and click <strong>Next</strong>.
+<img src="images/hol14/image44.png" alt="new2" /></p></li>
+<li><p>For New Page Number, enter <strong>20</strong> and for New Page Name, enter <strong>Milestones Review</strong>.
+Select <strong>Breadcrumb</strong> for Breadcrumb and <strong>Reports (Page 16)</strong> for Parent Entry.
+Click <strong>Next</strong>.
+<img src="images/hol14/image45.png" alt="new3" /></p></li>
+<li><p>For Navigation Preference, select <strong>Create a new navigation menu entry</strong>.
+Select <strong>Reports</strong> for Parent Navigation Menu Entry.
+Click <strong>Next</strong>.
+<img src="images/hol14/image46.png" alt="new4" /></p></li>
+<li><p>For region New Value, enter <strong>Project Milestones</strong>.
+Click <strong>Copy</strong>.
+<img src="images/hol14/image47.png" alt="new5" /></p></li>
+<li><p>The page along with the chart region is copied. Now, you need to modify the region source query and chart attributes.
+Under Rendering, expand Regions &gt; Project Milestones and select <strong>Attributes</strong>.
+In the property editor, for Appearance &gt; Orientation, select <strong>Vertical</strong>.
+Under Layout, remove the value for <strong>Maximum Width</strong>.
+<img src="images/hol14/image48.png" alt="new6" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Milestones &gt; Series and select <strong>Series 1</strong>.
+In the property editor, for Source &gt; SQL Query, copy and paste the following SQL:</p>
+<pre><code>  select p.id
+
+  , p.name as label
+
+  , (select count('x') from demo_proj_milestones m
+
+  where p.id = m.project_id
+
+  and m.due_date &amp;lt; sysdate
+
+  ) value
+
+  , 'Past Milestones' series
+
+  , p.created
+
+  from demo_projects p
+
+  UNION ALL
+
+  select p.id
+
+  , p.name as label
+
+  , (select count('x') from demo_proj_milestones m
+
+  where p.id = m.project_id
+
+  and m.due_date &amp;gt;= sysdate
+
+  ) value
+
+  , 'Future Milestones' series
+
+  , p.created
+
+  from demo_projects p
+
+  order by 5
+</code></pre>
+<p><img src="images/hol14/image49.png" alt="new7" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Milestones &gt; Axes and select <strong>y</strong>.
+In the property editor, for Value &gt; Format Scaling, select <strong>Automatic</strong> and delete the value for Step.
+Click Save. Then, click <strong>Save</strong> and <strong>Run Page</strong>.
+<img src="images/hol14/image50.png" alt="new8" /></p></li>
+<li><p>The chart is displayed.
+In the Developer Toolbar, click <strong>Edit Page 20</strong>.
+<img src="images/hol14/image51.png" alt="new9" /></p></li>
+</ol>
+<h2 id="hol-14-4-adding-the-project-leads-chart">HOL 14-4: Adding the Project Leads Chart</h2>
+<p>In this hands-on lab, you create a bar chart to review the completed and incomplete tasks of team members.</p>
+<ol>
+<li><p>View Page 20: Milestones Review in page designer. In the page designer, on the toolbar, click the <strong>Create</strong> (+) icon and select <strong>Page as Copy</strong>. </br>
+<img src="images/hol14/image43.png" alt="new1" /></p></li>
+<li><p>For Create a page as a copy of, select <strong>Page in this application</strong> and click <strong>Next</strong>.
+<img src="images/hol14/image44.png" alt="new2" /></p></li>
+<li><p>For New Page Number, enter <strong>21</strong> and for New Page Name, enter <strong>Team Members Review</strong>.
+Select <strong>Breadcrumb</strong> for Breadcrumb and <strong>Reports (Page 16)</strong> for Parent Entry.
+Click <strong>Next</strong>.
+<img src="images/hol14/image52.png" alt="4c" /></p></li>
+<li><p>For Navigation Preference, select <strong>Create a new navigation menu entry</strong>.
+Select <strong>Reports</strong> for Parent Navigation Menu Entry.
+Click <strong>Next</strong>.
+<img src="images/hol14/image53.png" alt="4d" /></p></li>
+<li><p>For region New Value, enter <strong>Project Leads</strong>.
+Click <strong>Copy</strong>.
+<img src="images/hol14/image54.png" alt="4e" /></p></li>
+<li><p>The page along with the chart region is copied. Now, you need to modify the region source query and chart attributes.
+Under Rendering, expand Regions &gt; Project Leads &gt; Series and select <strong>Series 1</strong>.
+In the property editor, for Source &gt; SQL Query, copy and paste the following SQL:</p>
+<pre><code>  select p.id
+
+  , (select nvl(tm.full_name, tm.username)
+
+  from demo_proj_team_members tm
+
+  where tm.id = p.project_lead
+
+  )
+
+  || ‘ [‘|| p.name ||’]’ as label
+
+  , (select count(‘x’) from demo_proj_tasks t
+
+  where p.id = t.project_id
+
+  and nvl(t.is_complete_yn,’N’) = ‘Y’
+
+  ) value
+
+  , ‘Completed Tasks’ series
+
+  , p.created
+
+  from demo_projects p
+
+  UNION ALL
+
+  select p.id
+
+  , (select nvl(tm.full_name, tm.username)
+
+  from demo_proj_team_members tm
+
+  where tm.id = p.project_lead
+
+  )
+
+  || ‘ [‘|| p.name ||’]’ as label
+
+  , (select count(‘x’) from demo_proj_tasks t
+
+  where p.id = t.project_id
+
+  and nvl(t.is_complete_yn,’N’) = ‘N’
+
+  ) value
+
+  , ‘Incompleted Tasks’ series
+
+  , p.created
+
+  from demo_projects p
+
+  order by 5
+</code></pre>
+<p><img src="images/hol14/image55.png" alt="4f" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Leads &gt; Axes and select <strong>x</strong>.
+In the property editor, for Identification, delete the Title.
+<img src="images/hol14/image56.png" alt="4g" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Project Milestones &gt; Axes and select <strong>y</strong>. </br>
+In the property editor, for Identification, verify if the title is <strong>Tasks</strong>.</br>
+Click Save. Then, click <strong>Save</strong> and <strong>Run Page</strong>.</br>
+<img src="images/hol14/image57.png" alt="4h" /></p></li>
+<li><p>The chart is displayed.
+In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.
+<img src="images/hol14/image58.png" alt="4i" /></p></li>
+</ol>
+<h2 id="hol-14-5-adding-the-project-tree">HOL 14-5: Adding the Project Tree</h2>
+<p>In this hands-on lab, you create the Project Tree and then update the application navigation menu. You create a blank page and then add the Tree region.</p>
+<ol>
+<li><p>First, create a blank page in the Demo Projects application. In the application home page, click <strong>Create Page</strong>.</p></li>
+<li><p>Select <strong>Blank Page</strong> and click <strong>Next</strong>.</p></li>
+<li><p>Enter <strong>18</strong> for Page Number.
+Select <strong>Breadcrumb</strong> for Breadcrumb and <strong>Reports (Page 16)</strong> for Parent Entry.
+Click <strong>Next</strong>.</p>
+<p><img src="images/hol14/image59.png" alt="5a" /></p></li>
+<li><p>For Navigation Preference, select <strong>Create a new navigation menu entry</strong>.
+Select <strong>Reports</strong> for Parent Navigation Menu Entry and click <strong>Next</strong>.
+<img src="images/hol14/image60.png" alt="5b" /></p></li>
+<li><p>On the Confirm page, click <strong>Finish</strong>.</p>
+<p><img src="images/hol14/image61.png" alt="5d" /></p></li>
+<li><p>Now you create a Tree region.
+In the page designer, under Rendering, right-click <strong>Regions</strong> and select <strong>Create Region</strong>.</p>
+<p><img src="images/hol14/image62.png" alt="5e" /></p></li>
+<li><p>In the property editor, for Identification &gt; Title, enter <strong>Project Tree</strong>.
+For Identification &gt; Type, select <strong>Tree</strong>.
+The apex-course-labs.zip file includes Project_Tree.sql file. On your local folder, navigate to the location where you unzipped the zip file and open <strong>Project_Tree.sql</strong>.
+Copy the SQL code from this file and then paste it in to <strong>Source &gt; SQL Query</strong> in the page designer.</p>
+<p><img src="images/hol14/image63.png" alt="5f" /></p></li>
+<li><p>In the page designer, navigate to Appearance and then click the <strong>Template Options</strong> button.
+<img src="images/hol14/image64.png" alt="5f1" /></p></li>
+<li><p>In the Template Options dialog:</p>
+<ul>
+<li><p>General: Select the <strong>Remove Body Padding</strong> check box.</p></li>
+<li><p>Header: Select <strong>Hidden but accessible</strong></p></li>
+<li><p>Style: Select Remove UI Decoration</p></li></ul>
+<p>Click <strong>OK</strong>. </br>
+<img src="images/hol14/image65.png" alt="5f2" /></p></li>
+<li><p>In the property editor, navigate to Settings and for Tooltip, select <strong>Database Column</strong>.
+Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>. </br>
+<img src="images/hol14/image66.png" alt="5g" /></p></li>
+<li><p>The project tree is displayed.
+<img src="images/hol14/image67.png" alt="project_tree" /></p></li>
+<li><p>In the Demo Projects application navigation menu, entries under the Reports parent entry should look like:
+<img src="images/hol14/image68.png" alt="navmenu" />
+To achieve this, you edit the Desktop Navigation Menu.
+In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.</p></li>
+<li><p>In the application home page, click <strong>Shared Components</strong>. </br>
+<img src="images/hol14/image69.png" alt="nav1" /></p></li>
+<li><p>Under Navigation, click <strong>Lists</strong>. </br>
+<img src="images/hol14/image70.png" alt="nav2" /></p></li>
+<li><p>Under Lists, select <strong>Desktop Navigation Menu</strong>. </br>
+<img src="images/hol14/image71.png" alt="nav3" /></p></li>
+<li><p>You want to adjust the sequence of the list entries. Click <strong>Grid Edit</strong>. </br>
+<img src="images/hol14/image72.png" alt="nav4" /></p></li>
+<li><p>You see an editable interactive grid.</p>
+<p>For Project Tree row, click the Sequence column field and enter value as <strong>110</strong>. Similarly, for Tasks Review, Milestones Review, and Team Members Review, enter the sequence values as <strong>120</strong>, <strong>130</strong>, and <strong>140</strong>.
+ Click the <strong>Save</strong> button.
+Then, in the Application Express toolbar, click <strong>Run Page 18</strong>.
+<img src="images/hol14/image73.png" alt="nav6" /></p></li>
+<li><p>The updated navigation menu is displayed.
+In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.
+<img src="images/hol14/image74.png" alt="navmenu" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol14/image75.png" alt="Snap3" /></p>

@@ -1,0 +1,84 @@
+<h1 id="trial-account-student-guide">Trial Account Student Guide</h1>
+<p><img src="images/studentguide/Picture-Title.png" alt="" />
+Updated: April 17, 2018</p>
+<h2 id="workshop-introduction">Workshop Introduction</h2>
+<p>This Oracle Public Cloud DevOps and Cloud Native Microservices workshop will walk you through the Software Development Lifecycle (SDLC) for a Cloud Native project, during which you will create and use several Microservices. During this workshop you will take on the role of 4 personae. As the first persona - the Project Manager - you will create the projects, add tasks and features to be worked on, and assign tasks to developers.  The Project Manager will then start the initial sprint. The Java Developer persona will develop a new twitter feed microservice that will allow for retrieval and filtering of twitter data. The Full Stack Developer persona will develop a new database microservice that allows access to the product catalog data. The JavaScript Developer persona will make enhancements to the Product Catalog UI that will display the twitter data related to a select catalog item.  During the workshop, you will get exposure to Oracle Developer Cloud Service and Oracle Application Container Cloud Service.</p>
+<ul>
+<li><p>You can see a list of Lab Guides by clicking on the <strong>Menu Icon</strong></p>
+<p><img src="images/WorkshopMenu.png" alt="" /></p></li>
+<li><p>To log issues and view the Lab Guide source, go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository.</p></li>
+<li><p>Visit the <a href="https://launch.oracle.com/?microservices-devops">Workshop Interactive Labguide</a> for a visual overview of the workshop content.</p></li>
+<li><p>All setup steps and lab replays have been posted on <a href="https://www.youtube.com/playlist?list=PLPIzp-E1msrZhDmRUnNBSYY6LJ2yWh3Ro">youtube</a>. You can <strong>watch the videos</strong> to gain an overview of the workshop and what's required to successfully complete the labs.</p></li>
+</ul>
+<h1 id="workshop-prerequisites">Workshop Prerequisites</h1>
+<h2 id="_acquire-an-oracle-cloud-trial-account_"><em>Acquire an Oracle Cloud Trial Account</em></h2>
+<h3 id="step-1-getting-your-trial-account"><strong>Step 1</strong>: Getting your Trial Account</h3>
+<ul>
+<li>Click on this URL <a href="http://cloud.oracle.com/tryit&intcmp=DeveloperInnovation-HOL-11NOV17">cloud.oracle.com/tryit</a>, and complete all the required steps to get your free Oracle Cloud Trial Account.</li>
+<li>You must wait to receive our account before continuing to the "<strong>Configure Oracle Cloud Identity Information</strong>" Section.</li>
+</ul>
+<h2 id="_configure-oracle-cloud-identity-information_"><em>Configure Oracle Cloud Identity Information</em></h2>
+<h3 id="step-2-record-information-from-the-welcome-email-and-login"><strong>Step 2</strong>: Record information from the welcome email and login</h3>
+<ul>
+<li>During the provisioning of your account, you will receive two welcome email message. <strong><em>Note: You must wait for the 2nd email shown below</em></strong>, as this email signals that your account is fully provisioned. If the second email does not appear within 30 minutes, please check your Junk or Promotions email folders (based on your email provider).</li>
+</ul>
+<p><img src="images/studentguide/Picture199.1.png" alt="" /></p>
+<ul>
+<li>For later use during the workshop labs, <strong>record the following fields</strong>, some of which you'll find in the email. This information will be <strong><em>used multiple times</em></strong> during the workshops Labs, so we recommend that you <strong>copy the following list to a text document</strong>, and then populate the fields as they are collected from the <strong>Welcome Email</strong> documented above.</li>
+</ul>
+<pre><code>Username:
+Temporary Password:
+
+Cloud Account Name:
+Cloud Account Password:
+</code></pre>
+<ul>
+<li><strong><em>(1)</em></strong> <strong>Username</strong>: With a trial account, this should be your email address.</li>
+<li><strong><em>(2)</em></strong> <strong>Temporary Password</strong>: The first time you login, you will use this temporary password.</li>
+<li><strong><em>(3)</em></strong> <strong>Cloud Account Name</strong>: This name will be used when you login.</li>
+<li><strong>Cloud Account Password</strong>: Once you reset your temporary password, record your new password.</li>
+</ul>
+<h3 id="step-3-log-into-your-cloud-account"><strong>Step 3</strong>: Log into your Cloud Account</h3>
+<ul>
+<li><p>Click on the link <strong><em>(4)</em></strong> <strong>Get Started with Oracle Cloud</strong> link provided in the email.</p></li>
+<li><p>Follow the instructions to <strong>set your password</strong>, and then record in your notes the new password for this <strong>Cloud Account Password</strong> field.</p></li>
+<li><p>You are now have viewing the dashboard used to access all the Cloud Services managed by the Oracle Identity Cloud Services.</p></li>
+<li><p>Click on the <strong>Customize Dashboard</strong> box to add the some select services to the Dashboard.</p>
+<p><img src="images/studentguide/Picture200.2.png" alt="" /></p></li>
+<li><p>Click on <strong>Show</strong> for the <strong>Application Container</strong>, <strong>Developer</strong>, <strong>Identity Cloud</strong>, <strong>Compute Classic</strong> and <strong>Storage Classic</strong> services. Then click the <strong>X</strong> in the top right corner to close the dialog.</p>
+<p><img src="images/studentguide/Picture200.3.png" alt="" /></p>
+<p><img src="images/studentguide/Picture200.3.1.png" alt="" /></p>
+<p><img src="images/studentguide/Picture200.3.2.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-checkset-storage-replication-policy"><strong>Step 4</strong>: Check/Set Storage Replication Policy</h3>
+<p>Some services that we will use in this workshop require that your account's Replication Policy is set. The following steps will show you how to set your replication policy.</p>
+<ul>
+<li><p>Click on the <strong>Hamburger Menu</strong> in the upper left corner of the browser window to expose the <strong>Dashboard Menu</strong>, then click on the <strong>Storage Classic</strong> menu option.</p>
+<p><img src="images/studentguide/Picture201.png" alt="" /></p></li>
+<li><p>If your replication policy has not yet been set, the following dialog will be displayed. Use the Default <strong>Georeplication Policy</strong>, and click on <strong>Set Policy</strong>.</p>
+<p><img src="images/studentguide/Picture202.png" alt="" /></p></li>
+<li><p>To return to the main <strong>Dashboard</strong>, click on the <strong>Hamburger Menu</strong>, and then click on the <strong>My Services</strong> menu option.</p>
+<p><img src="images/studentguide/Picture204.png" alt="" /></p></li>
+</ul>
+<h2 id="install-git">Install Git</h2>
+<h3 id="step-5-downloadinstall-git"><strong>Step 5</strong>: Download/Install Git</h3>
+<ul>
+<li><p>Go to the following URL: https://git-scm.com/downloads</p>
+<p><img src="images/studentguide/Picture8.png" alt="" /></p></li>
+<li><p>Select your OS. In our example, we will show how to install on Windows. Click <strong>Windows</strong> Download and click <strong>Save File</strong></p>
+<p><img src="images/studentguide/Picture9.png" alt="" /></p></li>
+<li><p>Select your download location and click <strong>Save</strong>. We will use D:\Software    </p>
+<p><img src="images/studentguide/Picture10.png" alt="" /></p></li>
+<li><p>Open Windows Explorer and navigate to where you downloaded the Git executable. Double click on the Git executable to start the install process.</p>
+<p><img src="images/studentguide/Picture11.png" alt="" /></p></li>
+<li><p>Run through the installation process. In our tests, we used the default installation settings.</p>
+<p><img src="images/studentguide/Picture12.png" alt="" /></p></li>
+</ul>
+<h2 id="get-started-on-lab-100">Get Started on Lab 100</h2>
+<h3 id="step-6-load-lab-100"><strong>Step 6</strong>: Load Lab 100</h3>
+<ul>
+<li><p>Cick on the dropdown menu in the top left corner of the screen.</p>
+<p><img src="images/studentguide/Picture219.png" alt="" /></p></li>
+<li><p>Select <strong>Lab 100</strong> to continue to your next section of this workshop.</p>
+<p><img src="images/studentguide/Picture220.png" alt="" /></p></li>
+</ul>

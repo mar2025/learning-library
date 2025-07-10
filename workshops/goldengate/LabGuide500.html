@@ -1,0 +1,136 @@
+<p><img src="images/500/lab500.png" alt="" /></p>
+<p>Update May 2, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the fifth of five GoldenGate Cloud Service labs, and covers the second use case: Replication of data from a DBCS 12c multi-tenant Pluggable Database back to an on-premise 11g Database.  Note this lab is optional and can be skipped.</p>
+<p><img src="images/100/i3.png" alt="" /></p>
+<p>This workshop will walk you through replication of data from a DBCS 12c Pluggable database back to an 11g On-premise Database.  Note that the 11g Database used in this Workshop is running on compute and does not require a VPN (or dedicated) network, but in practice you would need a VPN (Corente or other) network connection to replicate data from the cloud to a customer database.</p>
+<p>To log issues and view the lab guide source, go to the <a href="https://github.com/pcdavies/GoldenGateCloudService/issues">github oracle</a> repository.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Configure GGCS extract processes for data replication to 11g Database on-premise.</li>
+<li>Configure OGG replicat processes for data replication from DBCS 12c in the Cloud.</li>
+<li>Generate Transactions and view data movement statistics to monitor activity.</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Access to your Oracle Cloud account (used in Lab 100 and Lab 200) and services DBCS, GGCS, and Compute.</li>
+</ul>
+<h3 id="step-1-reset-data-from-previous-labs"><strong>STEP 1</strong>: Reset Data from previous labs</h3>
+<ul>
+<li><p>Open SQLDeveloper on the on-premise compute image and then open reset_data.sql file from the <code>\home\oracle\Desktop\GGCS_Workshop_Material\sql_scripts</code> folder:</p>
+<p><img src="images/500/i1.2.png" alt="" /></p></li>
+<li><p>Run the script.  Be sure to use the EURO connection:</p>
+<p><img src="images/500/i1.3.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-configure-goldengate-cloud-service-ggcs"><strong>STEP 2</strong>: Configure GoldenGate Cloud Service (GGCS)</h3>
+<ul>
+<li><p>Double click on the GGCS_SSH shortcut on the OGG Compute image to ssh to GGCS and enter the following commands:</p>
+<ul>
+<li><p><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></p></li>
+<li><p><strong>Switch to GGHOME:</strong> <code>cd $GGHOME</code></p></li>
+<li><p><strong>Start a gg command shell:</strong> <code>ggsci</code></p>
+<p><img src="images/500/i1.png" alt="" /></p></li></ul></li>
+<li><p>Review AMER extract configuration:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param EAMER</code>  Read comments</li></ul>
+<p><img src="images/500/i1.1.png" alt="" /></p></li>
+<li><p>Review add AMER extract configuration:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/ADD_AMER_EXTRACT.oby</code>  Read comments</li></ul>
+<p><img src="images/500/i2.png" alt="" /></p></li>
+<li><p>Add amer extract:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>obey dirprm/ADD_AMER_EXTRACT.oby</code></li></ul>
+<p><img src="images/500/i3.png" alt="" /></p></li>
+<li><p>Review the processes:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>info all</code></li></ul>
+<p><img src="images/500/i4.png" alt="" /></p></li>
+<li><p>Edit pump parameters and update the target IP address (field <strong><em>OG1</em></strong>).  Also note/read other highlighted parameters.  <strong>Note the use of linux 'vi' editor to update, which requires specific keys to navigate:</strong></p>
+<ul>
+<li><strong>Enter the following:</strong> <code>edit param PAMER</code></li>
+<li><strong>Use the arrow keys on your keyboard to navigate</strong></li>
+<li><strong>To set insert mode:</strong> <code>i to insert IP address (above keys no longer navigate), [ESC] to get out of insert mode</code></li>
+<li><strong>To delete characters:</strong> <code>x</code></li>
+<li><strong>To save and exit:</strong> <code>first :, then x</code></li>
+<li><strong>Optional - confirm your changes were made correctly:</strong> <code>view param PAMER</code></li></ul>
+<p><img src="images/500/i6.png" alt="" /></p></li>
+<li><p>Start new extract process and confirm process are running. </p>
+<ul>
+<li><strong>Enter the following:</strong> <code>start *</code>  This starts all processes</li>
+<li><strong>Enter the following:</strong> <code>info all</code> note you may need to wait a few seconds</li>
+<li><strong>Confirm status:</strong> <code>info all</code></li>
+<li><strong>! will repeat last command</strong></li></ul>
+<p><img src="images/500/i7.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-configure-oracle-goldengate-ogg-on-premise-11g-database"><strong>STEP 3</strong>: Configure Oracle GoldenGate (OGG) On-Premise (11g Database)</h3>
+<ul>
+<li><p>Exit out of the current terminal window.  Enter exit at least twice to ensure you are NOT still in GGCS.  Open a NEW terminal window:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start a new GG Command shell:</strong> <code>./ggsci</code></li></ul>
+<p><img src="images/500/i8.png" alt="" /></p></li>
+<li><p>View pre-configured REPLICAT:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/ADD_EURO_REPLICAT.oby</code>  Read comments.</li></ul>
+<p><img src="images/500/i9.png" alt="" /></p></li>
+<li><p>Add new REPLICAT:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>obey ./dirprm/ADD_EURO_REPLICAT.oby</code></li></ul>
+<p><img src="images/500/i10.png" alt="" /></p></li>
+<li><p>Review processes, start manager, and start replicat, and confirm processes are running:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>info all</code></li>
+<li><strong>IF the manager is not running enter the following:</strong> <code>start mgr</code></li>
+<li><strong>Start new Replicat REURO:</strong> <code>start REURO</code></li>
+<li><strong>Confirm Lab 300 services are running:</strong> <code>info all</code></li></ul>
+<p><img src="images/500/i11.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-generate-transactions-and-review-results"><strong>STEP 4</strong>: Generate Transactions and Review Results</h3>
+<ul>
+<li><p>Open SQLDeveloper and open the sql file gentrans.sql using the amer connection:</p>
+<p><img src="images/500/i12.png" alt="" /></p></li>
+<li><p>Execute the script, enter 500 for the number of transactions:</p>
+<p><img src="images/500/i13.png" alt="" /></p></li>
+<li><p>Double click on the shortcut <code>GGCS_SSH</code> on the Desktop and position it on the left.</p>
+<ul>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></li>
+<li><strong>Switch to GGHOME:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start a gg command shell:</strong> <code>ggsci</code></li>
+<li><strong>Enter:</strong> <code>stats eamer total</code></li></ul>
+<p><img src="images/500/i14.png" alt="" /></p></li>
+<li><p>Double Click on the shortcut <code>Local Terminal</code> on your desktop for OGG (11g On Prem) and position it on the right.</p>
+<ul>
+<li><strong>Change to gg home:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start ggsci:</strong> <code>ggsci</code></li>
+<li><strong>Enterz;z</strong> <code>stats reuro total</code></li></ul>
+<p><img src="images/500/i15.png" alt="" /></p></li>
+<li><p>Compare stats for GGCS and OGG:</p>
+<p><img src="images/500/i16.png" alt="" /></p></li>
+<li><p>**LEAVE THESE TWO WINDOWS OPEN AND Return to SQLDeveloper and run get_count.sql</p>
+<p><img src="images/500/i17.png" alt="" /></p></li>
+<li><p>Execute script against EURO.  Note the row counts match proving replication.  Your totals may be different from the screenshots, but the source and target should match.</p>
+<p><img src="images/500/i18.png" alt="" /></p></li>
+<li><p>We will now replicate DDL (table definition changes and other SQL that creates objects, not just data inserts/updates/deletes).  Open file ddl.sql</p>
+<p><img src="images/500/i19.png" alt="" /></p></li>
+<li><p>Note the following and then run the script:</p>
+<ul>
+<li>Note the tables do not yet exist in connection AMER.</li>
+<li>Select AMER connection on the left.</li>
+<li>Execute the script.</li></ul>
+<p><img src="images/500/i20.png" alt="" /></p></li>
+<li><p>Note table CURRENCY has been created in AMER and user CURRENCY_ADMIN has also been created.</p>
+<p><img src="images/500/i21.png" alt="" /></p>
+<p><img src="images/500/i22.png" alt="" /></p>
+<p><img src="images/500/i23.png" alt="" /></p></li>
+<li><p>Compare with OGG/11g.  Note the new tables have been replicated (created) by GGCS:</p>
+<p><img src="images/500/i24.png" alt="" /></p></li>
+<li><p>Return to your OGG terminal window on the right and review stats:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>stats reuro</code> scroll back up after the command</li></ul>
+<p><img src="images/500/i25.png" alt="" /></p></li>
+<li><p>Show DDL report    </p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view report REURO001</code>.  Scroll up and down to view the entire report.</li></ul>
+<p><img src="images/500/i26.png" alt="" /></p></li>
+</ul>

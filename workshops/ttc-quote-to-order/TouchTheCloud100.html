@@ -1,0 +1,270 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-100">Lab 100</h1>
+<p>This Lab walks you through the process of developing Mobile Cloud Service (MCS) Assets and Mobile Application Accelerator (MAX) App for the workshop.</p>
+<h3 id="1----design-considerations-for-mobile-app">1.    Design Considerations for Mobile App</h3>
+<p>Following are the assets that we will be creating during this part of the workshop.</p>
+<p><img src="images/100/Picture1.png" alt="" /> </p>
+<ul>
+<li>MCS Connector<ul>
+<li>Create MCS Connector which connects to PCS</li></ul></li>
+<li>MCS API<ul>
+<li>Create MCS API using pre-defined artifacts</li>
+<li>Configure MCS Connector</li></ul></li>
+<li>MAX App<ul>
+<li>Create MAX App which will integrate to the MCS API</li></ul></li>
+</ul>
+<h4 id="workshop-pre-requisites">Workshop Pre-requisites:</h4>
+<ol>
+<li>Chrome Browser</li>
+<li>Access to Internet, so that you can access the MCS / MAX Console </li>
+<li>Archiving utility (zip / unzip)</li>
+<li>Text Editor</li>
+<li>Android / iOS Mobile Phone (with the “Oracle Mobile Application Accelerator” App installed from iOS AppStore / Google PlayStore), preferably to test / run the MAX App on your Mobile Phone. 
+If Android / iOS Mobile Phone is not available, you can still test the MAX App using MAX simulator in the browser.</li>
+</ol>
+<h3 id="2----access-details-and-collaterals">2.    Access Details and Collaterals</h3>
+<p><strong>2.1</strong> Launch Chrome browser -&gt; New incognito window </p>
+<p><img src="images/100/Picture2.1.png" alt="" />  </p>
+<p><strong>2.2</strong> From your Chrome browser incognito window go to the following URL:
+<a href="https://cloud.oracle.com">https://cloud.oracle.com</a></p>
+<p><strong>2.3</strong> Click Sign In in the upper right hand corner of the browser</p>
+<ul>
+<li><strong>IMPORTANT</strong> - Under My Services, change Data Center to <code>US Commercial 2 (us2)</code> and click on Sign In to My Services</li>
+</ul>
+<p><img src="images/300/image001.png" alt="" /></p>
+<p><strong>2.4</strong> If your identity domain is not already set, enter it and click <strong>Go</strong></p>
+<p><strong>NOTE:</strong> the <strong>Identity Domain</strong> values will be given to you from your instructor.</p>
+<p><img src="images/300/image002.png" alt="" />  </p>
+<p><strong>2.5</strong>  Once your Identity Domain is set, enter your <code>User Name</code> and <code>Password</code> and click <strong>Sign In</strong></p>
+<p><strong><em>NOTE:</em></strong> the <strong>User Name and Password</strong> values will be given to you by your instructor.</p>
+<p><img src="images/300/image003.png" alt="" />  </p>
+<p><strong>2.6</strong>  You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><strong>NOTE:</strong> The Cloud Services dashboard is intended to be used by the <em>Cloud Administrator</em> user role.  The Cloud Administrator is responsible for adding users, service instances, and monitoring usage of the Oracle cloud service account.  Developers and Operations roles will go directly to the service console link, not through the service dashboard.</p>
+<p><strong>2.7</strong>    Once at the Oracle Cloud My Services Dashboard click on the <strong>Mobile Environment Service</strong></p>
+<p><img src="images/100/image004.png" alt="" /> </p>
+<p><strong>2.8</strong>    Now click on the link provided next to Service Instance URL</p>
+<p><img src="images/100/Picture2.4.png" alt="" /> </p>
+<p><strong>2.9</strong>    This opens the MCS Console page</p>
+<p><img src="images/100/Picture2.5.png" alt="" /></p>
+<p><strong>2.10</strong>    A csf-key is pre-defined on this MCS instance. This csf-key will be used while creating the connector, explained in the later section of this workshop. This is the credential used to connect the PCS process.</p>
+<p>csf-key: <strong>PCS_TTC</strong></p>
+<p><strong>2.11</strong>    A Mobile Backend is pre-defined on this MCS instance for testing the APIs/Connectors you are going to create as part of the workshop.</p>
+<p>Mobile Backend Name: <strong>TTC_MBE</strong></p>
+<h3 id="3----creating-an-mcs-connector">3.    Creating an MCS Connector</h3>
+<p>In this section, you create a connector API in Oracle Mobile Cloud Service so that your mobile application can interact with an external web service. Connectors work with either SOAP or REST services to access external cloud services offered by other providers or assets, such as databases.
+Connector APIs provide a bridge between your custom APIs and the enterprise services you want to access from those APIs. Using the REST and SOAP connector types, you create connector APIs for each data source that you want to access.
+You define a connector API by entering info about the target resource, creating rules for the call parameters to "shape" the returned data so that it works well in a mobile context, and specifying security policies.</p>
+<p>In this part of the Workshop, you create an MCS connector to support interacting with a SOAP service. For this workshop, the sample SOAP services that you will use are exposed by an Oracle Process Cloud Service.</p>
+<p><strong>3.0</strong> From the MCS console page click on the <strong>hamburger icon</strong> next to Oracle in the top left corner of your screen</p>
+<p><strong>3.1</strong> Select <strong>Applications</strong> from the breadcrumb menu and then click the <strong>Connectors</strong> icon</p>
+<p><img src="images/100/Picture3.1.png" alt="" /></p>
+<p><strong>3.2</strong>     Click <strong>New Connector</strong> and then select <strong>SOAP</strong> from the drop-down list.</p>
+<p><img src="images/100/Picture3.2.png" alt="" /></p>
+<p><strong>3.3</strong>    In the <strong>New SOAP Connection API</strong> dialog, enter the following values:</p>
+<p><strong>API Display Name:</strong> PCS_TTC_XX (where XX is the postfix of your user id, it should be 01 thru 10)</p>
+<p><strong>API Name:</strong> PCS_TTC_XX (should be populated based on the value entered for the Display Name)</p>
+<p><strong>WSDL URL:</strong> https://touchthecloudpcs-gse00003021.process.us2.oraclecloud.com/soa-infra/services/default/Quote_to_Order!1.0/QuoteToOrderProcess.service?WSDL</p>
+<p><strong>Short Description:</strong> Endpoint of PCS Approval Workflow</p>
+<p>Click <strong>Create</strong>. </p>
+<p><img src="images/100/Picture3.3.png" alt="" /></p>
+<p><strong>3.4</strong>    In the <strong>Configure SOAP API</strong> wizard, click <strong>Save</strong></p>
+<p><img src="images/100/Picture3.4.png" alt="" /></p>
+<p>*<em>3.5</em>    Click the *<em>Next</em>* arrow (“&gt;”) to navigate to the <strong>Port</strong> train stop and observe details about the service operations that are exposed</p>
+<p><img src="images/100/Picture3.5.png" alt="" /></p>
+<p><strong>3.6</strong>    Click the <strong>Next arrow</strong> (“&gt;”) to navigate to the <strong>Security</strong> settings</p>
+<p><img src="images/100/Picture3.6.png" alt="" /></p>
+<p>By default there are no policies selected in the <strong>Security Configuration</strong>. For this workshop we need to add a security policy to interact with the PCS SOAP Endpoint.</p>
+<p><strong>3.7</strong>    Select <code>oracle/http_basic_auth_over_ssl_client_policy</code> and click on “&gt;”.
+<img src="images/100/Picture3.7.png" alt="" /></p>
+<p><strong>3.8</strong>    On highlighting the csf-key field, you would see a lock icon. Click on the lock icon and select <strong>PCS_TTC</strong>, the one provided in the access details and collaterals section 2.6. Click on <strong>Select</strong> button.</p>
+<p><img src="images/100/Picture3.8.png" alt="" /></p>
+<p>Click on <strong>Save</strong> to save the work at this point.</p>
+<p><strong>3.9</strong>    Click the <strong>Next arrow</strong> (“&gt;”) to navigate to the <strong>Test</strong> page. Scroll down to see all the resource methods that the service exposes.</p>
+<p><img src="images/100/Picture3.9.png" alt="" /></p>
+<p><strong>3.10</strong>    Let's test it. Invoke TTC PCS process by calling the <strong>POST start</strong>.</p>
+<p>Expand the <strong>Authentication</strong> node and set the Mobile Backend to <strong>TTC_MBE</strong>, the one provided in the access details and collaterals section 2.7. Use this Mobile Backend for testing your Connectors and APIs.</p>
+<p><img src="images/100/Picture3.10.png" alt="" /></p>
+<p><strong>3.11</strong>    The response status should show 200</p>
+<p><img src="images/100/Picture3.11.png" alt="" /></p>
+<p>Click on <strong>Done</strong>. This completes the Create Connector step.</p>
+<h3 id="4----creating-the-mcs-api">4.    Creating the MCS API</h3>
+<p>In this part of the workshop, you step through the process of creating and defining MCS API using pre-defined artifacts. </p>
+<p><strong>4.1</strong>    Select <strong>Applications</strong> from the breadcrumb menu and then click the <strong>APIs</strong> icon</p>
+<p><img src="images/100/Picture4.1.png" alt="" /></p>
+<p><strong>4.2</strong>    Click the <strong>New API</strong> button on the <strong>APIS</strong> page and then Click on <strong>API</strong> to start defining the API</p>
+<p><img src="images/100/Picture4.2.png" alt="" /></p>
+<p><strong>4.3</strong>    In the New API pop-up window, drag and drop the TTCSalesOrderAPI.raml provided as part of the artifacts for the workshop</p>
+<p><img src="images/100/Picture4.3.png" alt="" /></p>
+<p><strong>4.4</strong>    Change XX to your user id suffix and enter <strong>Short Description</strong> as “Touch the Cloud MCS API”. Then click <strong>Create</strong></p>
+<p><img src="images/100/Picture4.4.png" alt="" /></p>
+<p><strong>4.5</strong>    The API created will looks like this (Please make sure that it reflects 01-10 and not XX)</p>
+<p><img src="images/100/Picture4.5.png" alt="" /></p>
+<p><strong>4.6</strong>    Disable security to the MCS API by navigating to the <strong>Security</strong> section</p>
+<p><img src="images/100/Picture4.6.png" alt="" /></p>
+<p>click <strong>Save.</strong></p>
+<p>Let’s step through the process of defining MCS API.
+An API implementation can call MCS platform APIs (such as Storage and Notifications), other custom APIs, and external REST and SOAP web services through MCS connectors.
+The coding model is based on Node.js, which is a lightweight JavaScript framework that enables you to write and run server-side code. For each API endpoint, which is the URI plus the HTTP request method (such as GET or POST), you write a route definition that specifies how to respond to a client request to that endpoint. After you have written the custom code, you package it as a Node.js module and upload it to MCS.</p>
+<p><strong>4.7</strong>    Go to <strong>Implementation</strong> to implement the custom API</p>
+<p><img src="images/100/Picture4.7.png" alt="" /></p>
+<p><strong>4.8</strong>    On your desktop, unzip the <strong>ttcsalesorderapi.zip</strong> file to ttcsalesorderapi folder. In the ttcsalesorderapi folder that is created locate the <strong>package.json</strong> file and open it in a text editor.</p>
+<p>Replace <strong>xx</strong> in API name with the postfix of your user id (it should be 01 thru 10). In the connectors section too, modify the name and version of the connector by replacing <strong>XX</strong>. For example: "/mobile/connector/PCS_TTC_<strong>XX</strong>":"1.0"</p>
+<p><strong>Refer to the code snippet:</strong></p>
+<p><img src="images/100/Picture4.8.png" alt="" /></p>
+<p><strong>4.9</strong>    Next, from the ttcsalesorderapi folder, open the <strong>ttcsalesorderapi.js</strong> file in a text editor. 
+Edit the methods to include code to access your API <strong>TTCSalesOrderAPI_XX</strong> and Connector <strong>PCS_TTC_XX</strong>.</p>
+<p><strong>Replace all XX with the postfix of your assigned user id [01 thru 10] in the file:</strong></p>
+<p><img src="images/100/Picture4.9.png" alt="" /></p>
+<p><strong>4.10</strong>    After saving all your work, create a zip file that includes all the files of the ttcsalesorderapi folder. Name the file <strong>ttcsalesorderapi2.zip</strong>.</p>
+<p><strong>4.11</strong>    Back in the MCS API implementation page, at the bottom, drag and drop <strong>ttcsalesorderapi2.zip</strong> to <strong>Upload an implementation</strong> archive section.</p>
+<p>Close the dialog window that pops up and you can see that the JavaScript you added is now part of the implementation. Click <strong>Save</strong>.</p>
+<p><img src="images/100/Picture4.11.png" alt="" /></p>
+<p>Let’s test the MCS API we just created.</p>
+<p><strong>4.12</strong>    With the implementation selected, click the <strong>Test</strong> button</p>
+<p><img src="images/100/Picture4.12.png" alt="" /></p>
+<p><strong>4.13</strong>    In the <strong>Get customer</strong> Endpoint, select the Mobile Backend <strong>TTC_MBE</strong>, the one provided in the access details and collaterals section 2.7. Click the <strong>Test Endpoint</strong> button.</p>
+<p><img src="images/100/Picture4.13.png" alt="" /></p>
+<p>You should see the list of customers as shown below.<br />
+Similarly, you can test the other endpoints as well.</p>
+<p><strong>4.14</strong>     MCS APIs must be published to be available on MAX App for integration.</p>
+<p>Click on the Hamburger Menu, select <strong>Applications</strong> from the breadcrumb menu and click on APIs. </p>
+<p>Search the API you just created i.e., <strong>TTCSalesOrderAPI_XX</strong> (where XX is the postfix of your user id, it should be 01 thru 10) by using the <strong>Filter APIs</strong>. Then select your API and click on <strong>Publish.</strong></p>
+<p><img src="images/100/Picture4.14.png" alt="" /></p>
+<p><strong>4.15</strong>    In the <strong>Confirm Publish API</strong> popup enter the comment <strong>Initial Version</strong>. Then click on <strong>Publish</strong>.</p>
+<p><img src="images/100/Picture4.15.1.png" alt="" /></p>
+<p>This will publish the MCS API.</p>
+<p><img src="images/100/Picture4.15.2.png" alt="" /></p>
+<h3 id="5----creating-max-app">5.    Creating MAX App</h3>
+<p>In this section, you create a new MAX application.</p>
+<p><strong>5.1</strong>    Select <strong>Applications</strong> from the breadcrumb menu and then click the <strong>Mobile Apps</strong> icon</p>
+<p><img src="images/100/Picture5.1.png" alt="" /></p>
+<p><strong>5.2</strong>    This opens <strong>MAX</strong> in a separate browser. Click on <strong>New Application</strong>.</p>
+<p><img src="images/100/Picture5.2.png" alt="" /></p>
+<p><strong>5.3</strong>    Enter the MAX App name as <strong>TTC_APP_XX</strong> (where XX is the postfix of your user id, it should be 01 thru 10)</p>
+<p><img src="images/100/Picture5.3.png" alt="" /></p>
+<p><strong>5.4</strong>    Click <strong>Next</strong> from the top right corner to choose <strong>Screen Template</strong></p>
+<p><img src="images/100/Picture5.4.png" alt="" /></p>
+<p>By default <strong>Simple Screen</strong> template is selected. Use the same and click <strong>Next</strong></p>
+<p><strong>5.5</strong>    Enter <strong>Screen Title</strong> as <strong>Customers</strong> and click <strong>Next</strong></p>
+<p><img src="images/100/Picture5.5.png" alt="" /></p>
+<p><strong>5.6</strong>    By default <strong>Custom</strong> content is selected. Use the same and click <strong>Next</strong></p>
+<p><img src="images/100/Picture5.6.png" alt="" /></p>
+<p><strong>5.7</strong>    Click <strong>Create</strong> from <strong>Review and Create</strong></p>
+<p><img src="images/100/Picture5.7.png" alt="" /></p>
+<p><strong>5.8</strong>    Once the MAX application is created, you are taken to the Designer part of the interface where you can refine the layout and content of the pages.
+On the left are a series of components you may drag and drop onto your pages. In the center is a preview of the way the screen will look and on the right is where you can set the properties for the components you add.</p>
+<p><img src="images/100/Picture5.8.png" alt="" /></p>
+<p><strong>5.9</strong>    Scroll down in the <strong>Component</strong> palette and find the <strong>Map</strong>. Then, drag and drop the <strong>Map</strong> onto the <strong>Component</strong>.</p>
+<p><img src="images/100/Picture5.9.png" alt="" /></p>
+<p><strong>5.10</strong>    Click on <strong>Add Data</strong> from the <strong>Data</strong> section. This opens the page <strong>Add Data to Map Component</strong>. Then, select <strong>I want to use an Address</strong> radio button. Click <strong>Next ></strong>.</p>
+<p><img src="images/100/Picture5.10.png" alt="" /></p>
+<p><strong>5.11</strong>    Click on <strong>Add Service</strong>. In the <strong>Service Catalog</strong>, search for the MCS API that you published i.e., <strong>TTCSalesOrderAPI_XX</strong> (where XX is the postfix of your user id, it should be 01 thru 10) using Filter Services. Then select your API and click <strong>Select</strong> button on the bottom right corner.</p>
+<p><img src="images/100/Picture5.11.png" alt="" /></p>
+<p><strong>5.12</strong>    In the <strong>Select Data Source</strong> Tab select the <strong>Customers List</strong> business object. Then click <strong>Next</strong> button on the top right corner.</p>
+<p><img src="images/100/Picture5.12.png" alt="" /></p>
+<p><strong>5.13</strong>    In the <strong>Map Data Fields</strong> to UI Tab map the <strong>address1</strong> and <strong>address2</strong> attributes of <strong>Customers List</strong> business object to <strong>Location Value field</strong>. Click <strong>Live Data Preview</strong> button for preview. Then click <strong>Next</strong> button.</p>
+<p><img src="images/100/Picture5.13.png" alt="" /></p>
+<p><strong>5.14</strong>    No Query Parameters to be set in the <strong>Configure Query Parameters</strong> Tab as the <strong>Customers List</strong> endpoint doesn’t need it. Then click <strong>Finish</strong> button.</p>
+<p><img src="images/100/Picture5.14.png" alt="" /></p>
+<p><strong>5.15</strong>    Once complete, preview should look like this. We will now add a detail screen by clicking on <strong>Add a Detail Screen</strong> on the right panel.</p>
+<p><img src="images/100/Picture5.15.png" alt="" /></p>
+<p><strong>5.16</strong>    In the <strong>Screen Template</strong> Tab select <strong>Screen with Top Tabs</strong>. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.16.png" alt="" /></p>
+<p><strong>5.17</strong>    In the <strong>Screen Title</strong> Tab enter <strong>Customer Summary</strong> as title. Set Top Tabs as <strong>Details</strong> and <strong>Quote Lines</strong>. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.17.png" alt="" /></p>
+<p><strong>5.18</strong>    In the <strong>Content</strong> Tab select <strong>Form</strong>. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.18.png" alt="" /></p>
+<p><strong>5.19</strong>    In the <strong>Review</strong> Tab click <strong>Finish</strong>.</p>
+<p><img src="images/100/Picture5.19.png" alt="" /></p>
+<p><strong>5.20</strong>    Select <strong>Go to Detail Screen</strong> text from right panel.</p>
+<p><img src="images/100/Picture5.20.png" alt="" /></p>
+<p><strong>5.21</strong>    Preview should look like this. Click <strong>Add Data</strong> from right panel.</p>
+<p><img src="images/100/Picture5.21.png" alt="" /></p>
+<p><strong>5.22</strong>    In <strong>Select Data Source</strong> Tab, select <strong>Customer Summary</strong> business object. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.22.png" alt="" /></p>
+<p><strong>5.23</strong>    In <strong>Map Data Fields to UI</strong> Tab, click <strong>Add All Fields</strong> to add all business object fields.</p>
+<p><img src="images/100/Picture5.23.png" alt="" /></p>
+<p><strong>5.24</strong>    Click <strong>Live Preview Data</strong> to observe the changes live. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.24.png" alt="" /></p>
+<p><strong>5.25</strong>    In <strong>Configure Query Parameters</strong> Tab, click on <strong>Parent Screen</strong>, and set the <strong>customerNumber</strong> parameter to the <strong>Parent Screen's id</strong> by dragging and dropping it. Then click <strong>Finish</strong>.</p>
+<p><img src="images/100/Picture5.25.png" alt="" /></p>
+<p><strong>5.26</strong>    Once complete <strong>Preview</strong> should look like this.</p>
+<p><img src="images/100/Picture5.26.png" alt="" /></p>
+<p><strong>5.27</strong>    Click on <strong>Quote Lines</strong> Tab. Drag and drop <strong>List</strong> component to the content of the Tab. Click on <strong>Add Data</strong>.</p>
+<p><img src="images/100/Picture5.27.png" alt="" /></p>
+<p><strong>5.28</strong>    In the <strong>Select Layout</strong> Tab select the layout as shown. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.28.png" alt="" /></p>
+<p><strong>5.29</strong>    In <strong>Select Data Source</strong> Tab, select <strong>Order Line</strong> business object. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.29.png" alt="" /></p>
+<p><strong>5.30</strong>    In <strong>Map Data Fields to UI</strong> Tab, map the values as shown in the screenshot below. Click <strong>Live Preview Data</strong> to observe the changes live. Click <strong>Next</strong>.</p>
+<p><img src="images/100/Picture5.30.png" alt="" /></p>
+<p><strong>5.31</strong>    In <strong>Configure Query Parameters</strong> Tab, click on <strong>Parent Screen</strong>, and set the <strong>customerNumber</strong> parameter to the Parent Screen's id by dragging and dropping it. Then click Finish.</p>
+<p><img src="images/100/Picture5.31.png" alt="" /></p>
+<p><strong>5.32</strong>    Once complete <strong>Preview</strong> should look like this. Click on <strong>Add a Create Screen</strong> on right panel</p>
+<p><img src="images/100/Picture5.32.png" alt="" /></p>
+<p><strong>5.33</strong>    Click on <strong>Go to Create Screen</strong> text on right panel.</p>
+<p><img src="images/100/Picture5.33.png" alt="" /></p>
+<p><strong>5.34</strong>    Create Screen should look like this. No data mapping is required as it is handled internally.</p>
+<p><img src="images/100/Picture5.34.png" alt="" /></p>
+<p><strong>5.35</strong>    Change the field type for <strong>ItemDescription</strong> to <strong>Select</strong> (Drop down). </p>
+<p><img src="images/100/Picture5.35.png" alt="" /></p>
+<p>Similarly change the field type for <strong>Uom</strong> to <strong>Select</strong>. Data mapping for these fields are predefined in MCS. </p>
+<p><strong>5.36</strong>    Remove the ItemNumber field by clicking on the bin icon on the bottom right corner. This is automatically generated in the PCS side.</p>
+<p><img src="images/100/Picture5.36.png" alt="" /></p>
+<p><strong>5.37</strong>    Now the Create form should look like this.</p>
+<p><img src="images/100/Picture5.37.png" alt="" /></p>
+<p><strong>5.38</strong>    Navigate to <strong>Screen Flow</strong> tab by clicking on the left panel. Double click on <strong>Customer Summary</strong> screen.</p>
+<p><img src="images/100/Picture5.38.png" alt="" /></p>
+<p><strong>5.39</strong>    Select the header of the <strong>Customer Summary</strong> screen and select the <strong>Create Order Line Details</strong> button. Change label of the button to <strong>Create Quote Line</strong> and Modify <strong>Navigation Action Mapper</strong> under <strong>Create Quote Line</strong> button Action to map the parameters as shown in below screen shots. Click <strong>Finish</strong>.</p>
+<p><img src="images/100/Picture5.39.1.png" alt="" /></p>
+<p><img src="images/100/Picture5.39.2.png" alt="" /> <img src="images/100/Picture5.39.3.png" alt="" /> <img src="images/100/Picture5.39.4.png" alt="" /></p>
+<p><img src="images/100/Picture5.39.5.png" alt="" /></p>
+<p><strong>5.40</strong>    Select the header of the <strong>Customer Summary</strong> screen and add a Header Button <strong>Submit Quote</strong> by clicking <strong>HEADER BUTTONS</strong> on the right panel. Follow the screenshots below.</p>
+<p><img src="images/100/Picture5.40.1.png" alt="" /></p>
+<p><img src="images/100/Picture5.40.2.png" alt="" /> <img src="images/100/Picture5.40.3.png" alt="" /></p>
+<p><strong>5.41</strong>    Add Action to the <strong>Submit Quote</strong> button</p>
+<p><img src="images/100/Picture5.41.1.png" alt="" /> <img src="images/100/Picture5.41.2.png" alt="" /></p>
+<p><strong>5.42</strong>    Configure Action for <strong>Submit Quote</strong> button as shown below. (Using drag and drop)</p>
+<p><img src="images/100/Picture5.42.png" alt="" /></p>
+<p><strong>5.43</strong>    Modify <strong>Business Action Mapper</strong> under <strong>Submit Quote</strong> button Action to map the parameters as shown in below screen shots. Click <strong>Finish</strong>.</p>
+<p><img src="images/100/Picture5.43.1.png" alt="" /></p>
+<p><img src="images/100/Picture5.43.2.png" alt="" /></p>
+<p>Click <strong>Save</strong> on <strong>Configure Action</strong> panel.</p>
+<p>Let’s test the MAX app we just created.</p>
+<p><strong>5.44</strong>    You can preview your app in a hosted simulator or on a device at any point after you’ve created its first screen.
+The Test tool lets you use the simulator to see how your UI displays live data. You can also test out screen navigation and the actions that you’ve configured for UI components. Click on <strong>Test</strong> ( ) icon from top right corner.</p>
+<p><img src="images/100/Picture5.44.png" alt="" /></p>
+<p><strong>5.45</strong>    You need a test user account to preview your app with live data. To test the app you created use the following credentials</p>
+<p>username: maxtester</p>
+<p>password: W3lcome1*</p>
+<p><img src="images/100/Picture5.45.png" alt="" /></p>
+<p><strong>5.46</strong>    The MAX App opens up in the Test Console. Click on a Customer on the Map</p>
+<p><img src="images/100/Picture5.46.png" alt="" /></p>
+<p><strong>5.47</strong>    Customer Summary screen shows the Details and Quote Lines for the selected customer </p>
+<p><img src="images/100/Picture5.47.png" alt="" /></p>
+<p><strong>5.48</strong>    Navigate to Quote Lines Tab, next to Details tab</p>
+<p><img src="images/100/Picture5.48.png" alt="" /></p>
+<p><strong>5.49</strong>    Create a Quote Line by using the header button <strong>Create Quote Line</strong> on the top right corner</p>
+<p><img src="images/100/Picture5.49.png" alt="" /></p>
+<p><strong>5.50</strong>    Fill in the Create Quote Line form and then click Save</p>
+<p><img src="images/100/Picture5.50.png" alt="" /></p>
+<p><strong>5.51</strong>    Once the Quote Line is created successfully, app will navigate back to the previous screen. Now you may continue creating multiple Quote Lines similarly or submit the quote by clicking <strong>Submit Quote</strong> header button. After submitting the quote please wait 5 to 10 seconds for the screen to refresh and return to the home page.</p>
+<p><img src="images/100/Picture5.51.png" alt="" /></p>
+<p>Once the Quote is successfully submitted, app will navigate back to the Map screen.</p>
+<p><strong>5.52</strong>    If you want to test the MAX App on the Mobile Phone, please proceed to the next step.</p>
+<p>If you do not want to test the MAX App on Mobile Phone, then click on <strong>Back to Designer</strong> (  <img src="images/100/Picture5.52.i1.png" alt="" /> ). This step completes the workshop.</p>
+<p>If you want to test the MAX App on Mobile Phone, click Test on Phone (  <img src="images/100/Picture5.52.i2.png" alt="" /> ) and then Build Test Application. You need the MAX Container App (“Oracle Mobile Application Accelerator” App installed from iOS AppStore / Google PlayStore) to run your app on a Mobile Phone. </p>
+<p>MAX generates a QR code when the build finishes. Click button next to Show QR Code. This QR code needs to be used to download the app on device</p>
+<p><strong>Please do NOT publish the app</strong></p>
+<p><img src="images/100/Picture5.52.png" alt="" /></p>
+<p><strong>Note:</strong> This QR code is for testing apps that are under development. Share it with your test group. When you publish the app later on, MAX will generate a different QR code, one associated with the published (or finished) version of your app. It’s the one that you’ll use to distribute all versions of your app to its users.</p>
+<p><strong>5.53</strong>    On your device, open the MAX App (  <img src="images/100/Picture5.53.i1.png" alt="" />  ). Then Click Scan (  <img src="images/100/Picture5.53.i2.png" alt="" />  ).</p>
+<p><img src="images/100/Picture5.53.1.png" alt="" />             <img src="images/100/Picture5.53.2.png" alt="" /></p>
+<p><strong>5.54</strong>    Point your phone at the test QR code to download the app.</p>
+<p><img src="images/100/Picture5.54.png" alt="" /></p>
+<p><strong>5.55</strong>    Log into the app by entering your user name and password. The test app appears in the MAX App.</p>
+<p><img src="images/100/Picture5.55.1.png" alt="" /> <img src="images/100/Picture5.55.2.png" alt="" /></p>
+<p><strong>5.56</strong>    You can launch the MAX App, which should look like this. </p>
+<p><img src="images/100/Picture5.56.png" alt="" /></p>
+<p>You can now create and submit a quote from your phone. Please remember to wait 5 to 10 seconds after you hit the submit button for the page to refresh. You can use the hamburger menu to navigate to log out of the app.</p>
+<p><strong>This Completes LAB 100</strong></p>

@@ -1,0 +1,170 @@
+<p><img src="images/100/100.JPG" alt="" />  </p>
+<p>Updated: March 8, 2018 for BDC Version 18.1.4</p>
+<h1 id="lab-100--provisioning-oracle-big-data-cloud">Lab 100 : Provisioning Oracle Big Data Cloud</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you learn how to provision a <strong>Oracle Big Data Cloud (BDC)</strong> cluster.  </p>
+<p>The Oracle Big Data Cloud (BDC) enables you to rapidly, securely, and cost-effectively leverage the power of an elastic, integrated Big Data Infrastructure to unlock the value in Big Data.   In this lab, we will walk you through the steps to quickly configure and create a Big Data Cloud instance.  When done you will see how to view the configuration and layout of your instance using the Oracle Big Data Console.  </p>
+<p>Please direct comments to: David Bayard (david.bayard@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Get access to the Oracle Public Cloud</li>
+<li>Learn how to upload a file to the Oracle Storage Cloud Object Store</li>
+<li>Learn how to provision a BDC instance</li>
+<li>Learn how to access your BDC instance</li>
+</ul>
+<h1 id="get-access-to-the-oracle-public-cloud">Get access to the Oracle Public Cloud</h1>
+<p>Your first step is to get access to the Oracle Public Cloud.  There are a couple of ways:</p>
+<ul>
+<li>You may already have access to an the Oracle Public Cloud environment.  Provided that you have the ability to create new instances of Big Data Cloud Service Compute Edition (BDC) and Oracle Event Hub Cloud Service (OEHCS) as well as the ability to upload files to the Storage Cloud, then you should be able to use your exisitng environment.</li>
+<li>If you are a customer or prospect, you can sign-up for the free $300 Trial Account.  Please refer to the instructions here: <a href="xtra300Trial.md">$300 Trial</a></li>
+<li>If you are an Oracle employee, you can request a temporary environment from the GSE demo.oracle.com website.  Please refer to the instructions here: <a href="xtraGSErequest.md">Employee GSE request</a></li>
+</ul>
+<p>In any case, follow one of the above approaches to obtain access to an Oracle Public Cloud account with the ability (and quota) to create new instances.</p>
+<h2 id="a-note-about-oracle-cloud-infrastructure-and-oracle-cloud-infrastructure-classic">A note about Oracle Cloud Infrastructure and Oracle Cloud Infrastructure Classic</h2>
+<p>Assuming your cloud account allows it, Oracle Big Data Cloud can be deployed to both OCI and OCI-Classic data centers.  This journey was originally built against Oracle Cloud Infrastructure Classic, but it does work with OCI as well.</p>
+<p>The choice of OCI or OCI-Classic is made when you provision a new BDC instance.  There will be a Region drop-down on the first page of the BDC Create Instance screen.  If you choose an OCI region, then you'll use OCI.  If you choose "No Preference", you'll use OCI-Classic.</p>
+<p>These provisioning instructions have not been updated for OCI, so the screenshots and instructions will reflect using OCI-Classic.</p>
+<p>If you do use OCI, you'll be using the OCI Object Storage service which is distinct from the OCI-Classic Object Store.  The instructions in this document show you how to upload the bootstrap.sh script to the OCI-Classic Object Store.  If using OCI, you'll need to instead use the OCI Console to create a "journeyC" bucket in the OCI Object Store and upload the bootstrap.sh to the "bdcsce/bootstrap/bootstrap.sh" location prior to creating your BDC instance.  You'll also need to complete the pre-requisite steps for running PAAS services in OCI (https://docs.us-phoenix-1.oraclecloud.com/Content/General/Reference/PaaSprereqs.htm).</p>
+<h2 id="know-your-identity-domain">Know your identity domain</h2>
+<p>Write down the name of your Identity Domain in a document as you will need it later: 
+<img src="images/100/snap0012186.jpg" alt="" /> </p>
+<ul>
+<li>Hint: you should also write down the data center if you have it (for instance, "US Commerical 2")</li>
+</ul>
+<h1 id="section1-create-a-container-in-the-storage-cloud-and-upload-a-file">Section1: Create a container in the Storage Cloud and upload a file</h1>
+<p>Next, we will create a container in the Storage Cloud to hold the files and data used by this workshop.  This container will be the "default" container used by the BDC instance we will create.  And we will upload to this container a special "bootstrap.sh" file that will be used to customize our BDC instance as it is provisioned.</p>
+<p>If you are using OCI (instead of OCI-Classic), be sure to to read the note above about OCI and OCI-Classic as the instructions in this section do not apply to OCI.</p>
+<h2 id="create-a-new-storage-cloud-object-store-container">Create a new Storage Cloud Object Store container</h2>
+<h3 id="step-1-navigatelogin-to-the-oracle-cloud-my-services-dashboard"><strong>STEP 1</strong>: Navigate/login to the Oracle Cloud My Services Dashboard</h3>
+<ul>
+<li>You should already know the URL to login to Oracle Cloud My Services dashboard and should use that to login directly.  But if you don't, navigate to <a href="https://cloud.oracle.com/home" target="_blank">here</a> . Then click Sign In:
+<img src="images/100/snap0012287.jpg" alt="" /> <ul>
+<li>Then you will need to specify the data center (hint: if you an internal employee and were given credentials via email, try US-Commericial 2 for the data center).  And then click My Services.</li></ul></li>
+</ul>
+<p>Once you login with your Public Cloud credentials, you will see the Oracle Cloud My Services Dashboard:
+<img src="images/300/snap0011988.jpg" alt="" /> </p>
+<h3 id="step-2-click-on-customize-dashboard"><strong>STEP 2</strong>: Click on Customize Dashboard</h3>
+<p><img src="images/100/snap0012315.jpg" alt="" /> </p>
+<h3 id="step-3-scroll-down-to-the-iaas-section-and-click-on-show-for-the-storage-service"><strong>STEP 3</strong>: Scroll down to the IAAS section and click on Show for the Storage service</h3>
+<p><img src="images/100/DashboardStorage.gif" alt="" /> </p>
+<h3 id="step-4-click-on-storage-in-the-dashboard--then-copy-the-rest-endpoint-value-and-save-it-into-your-document-for-later-use"><strong>STEP 4</strong>: Click on Storage in the dashboard.  Then copy the REST Endpoint value and save it into your document for later use.</h3>
+<p><img src="images/100/StorageREST.gif" alt="" /> </p>
+<h3 id="step-5-using-the-upper-right-popup-menu-navigate-to-storage-page"><strong>STEP 5</strong>: Using the upper right popup menu, navigate to Storage page</h3>
+<p><img src="images/100/StorageNavigate.gif" alt="" /> </p>
+<h3 id="step-6-click-on-create-container--name-the-container-journeyc--write-down-the-container-name"><strong>STEP 6</strong>: Click on Create Container.  Name the container journeyC.  Write down the container name.</h3>
+<p>You are advised to name your container "journeyC" (case-sensitive), but the labs should work if you use your own name.  If you choose your own container name, do not use an underscore in the name.</p>
+<p><img src="images/100/StorageContainer.gif" alt="" /> </p>
+<h2 id="upload-the-bootstrapsh-file-to-the-container">Upload the bootstrap.sh file to the container</h2>
+<h3 id="step-1-download-the-bootstrapzip-file-to-your-computer-unzip-it-and-save-the-bootstrapsh-file-in-a-directory-you-can-easily-find"><strong>STEP 1</strong>: Download the bootstrap.zip file to your computer, unzip it, and save the bootstrap.sh file in a directory you can easily find.</h3>
+<p>Download the bootstrap.zip file from here: <a href="https://github.com/millerhoo/journey2-new-data-lake/raw/master/workshops/journey2-new-data-lake/files/100/bootstrap.zip">https://github.com/millerhoo/journey2-new-data-lake/raw/master/workshops/journey2-new-data-lake/files/100/bootstrap.zip</a></p>
+<p>Be sure to unzip the bootstrap.zip file to extract/save the bootstrap.sh file to a directory on your local computer.</p>
+<h3 id="step-2-click-on-your-journey-container-to-open-it--click-on-upload-objects--select-the-bootstrapsh-file"><strong>STEP 2</strong>: Click on your journey container to open it.  Click on Upload Objects.  Select the bootstrap.sh file.</h3>
+<p><img src="images/100/StorageBootstrap.gif" alt="" /> </p>
+<h3 id="step-3-click-on-the-actions-menu-for-bootstrapsh--choose-copy--enter-journeycbdcscebootstrap-for-the-container"><strong>STEP 3</strong>: Click on the Actions menu for bootstrap.sh.  Choose copy.  Enter journeyC/bdcsce/bootstrap for the container.</h3>
+<p>This step copies our bootstrap.sh script into the exact location where it is needed.  Be sure you enter the value exactly (case-sensitive):  journeyC/bdcsce/bootstrap</p>
+<p><strong>If you used a different container name than journeyC, substititute it accordingly.</strong>  </p>
+<p><img src="images/100/StorageBootstrap2.gif" alt="" /> </p>
+<p><strong>IMPORTANT NOTE: As of 18.1.6, the copy command will give you an error: Problem copying "bootstrap.sh".  If this happens, proceed to Provision a new BDC Instance.  Then once your BDC instance is created, please use the "xtra: Running Bootstrap.sh Manually" <a href="xtraRunBootstrap.md">xtraRunBootstrap.md</a> instructions before you start Lab 200.</strong></p>
+<h3 id="step-4-important--please-double-check-that-you-see-a-file-bdcscebootstrapbootstrapsh-in-your-journey-container"><strong>STEP 4</strong>: IMPORTANT.  Please double-check that you see a file bdcsce/bootstrap/bootstrap.sh in your journey container</h3>
+<p><img src="images/100/snap0012188.jpg" alt="" /> </p>
+<h3 id="step-5-click-the-my-services-link-in-the-upper-right-to-return-to-cloud-my-services-dashboard"><strong>STEP 5</strong>: Click the My Services link in the upper right to return to Cloud My Services Dashboard</h3>
+<p>Note: In some cases, there may not be a My Services link in upper right of the Storage page.  You can return to the Cloud My Services Dashboard by either using the browser's back button or re-logging in.</p>
+<h1 id="provision-a-new-bdc-instance">Provision a new BDC Instance</h1>
+<h2 id="provision-bdc">Provision BDC</h2>
+<h3 id="step-1-navigatelogin-to-the-oracle-cloud-my-services-dashboard-1"><strong>STEP 1</strong>: Navigate/login to the Oracle Cloud My Services Dashboard</h3>
+<p><img src="images/300/snap0011988.jpg" alt="" /> </p>
+<h3 id="step-2-using-the-upper-left-menu-navigate-to-big-data---compute-edition"><strong>STEP 2</strong>: Using the upper left menu, navigate to Big Data - Compute Edition</h3>
+<p><img src="images/100/snap0012189.jpg" alt="" /> </p>
+<h3 id="step-3-click-create-service"><strong>STEP 3</strong>: Click Create Service</h3>
+<p><img src="images/100/snap0012190.jpg" alt="" />  </p>
+<h3 id="step-4-fill-in-the-service-name-description-email-and-click-next"><strong>STEP 4</strong>: Fill in the Service Name, Description, Email and click Next</h3>
+<ul>
+<li>You can choose whatever you want for Service Name.  It is an identifier to help you in case you create more than one BDCSCE cluster.</li>
+<li>In some cases, you might see a field labelled Region.  This happens if your OPC Identity Domain is mapped to more than 1 data center.  You should be OK leaving it as No Preference.  Note: if you pick an OCI data center, be sure to read the note at the top of these instructions about OCI and OCI-Classic.</li>
+</ul>
+<p><img src="images/100/snap0012191.jpg" alt="" />  </p>
+<h3 id="step-5-in-the-cluster-configuration-section-choose-full-for-the-deployment-profile-enter-1-for-the-number-of-nodes-and-be-sure-to-choose-spark-version-21"><strong>STEP 5</strong>: In the Cluster Configuration section, choose <strong>Full</strong> for the Deployment Profile, enter <strong>1</strong> for the Number of Nodes, and be sure to choose Spark Version 2.1.</h3>
+<ul>
+<li>For this workshop, be sure to choose Full for the Deployment Profile.  The Full profile includes components like Hive which are not part of the Basic profile.</li>
+<li>We suggest you choose the Number of Nodes as 1 as that is sufficient to run the journey.  Keeping the number of nodes small will reduce your costs or allow your trial to last longer.</li>
+<li>Currently, the examples are built for Spark 2.1 so be sure to select that version.</li>
+<li><strong>Optionally</strong>, you can choose OC3M for the Compute Shape.  OC3M will use 4 OCPUs.  This will avoid some potential issues in the labs.  You can use OC2M if you want to or need to, but there may be times when some steps will hang and you will need to follow some extra steps to continue (which we have tried to document).  <strong>Our recommendation is to use OC3M unless you know you will need the extra 2 OCPUs for other services.</strong></li>
+</ul>
+<p><img src="images/100/BDCSCE_Aug_creation1.gif" alt="" />  </p>
+<h3 id="step-6-in-the-credentials-section-define-your-ssh-public-key-and-the-desired-usernamepassword-to-use-for-the-bdc-cluster-administrator"><strong>STEP 6</strong>: In the Credentials section, define your SSH public key and the desired username/password to use for the BDC cluster administrator.</h3>
+<ul>
+<li><strong>Use IDCS (Identity Management)</strong>: The instructions were written assuming you are NOT using IDCS, but the journey should work fine if you do select to use IDCS.  There are a few differences- mostly around connecting to Hive/Spark via JDBC- but we will try to document them in the appropriate places.  Currently, this option only appears in OCI-Classic data centers.</li>
+<li><strong>SSH Public Key</strong>: There are various approaches you can use.  You can define a value for a VM Public Key, use a file with a VM Public Key or create a new key.</li>
+<li>The easiest choice if new to this environment may be to create a new key.</li>
+<li>Choose to Create a New Key and hit the Enter button.</li>
+<li>Once you hit Enter, a File Folder Window will pop up to allow you to control where on your local computer you wish to store your SSH Key file (ex: sshkeybundle.zip).</li>
+<li>Make sure and write down the location of this SSH key file.</li>
+<li>The SSH Public Key field will then get filled in automatically.</li>
+<li><strong>Administrative User</strong>: Define the user id for the administration user for your instance. (We suggest you leave it at its default: bdcsce_admin)</li>
+<li><strong>Password</strong>: Enter a password to set for the administration user.  \"Password must be at least 8 characters long with at least one lower case letter, one upper case letter, one number and one special character. For example, Ach1z0#d\"</li>
+<li>Confirm Password: Re-enter the password for the administration user.
+<img src="images/100/BDCScreate2.gif" alt="" />  </li>
+</ul>
+<h3 id="step-7-in-the-cloud-storage-credentials-section-provide-your-cloud-storage-information"><strong>STEP 7</strong>: In the Cloud Storage Credentials section, provide your Cloud Storage information.</h3>
+<ul>
+<li><p><strong>Cloud Storage Container</strong> – The full name of the Oracle Storage Cloud Service container to be associated with the cluster.</p></li>
+<li><p>The format is RESTENDPOINT/CONTAINER, where RESTENDPOINT is the REST Endpoint of the Storage Service, and CONTAINER is the name of the container.</p></li>
+<li><p>If you followed along with the instructions, you should have a document with these 2 pieces of information:
+<img src="images/100/snap0012192.jpg" alt="" />  </p></li>
+<li><p><strong>Username</strong> – User name of the user who has access to the specified Oracle Storage Cloud Service container.</p></li>
+<li><p><strong>Password</strong> – The password of the above user.</p></li>
+<li><p><strong>Create Cloud Storage Container</strong> – you do not need to select this as we created the container earlier in this lab</p></li>
+</ul>
+<p><img src="images/100/BDCSCE_Aug_creation2.gif" alt="" /> </p>
+<h3 id="step-8-in-the-block-storage-section-leave-the-defaults-for-now"><strong>STEP 8</strong>: In the Block Storage section, leave the defaults for now.</h3>
+<p><img src="images/200/snap0012140.jpg" alt="" />  </p>
+<h3 id="step-9-in-the-associations-section-leave-the-checkboxes-unchecked-for-now"><strong>STEP 9</strong>: In the Associations section, leave the checkboxes unchecked for now.</h3>
+<ul>
+<li>Associations will automatically create the necessary Access Rules between services.  For this workshop, we'll show you how to manually define Access Rules at a later point.
+<img src="images/200/snap0012141.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-10-click-next--then-click-create"><strong>STEP 10</strong>: Click Next.  Then, click Create.</h3>
+<p><img src="images/100/snap0012193.jpg" alt="" />  </p>
+<h3 id="step-11-wait-for-the-bdc-instance-to-be-provisioned"><strong>STEP 11</strong>: Wait for the BDC instance to be provisioned.</h3>
+<ul>
+<li>While being provisioned, the Status will say "Creating service".  You can click on the status to get more information.</li>
+<li>As of 17.3.3-20, it can take about 15-20 minutes to finish creating the service.
+<img src="images/200/snap0012023.jpg" alt="" />  </li>
+<li>If you entered a valid email address, you will get an email the instance provisioning is finished:
+<img src="images/200/snap0012142.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-12-when-the-bdc-instance-is-provisioned-the-status-is-ready-click-on-the-name-of-the-instance-to-go-to-the-service-overview-page"><strong>STEP 12</strong>: When the BDC instance is provisioned (the status is Ready), click on the name of the instance to go to the Service Overview page.</h3>
+<p><img src="images/100/snap0012199.jpg" alt="" />  </p>
+<h3 id="step-13-review-the-details-on-the-service-overview-page"><strong>STEP 13</strong>: Review the details on the Service Overview Page</h3>
+<p>Sections include:</p>
+<ul>
+<li><strong>Overview</strong> – displays the number of nodes, aggregate OCPU, Memory, and Storage</li>
+<li><strong>Administration</strong> – displays if there are any patches available.</li>
+<li><strong>Service Overview</strong> – displays summary information of the new Big Data Cloud Service.  This includes the Ambari Server Host whose IP address you can use to access Ambari from a URL in a browser.  As well as highlighting the Administrative user you created as well as the Cloud Storage Container and the Spark Thrift Server (part of the default configuration).  </li>
+<li>Ambari is a Hadoop management web UI that can accessed through your Ambari Host Server IP address and port 8080 (ex:  http://xxx.xxx.xxx.xxx:8080).  Ambari is not covered in this Lab, but feel free to explore it on your own.</li>
+<li>Note: to use Ambari, you will need to enable a Network Access rule for port 8080.</li>
+<li>Your Ambari credentials will be your BDC username and password you defined when you created this instance. </li>
+<li><strong>Resources</strong> – displays information on the resources associated with your Service.  As you scale out and add more nodes, the new nodes as well as their Public IP address, OCPUs, Memory and Storage will be displayed.</li>
+<li><strong>Associations</strong> – displays information on any additional resources associated with your Service.  Associations will automatically setup the necessary network Access Rules between services. </li>
+</ul>
+<h3 id="step-14-record-the-ip-address-and-host-name-in-your-document"><strong>STEP 14</strong>: Record the IP address and host name in your document</h3>
+<p><img src="images/100/BDCSCE_Aug_creation3.gif" alt="" /> </p>
+<h3 id="step-15-review-the-access-rules-for-your-cluster"><strong>STEP 15</strong>: Review the Access Rules for your cluster</h3>
+<p>For now, you don't need to make changes to the default Access Rules.  In a later tutorial, we will use this to allow SSH access.  This is also the place where you can enable Ambari access (port 8080) which is disabled by default.  Note: There is no Access Rules option for OCI deployments as you control network access in OCI using the normal OCI VCN Security List functionality.
+<img src="images/200/AccessRules.gif" alt="" />  </p>
+<h3 id="step-16-access-the-big-data-cluster-console"><strong>STEP 16</strong>: Access the Big Data Cluster Console</h3>
+<ul>
+<li>Launch the Big Data Cluster Console for your BDC cluster.  If this is your first time, you will likely need to allow your browser to accept the self-signed certificate for the web console application.</li>
+<li>You will be asked to provide a username/password.  Use the username and password you defined earlier when you created the BDC instance (the username defaults to bdcsce_admin).<br />
+<img src="images/100/BDCSCE_Aug_creation4.gif" alt="" /> </li>
+</ul>
+<h3 id="step-17-record-the-web-url-of-the-big-data-cluster-console-in-your-document"><strong>STEP 17</strong>: Record the web URL of the Big Data Cluster Console in your document</h3>
+<h1 id="what-you-learned">What you Learned</h1>
+<ul>
+<li>Learned how to provision a BDC instance</li>
+<li>Learned how to access BDC</li>
+</ul>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Proceed to the next Lab to learn how to use BDC's notebook and services like Hive, Spark, and SparkSQL.</li>
+</ul>

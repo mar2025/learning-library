@@ -1,0 +1,82 @@
+<p><img src="images/300/lab300.png" alt="" /></p>
+<p>Update May 2, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of five GoldenGate Cloud Service labs, and covers the second use case: Replication and transformation of data from a DBCS 12c pluggable database to a DBCS 12c reporting data warehouse.</p>
+<p><img src="images/100/i4.png" alt="" /></p>
+<p>This workshop will walk you through replication of data from a DBCS 12c Pluggable database to another DBCS 12c Pluggable database.  This lab will introduce data transformations as part of the replication process.</p>
+<p>To log issues and view the lab guide source, go to the <a href="https://github.com/pcdavies/GoldenGateCloudService/issues">github oracle</a> repository.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Configure GGCS extract and replicat processes for data replication between DBCS 12c Pluggable Databases.</li>
+<li>Process data transformations as part of the data replication process.</li>
+<li>Review auditing support for before/after image (record) capture.</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Access to your Oracle Cloud account and services DBCS, GGCS, and Compute.</li>
+</ul>
+<h3 id="step-1-configure-goldengate-cloud-service-ggcs"><strong>STEP 1</strong>: Configure GoldenGate Cloud Service (GGCS)</h3>
+<ul>
+<li><p>We will use ssh on the OGG Compute image and log into GGCS from there. Double click on the <code>GGCS_SSH</code> shortcut on the desktop.  </p>
+<p><img src="images/300/i.1.png" alt="" /></p></li>
+<li><p>Enter the following commands:</p>
+<ul>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></li>
+<li><strong>Switch to GGHOME:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start a gg command shell:</strong> <code>ggsci</code></li></ul>
+<p><img src="images/300/i1.png" alt="" /></p></li>
+<li><p>View extract and replicat configuration.  Note we are configuring both extract (source) and replicat (target) in an oby file.  Note the use of two different credentials.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/ADD_DW_ALL.oby</code>  Read comments.</li></ul>
+<p><img src="images/300/i2.png" alt="" /></p></li>
+<li><p>View parameter file <code>repdw</code>.  This parameter file implements the data transformations you will see later in the lab.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param repdw</code>  Scroll down to view transformations.</li></ul>
+<p><img src="images/300/i2.1.png" alt="" /></p></li>
+<li><p>Create/add extract and replicat processes.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>obey dirprm/ADD_DW_ALL.oby</code></li></ul>
+<p><img src="images/300/i3.png" alt="" /></p></li>
+<li><p>Review processes.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>info all</code></li></ul>
+<p><img src="images/300/i4.png" alt="" /></p></li>
+<li><p>Start a new DW process.</p>
+<ul>
+<li><strong>Start DW Processes:</strong> <code>start *DW</code></li>
+<li><strong>Review results:</strong> <code>info all</code></li></ul>
+<p><img src="images/300/i5.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-generate-insert-transactions-and-review-data-on-source-and-target"><strong>STEP 2</strong>: Generate Insert Transactions and Review Data on Source and Target</h3>
+<ul>
+<li><p>Start SQLDeveloper and run script <code>generate_dw_data.sql</code> to generate insert transactions.  Open the script.</p>
+<p><img src="images/300/i6.png" alt="" /></p></li>
+<li><p>Run <code>generate_dw_data.sql</code> against Amer</p>
+<p><img src="images/300/i7.png" alt="" /></p></li>
+<li><p>Review results.  Scroll up and down to see all stats.</p>
+<ul>
+<li><strong>Enter the following in ggsci:</strong> <code>stats *DW total</code></li></ul>
+<p><img src="images/300/i8.png" alt="" /></p></li>
+<li><p>Review results.  open the sql script <code>get_dw_count.sql</code>.</p>
+<p><img src="images/300/i9.png" alt="" /></p></li>
+<li><p>Run <code>get_dw_count.sql</code> using connection DBCS - Amer.</p>
+<p><img src="images/300/i10.png" alt="" /></p></li>
+<li><p>Browse the following tables in SQLDeveloper to compare AMER and DW tables to see that the following transformations occurred.  <strong>NO DETAILED SCREEN SHOTS</strong>.  Note the parameter file <code>repdw</code> in the <code>dirprm</code> directory implements the transformations you see in the database tables.</p></li>
+<li><p><strong>CUSTOMERS:</strong> <code>CUSTOMERS_FIRSTNAME</code> and <code>CUSTOMERS_LASTNAME</code> concatenated into <code>CUSTOMERS_NAME</code> column.</p></li>
+<li><p><strong>CUSTOMERS:</strong> mail address stripped out and only domain mapped into <code>CUSTOMER_EMAIL_DOMAIN</code> column.</p></li>
+<li><p><strong>ORDERS:</strong> split into <code>CREDIT_ORDERS</code> and <code>NON_CREDIT_ORDERS</code> tables based on content of  <code>PAYMENT_METHOD</code> column.</p></li>
+<li><p><strong>ORDERS:</strong> <code>ORDERS_STATUS_DESC</code> column filled in by SQL lookup of value from <code>ORDERS_STATUS_LOOKUP</code> table.</p></li>
+<li><p><strong>ORDERS_PRODUCTS:</strong> <code>FINAL_PRICE</code> column calculated via stored procedure (they can look at the stored procedure <code>DW.SP_TOTAL</code> via GUI if desired)</p></li>
+<li><p><strong>PRODUCTS:</strong>  <code>PRODUCTS_TAX_CLASS_DESC</code> column filled in by using case statement</p></li>
+<li><p><strong>PRODUCTS_HISTORY</strong> auditing table populated by inserting all records (note additional columns).</p>
+<p><img src="images/300/i11.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-review-audit-support"><strong>STEP 3</strong>: Review Audit Support</h3>
+<ul>
+<li><p>We need to generate some transactions for the audit process.  Open gentrans.sql.</p>
+<p><img src="images/300/i12.png" alt="" /></p></li>
+<li><p>Execute with the <code>DBCS-amer</code> connection.  You will be prompted for number of transactions - enter 500.</p>
+<p><img src="images/300/i13.png" alt="" /></p></li>
+<li><p>Review <code>PRODUCTS_HISTORY</code> in <code>DW</code> auditing table to see that updates include the BEFORE and AFTER images of updates.</p>
+<p><img src="images/300/i14.png" alt="" /></p></li>
+</ul>

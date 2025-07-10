@@ -1,0 +1,172 @@
+<h1 id="interacting-with-data-in-oracle-object-store-in-r">Interacting with data in Oracle Object Store in R</h1>
+<p><img src="https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f4a5b21d-66fa-4885-92bf-c4e81c06d916/Image/55d948c4e07007e169299a02b4dfe6db/construction.png" alt="" /> -- This lab (Interacting with the Object Store) is under construction and a new version is in the works.  The instructions currently listed below may be <strong>inaccurate</strong> or <strong>incomplete</strong>.</p>
+<h1 id="before-you-begin">Before You Begin</h1>
+<h2 id="purpose">Purpose</h2>
+<p>In this tutorial, you learn to install and use a new R package called oraobjectstore to connect to the Oracle
+Object Storage Cloud and interact with the data in the object store directly in the R environment.</p>
+<h2 id="time-to-complete">Time to Complete</h2>
+<p>20 minutes</p>
+<h2 id="background">Background</h2>
+<p>The Oracle Object Store Cloud is a great place to store the corporate data that you want to do data
+science on. R is a language and environment for statistical computing and graphics. To help data scientists
+or genernal R users interact with the data stored in the Oracle Object Store Cloud in a more direct and
+efficient way, Brian Macdonald, who is a data scientist in Oracle, developed a new R package called
+oraobjectstore.</p>
+<p>You will walk through the functions in the package in this tutorial. The package is put on Github for public
+download.</p>
+<p>Keep in mind that the package is still under development. Brian will be adding new functionality to it, and
+occasionlly you might meet potiential bugs. Please provide feedback for us to improve it.</p>
+<h1 id="what-do-you-need">What Do You Need?</h1>
+<p>Before starting this tutorial, you should:</p>
+<ul>
+<li>Have an Oracle Storage Cloud Service account and login credentials ready.</li>
+<li>Download and install R from <a href="https://cran.r-project.org/mirrors.html">here</a> and the R Studio Desktop open source edition from <a href="https://www.rstudio.com/products/rstudio/">here</a> if you
+have not done this already.</li>
+<li>Download iris.csv from <a href="https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv">here</a> (save the content as iris.csv after you open the link), and upload to your
+Oracle Storage Cloud. You can refer to the appendix in the end of this tutorial to learn about how to
+upload data to Oracle Storage Cloud. This version may be different from the one in the previous lab.</li>
+<li>Download the R script, oraobjectstore_journey.R, from <a href="https://oracle.github.io/learning-library/workshops/journey3-data-science/rFiles/oraobjectstore_journey.R">here</a>.</li>
+</ul>
+<h1 id="downloading-and-installing-the-oraobjectstore-package">Downloading and Installing the oraobjectstore Package</h1>
+<p><img src="images/400/image1.png" alt="" /> </p>
+<p>Log into your Oracle Object Store first, make sure you have uploaded the <strong>iris.csv</strong> file there. From the
+screenshot, you can see that there are a file named <strong>iris.csv</strong> and other files in the BAM container of my
+Oracle Object Store Cloud. The names appear in the screenshot might be different from yours.</p>
+<p><img src="images/400/image2.png" alt="" /> </p>
+<p>Run the <strong>R Studio</strong> from your desktop and open the R script, <strong>oraobjectstore_journey.R</strong> , which you have downloaded at the beginning.</p>
+<p>For those not who might not be familar with R Studio, there are four panes in RStudio as shown in the
+screenshot. The R script appears in the top left pane. The bottow left is the Consol pane, the code
+execution and output will show up there. The lower right-hand side is a list of pacakges that have been
+installed. The uper right-hand side is the Global Environment pane where the revelant variables and
+objects will show up there when you run the R script.</p>
+<p><img src="images/400/image3_install.png" alt="" /></p>
+<p>You can click the <strong>Run</strong> icon on the top right corner of the source code pane to run the script one line at a
+time.</p>
+<p><strong>Run</strong> Line 3. It loads the <strong>devtools</strong> package, which contains the function called <strong>install_github</strong>. Install the
+devtools package if you have not done so already.</p>
+<p><strong>Run</strong> Line 5. This command installs the oraobjectstore package from the github repository
+<strong>brianmacdonald-ml/oraobjectstore.</strong> The package is installed successfully as shown in the output.</p>
+<p><strong>Run</strong> Line 6 to load the package into R.</p>
+<p>Click the <strong>Update</strong> icon in the <strong>Packages</strong> pane in the right-hand side; you can see the oraobjectstore package
+is listed there. Click the link of <strong>oraobjectstore</strong> in the list to the view the Help page.</p>
+<p><img src="images/400/image4_help.png" alt="" /> </p>
+<p>In the Help page, you can see the functions available in the oraobjectstore package. Read through the
+functions and descriptions in detail.</p>
+<h1 id="interacting-with-data-in-oracle-object-store">Interacting with data in Oracle Object Store</h1>
+<p><img src="images/400/image5_credentials.png" alt="" /> </p>
+<p>The <strong>oos_authenticate</strong> function in Line 10 will authenticate the session with an Oracle Object Store.</p>
+<p>There are three parameters in the function.</p>
+<ul>
+<li><p><strong>id</strong> – The identity domain to be connected to</p></li>
+<li><p><strong>username</strong> - Oracle Object Store username</p></li>
+<li><p><strong>password</strong> - Oracle Object Store password for the username</p></li>
+</ul>
+<p><strong>Replace</strong> the parameters with your domain, user name, and password in the function.</p>
+<p>Run <strong>Line 10</strong>. Make sure you see <strong>HTTP/1.1 200 OK</strong> in the output. It indicates that you authenticate against
+an Oracle Object Store successfully.</p>
+<p>The function returns an R list with the following 5 elements.</p>
+<ul>
+<li><strong>auth_token</strong> - the authorization token needed for other commands</li>
+<li><strong>url</strong> - the full url command used for curl commands</li>
+<li><strong>user<em>id</strong> - the well formed user id of the form storage</em>domain:user</li>
+<li><strong>identity_domain</strong> - domain identity used to authenticate</li>
+<li><strong>auth_url</strong> - url in the form used for authentication</li>
+</ul>
+<p>You can see the return values in the Global Environment pane on the top-right side.</p>
+<p>The retuned list is assigned to the variable named <strong>my_credentials</strong> , which will be passed to other
+functions.</p>
+<p><img src="images/400/image6_ls.png" alt="" /></p>
+<p>The function <strong>oos_ls</strong> in Line 12 lists the contents of a container and all sub containers.</p>
+<p>There are two parameters for this function, one is for the credentials, and the other is the full container
+name to be listed.</p>
+<p>The function returns a dataframe which contains the container path and file name, the size in bytes of the
+file, and the time it was last modified.</p>
+<p><strong>Replace</strong> the container name <strong>BAM</strong> with your container name. <strong>Run</strong> Line 12.</p>
+<p>The contents of your container will be listed in the output as shown in the screenshot. The <strong>iris.csv</strong> file
+should be there.</p>
+<p><img src="images/400/image7_get.png" alt="" /></p>
+<p>The function <strong>oos<em>get</em>file</strong> in Line 14 downloads a file as a stream from the Oracle Object store and loads
+the file into a dataframe.</p>
+<p>The parameters for this function are credentials, container name where a file resides, and the file name to
+download.</p>
+<p><strong>Replace</strong> the container name <strong>BAM</strong> with your container name.
+<strong>Run</strong> Line 14. The dataset is assigned to the variable named <strong>my_data</strong>.</p>
+<p><strong>Run</strong> Line 15, you can see that there are 150 rows and 6 columns of data in the iris.csv file in the output.</p>
+<p><strong>Run</strong> Line 16, the column names and the data of the first 6 rows are displayed in the output.</p>
+<p>Now the dataset is ready in R Studio for further analysis.</p>
+<p><img src="images/400/image8_lm.png" alt="" /></p>
+<p>You can build a linear regression model based on the iris data set with the <strong>lm</strong> function in Line 18. Refer
+<a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html">here</a> if you want to learn more about the <strong>lm</strong> function.</p>
+<p>The <strong>Petal.Length</strong> column is used as the independent variable, the <strong>Petal.Width</strong> column is used as the
+dependent variable for the model. You may need to change this to petal<em>width and petal</em>length to match the file.</p>
+<p><strong>Run</strong> Line 18 to fit the model.</p>
+<p><strong>Run</strong> Line 19 to see the summary information of the model in the output. The model is well fitted, the
+coefficients are significant and the adjusted R-squared value is about 0.93.</p>
+<p>You got a model (math formula) as follows:</p>
+<p>Petal.Width = 0.42 * Petal.Length – 0.</p>
+<p>Given a specific value of length of a petal, you can calculate/predict the width of the petal by the formula.</p>
+<p><img src="images/400/image9_head.png" alt="" /></p>
+<p>Now we can use the model to do some predictions.</p>
+<p>For simplicity’s sake, we use the existing values of Length.Petal in <strong>my_data</strong> as the input data for the
+<strong>predict</strong> function in Line 21.</p>
+<p><strong>Run</strong> Line 21. The predicted values of width of petals are assigned to the variable <strong>my_iris</strong>.</p>
+<p><strong>Run</strong> Line 22. The first 6 predicted values are listed in the output.</p>
+<p><strong>Run</strong> Line 24, 25, and 26. The predicted values are combined with the existing data set; you can easily
+compare the predicted values in the <strong>my_iris</strong> column to the real values of the width of petals in the output.</p>
+<p><img src="images/400/image10_write.png" alt="" /> </p>
+<p><strong>Run</strong> Line 28 to save the prediction result, <strong>my<em>iris</strong> , into a file named <strong>my</em>iris.csv</strong> on your local computer.</p>
+<p><strong>Replace</strong> the container name <strong>BAM</strong> with yours in Line 29.</p>
+<p><strong>Replace</strong> the third parameter <strong>/home/oracle</strong> with the local file system directory where the my_iris.csv
+resides in Line 29. You may need to change this to . if you get a permission error.</p>
+<p><strong>Run</strong> Line 29 to upload the <strong>my<em>iris.csv</strong> to Oracle Object Store with the function <strong>oos</em>upload_file</strong>. You can
+see a <strong>NULL</strong> output, which indicates the file is uploaded successfully.</p>
+<p><img src="images/400/image11_ls.png" alt="" /></p>
+<p>To validate if the file is uploaded to the Oracle Storage Cloud successfully, you can also list the files in your
+container with the function <strong>oos_ls</strong> in Line 32.</p>
+<p><strong>Replace</strong> the container name <strong>BAM</strong> with yours in Line 32.</p>
+<p><strong>Run</strong> Line 32 and 33. The <strong>my_iris.csv</strong> file is displayed in the list.</p>
+<p><img src="images/400/image12_rm.png" alt="" /> </p>
+<p>Finally, you can use function <strong>oos_rm</strong> to remove a file in the Oracle Object Store.</p>
+<p><strong>Replace</strong> the container name <strong>BAM</strong> with yours in Line 37 and 38 respectively.</p>
+<p><strong>Run</strong> Line 37 and 38. The my_iris.csv file is removed and it disappears in the output.</p>
+<h1 id="appendix-moving-data-across-your-local-and-cloud-storage">Appendix: Moving Data Across Your Local and Cloud Storage</h1>
+<p><img src="images/400/image13_appendix.png" alt="" /></p>
+<p>Sign in to the Oracle Cloud My Services application. The My Services Dashboard is displayed. It lists the
+services that are assigned to your account.</p>
+<p>Look for and click <strong>Storage</strong>.</p>
+<p><img src="images/400/image14_appendix2.png" alt="" /></p>
+<p>The Service Details page is displayed.</p>
+<p>Look at the identity domain name, data jurisdiction, and URLs displayed in the REST Endpoint and Auth V
+Endpoint fields under Additional Information.</p>
+<p>You will need to refer back to the information in this page when you setup CloudBerry for Oracle Storage
+Cloud Service in the following steps.</p>
+<p><img src="images/400/image15_cloudberry.png" alt="" /></p>
+<p>CloudBerry Explorer for OpenStack provides a user interface to cloud storage accounts allowing managing
+and moving data across your local and cloud storage.</p>
+<p>Download and install <a href="https://www.cloudberrylab.com/explorer/openstack.aspx">CloudBerry Explorer for OpenStack freeware</a> if you have not done this already.</p>
+<p>Launch CloudBerry Explorer, click <strong>File</strong> , and select <strong>New Oracle Cloud Account</strong> option.</p>
+<p><img src="images/400/image16_cloudberry_login.png" alt="" /></p>
+<p>In the Add New Oracle Cloud Storage Account dialog:-</p>
+<ul>
+<li>Insert a <strong>display name</strong> of your choice.</li>
+<li>Insert the user name, the <strong>user name</strong> is in the format <strong>Storage-<identity-domain>:<username></strong> ,
+where <username> is the username of your Oracle Public Cloud, that has the correct rights to the
+Oracle Storage Cloud Service. For example, <em>Storage-myDomainID555:myCloudAdminName</em></li>
+<li>Insert the <strong>password</strong> that matches the previous username.</li>
+<li>Insert the <strong>Authentication Service URL</strong> , it will look like this:
+<strong>https://<identity-domain>.storage.oraclecloud.com/auth/v1.</strong>.</li>
+<li>In the <strong>account location</strong> select the data jurisdiction, for example, US Commercial 2(us2).</li>
+</ul>
+<p>Click <strong>Test Connection</strong> to validate your setup. Then click <strong>OK</strong>.</p>
+<p><img src="images/400/image17_cloudberry_explore.png" alt="" /></p>
+<p>Once you set up the Oracle Storage Cloud account successfully, you can manage and move data across
+your local and cloud storage. You can drag and drop a data file from your local computer to the cloud
+storage easily.</p>
+<p>Besides CloudBerry Explorer, you can also move data across your local and cloud storage with <a href="http://www.oracle.com/technetwork/topics/cloud/downloads/storage-cloud-upload-cli-3424297.html">Oracle
+Storage Cloud Service - File Transfer Manager CLI</a>. It is a Java-based command line tool (CLI) that simplifies
+uploading to and downloading from Oracle Storage Cloud Service. Please refer <a href="https://docs.oracle.com/en/cloud/iaas/storage-cloud/csclr/preparing-use-oracle-storage-cloud-file-transfer-manager-cli.html#GUID-5BB8647F-DDAD-4371-A519-1116402245FB">here</a> for more details about it.</p>
+<h1 id="want-to-learn-more">Want to Learn More?</h1>
+<ul>
+<li><a href="https://www.r-project.org/">The R Project for Statistical Computing</a></li>
+<li><a href="https://cloud.oracle.com/en_US/storage/tutorials">Oracle Storage Cloud Service Tutorials</a></li>
+</ul>

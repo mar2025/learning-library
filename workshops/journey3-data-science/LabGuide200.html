@@ -1,0 +1,49 @@
+<p><img src="images/200/200.JPG" alt="" /><br />
+Updated: August 13, 2017 for BDCSCE Version 17.3.1-20</p>
+<h1 id="lab-setup-r-and-big-data-cloud">Lab: Setup R and Big Data Cloud</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This lab will walk you through configuring the R environment for <strong>Oracle Big Data Cloud (BDC)</strong>.  </p>
+<p>In particular, this lab will focus on installing <strong>R</strong>, <strong>SparkR</strong>, <strong>RStudio Server</strong>, and a variety of R packages and dependencies.</p>
+<p>Please direct comments to: David Bayard (david.bayard@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Configure R, SparkR, and RStudio Server to run on BDC</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>A running BDC instance and Storage Cloud Object Store instance, created as per the instructions in the New Data Lake Journey Lab 100.  These instructions included the use of a special "bootstrap.sh" script which setup the BDC environment for this workshop.</li>
+<li><strong>You completed the tutorials in the New Data Lake Journey Lab 200 Getting to know BDC</strong></li>
+</ul>
+<h1 id="connect-to-the-bdc-console">Connect to the BDC Console</h1>
+<p><strong>Make sure you completed the tutorials in the New Data Lake Journey Lab 200 Getting to know BDCS-CE before starting this lab.  They create certain objects (like hive tables and object store files) needed by this lab.</strong></p>
+<h2 id="steps">Steps</h2>
+<h3 id="step-1-navigatelogin-to-the-oracle-cloud-my-services-dashboard"><strong>STEP 1</strong>: Navigate/login to the Oracle Cloud My Services Dashboard</h3>
+<p><img src="images/200/snap0011988.jpg" alt="" /> </p>
+<h3 id="step-2-navigate-to-the-my-services-page-for-your-bdcs-ce-cluster"><strong>STEP 2</strong>: Navigate to the My Services page for your BDCS-CE cluster</h3>
+<p><img src="images/200/snap0011989.jpg" alt="" />  </p>
+<h3 id="step-3-launch-the-big-data-cluster-console"><strong>STEP 3</strong>: Launch the Big Data Cluster Console</h3>
+<ul>
+<li>Launch the Big Data Cluster Console for your BDCS-CE cluster.  If this is your first time, you will likely need to allow your browser to accept the self-signed certificate for the web console application.</li>
+<li>You will be asked to provide a username/password.  Use the username and password you defined earlier when you created the BDCS-CE instance (the username defaults to bdcsce_admin).<br />
+<img src="images/200/snap0012205.jpg" alt="" />  </li>
+</ul>
+<h1 id="learn-how-to-setup-r-sparkr-and-rstudio-server">Learn how to setup R, SparkR, and RStudio Server</h1>
+<h2 id="open-and-run-the-datasci-tutorial-1-setup-for-r-sparkr-rstudio-note-in-the-notebook">Open and run the "DataSci Tutorial 1 Setup for R SparkR RStudio" note in the notebook</h2>
+<h3 id="step-1-click-on-the-notebook-tab--then-click-on-the-datasci-tutorial-1-setup-for-r-sparkr-rstudio-tutorial-to-open-it"><strong>STEP 1</strong>: Click on the Notebook tab.  Then click on the "DataSci Tutorial 1 Setup for R SparkR RStudio" tutorial to open it.</h3>
+<p><img src="images/200/snap0012217.jpg" alt="" /> </p>
+<h3 id="step-2-read-and-follow-the-instructions-in-the-tutorial"><strong>STEP 2</strong>: Read and follow the instructions in the Tutorial</h3>
+<p>The commands in the tutorial will install R as well as numerious R packages.  This particular paragraph that installs R will take 20 minutes or so to run, so be patient for that step.</p>
+<p><img src="images/200/snap0012218.jpg" alt="" /></p>
+<h1 id="what-you-learned">What you Learned</h1>
+<ul>
+<li>Learned how to setup R, SparkR, and RStudio Server with BDCS-CE</li>
+</ul>
+<h1 id="next-steps">Next Steps</h1>
+<ul>
+<li>Proceed to the next Lab to see R in action with BDCS-CE's Zeppelin and Spark components</li>
+</ul>
+<h1 id="want-to-learn-more">Want to Learn More?</h1>
+<ul>
+<li><p><a href="https://www.r-project.org/">R project</a></p></li>
+<li><p><a href="http://spark.apache.org/docs/latest/sparkr.html">SparkR (R on Spark)</a></p></li>
+</ul>

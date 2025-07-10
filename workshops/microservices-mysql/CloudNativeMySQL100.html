@@ -1,0 +1,171 @@
+<h1 id="agile-project-management">Agile Project Management</h1>
+<p><img src="images/100/Picture100-lab.png" alt="" /></p>
+<p>Updated: November 15, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the first of several labs that are part of the <strong>Oracle Public Cloud DevOps and Cloud Native Microservices MySQL workshop.</strong> This workshop will walk you through the Software Development Lifecycle (SDLC) for a Cloud Native project that will create and use several Microservices.</p>
+<p>Although you will login as a single user, you will take on 4 Personae during the workshop.&nbsp;The <strong>Project Manager</strong> Persona will create the projects, add tasks and features to be worked on, and assign tasks to developers.&nbsp; The Project Manager will then start the initial sprint. The <strong>Java Developer</strong> persona will develop a new twitter feed service that will allow for retrieval and filtering of twitter data. The <strong>Full Stack Developer</strong> persona will develop a new database microservice that allows access to the product catalog data. The <strong>JavaScript Developer</strong> persona will make enhancements to the Product Catalog UI that will display the twitter data related to a select catalog item.&nbsp; During this workshop, you will get exposure to Oracle Developer Cloud Service and Oracle Application Container Cloud Service.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Create Initial Project</li>
+<li>Create Product Issues<ul>
+<li>Create Issues for Twitter Feed Microservice</li>
+<li>Create Issues for Database Microservice</li>
+<li>Create Issues for Product Catalog UI enhancements</li></ul></li>
+<li>Create Agile Board and initial Sprint</li>
+<li>Add Issues to Sprint</li>
+<li>Start Sprint</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account that will be supplied by your instructor.</li>
+</ul>
+<h1 id="create-alpha-office-product-catalog-project">Create Alpha Office Product Catalog Project</h1>
+<h2 id="create-developer-cloud-service-project">Create Developer Cloud Service Project</h2>
+<h3 id="step-1-login-to-your-traditional-oracle-cloud-account"><strong>STEP 1</strong>: Login to your <strong>Traditional</strong> Oracle Cloud Account</h3>
+<ul>
+<li><p>From any browser, go to the URL below, or if using a trial account, use the URL emailed to you in your confirmation email:</p>
+<p><code>https://cloud.oracle.com</code></p></li>
+<li><p>click <strong>Sign In</strong> in the upper right hand corner of the browser</p>
+<p><img src="images/100/Picture100-1.png" alt="" /></p></li>
+<li><p><strong>IMPORTANT</strong> - Under my services, select from the drop down list the correct data center and click on <strong>My Services</strong>. If you are unsure of the data center you should select, and this is an in-person training event, <strong><em>ask your instructor</em></strong> which <strong>Region</strong> to select from the drop down list. If you received your account through an <strong><em>Oracle Trial</em></strong>, you should have recorded the needed information while following the instruction in the <a href="StudentGuide.md">Trial Account Student Guide</a>.</p>
+<p><img src="images/100/Picture100-2.png" alt="" /></p></li>
+<li><p>Enter your identity domain and click <strong>Go</strong>.</p>
+<p><img src="images/100/Picture100-3.png" alt="" /></p></li>
+<li><p>Once your Identity Domain is set, enter your User Name and Password and click <strong>Sign In</strong> </p>
+<p><strong>NOTE:</strong> For this lab you will assume the role of Project Manager <strong><em>Lisa Jones</em></strong>. Although you are assuming the identity of Lisa Jones, you will log into the account using the <strong>username</strong> provided to you by your instructor, given to you by your corporation, or supplied to you as part of an Oracle Trial. As you progress through the workshop, you will remain logged in as a single user, but you will make “logical User" changes from Lisa Jones the Project Manager to other personas.</p>
+<p><img src="images/lisa.png" alt="" /></p>
+<p><img src="images/100/Picture100-3.5.png" alt="" /></p></li>
+<li><p>You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><img src="images/100/Picture100-4.png" alt="" /></p></li>
+<li><p><strong>Click</strong> on the <strong>Customize Dashboard</strong> to add services to the dashboard. Services are added by selecting <strong>Show.</strong> For this workshop, you will want to ensure that you are showing <strong>Developer cloud</strong> service. </p>
+<p><img src="images/100/Picture100-5.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-login-to-developer-cloud-service"><strong>STEP 2</strong>: Login to Developer Cloud Service</h3>
+<p>Oracle Developer Cloud Service provides a complete development platform that streamlines team development processes and automates software delivery. The integrated platform includes an issue tracking system, agile development dashboards, code versioning and review platform, continuous integration and delivery automation, as well as team collaboration features such as wikis and live activity stream. With a rich web based dashboard and integration with popular development tools, Oracle Developer Cloud Service helps deliver better applications faster.</p>
+<ul>
+<li><p>From the Cloud UI dashboard click on the <strong>Developer</strong> service Hamburger menu, and then <strong>Right Click</strong> on <strong>Open Service Console</strong>, and open the console in a new tab. This will keep the Dashboard loaded on another tab.</p>
+<p><img src="images/100/Picture100-6.png" alt="" /></p></li>
+<li><p>If you receive an error while loading the Console, return to the dashboard and ensure you follow the previous tasks instructions to "Open Service Console." </p></li>
+</ul>
+<h3 id="step-3-create-developer-cloud-service-project"><strong>STEP 3</strong>: Create Developer Cloud Service Project</h3>
+<ul>
+<li><p>Click <strong>New Project</strong> to start the project create wizard. <strong>Note</strong>: Depending on the status of your developer cloud serivce, it is possible that the button may be labled <strong>Create Project</strong> </p>
+<p><img src="images/100/Picture100-8.png" alt="" /></p></li>
+<li><p>On Details screen enter the following data and click on <strong>Next</strong>.</p>
+<p><strong>Name:</strong> <code>Alpha Office Product Catalog Project</code></p>
+<p><strong>Description:</strong> <code>Alpha Office Product Catalog Project</code></p>
+<p><strong>Note:</strong> A Private project will only be seen by you. A Shared project will be seen by all Developer Cloud users. In either case, users need to be added to a project in order to interact with the project.</p>
+<p><img src="images/100/Picture100-9.png" alt="" /></p></li>
+<li><p>Leave default template set to <strong>Empty Project</strong> and click <strong>Next</strong></p>
+<p><img src="images/100/Picture100-10.png" alt="" /></p></li>
+<li><p>Select your <strong>Wiki Markup</strong> preference to <strong>MARKDOWN</strong> and click <strong>Finish</strong>.</p>
+<p><img src="images/100/Picture100-11.png" alt="" /></p></li>
+<li><p>The Project Creation will take about 1 minute.</p>
+<p><img src="images/100/Picture100-12.png" alt="" /></p></li>
+<li><p>You now have a new project, in which you can manage your software development.</p>
+<p><img src="images/100/Picture100-13.png" alt="" /></p></li>
+</ul>
+<h1 id="create-product-issues">Create Product Issues</h1>
+<h2 id="create-issues-for-twitter-feed-microservice">Create Issues for Twitter Feed Microservice</h2>
+<h3 id="step-4-create-issue-for-the-initial-git-repository-creation"><strong>STEP 4</strong>: Create Issue for the initial GIT Repository Creation</h3>
+<p>In this step you are still assuming the identity of the Project Manager, <strong><em>Lisa Jones</em></strong>.</p>
+<p><img src="images/lisa.png" alt="" /></p>
+<ul>
+<li><p>Click <strong>Issues</strong> on left hand navigation panel to display the Track Issues page.</p>
+<p><img src="images/100/Picture100-16.png" alt="" /></p></li>
+<li><p>Click <strong>New Issue</strong>. Enter the following data in the New Issue page and click <strong>Create Issue</strong>.</p>
+<p><strong>Note:</strong> Throughout the lab you will assign your own account as the “physical” owner of the issue, but for the sake of this workshop, <strong>Bala Gupta</strong> will be the “logical” owner of the following issues.</p>
+<p><img src="images/bala.png" alt="" /></p>
+<p><strong>Summary:</strong>
+<code>Create Initial GIT Repository for Twitter Feed Service</code></p>
+<p><strong>Description:</strong>
+<code>Create Initial GIT Repository for Twitter Feed Service</code></p>
+<p><strong>Type:</strong> <code>Task</code></p>
+<p><strong>Owner:</strong> <code>Select your account provided in the dropdown [Logical Owner = Bala Gupta]</code></p>
+<p><strong>Story Points:</strong> <code>1</code></p>
+<p>Note: Story point is an arbitrary measure used by Scrum teams. They are used to measure the effort required to implement a story. This <a href="https://agilefaq.wordpress.com/2007/11/13/what-is-a-story-point/">Site</a> will provide more information. </p>
+<p><img src="images/100/Picture100-17.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-create-issue-for-update-twitter-service"><strong>STEP 5</strong>: Create Issue for Update Twitter Service</h3>
+<ul>
+<li><p>Click <strong>New Issue</strong>. Enter the following data in the New Issue page and click <strong>Create Issue</strong>.</p>
+<p><img src="images/bala.png" alt="" /></p>
+<p><strong>Summary:</strong> <code>Create Filter on Twitter Feed</code></p>
+<p><strong>Description:</strong> <code>Create Filter to allow user to supply text to reduce the amount of data returned by the Twitter feed</code></p>
+<p><strong>Type:</strong> <code>Feature</code></p>
+<p><strong>Owner:</strong> <code>Select your account provided in the dropdown [Logical Owner: Bala Gupta]</code></p>
+<p><strong>Story Points:</strong> <code>2</code></p>
+<p><img src="images/100/Picture100-18.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-create-issue-for-development-of-database-microservice"><strong>STEP 6</strong>: Create Issue for development of Database Microservice</h3>
+<ul>
+<li><p>Click <strong>New Issue</strong>. Enter the following data in the New Issue page and click <strong>Create Issue</strong>. Issue will logically be owned by <strong>Roland Dubois</strong>.</p>
+<p><img src="images/Roland.png" alt="" /></p>
+<p><strong>Summary:</strong> <code>Create Microservice to allow access to Product Catalog data</code></p>
+<p><strong>Description:</strong> <code>Create Microservice to allow access to Product Catalog data</code></p>
+<p><strong>Type:</strong> <code>Feature</code></p>
+<p><strong>Owner:</strong> <code>Select your account provided in the dropdown [Logical Owner: Roland Dubois]</code></p>
+<p><strong>Story Points:</strong> <code>2</code></p>
+<p><img src="images/100/Picture100-18.5.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-create-issue-for-development-of-product-catalog-ui"><strong>STEP 7</strong>: Create Issue for Development of Product Catalog UI</h3>
+<ul>
+<li><p>Click <strong>New Issue</strong>. Enter the following data in the New Issue page and click <strong>Create Issue</strong>. Issue will logically be owned by <strong>John Dunbar</strong>.</p>
+<p><img src="images/john.png" alt="" /></p>
+<p><strong>Summary:</strong> <code>Create Alpha Office Product Catalog UI</code></p>
+<p><strong>Description:</strong> <code>Create Alpha Office Product Catalog UI making use of the new Microservices</code></p>
+<p><strong>Type:</strong> <code>Feature</code></p>
+<p><strong>Owner:</strong> <code>Select account provided in the dropdown [Logical Owner: John Dunbar]</code></p>
+<p><strong>Story Points:</strong> <code>2</code></p>
+<p><img src="images/100/Picture100-20.png" alt="" /></p></li>
+<li><p>Click the back arrow <img src="images/100/Picture100-21.png" alt="" /> on the <strong>left side</strong> of the window, or click on the <strong>Issues</strong> menu option to view all newly created issues.</p>
+<p><img src="images/100/Picture100-22.png" alt="" /></p></li>
+</ul>
+<h1 id="create-agile-board">Create Agile Board</h1>
+<h2 id="create-agile-board-and-initial-sprint">Create Agile Board and Initial Sprint</h2>
+<h3 id="developer-cloud-service-agile-page-overview">Developer Cloud Service Agile Page Overview</h3>
+<p>Before you start using the Agile methodology in Oracle Developer Cloud Service, it is important that you know the following key components of the Agile page.</p>
+<ul>
+<li><strong>Board</strong> – A Board is used to display and update issues of the project. When you create a Board, you associate it with an Issue Query. The Board shows Issues returned by the Query.
+You can either use a Board created by a team member, or create your own Board. You can create as many Boards as you like.</li>
+<li><strong>Sprint</strong> – A Sprint is a short duration (usually, a week or two) during which your team members try to implement a product component.
+You add the product component related issues to a Sprint. When you start working on a product component, you start (or activate) the related Sprints. To update issues using a Sprint, you must first activate the Sprint and add the Sprint to the Active Sprints view.</li>
+<li><strong>Backlog view</strong> – Lists all Issues returned by the Board’s Query. The view also displays all active and inactive Sprints of the Board, and the sprints from other Boards that contain Issues matching the Board’s Query.
+Each Sprint lists issues that are added to it. The Backlog section (the last section of the Backlog page) lists all open issues that are not part of any Sprint yet. The Backlog view does not show the resolved and closed Issues.</li>
+<li><strong>Active Sprints view</strong> – Lists all active Sprints of the Board and enables you to update an Issue status simply by dragging and dropping it to the respective status columns.</li>
+<li><strong>Reports view</strong> – select the Burndown Chart tab to display the amount of work left to do in a Sprint or use the Sprint Report tab to list open and completed Issues of a Sprint.</li>
+</ul>
+<h3 id="step-8-create-agile-board"><strong>STEP 8</strong>: Create Agile Board</h3>
+<ul>
+<li><p>Click <strong>Agile</strong> on the Left Side Menu to display a page listing all existing Boards</p>
+<p><img src="images/100/Picture100-23.png" alt="" /></p></li>
+<li><p>Click <strong>New Board</strong> and enter the following data. When done click <strong>Create</strong>.</p>
+<p><strong>Name:</strong> <code>Microservices</code></p>
+<p><strong>Estimation:</strong> <code>Story Points</code></p>
+<p><img src="images/100/Picture100-24.png" alt="" /></p></li>
+</ul>
+<h3 id="step-9-create-sprint"><strong>STEP 9</strong>: Create Sprint</h3>
+<ul>
+<li><p>We will now create our first Sprint. Click <strong>New Sprint</strong>. Enter the following data and click <strong>OK.</strong></p>
+<p><strong>Name:</strong> <code>Sprint 1 - Initial Development</code></p>
+<p><strong>Story Points:</strong> <code>7</code></p>
+<p><img src="images/100/Picture100-25.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10----add-backlog-issues-to-sprint"><strong>STEP 10</strong>:    Add Backlog Issues to Sprint</h3>
+<ul>
+<li><p>Next, we want to add the backlog issues to the newly created sprint. <strong>Drag and drop</strong> the <strong>4 issues</strong> one at a time upward onto the <strong>Sprint 1</strong> section. This will add the issues to the sprint.</p>
+<p><img src="images/100/Picture100-26.png" alt="" /></p>
+<p><img src="images/100/Picture100-27.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11-start-sprint"><strong>STEP 11</strong>: Start Sprint</h3>
+<ul>
+<li><p>Click the <strong>Start Sprint</strong> button.</p></li>
+<li><p>Leave the defaults and click <strong>Start</strong></p>
+<p><img src="images/100/Picture100-34.png" alt="" /></p></li>
+<li><p>Now click on <strong>Active Sprints</strong> to view the Sprint Dashboard</p>
+<p><img src="images/100/Picture100-35.png" alt="" /></p></li>
+<li><p>Click on the <strong>Reports</strong> button to view the Burndown and Sprint reports.</p>
+<p><img src="images/100/Picture100-36.png" alt="" /></p></li>
+<li><p><strong>You are now ready to move to the next lab.</strong></p></li>
+</ul>

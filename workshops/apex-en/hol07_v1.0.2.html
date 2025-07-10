@@ -1,0 +1,380 @@
+<h1 id="unit-7-managing-and-customizing-interactive-grids">Unit 7: Managing and Customizing Interactive Grids</h1>
+<p>This exercise includes six hands-on-labs.</p>
+<p>Labs HOL 7-1 through HOL 7-4 use the Demo Projects application.</p>
+<p>Labs HOL 7-5 and HOL 7-6 use the Budget App application.</p>
+<p><strong>HOL 7-1: Customizing the Team Members Interactive Grid</strong>: In this lab, you modify the source query, and customize the Demo Proj Team Members interactive grid.</p>
+<p><strong>HOL 7-2: Customizing the Projects Interactive Grid</strong>: In this lab, as a developer, you modify the source query, create a new column link, and customize the display of the Demo Projects interactive grid.</p>
+<p><strong>HOL 7-3: Customizing the Milestones Interactive Grid</strong>: In this lab, you modify the source query, and customize the Demo Proj Milestones interactive grid.</p>
+<p><strong>HOL 7-4: Customizing the Tasks Interactive Grid</strong>: In this lab, you customize the display of the Demo Proj Tasks interactive grid.</p>
+<p><strong>HOL 7-5: Customizing an Interactive Grid as a Developer</strong>: In this lab, you customize the Project Budget Interactive Grid for your end users.</p>
+<p><strong>HOL 7-6: Customizing an Interactive Grid as an End User</strong>: In this lab, you use and customize the display of your Project Budget Interactive Grid.</p>
+<h2 id="hol-7-1-customizing-the-team-members-interactive-grid">HOL 7-1: Customizing the Team Members Interactive Grid</h2>
+<p>Developers can modify the SQL source query of an interactive grid. In this lab, you modify the source query of the Demo Proj Team Members interactive grid. Then, you hide columns that you do not want to be displayed in the interactive grid. Finally, you save the default settings of the interactive grid.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Demo Projects</strong> application.</p></li>
+<li><p>In the navigation menu, select <strong>Demo Proj Team Members</strong>. In the Developer Toolbar, click <strong>Edit Page 2</strong>.</p></li>
+<li><p>The report shows all of the columns in the table and some of those columns (such as those associated with the image), should not be included in the report. Remove columns from the report by updating the SQL Source for the region. In the Rendering tree, locate the <strong>Demo Proj Team Members</strong> region. Click the <strong>Demo Proj Team Members</strong> region.</br>
+<img src="images/hol07/image3.png" alt="1a" /></p></li>
+<li><p>In the Property Editor, click <strong>Code Editor</strong>. </br>
+<img src="images/hol07/image4.png" alt="1a1" /></p></li>
+<li><p>In the Code Editor, replace the existing SQL with copy and paste of the following:</p>
+<pre><code>  select
+
+  "ID",
+
+  "USERNAME",
+
+  "FULL_NAME",
+
+  "EMAIL",
+
+  "PROFILE",
+
+  "CREATED",
+
+  "CREATED_BY",
+
+  "UPDATED",
+
+  "UPDATED_BY"
+
+  from "DEMO_PROJ_TEAM_MEMBERS"
+</code></pre></li>
+<li><p>Click <strong>Validate</strong>, to ensure the SQL statement is valid. Click <strong>OK</strong>.
+<img src="images/hol07/image5.png" alt="1b" /></p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong> to access the runtime application.</p></li>
+<li><p>Some of the report columns should be included in the report, but not visible by default. That way, if users want to review that information, they can manipulate the Interactive Grid and make the columns visible. To change what columns are displayed in the Interactive Grid by default, you must alter the report in the runtime environment and then save the grid.</br>
+Click <strong>Actions</strong> and select <strong>Columns</strong>.</br>
+<img src="images/hol07/image6.png" alt="1c" /></p></li>
+<li><p>In the Columns dialog, under Displayed, deselect the check boxes for <strong>Username</strong>, <strong>Created</strong>, <strong>Created By</strong>, <strong>Updated</strong>, and <strong>Updated By</strong>. Then, click <strong>Save</strong>.</br>
+<img src="images/hol07/image7.png" alt="1d" /></p></li>
+<li><p>The interactive grid now does not display the columns that you deselected in the previous step.
+<img src="images/hol07/image8.png" alt="1g" /></p></li>
+<li><p>To keep the changes you just made, you must save the report. If you were to log out and log back into the runtime environment, or another user runs the report, then the columns you just removed would be visible again.
+A Primary interactive grid displays to all users. Only the developer who creates an interactive grid can save a new Primary interactive grid, rename it, or delete it.
+Click <strong>Actions</strong> and select <strong>Report &gt; Save</strong>. </br>
+<img src="images/hol07/image9.png" alt="1e" /></p></li>
+<li><p>The default report is now saved for all users.</br>
+<img src="images/hol07/image10.png" alt="1f" /></p></li>
+</ol>
+<h2 id="hol-7-2-customizing-the-projects-interactive-grid">HOL 7-2: Customizing the Projects Interactive Grid</h2>
+<p>In this lab, you update the report source query and remove the column link defined on the ID column. Then, you customize the interactive grid by hiding the columns that need not be displayed, and creating an aggregation on the Tasks column. You save these customizations for all the users. Navigating back to the page designer, you define a column link on the NAME column.</p>
+<ol>
+<li><p>If you are in the application runtime environment, click <strong>Demo Projects</strong> in the navigation menu. Then, in the Developer Toolbar, click <strong>Edit Page 4</strong>.
+<img src="images/hol07/image11.png" alt="2a" /></p></li>
+<li><p>Modify the existing Demo Projects Interactive Grid (Page 4) and update the SQL Query associated with the report to add summations for milestones and tasks. Under <strong>Rendering &gt; Regions</strong>, click the <strong>Demo Projects</strong> region.</p></li>
+<li><p>In the Property Editor, click the <strong>Code Editor: SQL Query</strong> button, and copy and paste the following SQL:</p>
+<pre><code>  select
+
+  "ID" ,
+
+  "NAME",
+
+  "DESCRIPTION",
+
+  "PROJECT_LEAD",
+
+  "COMPLETED_DATE",
+
+  "STATUS_CD",
+
+  "CREATED",
+
+  "CREATED_BY",
+
+  "UPDATED",
+
+  "UPDATED_BY",
+
+  (select count('x')
+
+  from demo_proj_milestones m
+
+  where m.project_id = p.id
+
+  ) milestones,
+
+  (select count('x')
+
+  from demo_proj_tasks t
+
+  where t.project_id = p.id
+
+  ) tasks
+
+  from "DEMO_PROJECTS" p
+</code></pre>
+<p>Then, click <strong>OK</strong>.
+ <img src="images/hol07/image12.png" alt="2b" /></p></li>
+<li><p>Under Rendering &gt; Regions &gt; Demo Projects, expand the <strong>Columns</strong> node. A column link to Page 5 is defined on the ID column. Select ID.
+In the property editor, navigate to Link. For Target, you see <em>Page 5</em>. Click <strong>Page 5</strong>.
+<img src="images/hol07/image13.png" alt="2c" /></p></li>
+<li><p>The Link Builder - Target dialog appears. For Type, you see <em>Page in this application</em>. Remove this selection. Click <strong>OK</strong>.
+<img src="images/hol07/image14.png" alt="2d" /></p></li>
+<li><p>In the property editor, under Link &gt; Target, you see <em>No Link Defined</em>. Navigate to Heading and enter <strong>ID</strong>.
+Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>. </br>
+<img src="images/hol07/image15.png" alt="2e" /></p></li>
+<li><p>You are now in the application runtime environment. Click <strong>Actions &gt; Columns</strong>.
+<img src="images/hol07/image16.png" alt="2f" /></p></li>
+<li><p>In the Columns dialog, under Displayed, deselect <strong>ID</strong>, <strong>Description</strong>, <strong>Created</strong>, <strong>Created By</strong>, <strong>Updated</strong>, and <strong>Updated By</strong> columns.</p></li>
+<li><p>Under Column, select <strong>Project Lead</strong> and click the <strong>move down</strong> arrow. Then, click <strong>Save</strong>.
+<img src="images/hol07/image17.png" alt="2h" /></p></li>
+<li><p>The Demo Projects interactive grid should now look like:
+<img src="images/hol07/image18.png" alt="2i" /></p></li>
+<li><p>You want to define aggregations on the Milestones and Tasks columns. Select <strong>Actions &gt; Data &gt; Aggregate</strong>.
+<img src="images/hol07/image19.png" alt="2j1" /></p></li>
+<li><p>In the Aggregation dialog</p></li>
+</ol>
+<p>a)  Click the Add (<strong>+</strong>) button.</p>
+<p>b)  For column, select <strong>Milestones</strong>, for Aggregation, select <strong>Sum</strong>, and select the <strong>Show Overall Value</strong> checkbox.</p>
+<p>c)  Click the <strong>Add</strong> (+) button again.</p>
+<p>d)  For Column, select <strong>Tasks</strong>, select <strong>Sum for Aggregation</strong>, and select the <strong>Show Overall Value</strong> checkbox.</p>
+<p>e)  Click <strong>Save</strong>.
+        <img src="images/hol07/image20.png" alt="2j2" /></p>
+<ol start="13">
+<li><p>You want to save the changes made to the primary interactive grid. <strong>Select Actions &gt; Report &gt; Save</strong>. The default report is now saved for all users.</p></li>
+<li><p>Navigate to page designer. In the Developer Toolbar, click <strong>Edit Page 4</strong>.</p></li>
+<li><p>You want to define a column link on the NAME column. Under Rendering &gt; Regions &gt; Demo Projects region, expand the <strong>Columns</strong> node. Select <strong>NAME</strong>.</p></li>
+<li><p>In the property editor, under Identification, select <strong>Link</strong> for Type. Under Link &gt; Target, click <strong>No Link Defined</strong>.
+<img src="images/hol07/image21.png" alt="2k1" /></p></li>
+<li><p>In the Link Builder – Target dialog:</p></li>
+</ol>
+<ul>
+<li><p>Page - enter <strong>5</strong></p></li>
+<li><p>Name - select <strong>P5_ID</strong></p></li>
+<li><p>Value - select <strong>#ID#</strong></p></li>
+<li><p>Clear Cache - enter <strong>5</strong></p>
+<p>Click <strong>OK</strong>.</br>
+<img src="images/hol07/image22.png" alt="2k2" /></p></li>
+</ul>
+<ol start="13">
+<li><p>For Link Text, under Link, use the quick pick to select <strong>NAME</strong>.</br>
+<img src="images/hol07/image23.png" alt="2k3" /></p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>. The Demo Projects interactive grid might now look like:
+<img src="images/hol07/image24.png" alt="2" /></p></li>
+</ol>
+<h2 id="hol-7-3-customizing-the-milestones-interactive-grid">HOL 7-3 Customizing the Milestones Interactive Grid</h2>
+<p>In this lab, you modify the interactive grid source query. Then, you customize the interactive grid by hiding columns that need not be displayed, and sorting the interactive grid on the Due Date column. You also create an aggregation on the Tasks column and save the customizations made to the Primary interactive grid.</p>
+<ol>
+<li><p>You are in the application runtime environment. In the navigation menu, click <strong>Demo Proj Milestones</strong>. In the Developer Toolbar, click <strong>Edit Page 6</strong>.</p></li>
+<li><p>Modify the existing Milestones Interactive Grid and update the SQL Query associated with the grid to add a new column. Under <strong>Rendering &gt; Regions</strong>, click the <strong>Demo Proj Milestones</strong> region.</p></li>
+<li><p>In the Property Editor, click the <strong>Code Editor: SQL Query</strong> button, and copy and paste the following SQL:</p>
+<pre><code>  select
+
+  "ID" ,
+
+  "PROJECT_ID",
+
+  "NAME",
+
+  "DESCRIPTION",
+
+  "DUE_DATE",
+
+  "CREATED",
+
+  "CREATED_BY",
+
+  "UPDATED",
+
+  "UPDATED_BY",
+
+  (select count('x')
+
+  from demo_proj_tasks t
+
+  where t.milestone_id = m.id
+
+  ) tasks
+
+  from "DEMO_PROJ_MILESTONES" m
+</code></pre>
+<p>Click <strong>OK</strong>. </br>
+<img src="images/hol07/image25.png" alt="3a" /></p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p></li>
+<li><p>Reconfigure which columns are displayed by default in the Interactive Grid. In the Interactive Grid runtime window, click <strong>Actions</strong> and select <strong>Columns</strong>.</p></li>
+<li><p>In the Columns dialog, under Displayed, deselect <strong>Description</strong>, <strong>Created</strong>, <strong>Created By</strong>, <strong>Updated</strong>, and <strong>Updated By</strong>. Then, click <strong>Save</strong>.
+<img src="images/hol07/image26.png" alt="3b" /></p></li>
+<li><p>Sort the interactive grid by Due Date in ascending order. Click the <strong>Due Date</strong> column and in the column heading, click the <strong>Sort Ascending</strong> button.
+<img src="images/hol07/image27.png" alt="3c" /></p></li>
+<li><p>Make the interactive grid functional by adding an aggregation. Create an aggregation on the Tasks column.</p>
+<p>a)  Click the <strong>Actions</strong> menu and select <strong>Data &gt; Aggregate</strong>. In the Aggregation dialog, click the Add button (<strong>+</strong>).</p>
+<p>b)  Select <strong>Tasks</strong> for Column, and <strong>Sum</strong> for Aggregation. Select the <strong>Show Overall Value</strong> checkbox and Click <strong>Save</strong>.
+    <img src="images/hol07/image28.png" alt="3d" /></p></li>
+
+<li><p>You want to save the changes made to the primary interactive grid. <strong>Select Actions &gt; Report &gt; Save</strong>. The default report is now saved for all users.</p></li>
+</ol>
+<h2 id="hol-7-4-customizing-the-tasks-interactive-grid">HOL 7-4 Customizing the Tasks Interactive Grid</h2>
+<p>In this lab, you reconfigure which columns are displayed by default in the Demo Proj Tasks interactive grid. Then, you create control break on two columns, and sort the rows in the ascending order of Start Date. Finally, you save the default report for all users.</p>
+<ol>
+<li><p>You are in the application runtime environment. In the navigation menu, click <strong>Demo Proj Tasks</strong>. In the Developer Toolbar, click <strong>Edit Page 8</strong>.</p></li>
+<li><p>Reconfigure which columns are displayed by default in the Interactive Grid. Click <strong>Actions &gt; Columns</strong>.</p></li>
+<li><p>In the Columns dialog, under Displayed, deselect <strong>ID</strong>, <strong>Description</strong>, <strong>Created</strong>, <strong>Created By</strong>, <strong>Updated</strong>, and <strong>Updated By</strong>. Then, click <strong>Save</strong>.
+<img src="images/hol07/image29.png" alt="4a" /></p>
+<p>If the displayed columns are not in the following order, make sure to click the up and down buttons to set them accordingly:</p>
+<ul>
+<li><p>ID</p></li>
+<li><p>Assignee</p></li>
+<li><p>Name</p></li>
+<li><p>Start Date</p></li>
+<li><p>End Date</p></li>
+<li><p>Is Complete Yn</p></li></ul>
+<p>Click <strong>Save</strong>. </br></p></li>
+<li><p>Group the records by project and milestones.</p>
+<p>a)  Select <strong>Actions &gt; Format &gt; Control Break</strong>.
+    <img src="images/hol07/image30.png" alt="4b" /></p>
+<p>b)  In the Control Break dialog, click the Add (<strong>+</strong>) button. For Column, select <strong>Project Id</strong>.</p>
+<p>c)  Click the Add (<strong>+</strong>) button again. For Column, select <strong>Milestone Id</strong>.</p>
+<p>d)  Click <strong>Save</strong>.</br>
+    <img src="images/hol07/image31.png" alt="4c" /></p></li>
+
+<li><p>Order the records in the ascending order of start date. Select <strong>Actions &gt; Data &gt; Sort</strong>.
+In the Sort dialog, click the Add (<strong>+</strong>) button.
+For Column, select <strong>Start Date</strong> and click <strong>Save</strong>. </br>
+<img src="images/hol07/image32.png" alt="4d" /></p></li>
+<li><p>You want to save the changes made to the primary interactive grid. <strong>Select Actions &gt; Report &gt; Save</strong>. The default report is now saved for all users.</p></li>
+</ol>
+<h2 id="hol-7-5-customizing-an-interactive-grid-as-a-developer">HOL 7-5: Customizing an Interactive Grid as a Developer</h2>
+<p>This lab uses the Budget App application. In this lab, you customize the interactive grid for end users. You create column groups, set pagination type, and set the report downloadable formats that should be available for end users. You also enable end users to save the report as Public interactive grids and convert a read only interactive grid to an editable interactive grid.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Budget App</strong> application.
+<img src="images/hol07/image33.png" alt="5" /></p></li>
+<li><p>In the navigation menu, click <strong>Interactive Grid</strong>. You want to customize the display of this interactive grid for your end users. In the Developer Toolbar, click <strong>Edit Page 3</strong>.</p>
+<p><img src="images/hol07/image34.png" alt="5a" /></p></li>
+<li><p>You want to customize the display of this interactive grid for end users. Add column group headers to the interactive grid as:</p>
+<ul>
+<li><p>Work Breakdown: Project, Task_Name columns</p></li>
+<li><p>Schedule: Start_Date, End_Date columns</p></li>
+<li><p>Project Financing: Cost, Budget columns</p></li></ul>
+<p>a)  In the page designer, under Rendering &gt; Regions, navigate to Project Budget Interactive Grid region and right-click <strong>Attributes</strong>. Select Create <strong>Column Group</strong>. </br>
+    <img src="images/hol07/image35.png" alt="5b" />  </br>
+b)  In the Property Editor, enter <strong>Work Breakdown</strong> for Heading. </br>
+    <img src="images/hol07/image36.png" alt="5c" /> </br></p>
+<p>c)  Repeat the above two steps a and b to create column groups: <strong>Schedule</strong> and <strong>Project Financing</strong>.</p>
+<p>d)  Now that you created column groups, you need to assign columns to them. Expand <strong>Columns</strong> and select <strong>Project</strong> and <strong>Task_Name</strong> columns.</p>
+<p>e)  In the property editor, under Layout, select <strong>Work Breakdown</strong> for Group.
+    <img src="images/hol07/image37.png" alt="5d" /></p>
+<p>f)  Then, select Start_Date and End_Date columns. In the property editor, under Layout, select <strong>Schedule</strong> for Group.</p>
+<p>g)  Finally, select Cost, and Budget columns. In the property editor, under Layout, select <strong>Project Financing</strong> for Group.
+    Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.
+    <img src="images/hol07/image38.png" alt="5e" /></p>
+<p>h)  The interactive grid now displays column groups.
+    <img src="images/hol07/image39.png" alt="5f" /></p></li>
+<li><p>Rearrange the columns in the interactive grid. You want to display the column groups Work Breakdown, Schedule, and Project Financing display in order followed by Status and Assigned To.</p>
+<p>a)  Hover the mouse over the Project Financing column group header to display the drag handle. Your mouse cursor also changes when it comes into contact with the drag handle. Click and hold the drag handle.</p>
+<p>b)  Then, drag the column group to the Status column location. The heading shifts out of place in the row. The Project Financing column group should be followed by the Status column. Release the mouse. The Project Financing column group drops into place.
+    <img src="images/hol07/image40.png" alt="5g" /></p></li>
+
+<li><p>Resize the width of the <strong>Id</strong> column. Click and hold the edge of the column heading and adjust with the mouse.
+<img src="images/hol07/image41.png" alt="5h" /></p></li>
+<li><p>You want to ensure that end users can save Public interactive grids. You want to exclude HTML from the download formats available to end users.</p>
+<p>a)  Under Rendering, select <strong>Attributes</strong> under the Project Budget Interactive Grid region. </br>
+    <img src="images/hol07/image42.png" alt="5i" /></p>
+<p>b)  In the property editor, under Attributes, navigate to Enable Users To. Select <strong>Yes</strong> for Save Public Report.</p>
+<p>c)  Under Download, deselect the <strong>HTML</strong> check box. </br>
+    <img src="images/hol07/image43.png" alt="5j1" /></p></li>
+
+<li><p>Convert this read only interactive grid in to an editable interactive grid. Then, reset the pagination as Page type displaying the total row count.</p>
+<p>a)  Under Rendering, select <strong>Attributes</strong> under the Project Budget Interactive Grid region.</p>
+<p>b)  In the property editor, navigate to Edit. For Enabled, select <strong>Yes</strong>.</p>
+<p>c)  Under Pagination, select <strong>Page</strong> for Type and select <strong>Yes</strong> for Show Total Row Count.
+    <img src="images/hol07/image44.png" alt="5j2" /></p></li>
+
+<li><p>Delete the column groups in the interactive grid. Under Rendering &gt; Project Budget Interactive Grid &gt; Attributes, expand Column Groups. Right-click <strong>Project Financing</strong> and click <strong>Delete</strong>. Similarly, delete the Schedule and Work Breakdown column groups. </br>
+<img src="images/hol07/image45.png" alt="5k" /></p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p></li>
+</ol>
+<h2 id="hol-7-6-customizing-an-interactive-grid-as-an-end-user">HOL 7-6: Customizing an Interactive Grid as an End User</h2>
+<p>In this lab, you use and customize the display of your interactive grid. You also edit an editable interactive grid.</p>
+<ol>
+<li><p>Notice that the interactive grid is editable now. You see the Edit, Save, and Add Row buttons. Also, the pagination type that you have set is displayed now. Perform a non-case-sensitive search for ‘server’ on the entire interactive grid. To do this, enter <strong>server</strong> in the search bar text area and click <strong>Go</strong>.\
+<img src="images/hol07/image46.png" alt="6a" /></p></li>
+<li><p>Remove the filter by clicking the <strong>X</strong> icon.
+Now, in the search bar, click the magnifying glass and select <strong>Task Name</strong> column.
+Enter <strong>server</strong> in the text area and click <strong>Go</strong>. Notice that the search is now restricted only to the Task Name column.
+<img src="images/hol07/image47.png" alt="6b" /></p></li>
+<li><p>Remove the filter by clicking the <strong>X</strong> icon. You want to update the budget for the Project with Id 1. Click the field and replace the existing value with <strong>300</strong>.
+<img src="images/hol07/image48.png" alt="6c" /></p></li>
+<li><p>The changes are not saved yet. Click the <strong>Save</strong> button.
+<img src="images/hol07/image49.png" alt="6d" /></p>
+<p>The changes are saved now.
+ <img src="images/hol07/image50.png" alt="6e" /></p></li>
+<li><p>You want to update another row. This time, click the row header for the project with Id 2 and select <strong>Single Row View</strong>.
+<img src="images/hol07/image51.png" alt="6f" /></p></li>
+<li><p>You are now in the single row view of the project with Id 2. Click <strong>Edit</strong>.
+<img src="images/hol07/image52.png" alt="6g" /></p></li>
+<li><p>Replace the existing value for Budget with <strong>500</strong> and click <strong>Save</strong>. Then, click <strong>Report View</strong>.
+<img src="images/hol07/image53.png" alt="6h" /></p></li>
+<li><p>The row now displays 500 for Budget. <img src="images/hol07/image54.png" alt="6i" /></p></li>
+<li><p>Click <strong>Add Row</strong>. Enter values for all the columns. Click <strong>Save</strong>.
+<img src="images/hol07/image55.png" alt="6j" /></p></li>
+<li><p>Click the row header for the row that you just added and select <strong>Delete Row</strong>.
+<img src="images/hol07/image56.png" alt="6k" /></p></li>
+<li><p>You want to review the data that existed few minutes ago. Select <strong>Actions &gt; Data &gt; Flashback</strong>.
+<img src="images/hol07/image57.png" alt="6l" /></p></li>
+<li><p>Enter <strong>5</strong> for Minutes ago and click <strong>Save</strong>. </br>
+<img src="images/hol07/image58.png" alt="6m" /></p></li>
+<li><p>Notice the budget values for projects with Id’s 1 and 2.
+<img src="images/hol07/image59.png" alt="6n" /></p></li>
+<li><p>You want to create a control break on the Project column. Click <strong>Actions &gt; Format &gt; Control Break</strong>.
+<img src="images/hol07/image60.png" alt="6o" /></p></li>
+<li><p>In the Control Break dialog, enter <strong>Project</strong> for Column and click <strong>Save</strong>.
+<img src="images/hol07/image61.png" alt="6p" /></p></li>
+<li><p>The control break is now applied. You want to highlight rows that meet a condition. Select <strong>Actions &gt; Format &gt; Highlight</strong>.
+<img src="images/hol07/image62.png" alt="6q" /></p></li>
+<li><p>In the Highlight dialog:</p>
+<ul>
+<li><p>Name: Project costing greater than 750</p></li>
+<li><p>Background Color: Click <strong>Colors</strong> and select <strong>Yellow</strong>.</p></li>
+<li><p>Text Color: Click <strong>Colors</strong> and select <strong>Red</strong>.</p></li>
+<li><p>Column: Select <strong>Cost</strong></p></li>
+<li><p>Operator: Select <strong>greater than</strong></p></li>
+<li><p>Value: Enter <strong>750</strong></p></li></ul>
+<p>Click <strong>Save</strong>.
+<img src="images/hol07/image63.png" alt="6r" /></p></li>
+<li><p>Notice the rows with cost greater than 750 are highlighted.
+<img src="images/hol07/image64.png" alt="6s" /></p></li>
+<li><p>You want to save the changes made to the interactive grid. Select <strong>Actions &gt; Report &gt; Save As</strong>.
+<img src="images/hol07/image65.png" alt="6w" /></p></li>
+<li><p>In the Report – Save As dialog, select <strong>Private</strong> for Type. Enter <strong>My Private Report</strong> for Name.
+Click <strong>Save</strong>.
+<img src="images/hol07/image66.png" alt="6x" /></p></li>
+<li><p>Notice that the Primary interactive grid and the interactive grid you saved now are available in the Reports drop down list.
+You want to return back to the Primary interactive grid. Click <strong>Primary Report</strong> in the Reports drop down list.
+<img src="images/hol07/image67.png" alt="6y" />
+</br></p></li>
+<li><p>You want to make few more customizations and save the interactive grid as another Private report. You do not want the Start Date, End Date, and Assigned To columns to be displayed in the report. </br></p>
+<p>Click the <strong>Start Date</strong> column header and then click <strong>Hide</strong>. </br>
+<img src="images/hol07/image68.png" alt="7a" /></p>
+<p>Repeat this step for the <strong>End Date</strong> and <strong>Assigned To</strong> columns.
+</br></p></li>
+<li><p>Resize the columns’ width using the mouse.</br>
+<img src="images/hol07/image69.png" alt="7b" /></p></li>
+<li><p>You want to add a chart to the interactive grid. Select <strong>Actions &gt; Chart</strong>. </br>
+<img src="images/hol07/image70.png" alt="7c" /> </br>
+</br></p></li>
+<li><p>In the Chart dialog:</p></li>
+</ol>
+<ul>
+<li><p>Type: Select <strong>Bar</strong></p></li>
+<li><p>Label: Select <strong>Project</strong></p></li>
+<li><p>Value: Select <strong>Cost</strong></p></li>
+<li><p>Aggregation: Select <strong>Sum</strong></p>
+<p>Click <strong>Save</strong>.
+ <img src="images/hol07/image71.png" alt="7d" /></p></li>
+</ul>
+<ol>
+<li><p>The chart is displayed. You want to save the customization made to the interactive grid. Select <strong>Actions &gt; Report &gt; Save As</strong>.
+<img src="images/hol07/image72.png" alt="7e" /></p></li>
+<li><p>In the Report – Save As dialog, select <strong>Private</strong> for Type. Enter <strong>My Custom Report</strong> for Name. Then, click <strong>Save</strong>.
+<img src="images/hol07/image73.png" alt="7f" /></p></li>
+<li><p>The report is now saved under Private in the Reports drop down list. Click the Report View icon.
+You want to download the report. Select <strong>Actions &gt; Download</strong>.
+<img src="images/hol07/image74.png" alt="7h" /></p></li>
+<li><p>Note that the HTML download option is no longer available. Select <strong>CSV</strong> and click <strong>Download</strong>.
+<img src="images/hol07/image75.png" alt="7i" /></p></li>
+<li><p>The report is now loaded as CSV.</br>
+<img src="images/hol07/image76.png" alt="7j" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol07/image77.png" alt="Snap3.jpeg" /></p>

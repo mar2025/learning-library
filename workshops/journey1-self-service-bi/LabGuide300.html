@@ -1,0 +1,286 @@
+<h1 id="demo-introduction">Demo Introduction</h1>
+<p><img src="https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f4a5b21d-66fa-4885-92bf-c4e81c06d916/Image/55d948c4e07007e169299a02b4dfe6db/construction.png" alt="" /> -- This lab (Big Data Preparation Cloud Service) is under construction and a new version is in the works.  The instructions currently listed below may be <strong>inaccurate</strong> or <strong>incomplete</strong>.</p>
+<h2 id="keywords">Keywords:</h2>
+<pre><code>Oracle Big Data Cloud Service, Oracle Storage Cloud Service, Oracle Database Cloud Service
+</code></pre>
+<h2 id="goal-of-demo">Goal of Demo:</h2>
+<p>Oracle Big Data Preparation Cloud Services can ingest data from various sources, do transformation then
+publish to selectable targets.</p>
+<p>This demo will show how to define sources which include input from Object Store in Oracle Storage Cloud
+Service and output to an Oracle Database instance in Oracle Database Cloud Service.</p>
+<p>This demo also demonstrates how to customize a transformation workflow to prepare, clean and enrich
+the data by leveraging a built-in automated tool where very little coding is necessary.</p>
+<h2 id="pre-requisites">Pre-requisites:</h2>
+<pre><code>Users must have subscribed for required Oracle Cloud Services.
+Resources have been configured in both Oracle Storage Cloud and Oracle Database Cloud.
+</code></pre>
+<h1 id="demo-steps">Demo Steps</h1>
+<h2 id="step-1-login-into-oracle-big-data-preparation-cloud-service">Step 1: Login into Oracle Big Data Preparation Cloud Service</h2>
+<p>Open a browser and input the URL of your Oracle Big Data Preparation Cloud Service. If you did not login
+yet, following page will display to request a user authentication.</p>
+<p><img src="images/300/image003.png" alt="" /> </p>
+<p>After a successful login, you will see home page of the Big Data Preparation Service as below.
+In the home page, UI gadgets are grouped in several panels. The <strong>Overview</strong> panel displays monitoring and
+statistics information of the Preparation Service. The <strong>Quick Start</strong> panel provides instant access to mostly used
+functions of Preparation Service. The <strong>Resources</strong> panel has links to useful resources to get help of Preparation
+Service. The <strong>Active Stream</strong> panel lists recent tasks ordered by their execution time.</p>
+<p><img src="images/300/image004.png" alt="" /> </p>
+<h2 id="step-2-create-sources">Step 2: Create Sources</h2>
+<p>In this step, we will create Sources that are to be used as either input or output of Transforms in this demo.
+The instant way is to access <strong>Create Source</strong> function in the <strong>Quick Start</strong> panel. Following dialog will be launched to define a new Source.</p>
+<p><img src="images/300/image006.png" alt="" /> </p>
+<pre><code>General steps to define a Source:
+</code></pre>
+<ol>
+<li><p>Give a valid name of the Source.</p></li>
+<li><p>Choose type of the Source from drop-down list. Current valid source types include:</p>
+<table>
+<thead>
+<tr>
+<th>**Type</th>
+<th style="text-align:center;">Description**</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Oracle Cloud Storage</td>
+<td style="text-align:center;">Oracle Storage Cloud Service</td>
+</tr>
+<tr>
+<td>Oracle BICS</td>
+<td style="text-align:center;">Oracle Business Intelligent Cloud Service</td>
+</tr>
+<tr>
+<td>Oracle DVCS</td>
+<td style="text-align:center;">Oracle Data Visualization Cloud Service</td>
+</tr>
+<tr>
+<td>BDP HDFS</td>
+<td style="text-align:center;">Local Hadoop HDFS</td>
+</tr>
+<tr>
+<td>Oracle DBCS</td>
+<td style="text-align:center;">Oracle Database Cloud Service</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<p>Required fields for each source type are varied. Those fields can be displayed dynamically in the dialog after a type is selected.</p>
+<ol start="3">
+<li><p>After all required fields are specified, click <strong>Test</strong> button in the dialog to test the connection.</p></li>
+<li><p>If test passed, click <strong>Save</strong> button to save the Source in the Preparation Service.</p></li>
+</ol>
+<p><strong>2.1 Create a Source that points to the Oracle Storage Cloud Service</strong></p>
+<p>In this demo, Oracle Storage Cloud is used for both input and output of Transforms.
+Required parameters for this type of Source include Service URL , Username and Password. Because the
+parameters are same as the original dialog, there will not be any change in the dialog UI after selecting <strong>Oracle
+Cloud Storage</strong> in the <strong>Type</strong> field.</p>
+<p>Values for those parameters can be known from configuration of the Oracle Storage Cloud Service. In the
+following Overview page of Oracle Storage Cloud Service, REST Endpoint is the source of Service URL parameter.
+Username and password parameters are identical as those used to login the Oracle Storage Cloud Service.</p>
+<p><img src="images/300/image007.png" alt="" /> </p>
+<p><strong>2. 2 Create a Source that points to a DB instance in Oracle Database Cloud Service</strong></p>
+<p>In the demo, a DB instance in the Oracle Database Cloud Service is the output of Transform.
+Required parameters for such kind of resource include JDBC Connection, Username, Password and Driver.
+After selecting <strong>Oracle DBCS</strong> in the <strong>Type</strong> field, the dialog UI is changed dynamically to display those required
+parameters.</p>
+<p><img src="images/300/image009.png" alt="" /> </p>
+<p><strong>JDBC Connection</strong> parameter is the URL that pointing to an Oracle DB instance in Oracle DB Cloud Service.
+The format of the URL is well-known as <em>jdbc:oracle:thin:@<host>:<port>:<instance name>.</em></p>
+<pre><code>Username/Password parameters are credential information to authenticate the Oracle DB instance.
+Driver parameter currently is a fixed value and will be assigned automatically.
+</code></pre>
+<h2 id="step-3--customize-data-preparation-process">Step 3 : Customize Data Preparation Process</h2>
+<p>In this step, we will demonstrate how to customize a data preparation process in Oracle Big Data
+Preparation Service.</p>
+<p>Transform is core to implement data preparation logic. It enables loading data from an input Source, then
+doing any transformation, finally publishing transformed result to an output Source.</p>
+<p><strong>3. 1 Create a Transform</strong></p>
+<p><strong>Quick Start</strong> panel in Preparation Service home page has an instant link to create a Transform. User can
+also find a <strong>Create Transform</strong> button in the <strong>Catalog</strong> tab shown below.</p>
+<p><img src="images/300/image010.png" alt="" /> </p>
+<pre><code>No matter which way, following dialog will appear let user to create a new Transform.
+
+![](images/300/image012.png)
+</code></pre>
+<p>Give a valid name of the Transform and optionally describe the Transform with a few simple words. Click
+<strong>Select</strong> button next to the Source field to launch following dialog.</p>
+<p>In the dialog, user can select data object in a Source as input of the Transform. All Sources that you have
+created can be selected from the drop-down list. Sources in the list are organized by the type and name.</p>
+<p>After selecting a Source, all data objects in the Source are retrieved and displayed in the list below the
+Source field.</p>
+<p><img src="images/300/image013.png" alt="" /></p>
+<p>In this demo, select the Oracle Storage Cloud Source you just created.</p>
+<p><img src="images/300/image014.png" alt="" /></p>
+<p>For Oracle Storage Cloud Source, data objects are organized in the hierarchy of <em>Container -> Object</em>. User
+can choose a Container, which means all data objects in the Container will be selected as input. User can also
+choose an individual data object in a Container, which means only this data object will be input of the Transform.</p>
+<p>In this demo, we will use a data file in Oracle Storage Cloud. After selecting the data file, click <strong>OK</strong> button
+in the dialog to return to previous dialog. Name of the Source is displayed in the Source field, and name of the
+data object is displayed just below the Source field.</p>
+<p><img src="images/300/image015.png" alt="" /></p>
+<p>There are two additional checkboxes in the dialog to control how to use data from the Source.
+ <strong>Smart Sample</strong>
+It enables picking only subset from huge amount of data. If need to process all data in the data object,
+then uncheck this option.
+ <strong>Contains Header</strong>
+Some data format may include headers to describe name of each column. Disable this option will suppress
+those headers in the transformation process.
+Uncheck <strong>Smart Sample</strong> because we need to process all data in the data file, then click <strong>Submit</strong> button.
+The Transform is created and displayed in the catalog list. A task is launched immediately to detect format
+of the data object and then load data for analyzing. It normally will take a while to complete. You can notice a
+blue bar in the page indicating progress of the task. Before the task completes, state of the Transform is <strong>In
+Progress</strong>. Detailed steps of the task are displayed in the <strong>Active Stream</strong> panel. After the task completes
+successfully, the Transform will switch to <strong>Ready</strong> state.</p>
+<p><img src="images/300/image018.png" alt="" /></p>
+<p><strong>3. 2 Customize Transform Workflow</strong></p>
+<p>After a Transform is created, data is loaded into memory as a dataset. Preparation Service can do broad
+range of transformation to the dataset with built-in tasks. Transformation tasks are executed sequentially on a
+dataset as a workflow.</p>
+<p>Clicking a Transform in the catalog list will launch a new page to customize the workflow.
+In the middle of the page, a panel lists available columns in the dataset. State, name, type and sample
+value of a column are displayed in a single row. Built-in transformation tasks can be launched by actions in a
+toolbar on top of the panel and a pop up menu triggered from a button in each row.</p>
+<p>In the right of the page, a panel is used to show profile of data in the dataset. If no column is selected,
+profile of whole dataset is displayed. When a column is selected, it will show profile of the column.</p>
+<p>In the left-top of the page, all generated transformation tasks in the workflow are listed in the <strong>Workflow
+Script</strong> panel.</p>
+<p><img src="images/300/image021.png" alt="" /> </p>
+<p>After reviewing sample values of columns in the dataset, it is apparently that lots of columns are empty
+without any value. Most of those empty columns are meaningless but still need to spend time on processing if
+kept in the dataset. So the first transformation task in the demo is to remove those empty columns from the
+dataset. You do not need to identify empty columns in a dataset by yourself. Data Preparation Layer can do it
+automatically.</p>
+<p>To remove empty columns, click <img src="images/300/image023.png" alt="" /> action in the toolbar. A dialog as below will pop up to let users to
+choose empty columns to remove.</p>
+<p><img src="images/300/image024.png" alt="" /></p>
+<p>You can select individual columns in the list or all columns in the list by checking <strong>Remove empty columns</strong>
+box below. After making your decision, click <strong>Apply</strong> button in the dialog.</p>
+<p>After returning to the design page, you can check that those empty columns you selected are removed
+from the dataset. Also you may notice that a transformation task is listed in the <strong>Workflow Script</strong> panel.</p>
+<p><img src="images/300/image025.png" alt="" /></p>
+<p>Remaining transformation tasks in the demo are based on individual column in the dataset. By clicking
+button in the right of a column name, following menu will pop up. From the menu you can choose any
+transformation task.</p>
+<p><img src="images/300/image027.png" alt="" /></p>
+<p>In the demo, original data file is in XML format. Default name of a column is generated automatically based
+on the hierarchy of the XML element. However those names are not user-friendly.</p>
+<p>To assign a user-friendly name to a column, select <strong>Rename</strong> in the menu. Following dialog will prompt to
+allow users give a new name to the column.</p>
+<p><img src="images/300/image028.png" alt="" /></p>
+<p>After assigning a new name, click <strong>Apply</strong> button to generate a task to change name of the column. Name
+of a column must be unique in a dataset.</p>
+<pre><code>If the task is successfully executed, name of the column is changed in the design page. A blue check icon ![](images/300/image029.png) is displayed as state of the column to indicate that some corrections have been applied to the column.
+
+![](images/300/image030.png)
+</code></pre>
+<p>In the demo, a single location column in the original dataset is used to indicate where a Twitter user’s
+home is. However, we need two columns, City and Country, in the target database for better analysis in the
+future.</p>
+<p>After reviewing sample values of the location column, there are six possible formats: “ <em>City, Country</em> ”, “ <em>City,
+State</em> ”, “ <em>City, State, Country</em> ”, “ <em>City</em> ”, “ <em>Country</em> ” and “ <em>State, <Descriptive Words></em> ”. We apply following
+transformation process to extract usable data from raw values.</p>
+<p>First, we will append “N/A” as city to last two types of location values, so that all values can be normalized
+to first three formats. To define the transformation, select <strong>Search and Replace</strong> from the pop up menu of the
+Location field. Following dialog will appear to allow users to define rules to replace original values. A
+replacement rule is defined as an original value and a new value. When the rule is applied, all values that match
+the original value will be replaced by the new value. A replacement rule is displayed as a row in the dialog.
+Multiple rules can be defined through the dialog.</p>
+<p><img src="images/300/image032.png" alt="" /></p>
+<p>In the dialog, there are three means to define new rules.
+The first is by clicking <strong>Load Samples</strong> link. All sample values of the column are populated into <strong>Find Value</strong>
+field but leave the <strong>Replace By</strong> field empty. Number of rows (rules) equals to the sample values count. Users
+can easily find which value needs to be replaced and specify a new value in the <strong>Replace By</strong> field.</p>
+<p>The second is by clicking <strong>Load CSV</strong> link in the dialog. It allows loading replacement rules from an external
+file. The file must be in CSV format and with only two columns. The first column is original value and the second
+is new value.</p>
+<p>The third is defining rules manually. Users need to input both the original value and new value of a rule.
+By clicking <strong>Add</strong> button, users can define more rules.</p>
+<p>If a rule will not be used any more, for example an original value is not need to be replaced, user can click
+button in that row to delete the rule.
+In this demo, we will use first means to load sample values. For original values in first three formats, simply
+remove those loaded rules. For original values in last two formats, add “NA,” to the leading position.</p>
+<p>Next transformation tasks will split the single Location column into separate <strong>City</strong> and <strong>Country</strong> columns.
+Choose <strong>Split on Delimiter</strong> from the menu, following dialog will appear.</p>
+<p><img src="images/300/image035.png" alt="" /> </p>
+<p>The transformation will split values of a column into two columns by the delimiter. The part before first
+occurrence of the delimiter will be assigned to first column. The part after first occurrence of the delimiter will
+be assigned to second column. After clicking <strong>Apply</strong> button in the dialog, a transformation task is launched at
+background to create two additional columns into the dataset. After the task completes successfully, the new
+columns are displayed in the list. An icon in front of each column indicates that it is created with a
+transformation task.</p>
+<p>In the demo, the delimiter is comma for the Location column. <strong>City</strong> and <strong>Country</strong> are the name for two columns respectively.</p>
+<p><img src="images/300/image037.png" alt="" /> </p>
+<p>Now we have initial values for <strong>City</strong> and <strong>Country</strong> columns. However some cleaning action must be taken to
+both columns.</p>
+<p><strong>City</strong> column contains meaningless <strong>N/A</strong> value in previous transformation. It needs to be replaced with an
+empty value. Launch the <strong>Search and Replace</strong> dialog for the <strong>City</strong> column. Because only a single value needs to
+be replaced, we can simply define a single rule manually. Input <strong>N/A</strong> in the first column, and leave the second column empty.</p>
+<p><img src="images/300/image032.png" alt="" /> </p>
+<p>After clicking <strong>Apply</strong> button in the dialog, the replacement rules are applied to the <strong>City</strong> column. When task
+is done, column state is changed to , which indicates that some corrections have been applied to the column.</p>
+<p><img src="images/300/image040.png" alt="" /> </p>
+<p>Values in <strong>Country</strong> column are mixed with state and country. We need to map all those information to a
+valid country. Launch Search and Replace dialog for the <strong>Country</strong> column, load initial rules from sample values.</p>
+<p><img src="images/300/image042.png" alt="" /> </p>
+<p>For any value that reflects a correct country, simply remove the rule. For any value that is not a valid
+country, check information carefully and assign a correct country value.</p>
+<p>After all transformation tasks have been done, click <strong>Done</strong> button on top of the Workflow Design Page to
+go back to Catalog page.</p>
+<pre><code>N/A
+</code></pre>
+<p><strong>3. 3 Publish Data to Database</strong></p>
+<p>Next step in this demo is to publish data to an Oracle Database. To publish a catalog with a defined data
+transformation workflow, just click <img src="images/300/image043.png" alt="" />  button in the right of a catalog. A menu will pop up, and then you can select <strong>Publish</strong> action from the menu.</p>
+<p><img src="images/300/image044.png" alt="" /> </p>
+<p>Following dialog will appear to let you choose which target you want to publish the data.</p>
+<p><img src="images/300/image046.png" alt="" /> </p>
+<p>Click Select button next to the Target field to launch another dialog to select an Oracle Database source.</p>
+<p><img src="images/300/image047.png" alt="" /> </p>
+<p>Choose the database source we created previously from the drop-down list. Because there is no directory
+concept in Oracle Database, no object will can be selected from the directory list. Click <strong>OK</strong> button to accept
+your choice and go back to previous dialog.</p>
+<p><img src="images/300/image048.png" alt="" /> </p>
+<p>Both Source and Target are selected for creating a publish job. In the dialog you may notice a <strong>Schedule</strong>
+section displayed at bottom, however it only give an indication that the publish job will only “Execute Once”.
+We will introduce later how to schedule a publish job by defining Policies. Click the <strong>Publish</strong> button to close the
+dialog.</p>
+<p>A publish job will be created and launched automatically. You can check state of the job by clicking <strong>Job</strong> tab
+on top of the Oracle Big Data Preparation Service page. A job can be found in the job page. If it is not completed,
+the state should be <strong>Started</strong>.</p>
+<p><img src="images/300/image049.png" alt="" /> </p>
+<p>To monitor the job execution, you can click the job to jump to following <strong>Job Details</strong> page. In the page, lots
+of details about the job can be known. From general information of the job to various metrics collected. Step
+by step job execution can also be monitored from the <strong>Active Stream</strong> panel.</p>
+<p><img src="images/300/image051.png" alt="" /> </p>
+<p>You can also monitor from the home page. The <strong>Overview</strong> section will show you the information which
+includes currently running jobs and rows and transforms processed.</p>
+<p><img src="images/300/image053.png" alt="" /> </p>
+<p>The job is running at background. When it is done, a light-green banner as below will pop up at top of the
+page. During that period, you can do any management task with the tool.</p>
+<p><img src="images/300/image055.png" alt="" /> </p>
+<p>After the job completes, you can go again to the <strong>Job Detail</strong> page. General information about the job is
+refreshed.</p>
+<p><img src="images/300/image056.png" alt="" /> </p>
+<p>A lot more metrics can also be seen from the page. By collapsing each metrics section, detailed monitoring
+information is displayed in JSON format.</p>
+<p><img src="images/300/image058.png" alt="" /> </p>
+<p>DDL SQL to create the table is recorded in the page. You can retrieve published data from the Oracle
+Database with any tool that you are familiar with, such as SQL * Plus or SQL Developer.</p>
+<p><strong>3. 4 Define a policy to schedule publish jobs periodically</strong></p>
+<p>A transformation workflow on a Catalog can be reused to schedule jobs to capture and publish data
+periodically. The job scheduling is defined as a policy in Oracle Big Data Preparation Service.</p>
+<p>Go to <strong>Policies</strong> tab on top will switch to following page. In the page, you can manage policies that control
+execution of jobs.</p>
+<p><img src="images/300/image060.png" alt="" /> </p>
+<p>By clicking <strong>Create Policy</strong> button on top of the page, following dialog will appear to let you define a new
+policy.</p>
+<p>In general information section, you can select transformation workflow on a catalog or source and also
+the target to publish the data. By toggling the checkbox at bottom, users can control whether to publish data
+to a new table or refresh data in an existing table.</p>
+<p><img src="images/300/image062.png" alt="" /> </p>
+<p>In the <strong>Schedule</strong> section, you can define when a job will be scheduled. For example: execute once a day at
+specific time. The effective period of the policy also need to be specified.</p>
+<p><img src="images/300/image063.png" alt="" /> </p>
+<p>After all information is given, click <strong>Save</strong> button to stored the policy into the job engine of the Preparation
+Service. Later users can monitor job scheduling and execution from the Job tab.</p>

@@ -1,0 +1,204 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="convert-weblogic-11g-domain-into-the-12cr2-partition-using-dpct-domain-to-partition-conversion-tool">Convert WebLogic 11g domain into the 12cR2 partition using DPCT (Domain to Partition Conversion Tool)</h2>
+<h3 id="introduction">Introduction</h3>
+<p>The Domain to Partition Conversion Tool (DPCT) provides a utility that inspects a specified source domain and produces an archive containing the resources, deployed applications and other settings.  This can then be used with the Import Partition operation provided in WebLogic Server 12.2.1 to create a new partition that represents the original source domain.  An external overrides file is generated (in JSON format) that can be modified to adjust the targets and names used for the relevant artifacts when they are created in the partition. DPCT supports WebLogic Server 10.3.6, 12.1.1, 12.1.2 and 12.1.3 source domains and makes the conversion to WebLogic Server 12.2.1 partitions a straightforward process.</p>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>This part of the tutorial shows how to convert existing Weblogic Server 11g domain into the importable format of WebLogic Server 12cR2 Domain Partition and import that pertition into WebLogic Server 12cR2 domain</p>
+<p><img src="images/part1.generic.overview.png" alt="" /></p>
+<p>Inside VirtualBox VM we have already created Domain1036 in <code>/u01/wins/wls1036/user_projects/domains/Domain1036</code>. This domain contains Admin Server only, we created PetstoreDB as Datasource and Deployed JSF-2.0.war as shared library and deployed petstore.12.war as an application to the Admin Server. This is the <strong>source domain</strong>, which we are going to convert to the image of the WebLogic Domain Partition through DPCT tool. This process will create a Domain1036.zip and Domain1036-attributes.json file.</p>
+<p>We have also created Domain1221 in <code>/u01/wins/wls1221/user_projects/domains/Domain1221</code>. This is empty domain, which contains Admin Server only. This will be our <strong>target domain</strong>, where we will import the previous domain Domain1036 as partition. </p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Configured WebLogic Server 11g domain with sample application</li>
+<li>Configured WebLogic Server 12cR2 domain</li>
+<li>Oracle Database to store demo application's data</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<h4 id="starting-the-admin-server-in-both-domains">Starting the Admin Server in both domains</h4>
+<p>Open a terminal window and move to <code>GIT_REPO_LOCAL_CLONE/dpct</code> folder.</p>
+<pre><code>$ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/dpct
+</code></pre>
+<p>Run prepared script that prepares the environment. First starts the container and (PDBORCL) pluggable database. Creates the <strong>petstore</strong> user in <em>pdborcl</em> database, and populates the database with sample data. Sets the <strong>JAVA_HOME</strong> to <strong>/usr/java/jdk1.7.0<em>79/</strong> and <strong>MW_HOME</strong> to <strong>/u01/wins/wls1036/</strong> then it starts the Admin Server in Domain1036. Finally sets the <strong>JAVA_HOME</strong> to <strong>/usr/java/latest/</strong> (JDK 8) and <strong>MW</em>HOME</strong> to <strong>/u01/wins/wls1221/</strong> then it starts the Admin Server in Domain1221.</p>
+<pre><code>$ [oracle@localhost dpct]$ ./prepareLocalEnv.sh 
+Oracle database (sid: orcl) is running.
+Open pluggable database: PDBORCL.
+PDBORCL is already opened
+********** CREATING PetStore DB USER **********************************************
+SQL*Plus: Release 12.1.0.2.0 Production on Thu Sep 15 05:43:25 2016
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Sep 15 2016 05:38:47 -07:00
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+SQL&gt; 
+drop user petstore cascade
+          *
+ERROR at line 1:
+ORA-01918: user 'PETSTORE' does not exist
+
+SQL&gt; 
+User created.
+
+SQL&gt; 
+Grant succeeded.
+
+SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+********** CREATING DB ENTRIES FOR PetStore Application ***************************
+SQL*Plus: Release 12.1.0.2.0 Production on Thu Sep 15 05:43:39 2016
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+
+SQL&gt; 
+Table created.
+...
+...
+...
+1 row created.
+
+
+Commit complete.
+
+SQL&gt; Disconnected from Oracle Database 12c Enterprise Edition Release 12.1.0.2.0 - 64bit Production
+With the Partitioning, OLAP, Advanced Analytics and Real Application Testing options
+********** STARTING ADMIN (WEBLOGIC 10.3.6 - DOMAIN1036) **************************
+********** ADMIN SERVER (WEBLOGIC 10.3.6 - DOMAIN1036) HAS BEEN STARTED ***********
+********** STARTING ADMIN SERVER (WEBLOGIC 12.2.1 - DOMAIN1221) *******************
+********** ADMIN SERVER (WEBLOGIC 12.2.1 - DOMAIN1221) HAS BEEN STARTED ***********
+</code></pre>
+<p>Go to browser and access the application URL on <a href="http://localhost:6001/petstore/faces/catalog.jsp">http://localhost:6001/petstore/faces/catalog.jsp</a> . You can use the Bookmark.</p>
+<p><img src="images/call.petstore.on.11g.png" alt="" /></p>
+<p>We are using <strong>PetStore</strong> application which was created by Sun engineers in 2009(!) to demonstrate JEE5 and other features. You can click on different Animal name like Cats, Dogs and Birds. You can also click on Seller and Search for verification of application Execution. Due to external API changes some of the functions do not work of the demo application. </p>
+<p><img src="images/petstore.on.11g.png" alt="" /></p>
+<h4 id="running-domain-to-partition-conversion-tool">Running Domain to Partition Conversion Tool</h4>
+<p>We have put the Domain to Partition conversion tool in <code>/u01/dpct</code> folder.</p>
+<p>Go back to terminal window and verify if <strong>JAVA_HOME</strong> variable is properly set.</p>
+<pre><code>$ [oracle@localhost Lab8]$ $JAVA_HOME/bin/java -version
+java version "1.8.0_60"
+Java(TM) SE Runtime Environment (build 1.8.0_60-b27)
+Java HotSpot(TM) 64-Bit Server VM (build 25.60-b23, mixed mode)
+[oracle@localhost Lab8]$ 
+</code></pre>
+<p>The displayed value should be <code>java version "1.8.0_60"</code>, which is required for DPCT tool to run.</p>
+<p>Move to DPCT folder location and execute DPCT tool</p>
+<pre><code>$ [oracle@localhost Lab8]$ cd /u01/dpct
+$ [oracle@localhost dpct]$ ./exportDomainForPartition.sh /u01/wins/wls1036/ /u01/wins/wls1036/user_projects/domains/Domain1036/ 
+</code></pre>
+<p>This command creates the <em>Domain1036.zip</em> and <em>Domain1036-attributes.json</em> file in <code>/u01/dpct/outDir/folder</code></p>
+<pre><code>CLASSPATH=/u01/dpct/com.oracle.weblogic.management.tools.migration.jar::/u01/wins/wls1036/patch_wls1036/profiles/default/sys_manifest_classpath/weblogic_patch.jar:/u01/wins/wls1036/patch_ocp371/profiles/default/sys_manifest_classpath/weblogic_patch.jar:/usr/java/latest/lib/tools.jar:/u01/wins/wls1036/wlserver_10.3/server/lib/weblogic_sp.jar:/u01/wins/wls1036/wlserver_10.3/server/lib/weblogic.jar:/u01/wins/wls1036/modules/features/weblogic.server.modules_10.3.6.0.jar:/u01/wins/wls1036/wlserver_10.3/server/lib/webservices.jar:/u01/wins/wls1036/modules/org.apache.ant_1.7.1/lib/ant-all.jar:/u01/wins/wls1036/modules/net.sf.antcontrib_1.1.0.0_1-0b2/lib/ant-contrib.jar::/u01/wins/wls1036/utils/config/10.3/config-launch.jar::/u01/wins/wls1036/wlserver_10.3/common/derby/lib/derbynet.jar:/u01/wins/wls1036/wlserver_10.3/common/derby/lib/derbyclient.jar:/u01/wins/wls1036/wlserver_10.3/common/derby/lib/derbytools.jar::
+
+Initializing WebLogic Scripting Tool (WLST) ...
+
+Welcome to WebLogic Server Administration Scripting Shell
+
+Type help() for help on available commands
+
+WLST homepath:
+/u01/dpct/tmpwlst
+['/u01/wins/wls1036/wlserver_10.3/server/lib/weblogic.jar/Lib', '__classpath__', '/u01/wins/wls1036/wlserver_10.3/server/lib/weblogic.jar', '/u01/wins/wls1036/wlserver_10.3/common/wlst/modules/jython-modules.jar/Lib', '/u01/wins/wls1036/wlserver_10.3/common/wlst', '/u01/wins/wls1036/wlserver_10.3/common/wlst/lib', '/u01/wins/wls1036/wlserver_10.3/common/wlst/modules', '/u01/dpct/tmpwlst', '/u01/dpct/tmpwlst/lib', '/u01/dpct/tmpwlst/modules', '.']
+Export a non-MT domain for migration
+from domain path: /u01/wins/wls1036/user_projects/domains/Domain1036/
+reading domain ......
+domain name: Domain1036
+drw-   AppDeployment
+drw-   EmbeddedLDAP
+drw-   JDBCSystemResource
+drw-   Library
+drw-   Security
+drw-   SecurityConfiguration
+drw-   Server
+working on Server, listing ...
+drw-   AdminServer
+writing server for AdminServer
+working on AppDeployment, listing ...
+drw-   petstore
+writing app-deployment for petstore
+-rw-   AltDescriptorPath                             null
+-rw-   AltWLSDescriptorPath                          null
+-rw-   ApplicationIdentifier                         null
+-rw-   ApplicationName                               null
+-rw-   CompatibilityName                             null
+-rw-   DeploymentOrder                               100
+-rw-   DeploymentPrincipalName                       null
+-rw-   InstallDir                                    null
+-rw-   ModuleType                                    war
+-rw-   Name                                          petstore
+-rw-   Notes                                         null
+-rw-   PlanDir                                       null
+-rw-   PlanPath                                      null
+-rw-   SecurityDdModel                               DDOnly
+-rw-   SourcePath                                    /u01/wins/wls1036/user_projects/applications/Domain1036/petstore.12.war
+-rw-   StagingMode                                   null
+-rw-   Target                                        AdminServer
+-rw-   ValidateDdSecurityData                        false
+-rw-   VersionIdentifier                             null
+working on Library, listing ...
+drw-   jsf#2.0@1.0.0.0_2-0-2
+writing library for jsf#2.0@1.0.0.0_2-0-2
+-rw-   AltDescriptorPath                             null
+-rw-   AltWLSDescriptorPath                          null
+-rw-   ApplicationIdentifier                         null
+-rw-   ApplicationName                               null
+-rw-   CompatibilityName                             null
+-rw-   DeploymentOrder                               100
+-rw-   DeploymentPrincipalName                       null
+-rw-   InstallDir                                    null
+-rw-   ModuleType                                    war
+-rw-   Name                                          jsf#2.0@1.0.0.0_2-0-2
+-rw-   Notes                                         null
+-rw-   PlanDir                                       null
+-rw-   PlanPath                                      null
+-rw-   SecurityDdModel                               DDOnly
+-rw-   SourcePath                                    /u01/wins/wls1036/wlserver_10.3/common/deployable-libraries/jsf-2.0.war
+-rw-   StagingMode                                   null
+-rw-   Target                                        AdminServer
+-rw-   ValidateDdSecurityData                        false
+-rw-   VersionIdentifier                             null
+working on JDBCSystemResource, listing ...
+drw-   PetstoreDB
+writing jdbc-system-resource for PetstoreDB
+processing component-specific export handlers
+create archive zip file ...
+domain migration archive file: /u01/dpct/outDir/Domain1036.zip
+generating domain migration archive completed.
+
+
+Exiting WebLogic Scripting Tool.
+
+Export Weblogic domain completed to outDir.
+total 9932
+-rw-r-----. 1 oracle oracle      823 Sep 15 06:05 Domain1036-attributes.json
+-rw-r-----. 1 oracle oracle 10164841 Sep 15 06:05 Domain1036.zip
+</code></pre>
+<h4 id="import-domain-as-partition-in-weblogic-1221-multitenant-environment">Import Domain as Partition in WebLogic 12.2.1 Multitenant environment</h4>
+<p>Go to the browser and type the URL for Admin Console of Domain1221 domain <a href="http://localhost:9001/console">http://localhost:9001/console</a> . Or click on the console bookmark.</p>
+<p><img src="images/call.console.12cR2.png" alt="" /></p>
+<p>Enter weblogic/welcome1 as username and password then click <strong>Login</strong>.</p>
+<p><img src="images/console.12cR2.login.png" alt="" /></p>
+<p>In Domain Structure click <strong>Domain Partitions</strong>.</p>
+<p><img src="images/console.12cR2.domain.partitions.png" alt="" /></p>
+<p>Click <strong>Import</strong>, specify <em>Microcontainer1</em> as Domain Partition name and <strong>/u01/dpct/outDir/Domain1036.zip</strong> as Path then click on OK.</p>
+<p><img src="images/console.12cR2.import.png" alt="" /></p>
+<p>Click Environment -&gt; Virtual Targets, and then click <strong>Microcontainer1-AdminServer-virtualTarget</strong>.</p>
+<p><img src="images/console.12cR2.virtual.targets.png" alt="" /></p>
+<p>Modify the URI Prefix to "/" and set Port Offset to <em>100</em> and then click <strong>Save</strong>.</p>
+<p><img src="images/console.12cR2.virtual.targets.modify.png" alt="" /></p>
+<p>Select <strong>Deployments</strong>, as <code>jsf-2.0.war</code> is implementation of JSF 2.0 that is part of JavaEE 6 it is already bundled with WebLogic Server 12.2.1 installation, so we don’t need it as part of deployment that was needed in pre JavaEE 6 container (11g). Check the box for <code>jsf(2.0,1.0.0.0_2-0-2)</code> and then click <strong>Delete</strong>.</p>
+<p><img src="images/console.12cR2.remove.deployments.png" alt="" /></p>
+<p>Select <strong>Domain Partitions</strong> and then click <strong>Control tab</strong>, check the box for <code>Microcontainer1</code> and click on <strong>Start</strong> to start the partition.</p>
+<p><img src="images/console.12cR2.domain.partition.start.png" alt="" /></p>
+<p>Wait for 5-6 seconds, and then click <strong>Configuration</strong> tab of <strong>Domain Partitions</strong>. Once this partition is in <em>RUNNING</em> State, and then only goes to next step.</p>
+<p><img src="images/console.12cR2.domain.partition.running.png" alt="" /></p>
+<p>Access the Petstore demo application on <a href="http://localhost:9101/petstore/faces/catalog.jsp">http://localhost:9101/petstore/faces/catalog.jsp</a> or using the bookmark.</p>
+<p><img src="images/call.petstore.on.12cR2.png" alt="" /></p>
+<p><img src="images/petstore.on.12cR2.png" alt="" /></p>

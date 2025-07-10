@@ -1,0 +1,90 @@
+<h2 id="commonimagescustomerlogopng"><img src="common/images/customer.logo.png" alt="" /></h2>
+<h1 id="oracle-cloud-native-devops-workshop">ORACLE Cloud-Native DevOps workshop</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Oracle Cloud is the industry’s broadest and most integrated public cloud. It offers best-in-class services across software as a service (SaaS), platform as a service (PaaS), and infrastructure as a service (IaaS), and even lets you put Oracle Cloud in your own data center. Oracle Cloud helps organizations drive innovation and business transformation by increasing business agility, lowering costs, and reducing IT complexity. The workshop content shows different aspects of Application Development in the cloud with different set of Oracle Cloud Services.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>The workshop is intended to work with an Oracle PaaS trial account. To get an account look into <a href="common/request.for.trial.md">here</a>. Get the following account details ready to complete the tutorial and replace to your values when it is required:</p>
+<ul>
+<li>Oracle Cloud account <strong>username</strong> and <strong>password</strong></li>
+<li>Oracle Cloud <strong>identity domain</strong></li>
+<li><strong>Data center/region</strong></li>
+</ul>
+<p>NOTE: Before you start to use your new Oracle Public Cloud services make sure that the replication policy has been set for your account. Otherwise you can not create storage container which is necessary for most of the services. See <a href="https://docs.oracle.com/cloud/latest/storagecs_common/CSSTO/GUID-5D53C11F-3D9E-43E4-8D1D-DDBB95DEC715.htm">Selecting a Replication Policy for Oracle Storage Cloud Service</a>.</p>
+<h3 id="important">Important</h3>
+<p>During the execution you will create several public cloud service instances what will be available on the world wide web. Even if these instances are for demo purposes keep in mind it is not a best practice to use weak or known (stored here in the tutorial) passwords especially in such open environment. Thus this workshop content does not recommend any password so you need to define those. You will be asked to provide password at certain points and please remember them  for  later usage.</p>
+<p>The content contains several independent modules that cover different aspects of the application development in the Oracle Cloud. These modules could be executed independently unless you find in the Prerequisites that they are dependent on each other.</p>
+<hr />
+<h4 id="container-based-application-development-lifecycle-using-wercker-and-container-cloud-service">Container based application development lifecycle using Wercker and Container Cloud Service</h4>
+<ul>
+<li><a href="springboot-sample/create.wercker.ci.md">Build Spring Boot container packaged application using Wercker and deploy to Oracle Container Cloud Service</a><ul>
+<li><a href="springboot-sample/wercker.step.occs.md">Use Wercker step to restart Oracle Container Cloud Service in Wercker Continuous Delivery workflow</a></li></ul></li>
+<li><a href="springboot-sample/wercker.step.accs.md">Build Spring Boot application using Wercker and deploy to Oracle Application Container Cloud Service using custom Wercker Step</a></li>
+<li><a href="containers/nodejs-mongodb-stack/README.md">Build Node.js-MongoDB container packaged application using Wercker and deploy to Oracle Container Cloud Service as the Stack of services</a></li>
+<li><a href="containers/node-cassandra-stack/README.md">Build Node.js-Cassandra DB container packaged application using Wercker and deploy to Oracle Container Cloud Service as the Stack of services</a></li>
+</ul>
+<h4 id="support-springboot-application-development-lifecycle-using-oracle-developer-cloud-service-application-container-cloud-service-and-oracle-enterprise-pack-for-eclipse">Support SpringBoot application development lifecycle using Oracle Developer Cloud Service, Application Container Cloud Service and Oracle Enterprise Pack For Eclipse</h4>
+<ul>
+<li><a href="springboot-sample/create.devcs.project.md">Create Oracle Developer Cloud Service project for SpringBoot application</a></li>
+<li><a href="springboot-sample/devcs.accs.ci.md">Create continuous build integration using Oracle Developer Cloud Service and Oracle Application Container Cloud Service</a></li>
+<li><a href="oepe/setup.oepe.md">Using Eclipse IDE (Oracle Enterprise Pack for Eclipse) with Oracle Developer Cloud Service</a></li>
+</ul>
+<h4 id="bind-frontend-application-running-on-lightweight-container-in-oracle-appplication-container-cloud-with-backend-resources-running-on-java-cloud-service">Bind Frontend Application running on lightweight container in Oracle Appplication Container Cloud with backend resources running on Java Cloud Service</h4>
+<ul>
+<li><a href="devops-bind/README.md">Implement new function (REST client) in SpringBoot sample application using Service Bindings to access Oracle Java Cloud Services</a></li>
+</ul>
+<h4 id="perform-basic-monitoring-of-application-run-inside-application-container-cloud-thrugh-diagnostic-capabilities-of-java-mission-control-and-java-flight-recorder">Perform basic monitoring of application run inside Application Container Cloud thrugh diagnostic capabilities of Java Mission Control and Java Flight Recorder</h4>
+<ul>
+<li><a href="monitor-tune/README.md">Monitor and tune SpringBoot application deployed on Oracle Application Container Cloud Service</a></li>
+</ul>
+<h4 id="integrate-telemetry-into-continuous-delivery-and-monitor-an-application-using-the-oracle-management-cloud">Integrate telemetry into continuous delivery and monitor an application using the Oracle Management Cloud</h4>
+<ul>
+<li><a href="apm/README.md">Deploying APM Agent on Apache Tomcat based application and setting up Application Performance Monitoring</a></li>
+</ul>
+<h4 id="deploy-complex-cloud-environment-using-oracle-cloud-stack-manager">Deploy complex cloud environment using Oracle Cloud Stack Manager</h4>
+<ul>
+<li><a href="stack/README.md">Deploy complex cloud environment using Oracle Cloud Stack Manager</a></li>
+</ul>
+<h4 id="run-lightweight-java-container-tomcat-in-the--oracle-application-container-cloud-service">Run Lightweight Java container (Tomcat) in the  Oracle Application Container Cloud Service</h4>
+<ul>
+<li><a href="accs-tomcat/README.md">Deploy Apache Tomcat based application to Oracle Application Container Cloud</a></li>
+<li><a href="accs-psm/README.md">Scale up/down Application Container Service using user interface and PaaS Service Manager (PSM) Command Line Interface (CLI) tool</a></li>
+</ul>
+<h4 id="deploy-java-ee-application-to-oracle-java-cloud-service">Deploy Java EE application to Oracle Java Cloud Service</h4>
+<ul>
+<li><a href="dbcs-create/README.md">Create Database Cloud Service Instance using user interface</a></li>
+<li><a href="jcs-create/README.md">Create Java Cloud Service Instance using user interface</a></li>
+<li><a href="dbcs-prepare/README.md">Prepare Database Cloud Service Instance to store sample application's data</a></li>
+<li><a href="jcs-deploy/README.md">Deploy Java EE sample application to Oracle Java Cloud Service using Admin console</a></li>
+</ul>
+<h4 id="manage-oracle-java-cloud-service-using-ui-and-paas-service-manager">Manage Oracle Java Cloud Service using UI and PaaS Service Manager</h4>
+<ul>
+<li><a href="jcs-direct/README.md">Direct access and management of Oracle Java Cloud Service</a></li>
+<li><a href="jcs-scale-ui/README.md">Scale-Out Oracle Java Cloud Service using user interface</a></li>
+<li><a href="jcs-scale-psm/README.md">Scale-In Oracle Java Cloud Service using PaaS Service Manager (PSM) Command Line Interface (CLI)</a></li>
+</ul>
+<h4 id="making-java-cloud-service-elastically-scalable-through-policy-based-auto-scaling">Making Java Cloud Service elastically scalable through Policy based Auto-scaling</h4>
+<ul>
+<li><a href="jcs-autoscale/README.md">Oracle Java Cloud Service Policy Based Auto Scaling</a></li>
+</ul>
+<h4 id="upgrade-weblogic-server-11g-1036-running-on-premise-to-12cr2-with-multitenancy-and-migrate-to-java-cloud-service">Upgrade WebLogic Server 11g (10.3.6) running on premise to 12cR2 with Multitenancy and migrate to Java Cloud Service</h4>
+<ul>
+<li><a href="dpct/README.md">Convert WebLogic 11g domain into the 12cR2 partition using DPCT (Domain to Partition Conversion Tool)</a></li>
+<li><a href="lift-and-shift/README.md">Move partition from WebLogic Server 12cR2 to Oracle Java Cloud Service</a></li>
+</ul>
+<h4 id="migrate-weblogic-1036-on-premise-application-to-java-cloud-service-with-app2cloud-tool">Migrate WebLogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool</h4>
+<ul>
+<li><a href="app-2-cloud/README.md">Migrate Weblogic 10.3.6 (on premise) Application to Java Cloud Service with App2Cloud tool</a></li>
+</ul>
+<h4 id="clean-up-the-environment">Clean up the environment</h4>
+<ul>
+<li><a href="cleanup/cleanup-ui.md">Delete Java Cloud, Database Cloud and Database Container Services using user interface</a></li>
+<li><a href="cleanup/cleanup-psm.md">Delete Application Cloud Container Service using PaaS Service Manager (PSM) Command Line Interface (CLI)</a></li>
+</ul>
+<hr />
+<h4 id="customizing-and-personalizing-the-workshop-content">Customizing and personalizing the workshop content</h4>
+<ul>
+<li><a href="customize/README.md">Customize and personalize the workshop materials</a></li>
+</ul>
+<hr />
+<h2 id="contributingcontributingmd"><a href="../../CONTRIBUTING.md">Contributing</a></h2>
+<h2 id="licenselicensemd"><a href="../../LICENSE.md">License</a></h2>

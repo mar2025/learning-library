@@ -1,0 +1,370 @@
+<p><img src="images/300/PictureLab.png" alt="" />  </p>
+<p>Update: March 31, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>Oracle Cloud Native Microservices</strong> workshop. This workshop will walk you through the Software Development Lifecycle (SDLC) for a Cloud Native project that will create and use several Microservices.</p>
+<p>In the previous lab (200), the Java Developer (Bala Gupta) created several microservices that pull data from twitter and allow for dynamic filtering based on keywords. In this lab, you will assume the role of the front-end JavaScript developer who will create a web application that incorporates the data from those microservices. This node.js application will be developed in the Developer Cloud Service taking advantage of automated builds and deployments to the Application Container Cloud Service.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/cloud-native-devops-workshop/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Access Developer Cloud Service</li>
+<li>Import Code from external Git Repository</li>
+<li>Import Project into Brackets</li>
+<li>Build and Deploy project using Developer Cloud Service and Oracle Application Container Cloud Service</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Cloud account that will be supplied by your instructor. You will need to download and install latest version of the Brackets text editor.</li>
+</ul>
+<h1 id="create-initial-twitter-marketing-ui-service">Create Initial Twitter Marketing UI Service</h1>
+<h2 id="explore-developer-cloud-service">Explore Developer Cloud Service</h2>
+<h3 id="step-1-review-agile-board"><strong>STEP 1</strong>: Review Agile Board</h3>
+<ul>
+<li><p>This Lab assumes that you completed Lab 100 and 200 and are still connected to the Oracle Cloud, that you're still in the Developer cloud Service Dashboard, and you're viewing the "Twitter Feed Marketing Project". If for some reason that is not the case, follow the first several Steps of Lab 100 to once again view the Developer Cloud Service Console.</p>
+<p><img src="images/200/Picture10.5.png" alt="" />  </p></li>
+<li><p>Although you will remain connected to the Oracle Cloud using the user account you were provided, you are to take on the Persona of <strong><em>John Dunbar</em></strong> as you perform the following steps.</p>
+<p><img src="images/john.png" alt="" />  </p></li>
+<li><p>Click on <strong>Agile</strong> on the navigation panel.</p>
+<p><img src="images/300/image012.png" alt="" />  </p></li>
+<li><p>Click on the <strong>Microservices</strong> Board <strong>Active Sprints</strong>.</p>
+<p><img src="images/300/image014.5.png" alt="" />  </p></li>
+</ul>
+<h2 id="create-initial-git-repository">Create Initial Git Repository</h2>
+<h3 id="step-2-create-initial-git-repository"><strong>STEP 2</strong>: Create Initial Git Repository</h3>
+<p>As in the previous lab, we could start coding this application from scratch at this point. However, one of our colleagues has already begun working on the shell for our web application outside of the Developer Cloud Service. We want to use his work as a starting point and extend it to incorporate our twitter microservices. To pull his code into the Developer Cloud Service, we will clone his external GIT repository. First let’s update our agile board to show that we are working on this task:</p>
+<ul>
+<li><p>Drag and drop <strong>Task 3 - Create Initial GIT Repository for Twitter Marketing UI</strong> into the <strong>In Progress</strong> swim-lane.  Click <strong>OK</strong> on Change Progress popup.</p>
+<p><img src="images/300/image015.png" alt="" />  </p>
+<p><img src="images/300/image016.5.png" alt="" />  </p></li>
+<li><p>Click on <strong>Project</strong> on the navigation panel.</p></li>
+<li><p>Click on <strong>New Repository</strong> to create a new Git Repository</p>
+<p><img src="images/300/image017.png" alt="" />  </p></li>
+<li><p>In the New Repository wizard enter the following information and click <strong>Create</strong>.</p>
+<p><strong>Name:</strong> <code>TwitterMarketingUIMicroservice</code></p>
+<p><strong>Description:</strong> <code>Twitter Marketing UI Microservice</code></p>
+<p><strong>Initial content:</strong> Import existing repository and enter the URL: <code>https://github.com/pcdavies/JETTwitterQuickStart.git</code></p>
+<p><img src="images/300/image018.5.png" alt="" />  </p></li>
+<li><p>You have now created a new GIT repository based on an existing repository.</p>
+<p><img src="images/300/image019.png" alt="" />  </p></li>
+</ul>
+<h2 id="create-default-build-and-deployment-process">Create Default Build and Deployment Process</h2>
+<h3 id="step-3-create-default-build-process"><strong>STEP 3</strong>: Create Default Build Process</h3>
+<p>Now that we have the source code in our managed GIT repository, we need to create a build process that will be triggered whenever a commit is made to the master branch. We will set up a shell script build process in this section.</p>
+<ul>
+<li><p>Click <strong>Build</strong> on the navigation panel to access the build page and click <strong>New Job</strong>.</p>
+<p><img src="images/300/image020.png" alt="" />  </p></li>
+<li><p>In the New Job popup enter <code>Twitter Marketing UI Build</code> for Job Name and click <strong>Save</strong>.</p>
+<p><img src="images/300/image021.png" alt="" />  </p></li>
+<li><p>You are now placed into the job configuration screen.</p>
+<p><img src="images/300/image022.png" alt="" />  </p></li>
+<li><p>Click the <strong>Source Control</strong> tab. Click Git and select <strong>TwitterMarketingUIMicroservice.git</strong> from the URL drop down.</p>
+<p><strong>Note:</strong> Make sure you select the Git repository for the Twitter Marketing UI Microservice.</p>
+<p><img src="images/300/image023.png" alt="" />  </p></li>
+<li><p>Click the <strong>Triggers</strong> tab.  Select Based on <strong>SCM polling schedule</strong>.</p>
+<p><img src="images/300/image024.png" alt="" />  </p></li>
+<li><p>Click the <strong>Build Steps</strong> tab. Click <strong>Add Build Step</strong>, and select <strong>Execute shell</strong>.</p>
+<p><img src="images/300/image025.png" alt="" />  </p></li>
+<li><p>For <strong>Command</strong> enter: <code>npm install</code></p>
+<p><img src="images/300/image026.png" alt="" />  </p></li>
+<li><p>Click the <strong>Post Build</strong> tab. Check <strong>Archive the artifacts</strong> and enter <code>**/target/*</code> for Files to Archive.  Verify <strong>GZIP</strong> in the Compression Type.</p>
+<p><img src="images/300/image027.png" alt="" />  </p></li>
+<li><p>Click <strong>Save</strong> to complete the configuration. A build should start automatically within a minute or two.  If it does not start automatically, click on the <strong>Build Now</strong> button. The status will change to the following:</p>
+<p><img src="images/300/image028.png" alt="" />  </p></li>
+<li><p>Once the build begins, it should take about approximately 1 to 2 minutes for the build to complete. Wait for the build to complete before continuing on to the next step, as we need the build artifact to create the deployment configuration.</p>
+<p><img src="images/300/image029.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-4-create-default-deployment-process"><strong>STEP 4</strong>: Create Default Deployment Process</h3>
+<p>Now that we have an automated build process, we will set up a deployment configuration that will push our build artifacts to a node.js environment running on the Application Container Cloud Service whenever a successful build occurs.</p>
+<ul>
+<li><p>Click <strong>Deploy</strong> to access the Deployment page and click <strong>New Configuration</strong>.</p>
+<p><img src="images/300/image030.png" alt="" />  </p></li>
+<li><p>Enter the following data:</p>
+<p><strong>Configuration Name:</strong> <code>TwitterMarketingUIDeploy</code></p>
+<p><strong>Application Name:</strong> <code>JETFrontEndApp</code></p>
+<p><img src="images/300/image031.png" alt="" />  </p></li>
+<li><p>Click on <strong>New</strong> to the right of <strong>Deployment Target</strong> and select <strong>Application Container Cloud</strong></p>
+<p><img src="images/300/image032.png" alt="" />  </p></li>
+<li><p>Enter the following data and click Test Connection. If Successful click <strong>Use Connection</strong></p>
+<p><strong>Data Center</strong>: <code>&lt;Your Assigned Datacenter&gt;</code> <strong><em>(Ask instructor if needed)</em></strong></p>
+<p><strong>Identity Domain</strong>: <code>&lt;Your Identity Domain&gt;</code></p>
+<p><strong>Username</strong>: <code>&lt;Your User Name&gt;</code></p>
+<p><strong>Password</strong>: <code>&lt;Supplied Password&gt;</code></p>
+<p><img src="images/300/image033.2.png" alt="" />  </p></li>
+<li><p>Set ACCS Properties to Runtime <strong>Node</strong> and Subscription <strong>Hourly</strong>. </p></li>
+<li><p>Click Type <strong>Automatic</strong>. </p></li>
+<li><p>Select Job <strong>Twitter Marketing UI</strong> Build.</p></li>
+<li><p>Select <strong>target/jet-quickstart-client-dist.zip</strong> for Artifact.</p>
+<p><img src="images/300/image034.png" alt="" />  </p></li>
+<li><p>Click <strong>Save</strong></p>
+<p><img src="images/300/image035.png" alt="" />  </p></li>
+<li><p>Click the gear drop down and select <strong>Start</strong></p>
+<p><img src="images/300/image036.png" alt="" />  </p></li>
+<li><p>Wait until the message <strong>Starting application</strong> changes to <strong>Last deployment succeeded</strong></p>
+<p><img src="images/300/image037.png" alt="" />  </p></li>
+</ul>
+<h2 id="verify-default-deployment-of-twitter-marketing-ui">Verify default deployment of Twitter Marketing UI</h2>
+<h3 id="step-5-change-status-to-verified"><strong>STEP 5</strong>: Change status to Verified</h3>
+<p>Now that we have successfully deployed the build artifact to the Application Container Cloud Service, we will update our agile board to reflect that status. Although the complexity of the next task (verification) is quite simple, we will still move the task to the “Verify Code” column before manually verifying the new functionality.</p>
+<ul>
+<li><p>Click on <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>. Drag and drop <strong>Task 3</strong> from <strong>In Progress</strong> to the <strong>Verify Code</strong> column.</p>
+<p><img src="images/300/image039.2.png" alt="" />  </p></li>
+<li><p>In the Change Progress popup, Click on <strong>Next</strong></p>
+<p><img src="images/300/image040.png" alt="" />  </p></li>
+<li><p>Enter <code>1</code> in the <strong>Time Spent</strong> field and click on <strong>OK</strong>.</p>
+<p><img src="images/300/image040.5.png" alt="" />  </p></li>
+<li><p>The code is now ready for verification before moving to Completed</p>
+<p><img src="images/300/image041.2.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-6-login-to-oracle-application-container-cloud-service"><strong>STEP 6</strong>: Login to Oracle Application Container Cloud Service</h3>
+<ul>
+<li><p>Navigate back to the Oracle Public Cloud tab. Click <strong>Dashboard</strong> to return back to main Cloud Service Dashboard.</p>
+<p><img src="images/300/image042.2.png" alt="" />  </p></li>
+<li><p>On the Application Container Cloud Service (ACCS) click <img src="images/300/image043.png" alt="" />  and select <strong>Open Service Console</strong></p>
+<p><img src="images/300/image044.png" alt="" />  </p></li>
+<li><p>On the ACCS Service Console you can view all the deployed applications including our newly create <strong>JETFrontEndApp</strong>.</p>
+<p><img src="images/300/image045.png" alt="" />  </p></li>
+<li><p>Click on URL or copy and paste the URL into the address bar of a new tab to bring up the application.</p>
+<p><img src="images/300/image046.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-7-complete-task"><strong>STEP 7</strong>: Complete Task</h3>
+<p>We have now verified that our application has been deployed and is functional. To finish up this part of the lab we will want to mark the Issue as completed in our Sprint.</p>
+<ul>
+<li><p>Back in the Developer Cloud Service, click <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>.</p></li>
+<li><p>Drag and drop <strong>Task 3</strong> from <strong>Verify Code</strong> to <strong>Completed</strong>.</p>
+<p><img src="images/300/image047.png" alt="" />  </p></li>
+<li><p>In the Change Progress popup click <strong>Next</strong>.</p>
+<p><img src="images/300/image048.png" alt="" />  </p></li>
+<li><p>Change the <strong>Time Spent</strong> to <code>1</code> and click on <strong>OK</strong>.</p>
+<p><img src="images/300/image048.5.png" alt="" />  </p></li>
+<li><p>Your Sprint should now look like the following:</p>
+<p><img src="images/300/image049.2.png" alt="" />  </p></li>
+</ul>
+<h1 id="extend-default-application-to-display-twitter-feed">Extend default application to Display Twitter Feed</h1>
+<p>Now that we have our default application we want to extend this application to add the display of the twitter feed. For this task we will use Brackets text editor to pull down the code from Developer Cloud Service and add in our modifications. Once the new code is ready for deployment we will check the code in on a branch so that it can go through a code review prior to build and deployment.</p>
+<h3 id="step-8-move-task-to-in-progress"><strong>STEP 8</strong>: Move Task to In Progress</h3>
+<p>To start this part of the lab we will want to mark the Issue as In Progress in our Sprint.</p>
+<ul>
+<li><p>Back in the Developer Cloud Service, click <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>.</p></li>
+<li><p>Drag and drop <strong>Feature 4</strong> from <strong>To Do</strong> to <strong>In Progress</strong>.</p>
+<p><img src="images/300/image050.2.png" alt="" />  </p></li>
+<li><p>In the Change Progress popup click <strong>OK</strong></p>
+<p><img src="images/300/image051.png" alt="" />  </p></li>
+</ul>
+<h2 id="clone-project-to-brackets-text-editor">Clone Project to Brackets Text Editor</h2>
+<h3 id="step-9----start-brackets-text-editor"><strong>STEP 9</strong>:    Start Brackets Text Editor</h3>
+<ul>
+<li>Start <strong>Brackets</strong> text editor. How you start Brackets will depend on your OS. We have documented how to start Brackets from our OEL image.</li>
+</ul>
+<p><strong><em>Note</em></strong>: If you do not have Brackets installed, please follow the <strong>Student Guide</strong> that is part of this Workshop. You will find instruction on how to install Git and Configure Brackets.</p>
+<ul>
+<li><p>Right click <strong>Brackets</strong> desktop icon and select <strong>Open</strong></p>
+<p><img src="images/300/image052.png" alt="" />  </p></li>
+<li><p>Brackets should open with the <strong>TwitterMarketingUI</strong> folder already loaded.</p>
+<p><img src="images/300/image053.2.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-10-copy-git-url"><strong>STEP 10</strong>: Copy GIT URL</h3>
+<ul>
+<li><p>Back in Developer Cloud Service, click on <strong>Project</strong>. On right side, select the URL for <strong>TwitterMarketingUIMicroservice.git</strong>. Right click and select <strong>Copy</strong></p>
+<p><img src="images/300/image054.2.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-11-clone-git-repository"><strong>STEP 11</strong>: Clone GIT Repository</h3>
+<ul>
+<li><p>Back in the Brackets editor, Click on <img src="images/300/image055.png" alt="" /> GIT icon found on the right side of the editor.</p>
+<p><img src="images/300/image055.5.png" alt="" />  </p></li>
+<li><p>Click <strong>Clone</strong></p>
+<p><img src="images/300/image056.png" alt="" />  </p></li>
+<li><p>Paste in Git URL that you captured from Developer Cloud Service. Username should be populated automatically. Enter your <strong>Password</strong> and click <strong>Save credentials</strong>. Once completed click <strong>OK</strong> to start the cloning process.</p>
+<p><img src="images/300/image057.png" alt="" />  </p></li>
+<li><p>While the clone is running a dialog box will show you the progress.</p>
+<p><img src="images/300/image058.png" alt="" />  </p></li>
+<li><p>You now have a local copy of the repository.</p>
+<p><img src="images/300/image059.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-12-run-live-preview"><strong>STEP 12</strong>: Run Live Preview.</h3>
+<ul>
+<li><p>Before we make our code changes lets first run the code locally.</p></li>
+<li><p>Expand <strong>doc_root</strong> and select <strong>index.html</strong></p>
+<p><img src="images/300/image060.png" alt="" />  </p></li>
+<li><p>On right hand panel, click <img src="images/300/image061.png" alt="" /> Live Preview. This will start your JavaScript application in a browser. Once you verify the application is working you can close the browser.</p></li>
+</ul>
+<p><img src="images/300/image062.png" alt="" />  </p>
+<h2 id="add-code-to-display-twitter-feed-in-table-format">Add Code to display Twitter Feed in Table Format</h2>
+<h3 id="step-13----modify-graphicshtml"><strong>STEP 13</strong>:    Modify graphics.html</h3>
+<ul>
+<li><p>Expand <strong>doc_root -> js -> views</strong> and click <strong>graphics.html</strong>.</p>
+<p><img src="images/300/image063.png" alt="" />  </p></li>
+<li><p>Replace the existing code with the code block below:</p></li>
+</ul>
+<pre><code>&lt;h1&gt;Graphics Content&lt;/h1&gt;
+
+&lt;table id="table" summary="Tweet List" data-bind="ojComponent:{component:'ojTable',
+        data: tweets,
+        columns: [
+               {headerText: 'User Name', field: 'User', id: 'name', sortable: 'enabled'},
+               {headerText: 'User Location', field: 'Location', id: 'location', sortable: 'enabled'},
+               {headerText: 'Source', field: 'Source', id: 'source', sortable: 'enabled'},
+               {headerText: 'Tweet', field: 'Text', id: 'text'}
+               ],
+        rootAttributes: {'style':'width: 100%; height:100%;'},
+        scrollPolicy: 'loadMoreOnScroll',
+        scrollPolicyOptions: {'fetchSize': 10}}"&gt;
+&lt;/table&gt;
+</code></pre>
+<p><img src="images/300/image064.png" alt="" />  </p>
+<h3 id="step-14-modify-graphicsjs"><strong>STEP 14</strong>: Modify graphics.js</h3>
+<ul>
+<li><p>Expand <strong>doc_root -> js -> viewModels</strong> and click <strong>graphics.js</strong>.</p>
+<p><img src="images/300/image065.png" alt="" />  </p></li>
+<li><p>Add the code block below to the bottom on the <strong>graphics.js</strong> file:</p></li>
+</ul>
+<pre><code>/*global $, define, console*/
+/*jslint sloppy:true*/
+
+define(['ojs/ojcore', 'knockout', 'ojs/ojtable'], function (oj, ko) {
+
+    function mainContentViewModel() {
+
+        // change this root variable to point to YOUR environment
+        var root = 'https://javatwittermicroservice-metcsgse00210.apaas.em2.oraclecloud.com/',
+            self = this,
+            uri = 'statictweets/',
+            prettySource = function (source) {
+                return source.substring(source.indexOf('&gt;') + 1, source.lastIndexOf('&lt;'));
+            },
+            url = root + uri;
+
+        self.items = ko.observableArray([]);
+        self.tweets = new oj.ArrayTableDataSource(self.items, {
+            idAttribute: 'Id'
+        });
+
+        $.ajax({
+            url: url,
+            method: 'GET'
+        }).success(function (result) {
+            console.log(result.tweets);
+            var items = self.items();
+            ko.utils.arrayForEach(result.tweets, function (value) {
+                // make sure this is a creation tweet
+                if (!!value.user) {
+                    items.push({
+                        Id: value.id,
+                        Location: value.user.location,
+                        Text: value.text,
+                        Source: prettySource(value.source),
+                        User: value.user.name
+                    });
+                }
+            });
+            self.items.valueHasMutated();
+        });
+    }
+    return mainContentViewModel;
+});
+</code></pre>
+<ul>
+<li><p>Back in the browser; navigate back to the Application Container Cloud Service service console. Copy URL for <strong>JavaTwitterMicroservice</strong> that was created in Lab 200.</p>
+<p><img src="images/300/image066.png" alt="" />  </p></li>
+<li><p>Replace the existing URL with your URL for the <strong>root variable</strong>. <strong><em>Make sure</em></strong> there is a '<code>/</code>' (front slash) at the <strong>end of the URL</strong>.</p>
+<p><img src="images/300/image067.png" alt="" />  </p></li>
+<li><p>Completed graphics should look something like the image below:</p>
+<p><img src="images/300/image068.png" alt="" />  </p></li>
+<li><p>Save all files by clicking <strong>File -> Save All</strong></p></li>
+</ul>
+<p><img src="images/300/image069.png" alt="" />  </p>
+<h3 id="step-15-test-new-changes"><strong>STEP 15</strong>: Test new changes</h3>
+<ul>
+<li><p>Click <img src="images/300/image070.png" alt="" /> Live Preview to test out the new changes.</p></li>
+<li><p>Click <img src="images/300/image071.png" alt="" /> and select <strong>Graphics</strong>. Note: Depending on the screen resolution, the Graphics menu item may be at the top of the page. </p>
+<p><img src="images/300/image072.png" alt="" /></p></li>
+<li><p>In the graphics sections you can now see all the twitter feed data:</p>
+<p><img src="images/300/image073.png" alt="" /></p></li>
+</ul>
+<h1 id="create-a-new-branch-and-commit-code">Create a new Branch and Commit Code</h1>
+<h2 id="create-a-branch-and-commit-code">Create a Branch and Commit Code</h2>
+<h3 id="step-16-create-a-new-branch-and-commit-code"><strong>STEP 16</strong>: Create a new Branch and Commit Code</h3>
+<ul>
+<li><p>First we need to create a new branch to check in all of our changes for this feature. In the left hand navigation panel, select <strong>master</strong> and click <strong>Create new branch</strong>.</p>
+<p><img src="images/300/image074.png" alt="" /></p></li>
+<li><p>In popup window, <strong>enter</strong> <code>Feature4</code> for branch name and click <strong>OK</strong>.</p>
+<p><img src="images/300/image075.png" alt="" /></p></li>
+<li><p>Click  Git <img src="images/300/image076.png" alt="" /> icon. </p></li>
+<li><p>Check the box next to <strong>Commit</strong> to select all modified files.</p>
+<p><img src="images/300/image077.png" alt="" /></p></li>
+<li><p>Click <strong>Commit</strong>.</p></li>
+<li><p>In popup enter the the following <strong>comment:</strong> <code>Added code to display twitter feed in table format</code> and click <strong>OK</strong>. This will commit the changes to your local Git repository.</p>
+<p><img src="images/300/image078.png" alt="" /></p></li>
+<li><p>Click <img src="images/300/image079.png" alt="" /> Git Push icon.</p></li>
+<li><p>In popup window leave all defaults and click <strong>OK</strong></p>
+<p><img src="images/300/image080.png" alt="" /></p></li>
+<li><p>Once Git Push completes click <strong>OK</strong>.</p>
+<p><img src="images/300/image081.png" alt="" /></p></li>
+</ul>
+<h3 id="step-17-complete-the-display-twitter-feed-task"><strong>STEP 17</strong>: Complete the Display Twitter Feed Task</h3>
+<ul>
+<li><p>Back in the Developer Cloud Service window, click <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>.  Make Sure you are viewing the <strong>Microservices</strong> board.</p></li>
+<li><p>Drag and drop <strong>Feature 4</strong> from <strong>In Progress</strong> to <strong>Verify Code</strong>.</p>
+<p><img src="images/300/image082.png" alt="" /></p></li>
+<li><p>In the Change Progress popup click <strong>Next</strong>.</p>
+<p><img src="images/300/image083.png" alt="" /></p></li>
+<li><p>In the <strong>Time Spent</strong> field enter <code>1</code> and click on <strong>OK</strong>.</p>
+<p><img src="images/300/image083.5.png" alt="" /></p></li>
+</ul>
+<h2 id="create-merge-request">Create Merge Request</h2>
+<h3 id="step-18-review-sprint-status-and-create-merge-request"><strong>STEP 18</strong>: Review Sprint Status and create Merge Request</h3>
+<ul>
+<li><p>Click on the <strong>Code</strong> tab, select the <strong>Feature4</strong> branch and then click on the <strong>doc_root</strong> folder to view the recent commit that we made to branch from Brackets.</p>
+<p><img src="images/300/image084.png" alt="" /></p></li>
+<li><p>Now that "John Dunbar" has completed the task of displaying twitter feed in table format, a Merge Request can be created by John and assigned to "Lisa Jones." </p>
+<p><img src="images/300/image084.5.png" alt="" /></p></li>
+<li><p>Click on <strong>Merge Requests</strong>, and then click on the <strong>New Merge Request button</strong>.</p>
+<p><img src="images/300/image085.png" alt="" /></p></li>
+<li><p>Enter the following information into the New Merge Request and click <strong>Next</strong></p>
+<p><strong>Repository:</strong> <code>TwitterMarketingUIMicroservice.git</code></p>
+<p><strong>Target Branch:</strong> <code>master</code></p>
+<p><strong>Review Branch:</strong> <code>Feature4</code></p>
+<p><img src="images/300/image086.png" alt="" /></p></li>
+<li><p>Enter the following information into Details and click <strong>Create</strong></p>
+<p><strong>Summary:</strong> <code>Merge Feature 4 into master</code></p>
+<p><strong>Reviewers:</strong> <code>&lt;Your Username&gt;</code></p>
+<p><img src="images/300/image087.5.png" alt="" /></p></li>
+<li><p>In the <strong>Write</strong> box, enter the following comment and then click on the <strong>Comment</strong> button to save</p>
+<p><strong>Comment:</strong> <code>I added a Twitter feed table to the graphics tab</code></p>
+<p><img src="images/300/image088.png" alt="" /></p></li>
+</ul>
+<h2 id="merge-the-branch-as-lisa-jones">Merge the Branch as Lisa Jones</h2>
+<h3 id="step-19-merge-requests"><strong>STEP 19</strong>: Merge Requests</h3>
+<ul>
+<li><p>In the following steps the logical persona “Lisa” will merge the branch created by “John” into the master.</p>
+<p><img src="images/lisa.png" alt="" /></p></li>
+<li><p>Click on <strong>Merge Requests</strong>. Select the <strong>Assigned to Me</strong> search. After the search completes, click on the <strong>Merge Feature 4 into master</strong> assigned request.</p>
+<p><img src="images/300/image094.png" alt="" /></p></li>
+<li><p>Once the request has loaded, select the <strong>Changed Files tab</strong>. As the persona Lisa, you will now have the opportunity to review the changes in the branch, make comments, request more information, etc. before Approving, Rejecting or Merging the Branch.</p>
+<p><img src="images/300/image095.2.png" alt="" /></p></li>
+<li><p>Click on the <strong>Merge</strong> button.</p>
+<p><img src="images/300/image096.png" alt="" /></p></li>
+<li><p>Leave the defaults, and click on the <strong>Create a Merge Commit</strong> button in the confirmation dialog.</p>
+<p><img src="images/300/image097.png" alt="" /></p></li>
+<li><p>Now that the code has been committed to the Developer Cloud Service repository, the build and deployment will automatically start. Click on <strong>Build</strong>, and you should see a <strong>Twitter Marketing UI Build</strong> in the Queue</p>
+<p><img src="images/300/image098.png" alt="" /></p></li>
+<li><p>Wait a minute or two for the build to complete. The <strong>Last Success</strong> will be set to <strong>Just Now</strong> when the build completes.</p>
+<p><img src="images/300/image099.png" alt="" /></p></li>
+<li><p>Click on Deploy. Wait for the <strong>Deploy</strong> Status to change to <strong>Deployment update in progress</strong>, and then change to <strong>Last deployment succeeded</strong> – <strong>Just now</strong>.</p>
+<p><img src="images/300/image100.png" alt="" /></p></li>
+</ul>
+<h2 id="test-the-jetfrontendapp-ui-in-the-cloud">Test the JETFrontEndAPP UI in the Cloud</h2>
+<h3 id="step-20-test-the-front-end"><strong>STEP 20</strong>: Test the Front End</h3>
+<ul>
+<li><p>Once the service has successfully deployed, click on the <strong>JETFrontEndApp</strong> link</p>
+<p><img src="images/300/image101.png" alt="" /></p></li>
+<li><p>When the new browser tab loads, click <strong>Graphics</strong> to display twitter feed data.</p>
+<p><img src="images/300/image102.png" alt="" /></p></li>
+<li><p>To complete the Sprint Feature, click on <strong>Agile</strong> in the Twitter Feed Marketing Project Dashboard. Then click on the <strong>Active Sprints</strong> button.</p>
+<p><img src="images/300/image103.png" alt="" /></p></li>
+<li><p>Complete the feature request by Dragging and Dropping <strong>Feature 4</strong> (Display Twitter Feed in Table Format) from the <strong>Verify</strong> Column to the <strong>Completed</strong> Column.</p>
+<p><img src="images/300/image104.png" alt="" /></p></li>
+<li><p>Set the Status to <strong>VERIFIED – FIXED</strong> and click <strong>Next</strong>.</p>
+<p><img src="images/300/image105.png" alt="" /></p></li>
+<li><p>Enter '`' into the <strong>Time Spent</strong> field and click on <strong>OK</strong>.</p>
+<p><img src="images/300/image105.5.png" alt="" /></p></li>
+<li><p>You are now ready to move to the next lab.</p></li>
+</ul>

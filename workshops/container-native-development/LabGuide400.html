@@ -1,0 +1,122 @@
+<h1 id="kubernetes-bluegreen-deployments">Kubernetes Blue/Green Deployments</h1>
+<p><img src="images/400/header.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the fourth of several labs that are part of the <strong>Oracle Public Cloud Container Native Development workshop.</strong> This workshop will walk you through the process of moving an existing application into a containerized CI/CD pipeline and deploying it to a Kubernetes cluster in the Oracle Public Cloud.</p>
+<p>You will take on 2 personas during the workshop.&nbsp;The <strong>Lead Developer Persona</strong> will be responsible for configuring the parts of the automated build and deploy process that involve details about the application itself. The <strong>DevOps Engineer Persona</strong> will configure the parts of the automation involving the Kubernetes infrastructure.&nbsp;To containerize and automate the building and deploying of this application you will make use of Wercker Pipelines for CI/CD, Docker Hub for a container registry, and Terraform for provisioning a Kubernetes cluster on Oracle Cloud Infrastructure.</p>
+<p>During this lab, you will take on the <strong>DevOps Engineer Persona</strong> and perform a Blue/Green deployment of your microservice to Kubernetes. In a Blue/Green deployment, you will run the new version of the microservice without bringing down the old version. Once the new version is fully available, you will reroute traffic to the new version by reconfiguring the load balancer service.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<p><strong>Perform a Blue/Green Deployment to Kubernetes</strong></p>
+<ul>
+<li>Update Existing Deployment and Service with Blue Color Labels</li>
+<li>Validate Deployment Color In Kubernetes and Application</li>
+<li>Increment Application Version and Switch Color to Green</li>
+<li>Validate Blue Deployment Still Serves Traffic</li>
+<li>Reconfigure Service to Switch to Green Deployment</li>
+<li>Validate Green Deployment Now Serves Traffic</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires:</li>
+<li>an Oracle Public Cloud account that will be supplied by your instructor, or a Trial Account</li>
+<li>a <a href="https://github.com/join">GitHub account</a></li>
+</ul>
+<h1 id="perform-a-bluegreen-deployment-to-kubernetes">Perform a Blue/Green Deployment to Kubernetes</h1>
+<h2 id="update-existing-deployment">Update Existing Deployment</h2>
+<h3 id="step-1-update-existing-deployment-and-service-with-blue-color-labels"><strong>STEP 1</strong>: Update Existing Deployment and Service with Blue Color Labels</h3>
+<ul>
+<li><p>In a browser, navigate to your forked twitter-feed repository on GitHub. If you've closed the tab, you can get back by going to <a href="https://github.com/">GitHub</a>, scrolling down until you see the <strong>Your repositories</strong> box on the right side of the page, and clicking the <strong>twitter-feed</strong> link.</p>
+<p><img src="images/400/1.png" alt="" /></p></li>
+<li><p>Click the <strong>kubernetes.yml.template</strong> file</p>
+<p><img src="images/400/2.png" alt="" /></p></li>
+<li><p>Click the <strong>pencil icon</strong> to edit the file</p>
+<p><img src="images/400/3.png" alt="" /></p></li>
+<li><p>After <strong>line 16</strong> in the <strong>spec.template.metadata.labels</strong> section of your Deployment definition, paste the following label on a new line:</p></li>
+</ul>
+<p><code>color: blue</code>
+This label will identify our Kubernetes pods as the blue version of the code.</p>
+<p><img src="images/400/4.png" alt="" /></p>
+<ul>
+<li>After <strong>line 26</strong>, in the <strong>spec.template.spec.containers</strong> section of your Deployment definition, paste the following YAML. This will create and mount a volume on our pods that uses the Kubernetes <a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">Downward API</a> to expose the pod's labels to our application. The application will display the pod's color so we can see which version (blue or green) served our webpage.</li>
+</ul>
+<pre><code class="yaml language-yaml">        volumeMounts:
+            - name: podinfo
+              mountPath: /tmp
+              readOnly: false
+      volumes:
+        - name: podinfo
+          downwardAPI:
+            items:
+            - path: "labels"
+              fieldRef:
+                fieldPath: metadata.labels
+</code></pre>
+<p><strong>NOTE</strong>: YAML files are <em>sensitive to indentation</em> -- make sure that <code>volumeMounts</code> is indented to the same level as <code>ports</code> on line 23. Also ensure that <code>volumes</code> is indented to the same level as <code>containers</code> on line 19. Your file should look like this:</p>
+<p><img src="images/400/5.png" alt="" /></p>
+<ul>
+<li><p>After <strong>line 53</strong>, in the <strong>spec.selector</strong> section of your Service definition, paste the following label on a new line:</p>
+<p><code>color: blue</code></p></li>
+</ul>
+<p>This selector will instruct your load balancer to only route traffic to the blue version of our code.</p>
+<p><img src="images/400/7.png" alt="" /></p>
+<ul>
+<li><p>At the bottom of the page, click <strong>Commit changes</strong>. Wercker will kick off execution of your build and deploy pipelines, which will result in an updated version of your microservice running in Kubernetes.</p>
+<p><img src="images/400/6.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-validate-deployment-color-in-kubernetes-and-application"><strong>STEP 2</strong>: Validate Deployment Color In Kubernetes and Application</h3>
+<ul>
+<li><p>Open <strong><a href="https://app.wercker.com">Wercker</a></strong> in a new tab or browser window, or switch to it if you already have it open. In the top navigation bar, click <strong>Pipelines</strong>, then click on your <strong>twitter-feed</strong> application.</p>
+<p><img src="images/400/8.png" alt="" /></p></li>
+<li><p>Monitor the execution of your workflow. Within a few minutes, each pipeline should complete successfully.</p>
+<p><img src="images/400/9.png" alt="" /></p></li>
+<li><p>Once the workflow has finished, navigate to the <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/"><strong>Kubernetes dashboard</strong></a> in a new tab. On the <strong>Overview</strong> page, click on one of the <strong>twitter-feed-v1</strong> pods to view the details.</p>
+<p><img src="images/400/10.png" alt="" /></p></li>
+<li><p>On the pod details page, note that the label <strong>color: blue</strong> has been added to the pod.</p>
+<p><img src="images/400/11.png" alt="" /></p></li>
+<li><p>In the left side navigation menu, click <strong>Services</strong>. In the row for the <strong>product-catalog-service</strong>, click the <strong>External endpoint link</strong> to load the product catalog application.</p>
+<p><img src="images/400/12.png" alt="" /></p></li>
+<li><p>In the product catalog application, you'll see that the title now indicates which color the twitter feed pod is that is serving our application. Of course it is currently a blue pod, as we haven't yet deployed the new (green) version of our application. Let's do that now, but leave this tab open, as we will come back to it a few more times to verify which color deployment is live.</p>
+<p><img src="images/400/13.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-increment-application-version-and-switch-color-to-green"><strong>STEP 3</strong>: Increment Application Version and Switch Color to Green</h3>
+<ul>
+<li><p>Return to your forked <strong>twitter-feed</strong> repository on <a href="https://github.com">GitHub</a>. Once again, click the <strong>kuberetes.yml.template</strong> file and begin editing it by clicking the <strong>pencil icon</strong>.</p>
+<p><img src="images/400/3.png" alt="" /></p></li>
+<li><p>On <strong>line 4</strong>, in the <strong>metadata.name</strong> field of your deployment, change the version number of your application to <code>v2</code>.</p>
+<p><img src="images/400/14.png" alt="" /></p></li>
+<li><p>Change <strong>line 17</strong>, in the <strong>spec.template.metadata.labels</strong> section of your deployment, to read <code>color: green</code>.</p>
+<p><img src="images/400/15.png" alt="" /></p></li>
+</ul>
+<p><strong>NOTE</strong>: We are not making any code changes to our microservice between v1 and v2 -- the only difference will be the color label.</p>
+<ul>
+<li><p>At the bottom of the page, click <strong>Commit changes</strong>. Wercker will once again kick off execution of your build and deploy pipelines. Because we changed the name of the deployment, however, Kubernetes will not replace our existing v1/blue pods with this new version. Both sets of pods will be kept up and running. But, since we did not change the selector in the twitter-feed service, the blue pods will still be the ones serving traffic. Let's make sure that is the case.</p>
+<p><img src="images/400/6.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-validate-blue-deployment-still-serves-traffic"><strong>STEP 4</strong>: Validate Blue Deployment Still Serves Traffic</h3>
+<ul>
+<li><p>Switch to your <strong><a href="https://app.wercker.com">Wercker</a></strong> browser tab and go to the twitter-feed <strong>Runs tab</strong>. Monitor the execution of your workflow. Within a few minutes, each pipeline should complete successfully.</p>
+<p><img src="images/400/9.png" alt="" /></p></li>
+<li><p>Once the workflow has finished, navigate to the <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/"><strong>Kubernetes dashboard</strong></a> in a new tab. On the <strong>Overview</strong> page, note that you now have four twitter-feed pods, two blue v1 pods, and two green v2 pods.</p>
+<p><img src="images/400/16.png" alt="" /></p></li>
+<li><p>Switch to the browser tab where you loaded the <strong>product catalog</strong> application. Refresh the page. The title bar should still indicate that it is using the blue/v1 version of the twitter feed. Now let's reconfigure the load balancer to cut traffic over to the green pods.</p>
+<p><img src="images/400/13.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-reconfigure-service-to-switch-to-green-deployment"><strong>STEP 5</strong>: Reconfigure Service to Switch to Green Deployment</h3>
+<ul>
+<li><p>To cut over to our green deployment, we will use the Kubernetes dashboard GUI to alter the Kubernetes Service that exposes our twitter feed microservice. In a production setting, you could perform this switch in a number of ways. It could be handled by scripting the commands directly using kubectl, by altering the service definition in version control and having Wercker apply it, or by using a different automation framework such as Jenkins.</p></li>
+<li><p>Navigate or switch tabs to the <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/"><strong>Kubernetes dashboard</strong></a>. In the left side navigation menu, click <strong>Services</strong>, then click on the <strong>twitter-feed</strong> service.</p>
+<p><img src="images/400/17.png" alt="" /></p></li>
+<li><p>Note that the service lists the blue v1 pods as its targets in the <strong>Pods</strong> list. At the top of the page, click the <strong>EDIT</strong> button.</p>
+<p><img src="images/400/18.png" alt="" /></p></li>
+<li><p>On <strong>line 29</strong>, change the selector to read <code>"color": "green"</code>. Then click the <strong>UPDATE</strong> button.</p>
+<p><img src="images/400/19.png" alt="" /></p></li>
+<li><p>Note that the targets in the <strong>Pods</strong> list immediately change to the green v2 pods.</p>
+<p><img src="images/400/20.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-validate-green-deployment-now-serves-traffic"><strong>STEP 6</strong>: Validate Green Deployment Now Serves Traffic</h3>
+<ul>
+<li><p>Switch back to the browser tab with the <strong>product catalog</strong> application. Refresh the page. You'll see that the title bar now indicates that we are using the green pods.</p>
+<p><img src="images/400/21.png" alt="" /></p></li>
+<li><p>If an unexpected issue were to arise with the green code version, it would be very easy to undo the change we made to the Service and switch back over to the blue pods, since they are still running. Eventually, the blue version can be taken down by deleting the Deployment that created them. Once again this can be accomplished through the GUI, the kubectl CLI, or via an automation system like Wercker.</p></li>
+</ul>
+<p><strong>You are now ready to move to the next lab.</strong></p>

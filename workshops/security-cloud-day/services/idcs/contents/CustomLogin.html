@@ -1,0 +1,175 @@
+<h1 id="enhanced-login-experience">Enhanced Login Experience</h1>
+<p>Oracle Identity Cloud Service (<strong>IDCS</strong>) supports customized login experience by hosting a login application and redirecting IDCS to the new application.</p>
+<h2 id="demo-objective">Demo Objective</h2>
+<p>Configure IDCS to leverage a custom login page hosted externally.</p>
+<h2 id="persona">Persona</h2>
+<p>Administrators, End-Users</p>
+<h2 id="demo-logistics">Demo Logistics</h2>
+<ul>
+<li><p>Ensure that the host on which the external application will run has JDK 1.7+ installed, and <code>java</code> executable is present on the <strong>PATH</strong></p></li>
+<li><p>Tomcat server for hosting. Download <a href="resources/tomcat.zip">here</a> or use your own server.</p></li>
+<li><p>Sample custom login application built using JSP and Servlets. Download <a href="resources/myapp.war">here</a></p></li>
+</ul>
+<h2 id="create-idcs-app">Create IDCS App</h2>
+<p><code>(Persona: Administrators)</code></p>
+<p>Custom login application needs to be able to securely call IDCS API's in the background. To allow this, a server app needs to be created in IDCS.</p>
+<ul>
+<li><p>Go to IDCS Admin console -&gt; <strong>Applications</strong> tab</p></li>
+<li><p>Click on <strong>Add button</strong> and select <strong>Trusted Application</strong></p></li>
+</ul>
+<p><img src="images/CustomLogin-1.png" alt="" /></p>
+<ul>
+<li>Provide a name for the app <strong>CustomLoginApp</strong> and click on <strong>Next</strong></li>
+</ul>
+<p><img src="images/CustomLogin-2.png" alt="" /></p>
+<ul>
+<li><p>Select the radio button <strong>Configure this application as a client now</strong></p></li>
+<li><p>Enter values for the following attributes and click on <strong>Next</strong></p></li>
+</ul>
+<pre><code>Allowed Grant Types: Check "on" "Client Credentials" and "Resource Owner"
+Allow non-HTTPS URLs: Check "on"
+Redirect URL: http://demo.oracledemo.com:9095/myapp/atreturn/
+Grant the client access to Identity Cloud Service Admin APIs: Check "on"
+Select the Admin API "Signin"
+</code></pre>
+<p><img src="images/CustomLogin-3.png" alt="" />
+<img src="images/CustomLogin-4.png" alt="" />
+<img src="images/CustomLogin-5.png" alt="" /></p>
+<ul>
+<li>Click on <strong>Next</strong>. </li>
+</ul>
+<p><img src="images/CustomLogin-6.png" alt="" /></p>
+<ul>
+<li>click on <strong>Finish</strong></li>
+</ul>
+<p><img src="images/CustomLogin-7.png" alt="" /></p>
+<ul>
+<li>Note the <strong>Client ID</strong> and <strong>Client Secret</strong>. Close the popup.</li>
+</ul>
+<p><img src="images/CustomLogin-8.png" alt="" /></p>
+<ul>
+<li><strong>Activate</strong> the app.</li>
+</ul>
+<p><img src="images/CustomLogin-9.png" alt="" />
+<img src="images/CustomLogin-10.png" alt="" /></p>
+<h2 id="deploy-custom-login-application">Deploy Custom Login Application</h2>
+<p><code>(Persona: Administrators)</code></p>
+<p>This section is specific to the sample app provided here. Steps will vary based on the design and technology used to build the app. The provided sample is built using JSP/servlet and will be deployed on a Tomcat server.</p>
+<ul>
+<li>Download <code>tomcat.zip</code> and unzip on the host the application will be running on. </li>
+</ul>
+<pre><code>ijhost:CustomLoginDemo indraniljha$ ls
+tomcat.zip
+
+ijhost:CustomLoginDemo indraniljha$ unzip tomcat.zip
+</code></pre>
+<ul>
+<li>Go to the <code>webapps</code> sub-directory under the explored tomcat directory <code>tomcat</code>.</li>
+</ul>
+<pre><code>ijhost:CustomLoginDemo indraniljha$ cd tomcat/webapps/
+</code></pre>
+<ul>
+<li>Copy downloaded sample application <code>myapp.war</code> under the <code>webapps</code> directory</li>
+</ul>
+<pre><code>ijhost:webapps indraniljha$  cp ~/Downloads/myapp.war .
+</code></pre>
+<ul>
+<li>Go to the directory <code>tomcat/bin</code> and run <code>startup.sh</code> or <code>startup.bat</code> depending on your host OS.</li>
+</ul>
+<pre><code>ijhost:webapps indraniljha$  cd ../bin
+ijhost:bin indraniljha$ ./startup.sh 
+</code></pre>
+<ul>
+<li>Gather the IP address of the host running tomcat. Update your local system (from where you will launch the browser) with the hostname <code>demo.oracledemo.com</code> and corresponding IP address. </li>
+</ul>
+<pre><code>In Linux/Mac:
+Edit /etc/hosts file with the entry -&gt;
+&lt;IP_ADDRESS_OF_TOMCAT_HOST&gt;    demo.oracledemo.com
+
+ijhost:bin indraniljha$ cat /etc/hosts
+##
+# Host Database
+##
+127.0.0.1    localhost demo.oracledemo.com
+</code></pre>
+<blockquote>
+    In case you are running tomcat in your local host, map demo.oracledemo.com against 127.0.0.1 in the host file
+</blockquote>
+<ul>
+<li>Verify that the tomcat default page shows up when the following URL is accessed - <a href="http://demo.oracledemo.com:9095">http://demo.oracledemo.com:9095</a></li>
+</ul>
+<p><img src="images/CustomLogin-11.png" alt="" /></p>
+<h2 id="configure-custom-login-application">Configure Custom Login Application</h2>
+<p><code>(Persona: Administrators)</code></p>
+<p>This section is also specific to the sample app provided here. Steps will vary based on the design of the app. The provided sample persists the IDCS configuration information using the following steps</p>
+<ul>
+<li><p>Store the <strong>Client ID</strong> and <strong>Client Secret</strong> for the sample app's sso service calls.</p>
+<ul>
+<li><p>Access the URL <a href="http://demo.oracledemo.com:9095/myapp/addcreds/IDCS-TENANT-NAME">http://demo.oracledemo.com:9095/myapp/addcreds/IDCS-TENANT-NAME></a> from your browser</p>
+<blockquote>
+Replace IDCS-TENANT-NAME with your IDCS tenant name
+</blockquote></li>
+<li><p>Provide the <strong>Client ID</strong> and <strong>Client Secret</strong> of the IDCS app <strong>CustomLoginApp</strong> and submit</p></li></ul></li>
+</ul>
+<p><img src="images/CustomLogin-12.png" alt="" /></p>
+<ul>
+<li><p>Store the <strong>Client ID</strong> and <strong>Client Secret</strong> for the sample app's to access to the the IDCS app.</p>
+<ul>
+<li><p>Access the URL <a href="http://demo.oracledemo.com:9095/myapp/appconfig/IDCS-TENANT-NAME">http://demo.oracledemo.com:9095/myapp/appconfig/IDCS-TENANT-NAME</a> from your browser</p>
+<blockquote>
+Replace IDCS-TENANT-NAME with your IDCS tenant name
+</blockquote></li>
+<li><p>Provide the <strong>Client ID</strong> and <strong>Client Secret</strong> of the IDCS app <strong>CustomLoginApp</strong> and submit</p></li></ul></li>
+</ul>
+<p><img src="images/CustomLogin-13.png" alt="" /></p>
+<h2 id="configure-idcs">Configure IDCS</h2>
+<p><code>(Persona: Administrators)</code></p>
+<p>Follow the simple steps below to configure IDCs to leverage the custom login page.</p>
+<ul>
+<li><p>Go to IDCS Admin console -&gt; <strong>Settings</strong> tab -&gt; <strong>Session Settings</strong> from the left sidebar menu</p></li>
+<li><p>Change the value of <strong>Login URL</strong> to 
+<a href="[http://demo.oracledemo.com:9095/myapp/signin/IDCS-TENANT-NAME">http://demo.oracledemo.com:9095/myapp/signin/IDCS-TENANT-NAME</a></p></li>
+</ul>
+<blockquote>
+        Replace IDCS-TENANT-NAME with your IDCS tenant name
+</blockquote>
+<ul>
+<li><p>Activate <strong>Allow Cross-Origin Resource Sharing (CORS)</strong></p></li>
+<li><p>For <strong>Allowed CORS Domain Names</strong> enter the value <strong>oracledemo.com</strong></p></li>
+</ul>
+<p><img src="images/CustomLogin-14.png" alt="" /></p>
+<ul>
+<li><strong>Save</strong> the new settings.</li>
+</ul>
+<h2 id="verify-custom-login">Verify Custom Login</h2>
+<p><code>(Persona: End-Users)</code></p>
+<ul>
+<li>From you browser run <a href="http://demo.oracledemo.com:9095/myapp/setdomain?domainName=IDCS-TENANT-NAME&host=.identity.oraclecloud.com">http://demo.oracledemo.com:9095/myapp/setdomain?domainName=IDCS-TENANT-NAME&host=.identity.oraclecloud.com</a></li>
+</ul>
+<blockquote>
+        Replace IDCS-TENANT-NAME with your IDCS tenant name
+</blockquote>
+<p><img src="images/CustomLogin-15.png" alt="" /></p>
+<h4 id="note">Note:</h4>
+<p><em>The way this sample application has been designed, the domain information has session-persistence and will be lost following tomcat server shutdown. For predictable result, run the previous step every time before testing.</em>
+</blockquote></p>
+<ul>
+<li>Go to IDCS User Console. Verify that the Custom Login page shows up instead of the default login page.</li>
+</ul>
+<p><img src="images/CustomLogin-16.png" alt="" /></p>
+<ul>
+<li>Provide IDCS user credentials for <strong>dcrane</strong> and click on <strong>SignIn</strong> button.</li>
+</ul>
+<p><img src="images/CustomLogin-17.png" alt="" /></p>
+<ul>
+<li>If there is an 2-factor authentication challenge, provide response to the challenge.</li>
+</ul>
+<p><img src="images/CustomLogin-18.png" alt="" /></p>
+<ul>
+<li>Verify that <strong>dcrane</strong> is successfully logged in.</li>
+</ul>
+<p><img src="images/CustomLogin-19.png" alt="" /></p>
+<ul>
+<li>Logout of IDCS. Verify that the logout ends up redirecting to the custom login page</li>
+</ul>
+<p><img src="images/CustomLogin-20.png" alt="" /></p>

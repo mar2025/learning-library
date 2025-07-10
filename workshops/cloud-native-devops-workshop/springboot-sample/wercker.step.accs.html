@@ -1,0 +1,141 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h1 id="oracle-cloud-native-devops-workshop">ORACLE Cloud-Native DevOps workshop</h1>
+<h2 id="build-spring-boot-container-packaged-application-using-wercker-and-deploy-to-oracle-application-container-cloud-service">Build Spring Boot container packaged application using Wercker and deploy to Oracle Application Container Cloud Service</h2>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p><strong>Wercker</strong> is a Docker-Native CI/CD  Automation platform for Kubernetes &amp; Microservice Deployments. Wercker is integrated with Docker containers, which package up application code and can be easily moved from server to server. Each build artifact can be a Docker container. The user can take the container from the Docker Hub or his private registry and build the code before shipping it. Its SaaS platform enables developers to test and deploy code often. They can push software updates incrementally as they are ready, rather than in bundled dumps. It makes it easier for coders to practice continuous integration, a software engineering practice in which each change a developer makes to the codebase is constantly tested in the process so that software doesn’t break when it goes live.</p>
+<p>Wercker is based on the concept of pipelines, which are automated workflows. Pipelines take pieces of code and automatically execute a series of steps upon that code. The Wercker API provides programmatic access to information about applications, builds and deploys. There are code snippets available for Golang, Node.js and Python.</p>
+<p><strong>Oracle Application Container Cloud</strong> Service includes Oracle Java SE Cloud Service and Oracle Node Cloud Service. It provides a lightweight infrastructure so that you can run Java SE, PHP, and Node.js applications in the Oracle Cloud.</p>
+<p><strong>Architecture</strong>
+<img src="images/wercker.step.accs/accs.wercker.png" alt="" /></p>
+<p>The key components of Wercker:</p>
+<ul>
+<li><strong>Step</strong> is self-contained bash script or compiled binary for accomplishing specific automation tasks.</li>
+<li><strong>Pipelines</strong> are a series of steps that are triggered on a git push or the completion of another pipeline.</li>
+<li><strong>Workflows</strong> are a set of chained and branched pipelines that allow you to form multi-stage, multi-branch complex CI/CD flows that take your project from code to production. </li>
+<li>All Wercker pipelines execute inside a <strong>Docker container</strong> and every build artefact can be a Docker container.</li>
+<li>With Wercker you can <strong>push your images to any container registry</strong> public or private such as Docker.</li>
+</ul>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>create Wercker application (CI/CD) to build Spring Boot sample application </li>
+<li>deploy Spring Boot sample application to Oracle Application Container Cloud using custom Wercker Step available in repository</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="https://github.com">Github</a> account</li>
+<li><a href="https://cloud.oracle.com">Oracle Public Cloud Service</a> account including Application Container Cloud Service</li>
+</ul>
+<hr />
+<h4 id="import-spring-boot-sample-sources-into-your-github-repository">Import Spring Boot sample sources into your github repository</h4>
+<p>Sign in to <a href="https://github.com">https://github.com</a> using your account and select <strong>Import repository</strong>. In case you don't have Github account please <a href="https://github.com/join?source=header-home">sign up</a>.</p>
+<p><img src="images/wercker/08.github.import.project.png" alt="" /></p>
+<p>Enter or copy the <em>https://github.com/nagypeter/wercker-springboot.git</em> repository address into old repository's clone URL and use the same repository name for the new one. It will not conflict because the new repository will be available under your account. Leave the repository public. Click <strong>Begin Import</strong> and wait till the import is ready.</p>
+<p><img src="images/wercker/09.github.import.details.png" alt="alt text" /></p>
+<h4 id="sign-up-to-wercker-using-your-github-account">Sign up to Wercker using your Github account</h4>
+<p>When the import is done go to <a href="https://app.wercker.com">https://app.wercker.com</a> and sign up using your github account. Click the <strong>LOG IN WITH GITHUB</strong> button.</p>
+<p><img src="images/wercker/10.app.wercker.signup.png" alt="alt text" /></p>
+<p>If you use the same browser where you are already signed in to github then it will go directly to <em>Authorize application</em> github page. If not then enter your github's credentials to sign in to github. Click the <strong>Authorize application</strong> button to accept Wercker's request. You can revoke Wercker's authorization request anytime using your github's profile settings.</p>
+<p><img src="images/wercker/11.authorize.wercker.in.github.png" alt="alt text" /></p>
+<p>After the successfull authorization you will be redirected to <em>https://app.wercker.com</em>.</p>
+<h4 id="create-wercker-application-to-build-docker-container-including-spring-boot-sample-application">Create Wercker Application to build Docker container including Spring Boot sample application</h4>
+<p>Now here is the time to create your Wercker application. Wercker acts as continuous integration tool which will produce and push a complete Docker container including your Spring Boot sample application.</p>
+<p>Go back to the Wercker's welcome page and click <strong>Create your first application</strong> button or the <strong>+Create</strong> dropdown list and select <em>Application</em>.</p>
+<p><img src="images/wercker/12.create.application.png" alt="alt text" /></p>
+<p>First select the repository you want to use as sources. By default it will show your Github provider and the available repositories. Select <em>wercker-springboot</em> and click <strong>Use selected repo</strong>.</p>
+<p><img src="images/wercker/13.wercker.application.details.png" alt="alt text" /></p>
+<p>In case of private repositories you should define the access method. Since the the sample repository created as public you can leave the default checkout method. Click <strong>Next step</strong>.</p>
+<p><img src="images/wercker/14.wercker.application.details.2.png" alt="alt text" /></p>
+<p>Finally you can choose whether your application is public or not. We recommend to leave default which means the application will be private. Click <strong>Finish</strong> to create your application.</p>
+<p><img src="images/wercker/15.wercker.application.details.3.png" alt="alt text" /></p>
+<p>The next page offers to generate specific wercker.yml based on the application's language. This sample application already has one so click the <strong>trigger a build now</strong> link.</p>
+<p><img src="images/wercker/16.wercker.start.first.build.png" alt="alt text" /></p>
+<p>Now the default <em>build</em> pipeline starts to run which is a simple maven build -defined in <em>wercker.yml</em>- of the Spring Boot sample application. The result should be successfull. You can open each step (on the right side) to get more details.</p>
+<p><img src="images/wercker/17.wercker.first.build.png" alt="alt text" /></p>
+<p>Before you move forward please inspect the <em>wercker.yml</em>. The source is available under your github repository. Open a new browser (tab) and go directly to <em>https://github.com/<YOUR_GITHUB_USERNAME>/wercker-springboot/blob/master/wercker.yml</em>. Now focus on the following part of the configuration and ignore the Docker push step in this use case:</p>
+<pre><code>box: combient/java-mvn
+build:
+  steps:
+    # Build Spring Boot Sample application
+    - script:
+        name: Maven install
+        code: mvn install
+deploy-accs:
+  steps:
+    # Deploy to Oracle Application Container Cloud
+    - peternagy/oracle-accs-deploy@1.0.1:
+        opc_user: $OPC_USERNAME
+        opc_password: $OPC_PASSWORD
+        rest_url: $REST_URL
+        domain: $IDENTITY_DOMAIN
+        application_name: springboot-accs-demo
+        application_type: java
+        file: springbootdemo-0.0.1.zip
+</code></pre>
+<p>The <em>wercker.yml</em> defines the configuration of your automation pipelines with a collection of Steps that you wish to execute.
+In your <em>wercker.yml</em> you can specify any pipeline you like. There is one special pipeline called dev which will only be executed when running it with the CLI using the wercker dev command. Examples of pipeline names: <em>build-base-container</em>, <em>build</em>, <em>push-to-registry</em>.</p>
+<p>A pipeline can have its own base box, like in this example the <em>combient/java-mvn</em> Docker container. You can use different base boxes per pipeline.</p>
+<p>Each pipeline can also specify its own Services. For example, a testing Pipeline may require access to a database server, whereas a deploy pipeline probably wouldn't. This sample has no service.</p>
+<p>As you can see in this configuration we have the default pipeline <em>build</em> which executes the maven build and a <em>deploy-accs</em> pipeline which is not a reserved pipeline. You will create <em>deploy-accs</em> pipeline in the next step. This is why you couldn't see the Application Container Cloud deployment in the first build.</p>
+<p>The <em>deploy-accs</em> pipeline will use a custom step <a href="https://github.com/nagypeter/wercker-oracle-accs-deploy"><code>peternagy/oracle-accs-deploy</code></a> what was built and published by other Wercker user and <a href="https://app.wercker.com/applications/58f746a7a81610010011ef53/tab/details">available in Wercker's Step repository</a>.</p>
+<p><img src="images/wercker.step.accs/wercker.custom.step.png" alt="alt text" /></p>
+<p>Please also note the environment variables usage. After the <em>deploy-accs</em> pipeline you will create these variables and set the values.</p>
+<hr />
+<h4 id="wercker-steps">Wercker Steps</h4>
+<p>Steps are self-contained bash scripts or compiled binaries for accomplishing specific automation tasks, defined in the wercker.yml file of your application. Steps can be written manually or borrowed from the community via the Steps Registry.</p>
+<p><strong>Internal steps</strong> are developed by wercker and are baked into the wercker cli as these interact with the Docker API that is external from the container.</p>
+<p>The <strong>script step</strong> allows you to execute a single or more shell commands. It has one required property: code and (as always) you can use the name property to give the step a clear name.</p>
+<p>If you cannot find a step which solves your particular “problem” in the Steps Registry, then you can create your own step and publish it. Steps are similar to any other projects on Wercker but instead of deploying to a cloud provider, you deploy to the step registry in order to make the step available.</p>
+<p>To be able to publish a step, you first need a Wercker application containing the following files:</p>
+<ul>
+<li>The project needs to include a <code>run.sh</code> file which is the entry-point of your step.</li>
+<li>The project needs to include a step manifest file call <code>wercker-step.yml</code>.</li>
+</ul>
+<p>This demo will use <a href="https://github.com/nagypeter/wercker-oracle-accs-deploy"><code>peternagy/oracle-accs-deploy</code></a> step. Open and inspect the</p>
+<ul>
+<li><a href="https://github.com/nagypeter/wercker-oracle-accs-deploy/blob/master/wercker-step.yml"><code>wercker-step.yml</code></a> step manifest file which defines the step properties.</li>
+<li>and <a href="https://github.com/nagypeter/wercker-oracle-accs-deploy/blob/master/wercker-step.yml"><code>run.sh</code></a> entry-point which does the deployment to application container cloud via REST API using <code>curl</code>.</li>
+</ul>
+<hr />
+<p>Now switch to <strong>Workflows</strong> tab.</p>
+<p><img src="images/wercker/18.workflow.add.pipeline.png" alt="alt text" /></p>
+<p>As mentioned upon creating a project in Wercker, it creates a <em>build</em> Workflow with a Git hook which executes a build pipeline. This means whenever you push changes into your github repository then a new build will be triggered. Now add a new pipeline what will do the deploy to Oracle Application Container Cloud Service. Click <em>Add new pipeline</em>.</p>
+<ul>
+<li><strong>Name</strong>: <em>deploy-oracle-accs</em> (but basically it can be anything else)</li>
+<li><strong>YML Pipeline name</strong>: it has to be <em>deploy-accs</em>, because we already defined this pipeline in  the <em>wercker.yml</em>.</li>
+<li><strong>Hook type</strong>: leave default to ignore Git push. You will add this pipeline after build what has already this configuration.</li>
+</ul>
+<p>Finally click <strong>Create</strong>.</p>
+<p><img src="images/wercker.step.accs/19.pipeline.details.png" alt="alt text" /></p>
+<p>On the detail page of the new <em>deploy-oracle-accs</em> pipeline you can immediately add the required environment variables.</p>
+<ul>
+<li><strong>OPC_USERNAME</strong> = user name for your Oracle Application Container Cloud account.</li>
+<li><strong>OPC_PASSWORD</strong> = password for your Oracle Application Container Cloud account.</li>
+<li><strong>REST_URL</strong> = at the time of this tutorial published it is: <code>https://apaas.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps</code> Please replace region part (europe|us|etc.) respectively. The easiest way is to locate Oracle Application Container Cloud in the My Services console, click <em>Details</em>, and look at the REST Endpoint value.</li>
+<li><strong>IDENTITY_DOMAIN</strong> = Name of the identity domain for the Oracle Application Container Cloud Service account.</li>
+</ul>
+<p>When you need to add new variable click <strong>Add</strong> button which saves the current row and add a new one. You can use the <strong>Protected</strong> tick box to store safely your value e.g. password.</p>
+<p><img src="images/wercker.step.accs/20.pipeline.parameters.png" alt="alt text" /></p>
+<p>To go back workflow editor click <strong>Workflows</strong> tab again and start to edit your workflow. Click the blue plus icon after the <em>build</em> pipeline to add the previosly created <em>deploy-oracle-accs</em> pipeline. Leave the default * for branches and select the <em>deploy-oracle-accs</em> pipeline from the <strong>Execute pipeline</strong> dropdown list. Click <strong>Add</strong>.</p>
+<p><img src="images/wercker.step.accs/21.connect.pipelines.png" alt="alt text" /></p>
+<p>To trigger do some modification on one of the source file in your github repository. Go to the browser (tab) where github.com is opened or open it now. Modify for example the <em>https://github.com/<YOUR_GITHUB_USERNAME>/wercker-springboot/blob/master/src/main/webapp/WEB-INF/views/welcome.jsp</em> JSP file. Click Edit icon.</p>
+<p><img src="images/wercker/22.edit.jsp.in.github.png" alt="alt text" /></p>
+<p>Modify the following part:</p>
+<pre><code>&lt;br&gt;SpringBoot application demo. Current server time: &lt;%= new java.util.Date() %&gt; &lt;br&gt;
+</code></pre>
+<p>Include your name for example:</p>
+<pre><code>&lt;br&gt;SpringBoot application demo by JOHN SMITH. Current server time: &lt;%= new java.util.Date() %&gt; &lt;br&gt;
+</code></pre>
+<p>Enter a commit message and click <strong>Commit changes</strong> button.</p>
+<p><img src="images/wercker/23.commit.jsp.changes.png" alt="alt text" /></p>
+<p>It triggers the Wercker build so when you go back to the browser where Wercker is opened you should see the following:</p>
+<p><img src="images/wercker.step.accs/24.wercker.run.png" alt="alt text" /></p>
+<p>When the <em>build</em> and <em>deploy-oracle-accs</em> pipelines are done go back to the browser (tab) where you logged in to </p>
+<h4 id="test-spring-boot-sample-application-deployed-on-oracle-application-container-cloud-service">Test Spring Boot sample application deployed on Oracle Application Container Cloud Service</h4>
+<p>When the <em>build</em> and <em>deploy-oracle-accs</em> pipelines are done open a new browser (tab) and sign in again to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. Select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. Find the <em>Application Container</em> tile and click the hamburger icon. In the dropdown menu click <strong>Open Service Console</strong>. If you can not see such tile click <strong>Customize Dashboard</strong> and find <em>Application Container</em> in the list and change to Show the switch.</p>
+<p><img src="images/wercker.step.accs/25.dashboard.png" alt="" /></p>
+<p>On the Application Container Cloud console you have to see a new application called <em>springboot-accs-demo</em>. Once the deployment is complete (no sand glass and the URL is enabled) click on the URL link to open the Spring Boot sample application.</p>
+<p><img src="images/wercker.step.accs/26.accs.console.png" alt="" /></p>
+<p>The application opens a new browser (tab) and you have to get the following webpage: </p>
+<p><img src="images/wercker/40.sample.app.png" alt="alt text" /></p>
+<p>Please note your name what you inserted on <em>welcome.jsp</em> page.</p>
+<p>Optionally modify other text on the page and push changes to build new container. Once the Wercker workflow completed you need to see the changes on your application.</p>

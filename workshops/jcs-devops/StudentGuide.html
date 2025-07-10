@@ -1,0 +1,219 @@
+<h1 id="trial-account-student-guide">Trial Account Student Guide</h1>
+<p><img src="images/studentguide/Picture-Title.png" alt="" />
+Update: December 7, 2017</p>
+<h2 id="overview-of-tasks">Overview of Tasks</h2>
+<p>You will need to <strong>complete the following 3 Tasks</strong> prior to attempting the Labs contained in this workshop</p>
+<ul>
+<li><strong>Acquire an Oracle Cloud Trial Account</strong></li>
+<li><strong>Configure Oracle Cloud Identity Information</strong></li>
+<li><strong>Install the required open source tools locally on your computer (e.g. Eclipse and Git)</strong></li>
+</ul>
+<h1 id="acquire-an-oracle-cloud-trial-account">Acquire an Oracle Cloud Trial Account</h1>
+<h3 id="step-1-getting-your-trial-account"><strong>Step 1</strong>: Getting your Trial Account</h3>
+<ul>
+<li>Click on this URL <a href="http://cloud.oracle.com/tryit&intcmp=DeveloperInnovation-HOL-11NOV17">cloud.oracle.com/tryit</a>, and complete all the required steps to get your free Oracle Cloud Trial Account.</li>
+<li>You must wait to receive our account before continuing to the "<strong>Configure Oracle Cloud Identity Information</strong>" Section.</li>
+</ul>
+<h1 id="configure-oracle-cloud-identity-information">Configure Oracle Cloud Identity Information</h1>
+<h2 id="login-to-your-oracle-cloud-account">Login to your Oracle Cloud Account</h2>
+<h3 id="step-2-record-information-from-the-welcome-email"><strong>Step 2</strong>: Record information from the welcome email</h3>
+<ul>
+<li>During the provisioning of your account, you will receive two welcome email message. <strong><em>Note: You must wait for the 2nd email shown below</em></strong>, as it contains information about the <strong><em>Traditional Account</em></strong>, which is required for this workshop. If the second email does not appear within 30 minutes, please check your Junk or Promotions email folders (based on your email provider).</li>
+</ul>
+<p><img src="images/studentguide/Picture199.png" alt="" /></p>
+<ul>
+<li>For later use during the workshop labs, <strong>record the following fields</strong>, some of which you'll find in the email. The other <strong>fields not found in the email</strong> will be located shortly. This information will be <strong><em>used multiple times</em></strong> during the workshops Labs, so we recommend that you <strong>copy the following list to a text document</strong>, and then populate the fields as they are collected from the <strong>Welcome Email</strong> documented above.</li>
+</ul>
+<pre><code>Username:
+Temporary Password (for Both Accounts):
+
+Cloud Account Name:
+Cloud Account Password:
+
+Identity Domain Name:
+Traditional Account Password:
+
+Identity Service ID:
+Data Center:
+Storage REST Endpoint:
+DBCS Service Instance ID:
+</code></pre>
+<ul>
+<li><strong><em>(1)</em></strong> <strong>Username</strong>: With a trial account, this should be your email address.</li>
+<li><strong><em>(2)</em></strong> <strong>Temporary Password</strong>: The first time you login, you will use this temporary password.</li>
+<li><strong><em>(3)</em></strong> <strong>Cloud Account Name</strong>: This name will be used when you login  using the <strong>Cloud Account with Identity Cloud Service</strong>. <strong><em>Note</em></strong>: When you click on Link <strong>(5)</strong> in the email, you will use this Cloud Account Name. This is the method by which all Oracle Services will eventually be authenticated.</li>
+<li><strong>Cloud Account Password</strong>: You will login to your Cloud Account to set this password.</li>
+<li><strong><em>(4)</em></strong> <strong>Identity Domain Name</strong>: This name will be used when you login with the <strong>Traditional Cloud Services</strong>. During this workshop, we will be use the Developer Cloud Services, which is currently a Traditional Cloud Services. <strong><em>Note</em></strong>: When you click on Link <strong>(6)</strong> in the email, you will use this Identity Domain Name.</li>
+<li><strong>Traditional Account Password</strong>: You will login to your Traditional Cloud Account to set this password in an upcoming step.</li>
+<li><strong>Identity Service ID</strong>: We will locate this information later, but make a holding place in your notes for this field. This field will be used by PaaS Stack Manager for provisioning of Infrustructure.</li>
+<li><strong>Data Center</strong>: We'll locate this information in an upcoming step, and this field will also be used by PaaS Stack Manager for provisioning of Infrustructure.</li>
+<li><strong>Storage REST Endpoint</strong>: We'll locate this information in an upcoming step, and this field will also be used by PaaS Stack Manager for provisioning of Infrustructure.</li>
+<li><strong>DBCS Service Instance ID</strong>: We'll locate this information in an upcoming step, and this field will be used to create connection to database.</li>
+</ul>
+<h3 id="step-3-login-to-the-oracle-cloud"><strong>Step 3</strong>: Login to the Oracle CLoud</h3>
+<ul>
+<li><p>Click on the link <strong><em>(5)</em></strong> <strong>Cloud Account My Services URL</strong> provided in the email.</p></li>
+<li><p>Follow the instructions to <strong>set your password</strong>, and then record in your notes the new password for this <strong>Cloud Account Password</strong> field.</p></li>
+<li><p>You are now have viewing the dashboard used to access all the Cloud Services managed by the Oracle Identity Cloud Services.</p></li>
+<li><p>Click on the <strong>Customize Dashboard</strong> box to add the some select services to the Dashboard.</p>
+<p><img src="images/studentguide/Picture200.2.png" alt="" /></p></li>
+<li><p>Located the <strong>Identity Cloud</strong> Services, and click on <strong>Show</strong>.</p>
+<p><img src="images/studentguide/Picture200.3.png" alt="" /></p></li>
+<li><p>Also locate and <strong>Show</strong> the <strong>Storage Classic</strong> and <strong>Java</strong> cloud services. Exit the Customization popup by clicking on the <strong>X</strong> in the upper right corner of the dialog.</p>
+<p><img src="images/studentguide/Picture200.4.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-record-instance-information"><strong>Step 4</strong>: Record Instance Information</h3>
+<ul>
+<li><p>To capture the <strong>DBCS Service Instance ID</strong>, click on the <strong>Database</strong> cloud service you just added to the Dashboard.</p>
+<p><img src="images/studentguide/Picture200.5.1.png" alt="" /></p></li>
+<li><p>Once the Console has loaded, copy and save the text enclosed in the red box.</p>
+<p><img src="images/studentguide/Picture200.8.1.png" alt="" /></p></li>
+<li><p>To capture the <strong>Identiy Service ID, Data Center</strong> and <strong>Storage REST Endpoint</strong>, click on the <strong>Storage Classic</strong> cloud service you just added to the Dashboard.</p>
+<p><img src="images/studentguide/Picture200.5.png" alt="" /></p></li>
+<li><p>Once the Console has loaded, copy and save the text enclosed in the red box's.</p>
+<p><img src="images/studentguide/Picture200.8.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-checkset-storage-replication-policy"><strong>Step 5</strong>: Check/Set Storage Replication Policy</h3>
+<p>Some services that we will use in this workshop require that your account's Replication Policy is set. The following steps will show you how to set your replication policy.</p>
+<ul>
+<li><p>On the same screen, Click <strong>Open Service Console</strong></p></li>
+<li><p>If your replication policy has not yet been set, the following dialog will be displayed. Use the Default <strong>Georeplication Policy</strong>, and click on <strong>Set Policy</strong>.</p>
+<p><img src="images/studentguide/Picture202.png" alt="" /></p></li>
+<li><p>To return to the main <strong>Dashboard</strong>, click on the <strong>Hamburger Menu</strong>, and then click on the <strong>My Services</strong> menu option.</p>
+<p><img src="images/studentguide/Picture204.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-set-the-traditional-account-password"><strong>Step 6</strong>: Set the Traditional Account Password</h3>
+<p>We will now set the Password for the <strong>Traditional Account</strong> User. This Account will allow you to access the <strong>Developer Cloud Service</strong>.</p>
+<ul>
+<li><p>Click on the link <strong><em>(6)</em></strong> <strong>Traditional Cloud Account My Services URL</strong> provided in the Welcome email sent from Oracle.</p>
+<p><img src="images/studentguide/Picture204.0.png" alt="" /></p></li>
+<li><p>Follow the instructions to <strong>set your password</strong>, and then record in your notes the new password for  <strong>Traditional Account Password</strong>.</p></li>
+</ul>
+<h3 id="step-7-test-logging-into-your-multiple-accounts"><strong>Step 7</strong>: Test Logging into your Multiple Accounts</h3>
+<p>It is important to fully understand how to login to both the <strong>Standard Identity Cloud Service</strong> managed account, and then login to the <strong>Traditional</strong> account at the same time. After this step, we'll assume you know how to switch between accounts and services during the upcoming labs. <strong><em>Note: Oracle will soon have all services merged under the Standard Identity Cloud Service Account.</em></strong> However, until that time, you need to be aware of your dashboard Account settings, and at times you will need to switch between the Regular Cloud Account and Traditional Cloud Account to view the right services in the Dashboard and Dashboard Menus.</p>
+<ul>
+<li><p>Fully exit/close your browser to logout and remove all session cookies</p></li>
+<li><p>Re-open your browser.</p></li>
+<li><p>Go to <a href="http://cloud.oracle.com">cloud.oracle.com</a></p></li>
+<li><p>Click on <strong>Sign In</strong> at the top of the page.</p>
+<p><img src="images/studentguide/Picture204.1.png" alt="" /></p></li>
+<li><p>Set the first field to <strong>Cloud Account with Identity Cloud Service</strong>, enter your <strong>Cloud Account Name</strong> recorded earlier in the second field, and click on <strong>My Services</strong></p>
+<p><img src="images/studentguide/Picture204.2.png" alt="" /></p></li>
+<li><p>Enter the <strong>Username</strong> and <strong>Cloud Account Password</strong> recorded earlier, and click on <strong>Sign in</strong>.</p>
+<p><img src="images/studentguide/Picture204.3.png" alt="" /></p></li>
+<li><p>View the available services after clicking on the Dashboard <strong>Hamburger Menu</strong>.</p>
+<p><img src="images/studentguide/Picture204.4.png" alt="" /></p></li>
+<li><p>Let's now connect to the <strong>Traditional Account</strong> at the same time. Open a new Browser tab window, got to <a href="http://cloud.oracle.com">cloud.oracle.com</a> again, and click on <strong>Sign In</strong>.</p>
+<p><img src="images/studentguide/Picture204.1.png" alt="" /></p></li>
+<li><p>Select <strong>Tradition Cloud Account</strong> from the top drop-down. Next select your <strong>Data Center</strong>. In our example, our Data Center was US Commercial 2 - both "US Commercial 2" or "Public Cloud Services - US" work in that example. <strong>Your selection will vary</strong> based on what you recorded earlier in this guide.</p></li>
+<li><p>Click on <strong>My Services</strong></p>
+<p><img src="images/studentguide/Picture204.5.png" alt="" /></p></li>
+<li><p>Enter the <strong>Identity Domain Name</strong> you recorded earlier, and click on <strong>Go</strong></p>
+<p><img src="images/studentguide/Picture204.6.png" alt="" /></p></li>
+<li><p>Enter the <strong>Username</strong> and <strong>Traditional Account Password</strong> you recorded earlier, and click on <strong>Sign In</strong></p>
+<p><img src="images/studentguide/Picture204.7.png" alt="" /></p></li>
+<li><p>Click on the Traditional Dashboard <strong>Hamburger Menu</strong>, and view the limited set of available services</p>
+<p><img src="images/studentguide/Picture204.8.png" alt="" /></p></li>
+<li><p><strong>Note</strong>: you can change the account on the dashboard page between <strong>Traditional</strong> and the Standard <strong>Identity Cloud Services</strong> accounts, but one approach is to keep a tab/window open for each Account's dashboard.</p>
+<p><img src="images/studentguide/Picture204.9.png" alt="" /></p></li>
+</ul>
+<h1 id="install-the-open-source-tools">Install the Open Source Tools</h1>
+<h2 id="verify-your-version-of-the-java-jdk">Verify your version of the Java JDK</h2>
+<h3 id="step-8-windows-option-jdk-verification-on-windows"><strong>Step 8 (Windows Option)</strong>: JDK Verification on Windows</h3>
+<p><strong>Note</strong>: Eclipse requires that you have the a Java JDK 8 installed. Even if you have a JRE version 8, you still need to verify that you have a JDK 8 installed.</p>
+<ul>
+<li>On Windows, open a <strong>cmd</strong> window and enter <code>java -version</code></li>
+</ul>
+<pre><code class="shell language-shell">C:\Users\usr&gt;java -version
+java version "1.8.0_121"
+Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
+Java HotSpot(TM) Client VM (build 25.121-b13, mixed mode, sharing)
+</code></pre>
+<ul>
+<li>If JDK/<strong>Java version 1.8</strong> is not installed,  you will need to download a <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK 8</a> from the Oracle Technology Network website, and install.</li>
+</ul>
+<h3 id="step-9-mac-option-jdk-verification-on-a-mac"><strong>Step 9 (Mac Option)</strong>: JDK Verification on a MAC</h3>
+<p><strong>Note</strong>: Eclipse requires that you have the a Java <strong>JDK</strong> 8 installed. Even if you have a <strong>JRE</strong> version 8, you still need to verify that you have a JDK 8 installed.</p>
+<ul>
+<li>Open Terminal window and execute the following command: </li>
+</ul>
+<pre><code class="bash language-bash">ls /Library/java/JavaVirtualMachines/
+</code></pre>
+<ul>
+<li>If you do not have a JDK 1.8 folder, you will need to download the <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK 8</a> from the Oracle Technology Network website, and install.</li>
+</ul>
+<h2 id="download-and-install-eclipse">Download and Install Eclipse</h2>
+<h3 id="step-10-download-eclipse"><strong>Step 10</strong>: Download Eclipse</h3>
+<p><strong><em>Note</em></strong>: Even if you already have Eclipse installed, you need to install and use the version documented below. This version of Eclipse contains the <strong><em>Oracle Enterprise Pack for Eclipse</em></strong>, which will be used during the workshop.</p>
+<ul>
+<li><p>Go to the <a href="http://www.oracle.com/technetwork/developer-tools/eclipse/downloads/index.html">Eclipse</a> installation website</p></li>
+<li><p>Accept the <strong>licensing agreement</strong>, and then select the <strong>Neon</strong> version of Eclipse required for your operating system.</p>
+<p><img src="images/studentguide/Picture1.png" alt="" /></p></li>
+<li><p>Once you’ve downloaded eclipse, extract the zip file and install. <strong><em>Note:</em></strong> If you encounter an error when extracting Eclipse due to a "Path name too long" error on Windows, there are solutions that can be found by performing an internet search on the error to change the Windows allowed file length. Also, we have found that using the open source <a href="http://www.7-zip.org/download.html">7-zip</a> tool can help overcome the file length errors encountered by the default windows zip file extraction tools.</p></li>
+</ul>
+<h3 id="step-11-optionally-configure-proxies-if-behind-a-firewall"><strong>Step 11</strong>: Optionally Configure Proxies (if behind a firewall)</h3>
+<p>If you are running Eclipse behind a firewall, you need to configure the proxy setting. First, you need to ensure that Eclipse’s proxy is set. Next, you need to update the maven proxy setting, and then finally, you need to ensure that the Oracle Plugin will work with your proxy settings.</p>
+<ul>
+<li><p>To set configure Eclipse’s proxy, open Eclipse and navigate to the Properties menu. Depending on the operating system, this drop down is found either from the <strong>Eclipse > Preferences, or Window > Preferences</strong></p>
+<p><img src="images/studentguide/Picture2.png" alt="" /></p></li>
+<li><p>From the preferences panel, enter “<strong>proxy</strong>” into the search window, and click on <strong>Network Connections</strong>. Select <strong>Native</strong> for the Active Provider and click on <strong>OK</strong>. This setting works well, but it requires that you have the proxy setting configured correctly on the system running Eclipse – e.g. Windows, MAC OS or Linux. Selecting Manual should also work, but some of the plugins require the underlying operating system’s proxy to be configured.</p>
+<p><img src="images/studentguide/Picture3.png" alt="" /></p></li>
+<li><p>To test that your connection works, select the menu option <strong>Window > Show View > Other</strong></p>
+<p><img src="images/studentguide/Picture4.png" alt="" /></p></li>
+<li><p>Type “<strong>web</strong>” in the search field, select <strong>Internal Web Browser</strong> and click on <strong>OK</strong></p>
+<p><img src="images/studentguide/Picture5.png" alt="" /></p></li>
+<li><p>Enter a <strong>URL</strong> into the browser and press <strong>enter</strong> to test your proxy settings.</p></li>
+</ul>
+<p><img src="images/studentguide/Picture6.png" alt="" /></p>
+<h3 id="step-12-optionally-update-the-eclipse--maven-proxy-if-behind-a-firewall"><strong>Step 12</strong>: Optionally Update the Eclipse / Maven proxy (if behind a firewall)</h3>
+<p><strong><em>Note:</em></strong> You will only do this optional Eclipse/Maven Proxy setup if you are behind a firewall. Otherwise, skip this step, and go to next step where you will download and install Brackets.</p>
+<ul>
+<li><p>From the <strong>Eclipse > Preference or Window > Preferences</strong> panel, type <strong>Maven</strong> into the search box. </p></li>
+<li><p>Click on the Maven <strong>User Settings</strong>. Make note of the directory where the settings.xml file is to be located. In the example below, the Maven User Settings will be located in the <strong>/home/oracle/.m2</strong> directory</p>
+<p><img src="images/studentguide/Picture7.png" alt="" /></p></li>
+<li><p><strong>Cancel</strong> out of the Maven dialog, and <strong>Close</strong> Eclipse</p></li>
+<li><p>If the directory does not exist where the settings.xml file is to be located, <strong>create the directory</strong>. In this example, we will create the <strong>.m2</strong> directory. </p></li>
+<li><p>Also, create the <strong>settings.xml</strong> file, if it does not exist. Add the following to the settings.xml file (NOTE: you will need to use your correct <strong>Host, Port, nonProxyHosts, username and Password settings</strong>):</p></li>
+</ul>
+<pre><code class="xml language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"&gt;
+&lt;proxies&gt;
+&lt;proxy&gt;
+&lt;active&gt;true&lt;/active&gt;
+&lt;protocol&gt;http&lt;/protocol&gt;
+&lt;username&gt;proxyuser&lt;/username&gt;
+&lt;password&gt;proxypass&lt;/password&gt;
+&lt;host&gt;www-proxy.us.oracle.com&lt;/host&gt;
+&lt;port&gt;80&lt;/port&gt;
+&lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;
+&lt;/proxy&gt;
+&lt;proxy&gt;
+&lt;active&gt;true&lt;/active&gt;
+&lt;protocol&gt;https&lt;/protocol&gt;
+&lt;username&gt;proxyuser&lt;/username&gt;
+&lt;password&gt;proxypass&lt;/password&gt;
+&lt;host&gt;www-proxy.us.oracle.com&lt;/host&gt;
+&lt;port&gt;80&lt;/port&gt;
+&lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;
+&lt;/proxy&gt;
+&lt;/proxies&gt;
+&lt;/settings&gt;
+</code></pre>
+<ul>
+<li>Reload Eclipse to use the new maven settings</li>
+</ul>
+<h3 id="step-13-windows-only-downloadinstall-git"><strong>Step 13 (Windows Only)</strong>: Download/Install Git</h3>
+<ul>
+<li><p>Go to the following URL: https://git-scm.com/downloads</p>
+<p><img src="images/studentguide/Picture8.png" alt="" /></p></li>
+<li><p>Select your OS. In our example, we will show how to install on Windows. Click <strong>Windows</strong> Download and click <strong>Save File</strong></p>
+<p><img src="images/studentguide/Picture9.png" alt="" /></p></li>
+<li><p>Select your download location and click <strong>Save</strong>. We will use D:\Software    </p>
+<p><img src="images/studentguide/Picture10.png" alt="" /></p></li>
+<li><p>Open Windows Explorer and navigate to where you downloaded the Git executable. Double click on the Git executable to start the install process.</p>
+<p><img src="images/studentguide/Picture11.png" alt="" /></p></li>
+<li><p>Run through the installation process. In our tests, we used the default installation settings.</p>
+<p><img src="images/studentguide/Picture12.png" alt="" /></p></li>
+<li><p>You can now ready to start on <a href="JCSPipelineStackManager100.md">Lab 100</a> Lab</p></li>
+</ul>

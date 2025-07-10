@@ -1,0 +1,188 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-300">Lab 300</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In Lab 300 we will be adding a MySQL database to our microservice from lab 200. We will be using an automated build process to load our baseline schema onto the database after we have provisioned it.</p>
+<p><strong>To log issues</strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Provision a MySQL Database</li>
+<li>Create the baseline schema</li>
+<li>Bind the database to your microservice from lab 200</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>We will be leveraging scripts found within the MySQL Microservice from lab 200 that was pulled from <a href="https://github.com/CloudAccelerate/TTC-MySQLMicroservice.git">GitHub: https://github.com/CloudAccelerate/TTC-MySQLMicroservice.git</a></li>
+<li>We will require an ssh key: <a href="labkey.pub">labkey</a></li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Expected that labs 100 and 200 have been completed already</li>
+<li>Expected that your storage policy has been set as described in the <strong>prerequisite guide</strong></li>
+</ul>
+<h2 id="technologies-involved">Technologies Involved</h2>
+<ul>
+<li>Oracle Cloud Services:<ul>
+<li>Developer Cloud Service</li>
+<li>MySQL Cloud Service</li></ul></li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>You will be building out the first component of your Microservices Application</p>
+<p><img src="images/300/targeted-architecture.png" alt="" /></p>
+<h1 id="provision-and-setup-a-mysql-cloud-service-instance">Provision and Setup a MySQL Cloud Service Instance</h1>
+<h2 id="provision-your-database">Provision your Database</h2>
+<h3 id="step-1-login-to-the-mysql-cloud-service"><strong>STEP 1</strong>: Login to the MySQL Cloud Service</h3>
+<p>MySQL Cloud service provides a complete MySQL instance easily provisioned in the cloud.</p>
+<ul>
+<li>Return to the main Cloud UI Dashboard</li>
+</ul>
+<p><img src="images/300/step01.png" alt="" /></p>
+<ul>
+<li>From the Cloud UI dashboard click on the <strong>MySQL Cloud Service Menu</strong> select <strong>Open Service Console</strong>.   </li>
+</ul>
+<p><img src="images/300/step02.png" alt="" /></p>
+<h3 id="step-2-create-a-new-mysql-database"><strong>STEP 2</strong>: Create a new MySQL Database</h3>
+<ul>
+<li>Click <strong>create service</strong>. Give your service a name.</li>
+</ul>
+<pre><code>Name: CatalogDB
+</code></pre>
+<p><img src="images/300/step03.png" alt="" /></p>
+<ul>
+<li>On the details form fill out as follows and click <strong>Next</strong>.</li>
+</ul>
+<pre><code>Compute Shape: OC3
+SSH Key: &lt;use labkey.pub found in required artifacts&gt;
+Usable DB Storage: 25
+Administration Username: root
+Password: Oracle123!
+Database Schema Name: catalog
+Backup Destination: none
+</code></pre>
+<blockquote>
+  <p>Note: we have chosen no DB backup for our Demo Environement. If setting up a backup, you would simply set a container name (this container can be created on the fly or provisioned previously from your Storage Service) and set your account username and password.</p>
+</blockquote>
+<p><img src="images/300/step04.png" alt="" /></p>
+<ul>
+<li>Confirm your setup and <strong>Create</strong></li>
+</ul>
+<p><img src="images/300/step05.png" alt="" /></p>
+<ul>
+<li>Your Database is now being provisioned and will be ready shortly</li>
+</ul>
+<p><img src="images/300/step06.png" alt="" /></p>
+<ul>
+<li>Verify that your database is provisioned</li>
+</ul>
+<p><img src="images/300/step07.png" alt="" /></p>
+<ul>
+<li>Click on the instance to view details. Record the public IP of the database</li>
+</ul>
+<p><img src="images/300/step08.png" alt="" /></p>
+<h3 id="step-3-add-a-build-for-the-baseline-schema-setup"><strong>STEP 3</strong>: Add a build for the baseline schema setup</h3>
+<ul>
+<li>Return to the main project dashboard for your Touch the Cloud Demo in Developer Cloud Service</li>
+</ul>
+<p><img src="images/300/step09.png" alt="" /></p>
+<ul>
+<li>Click <strong>Build</strong> on the left menu</li>
+</ul>
+<p><img src="images/300/step10.png" alt="" /></p>
+<ul>
+<li>Create a <strong>New Job</strong>. Fill out the form and click <strong>Save</strong></li>
+</ul>
+<blockquote>
+  <p>Name: MySQLDBSetup</p>
+</blockquote>
+<p><img src="images/300/step11.png" alt="" /></p>
+<ul>
+<li>You will now be able to configure your build.</li>
+</ul>
+<p><img src="images/300/step12.png" alt="" /></p>
+<ul>
+<li>Select the Build Parameters Tab and check parameterized build.</li>
+</ul>
+<p><img src="images/300/step13.png" alt="" /></p>
+<ul>
+<li>Add a String Parameter</li>
+</ul>
+<pre><code>Name: MYSQL_IP
+Default Value: &lt;Public IP of MySQL DB&gt;
+</code></pre>
+<p><img src="images/300/step14.png" alt="" /></p>
+<ul>
+<li>Select the <strong>Source Control</strong> tab and select <strong>Git</strong>, followed by the <strong>MySQLMicroservice</strong> repository. Add the <strong>Master branch</strong>.</li>
+</ul>
+<p><img src="images/300/step16.png" alt="" /></p>
+<ul>
+<li>Select the <strong>Build Step</strong> and add a Shell Build step</li>
+</ul>
+<pre><code class="shell language-shell">cd src/main/resources/db/setup
+scp -i mysqlkey -o StrictHostKeyChecking=no mysql_setup.sql opc@${MYSQL_IP}:/tmp/mysql_setup.sql
+ssh -i mysqlkey -o StrictHostKeyChecking=no opc@${MYSQL_IP} sudo su - oracle -c 'mysql "catalog" &lt; "/tmp/mysql_setup.sql"'
+</code></pre>
+<p><img src="images/300/step17.png" alt="" /></p>
+<ul>
+<li>Save and Execute the Build. Note you will get a pop-up from your parameterized build to confirm the MYSQL_IP. Leave the default value in place.</li>
+</ul>
+<p><img src="images/300/step19.png" alt="" /></p>
+<ul>
+<li>Your build should execute successfully</li>
+</ul>
+<p><img src="images/300/step18.png" alt="" /></p>
+<h3 id="step-4-bind-the-database-to-your-microservice"><strong>STEP 4</strong>: Bind the database to your microservice</h3>
+<ul>
+<li>Open your main Dashboard Console. Select Application Container and open the service console</li>
+</ul>
+<p><img src="images/100/step27.png" alt="" /></p>
+<ul>
+<li>You should see both of your Applications</li>
+</ul>
+<p><img src="images/300/step20.png" alt="" /></p>
+<ul>
+<li>Select the MySQLMicroserviceDeploy Application</li>
+</ul>
+<p><img src="images/300/step21.png" alt="" /></p>
+<ul>
+<li>Select the Deployments tab</li>
+</ul>
+<p><img src="images/300/step22.png" alt="" /></p>
+<ul>
+<li>Select Add under Service Bindings</li>
+</ul>
+<pre><code>Service Type: MySQL CS Service
+Service name: Catalog DB
+Username: root
+Password: Oracle123!
+</code></pre>
+<p><img src="images/300/step23.png" alt="" /></p>
+<ul>
+<li>Apply and Edit the changes to the MySQLMicroserviceDeploy application</li>
+</ul>
+<p><img src="images/300/step28.png" alt="" /></p>
+<ul>
+<li>Once redeployment has finished you will see the service binding in the deployment details</li>
+</ul>
+<blockquote>
+  <p>Note: Selecting the show all variables under environment variables will display all variables added that are associated with the binding</p>
+</blockquote>
+<p><img src="images/300/step24-1.png" alt="" /></p>
+<h3 id="step-5-verify-the-catalog-data"><strong>STEP 5</strong>: Verify the Catalog Data</h3>
+<ul>
+<li>Return to the main screen for Application Container Cloud Service</li>
+</ul>
+<p><img src="images/300/step25.png" alt="" /></p>
+<ul>
+<li>Open the URL for the MySQLMicroserviceDeploy Application and append "/catalog/v1" to see the JSON data now available</li>
+</ul>
+<pre><code>ex: https://mysqlmicroservicedeploy-a458023.apaas.us6.oraclecloud.com/catalog/v1
+</code></pre>
+<p><img src="images/300/step26.png" alt="" /></p>
+<ul>
+<li>Return to the main screen for Application Container Cloud Service</li>
+</ul>
+<p><img src="images/300/step25.png" alt="" /></p>
+<ul>
+<li>Select the URL for the CatalogDeployUI to see the catalog on screen and achievement 3 unlocked.</li>
+</ul>
+<p><img src="images/300/step27.png" alt="" /></p>
+<p><strong>You have now completed lab 300</strong></p>

@@ -1,0 +1,454 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-400---modify-an-ics-integration-by-adding-an-ebs-adapter-and-api-call">Lab 400 - Modify an ICS Integration by adding an EBS Adapter and API call</h1>
+<hr />
+<h2 id="introduction">Introduction</h2>
+<p>This is the forth of several labs that are part of the <strong>ICS Development</strong> workshop. </p>
+<p>In this lab, you modify the integration that was created in Lab 300 using the ICS EBS adapter to call an EBS API in order to create an Order in EBS using the Order Management module.</p>
+<p>The ICS integration that we'll be building is shown in the following picture:</p>
+<p><img src="images/400/image000.png" alt="" /></p>
+<p>Here is a description of what is happening with this integration:</p>
+<p>SoapUI will be used to test the exposed Web Service endpoint of the ICS integration called <em>UserXX Create EBS Order</em> (where XX will be 00 -&gt; 10).  This integration has 3 connections.  The incoming message is received by the incoming <em>UserXX SOAP</em> Soap Connection.  The <em>UserXX Create EBS Order</em> orchestration makes 1 query into the database using the <em>UserXX Oracle DB 12c</em> connection to get details needed to create an order.  The orchestration finally uses the <em>UserXX EBS OPERATIONS</em> EBS Adapter connection for creating the order in EBS.  After the order is created in EBS, the Order Number is returned to the calling web service.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to create ICS EBS Adapter Connections</li>
+<li>Learn how to modify an ICS Orchestration to use the new EBS Adapter</li>
+<li>Test the updated ICS integration using SoapUI</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab and an Oracle Public Cloud account that will be supplied by your instructor.</li>
+<li>An EBS instance and connection URL that will be provided by your instructor.</li>
+<li>Completion of the previous <em>Lab 300</em></li>
+<li>SoapUI will need to be installed for ICS integration testing - see <em>Prerequisites</em> section of the workshop for details</li>
+</ul>
+<h2 id="part-1-create-the-ebs-connection">Part 1: Create the EBS Connection</h2>
+<h3 id="11-login-to-your-oracle-cloud-account"><strong>1.1</strong>: Login to your Oracle Cloud account</h3>
+<hr />
+<p><strong>1.1.1</strong> From your browser (Firefox or Chrome recommended) go to the following URL:
+<a href="https://cloud.oracle.com">https://cloud.oracle.com</a></p>
+<p><strong>1.1.2</strong> Click Sign In in the upper right hand corner of the browser
+<strong>IMPORTANT</strong> - Under My Services, change Data Center to <code>US Commercial 2 (us2)</code> and click on Sign In to My Services</p>
+<p><img src="images/300/image001.png" alt="" /></p>
+<p><strong>1.1.3</strong> If your identity domain is not already set, enter it and click <em>Go</em></p>
+<p><strong>NOTE:</strong> the <em>Identity Domain</em> values will be given to you from your instructor.</p>
+<p><img src="images/300/image002.png" alt="" />  </p>
+<p><strong>1.1.4</strong> Once your Identity Domain is set, enter your <code>User Name</code> and <code>Password</code> and click <em>Sign In</em></p>
+<p><strong><em>NOTE:</em></strong> the <em>User Name and Password</em> values will be given to you by your instructor.</p>
+<p><img src="images/300/image003.png" alt="" />  </p>
+<p><strong>1.1.5</strong> You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><strong>NOTE:</strong> The Cloud Services dashboard is intended to be used by the <em>Cloud Administrator</em> user role.  The Cloud Administrator is responsible for adding users, service instances, and monitoring usage of the Oracle cloud service account.  Developers and Operations roles will go directly to the service console link, not through the service dashboard.</p>
+<p><img src="images/300/image004.png" alt="" /></p>
+<p><strong>1.1.6</strong>  To get to the Integration Cloud Service (ICS) service console where you will work on developing the integration, click on the <code>hamburger</code> icon, then click on the <code>View Details</code> link.</p>
+<p><img src="images/300/image004a.png" alt="" /></p>
+<p><strong>1.1.7</strong>  Select the <code>Open Service Console</code> link to go to the ICS Service Console.  </p>
+<p><img src="images/300/image004b.png" alt="" />  </p>
+<p><strong>1.1.8</strong>  You will now be presented with the ICS Service Console from which you will be performing the rest of this workshop lab.</p>
+<p><img src="images/300/image004c.png" alt="" />  </p>
+<h3 id="12-create-the-ebs-connector"><strong>1.2</strong>: Create the EBS Connector</h3>
+<hr />
+<p><strong>1.2.1</strong> Select the <code>Connections</code> graphic in the designer portal</p>
+<p><img src="images/300/image005.png" alt="" /> </p>
+<p><strong>1.2.2</strong> Click on <em>Create</em></p>
+<p><img src="images/300/image006.png" alt="" /> </p>
+<p><strong>1.2.3</strong> Select the <em>Oracle E-Business Suite</em> Connection, by either doing a search, or by scrolling down to the <em>Oracle E-Business Suite</em> connection, then click on the <em>Select</em> button of the <em>Oracle E-Business Suite</em> connection.</p>
+<p><img src="images/400/image001.png" alt="" /></p>
+<p><strong>1.2.4</strong> Fill in the information for the new connection </p>
+<ul>
+<li><em>Name:</em> Enter in the form of <em>UserXX EBS OPERATIONS</em> where XX is the number in your allocated user.</li>
+<li><em>Role:</em> Select <em>Invoke</em> since we going to use the connection to invoke APIs from EBS</li>
+</ul>
+<p>Note that the <em>Identifier</em> will automatically be created based on the <em>Name</em> you entered.</p>
+<p><strong>1.2.5</strong> Click <em>Create</em></p>
+<p><img src="images/400/image002.png" alt="" /></p>
+<p><strong>1.2.6</strong> Click the <em>Configure Connectivity</em> button</p>
+<p><img src="images/400/image003.png" alt="" /></p>
+<p><strong>1.2.7</strong> Enter the <em>Connection URL</em> which you will be given by your instructor.  It will be in format like the following: <code>https://ucf4-ebs0116-gse.oracledemos.com</code>.</p>
+<p><strong>1.2.8</strong> After entering the <em>Connection URL</em>, select the <em>OK</em> button to save the value.</p>
+<p><img src="images/400/image004.png" alt="" /></p>
+<p><strong>1.2.9</strong> Select the <em>Configure Security</em> button so we can change the default security configuration</p>
+<p><img src="images/400/image005.png" alt="" /></p>
+<p><strong>1.2.10</strong> Select the following options:</p>
+<ul>
+<li><em>Security Policy</em>: <code>Basic Authentication</code></li>
+<li><em>Username</em>: <code>operations</code></li>
+<li><em>Password</em>: <code>to be provided by your instructor</code></li>
+</ul>
+<p>After the security policy properties have been setup, click on the <em>OK</em> button to dismiss the dialog</p>
+<p><img src="images/400/image006.png" alt="" /></p>
+<p><strong>1.2.11</strong> Do not select an Agent Group for this EBS Adapter. The EBS instance used in this workshop has been opened up to ICS without the need for an agent so this part of the connector does not have to be configured.</p>
+<p>Note: Normally you would select the <em>Configure Agents</em> button so we can setup the association between this adapter and the ICS Connectivity Agent.  </p>
+<p><strong>1.2.12</strong> If you did have to associate an Agent with the EBS Adapter, you could click on the <em>Configure Agents</em> button and select the appropriate agent group.</p>
+<p><strong>1.2.13</strong> The connection needs to be tested by clicking on the <em>Test</em> button in the upper-right of the <em>UserXX EBS Operations</em> connection definition page.</p>
+<p><img src="images/400/image009.png" alt="" /></p>
+<p><strong>1.2.14</strong> Now, select the <em>Save</em> button to save the connection configuration.</p>
+<p><img src="images/400/image010.png" alt="" /></p>
+<p><strong>1.2.15</strong> Note that after the successful test, the percentage complete in the upper-right should go to <em>100%</em>.  After the save, a green banner message will appear in the top indicating a successful save operation.</p>
+<p><strong>1.2.16</strong> Finally, select the <em>Close</em> button to exit the connection configuration screen.</p>
+<p><img src="images/400/image011.png" alt="" /></p>
+<p><strong>1.2.17</strong> You will now see your new <strong>Oracle E-Business Suite</strong> connection on top of the <strong>Connections</strong> list.</p>
+<p><img src="images/400/image012.png" alt="" /></p>
+<h2 id="part-2-modify-the-ics-integration-to-create-an-order-in-ebs">Part 2: Modify the ICS Integration to Create an Order in EBS</h2>
+<p>In this second part of the lab, we will change the <em>UserXX Create EBS Order</em> ICS integration created in Lab 300 in order to use the EBS connection, just configured, to create an order in EBS.</p>
+<p>There are a total of 26 target variables that need to be mapped to successfully execute the EBS PROCESS_ORDER API call. The sections in this lab will guide you through the process of mapping all these attributes. Mapping many fields can be a common task while working with integrations. ICS has the capability to do very complex mappings if necessary.</p>
+<h3 id="21-open-the-ics-design-console"><strong>2.1:</strong> Open the ICS Design Console</h3>
+<hr />
+<p><strong>2.1.1</strong> Select the <code>Hamburger</code> menu icon on top of the ICS Service Console to go to the <code>Designer</code> menu.</p>
+<p><strong>2.1.2</strong> Select the <code>Integrations</code> menu selection</p>
+<p><img src="images/400/image034.png" alt="" /></p>
+<p><strong>2.1.3</strong> Select the <code>Hamburger</code> menu icon again to dismiss the left-hand navigation and get some screen real-estate back.</p>
+<h3 id="22-deactivate-and-open-the-integration-for-editing"><strong>2.2:</strong> Deactivate and Open the Integration for Editing</h3>
+<hr />
+<p><strong>2.2.1</strong> Click on the green slider switch on the right side of the <em>UserXX Create EBS Order</em> integration to initiate deactivation.  We need to deactivate the integration before we are able to edit it.</p>
+<p><img src="images/400/image013.png" alt="" /></p>
+<p><strong>2.2.2</strong> Select <em>Deactivate</em> in order to deactivate the integration.</p>
+<p><img src="images/400/image014.png" alt="" /></p>
+<p><strong>2.2.3</strong> Click on the orchestration name so that we can go to the integration editor.  In the image below <code>User03 Create EBS Order</code> is the hot-link to select.</p>
+<p><img src="images/400/image015.png" alt="" /></p>
+<h3 id="23-add-the-invocation-to-ebs-to-the-orchestration"><strong>2.3:</strong> Add the Invocation to EBS to the Orchestration</h3>
+<hr />
+<p><strong>2.3.1</strong> Select <em>Invoke</em> on the right-hand navigation in order to open up the list of connections that were configured to be the <em>Invoke</em> type</p>
+<p><strong>2.3.2</strong> Select <em>Oracle E-Business Suite</em> connector types then click on the connector you just created (in the picture below it is the <code>User03 EBS OPERATIONS</code> connector)</p>
+<p><strong>2.3.3</strong> Click and drag the connection just under the <em>lookupAccountID</em> invocation</p>
+<p>(<em>Note that the connector tray will go away after you select your connector and start to drag it</em>)</p>
+<p><img src="images/400/image016.png" alt="" /></p>
+<p><strong>2.3.4</strong> Drop the connection on top of the blue plus sign landing zone which will appear just below the <em>lookupAccountID</em> invocation</p>
+<p><img src="images/400/image017.png" alt="" /></p>
+<p><strong>2.3.5</strong> In the <em>Basic Info</em> section of the <em>Configure Oracle E-Business Suite Adapter Endpoint</em> wizard, give the endpoint a name of <code>createEBSOrder</code>.</p>
+<p><strong>2.3.6</strong> After giving the invocation a name, select the <em>Next</em> button.</p>
+<p><img src="images/400/image018.png" alt="" /></p>
+<p><strong>2.3.7</strong> In the <em>Web Services</em> section of the configuration wizard, for the <em>Product Family</em>, click on <code>=== Select ===</code> and then select <code>Order Management Suite</code>.  </p>
+<p>(Note all the other EBS products for which APIs are available)</p>
+<p><img src="images/400/image019.png" alt="" /></p>
+<p><strong>2.3.8</strong> Next, for the <em>Product</em>, click on <code>=== Select ===</code> and then select <code>Order Management</code>.  </p>
+<p>(Note all the other EBS products for this suite which are available)</p>
+<p><img src="images/400/image020.png" alt="" /></p>
+<p><strong>2.3.9</strong> Finally, for the <em>API</em>, scroll down and select the <code>Sales Order Services</code> API.  The <em>Internal Name</em> of <code>OE_INBOUND_INT</code> will automatically be populated.</p>
+<p><strong>2.3.10</strong> After selecting the API for the product family and product, select the <em>Next</em> button.</p>
+<p><img src="images/400/image021.png" alt="" /></p>
+<p><strong>2.3.11</strong> In the <em>Operations</em> section of the configuration wizard, select the <em>Method</em> of <code>PROCESS_ORDER</code>, then select the <em>Next</em> button.</p>
+<p>Note that the <em>Service Status</em> of <code>Ready to Use</code> indicates that the API has already been provisioned earlier from the EBS Integration Repository.</p>
+<p><img src="images/400/image022.png" alt="" /></p>
+<p><strong>2.3.12</strong> In the <em>Summary</em> section of the configuration wizard, review the EBS API which is going to be used, then select the <em>Done</em> button.</p>
+<p><img src="images/400/image023.png" alt="" /></p>
+<p><strong>2.3.13</strong> Observe that both the mapping and invocation to the EBS adapter now show up in the orchestration with the name <code>createEBSOrder</code>.</p>
+<p><img src="images/400/image024.png" alt="" /></p>
+<h3 id="24-add-constant-variables-for-ebs-mapping"><strong>2.4:</strong> Add Constant Variables for EBS Mapping</h3>
+<hr />
+<p><strong>2.4.1</strong> Before we modify the mapping for the <code>PROCESS_ORDER</code> API, it's a good practice in ICS to create some variables in an <em>Assign</em> action to simplify the mapping process.  The variables can then also be reused across multiple API invocations if necessary.</p>
+<p><strong>2.4.2</strong> Click on the <code>Start</code> icon in the upper right of the designer in order to zoom into the top of the orchestration</p>
+<p><img src="images/400/image025.png" alt="" /></p>
+<p><strong>2.4.3</strong> Select <em>Actions</em> on the right-hand navigation in order to open up the list of available orchestration actions.</p>
+<p><strong>2.4.4</strong> Click on <em>Assign</em> then drag the action just under the <em>createOrder</em> trigger.  We're putting it there because we want to define our constant variables at the start of the orchestration.</p>
+<p>Note that the action tray will go away after you select your connector and start to drag it</p>
+<p><img src="images/400/image026.png" alt="" /></p>
+<p><strong>2.4.5</strong> Drop the <em>Assign</em> action on top of the blue plus sign landing zone which will appear just below the <em>createOrder</em> trigger</p>
+<p><img src="images/400/image027.png" alt="" /></p>
+<p><strong>2.4.6</strong> Enter the <em>Name</em> of <code>initializeVariables</code> for this new assign action, then select the <em>Create</em> button.</p>
+<p><img src="images/400/image028.png" alt="" /></p>
+<p><strong>2.4.7</strong> Click on the Plus sign, then enter the variable name <code>EBS_Responsibility</code> in the <em>Name</em> column over the top of the default name <code>initializeVariables_assign_1</code> just to right of the little trash can.  Leave the <code>Data Type</code> as <em>simple</em>.</p>
+<p><strong>2.4.8</strong> Next, click on the little pencil icon on the very right of the variable definition table to bring up the expression editor.</p>
+<p><img src="images/400/image029.png" alt="" /></p>
+<p><strong>2.4.9</strong> Enter the constant <em>Expression</em> of <code>"ORDER_MGMT_SUPER_USER"</code> (with double quotes), then hit the <em>Close</em> button.</p>
+<p><img src="images/400/image030.png" alt="" /></p>
+<p><strong>2.4.10</strong> Select the little plus sign in the lower left of the variable table (just below to the little trash can) in order to add the next variable assignment.</p>
+<p><img src="images/400/image032.png" alt="" /></p>
+<p><strong>2.4.11</strong> Enter the following variables into the assignment action one at a time following the procedure described in 2.4.7 -&gt; 2.4.9:</p>
+<table border=2, border-width=2>
+  <tr>
+    <th  style="background-color: #008000">Variable Name</th>
+    <th  style="background-color: #008000">Value</th>
+  </tr>
+  <tr><td>EBS_RespApplication</td><td>"ONT"</td></tr>
+  <tr><td>EBS_SecurityGroup</td><td>"STANDARD"</td></tr>
+  <tr><td>EBS_NLSLanguage</td><td>"AMERICAN"</td></tr>
+  <tr><td>EBS_OrgID</td><td>"204"</td></tr>
+  <tr><td>EBS_API_Version_Number</td><td>"1.0"</td></tr>
+  <tr><td>EBS_Sold_From_Org_ID</td><td>"204"</td></tr>
+  <tr><td>EBS_Price_List_ID</td><td>"1000"</td></tr>
+  <tr><td>EBS_Order_Type_ID</td><td>"1430"</td></tr>
+</table>
+<p><strong>2.4.12</strong> After all the variables have been added to the assign action, select the <em>Validate</em> button to make sure all the assignments are valid and ready to use.</p>
+<p><img src="images/400/image033.png" alt="" /></p>
+<p><strong>2.4.13</strong> Select the <em>Close</em> button to exit the <em>Assign</em> Action</p>
+<p><img src="images/400/image033a.png" alt="" /></p>
+<h3 id="25----map-the-restheader-and-inputparameters-target-variables-for-the-createebsorder-api-invocation"><strong>2.5</strong>    Map the <strong>RESTHeader</strong> and <strong>InputParameters</strong> Target Variables for the <strong>createEBSOrder</strong> API invocation</h3>
+<hr />
+<p>There are a total of 26 target variables that need to be mapped to successfully execute the EBS PROCESS_ORDER API call.  The next 3 sections will guide you through the process of mapping all these attributes.  Mapping many fields can be a common task while working with integrations.  ICS has the capability to do very complex mappings if necessary.</p>
+<p><strong>2.5.1</strong> The <em>createEBSOrder</em> mapping orchestration step is just above the corresponding <em>createEBSOrder</em> API invocation.</p>
+<p><strong>2.5.2</strong> Click on the double arrow mapping symbol to pop-up the edit pencil.</p>
+<p><strong>2.5.3</strong> Click on the little pencil to edit the mapping.</p>
+<p><img src="images/400/image035.png" alt="" /></p>
+<p><strong>2.5.4</strong> Once the mapping editor is displayed, we can begin to map the constants we just previously created to the inbound payload for the EBS PROCESS_ORDER API</p>
+<p><strong>2.5.5</strong> We will first map the <code>Responsibility</code> target value.  Left-click and drag from the little circle just to the right of the <code>$EBS_Responsibility</code> variable in the Source variable list.</p>
+<p><strong>2.5.6</strong> Drop the <code>$EBS_Responsibility</code> on top of the little circle just to the left of the <code>Responsibility</code> variable in the Target on the right hand side of the mapping editor.</p>
+<p><img src="images/400/image036.png" alt="" /></p>
+<p><strong>2.5.7</strong> Continue to map the first 6 constants according to the chart below</p>
+<table border=2, border-width=2>
+  <tr>
+    <th  style="background-color: #008000">Source Variable Name</th>
+    <th  style="background-color: #008000">Target Variable Name</th>
+  </tr>
+  <tr><td>$EBS_Responsibility</td><td>Responsibility</td></tr>
+  <tr><td>$EBS_RespApplication</td><td>RespApplication</td></tr>
+  <tr><td>$EBS_SecurityGroup</td><td>SecurityGroup</td></tr>
+  <tr><td>$EBS_NLSLanguage</td><td>NLSLanguage</td></tr>
+  <tr><td>$EBS_OrgID</td><td>Org_iD</td></tr>
+  <tr><td>$EBS_API_Version_Number</td><td>P_API_Version_Number</td></tr>
+</table>
+<p>Note: The <code>Language</code> EBS RESTHeader variable doesn't need to be mapped</p>
+<p><img src="images/400/image037.png" alt="" /></p>
+<p><strong>2.5.8</strong> Now we need to set the value of 3 of the EBS target variables to <em>True</em> by giving them the hard-coded value of <code>T</code>.</p>
+<p><strong>2.5.9</strong> Left-click on the Target variable <code>P_INIT_MSG_LIST</code> in order to bring up the advanced mapping editor</p>
+<p><img src="images/400/image038.png" alt="" /></p>
+<p><strong>2.5.10</strong> In the <em>Build Mappings</em> screen left-click on the field labeled <em>-- Drag and Drop or Type here…</em> to get into the edit mode</p>
+<p><img src="images/400/image039.png" alt="" /></p>
+<p><strong>2.5.11</strong> Now type the constant letter <code>T</code> (with no quotes).</p>
+<p><strong>2.5.12</strong> After entering the value <code>T</code>, click on the <em>Save</em>, then <em>Close</em> buttons.</p>
+<p><img src="images/400/image040.png" alt="" /></p>
+<p><strong>2.5.13</strong> Repeat steps 2.5.9 -&gt; 2.5.12 for the following three target variables</p>
+<table border=2, border-width=2>
+  <tr>
+    <th style="background-color: #008000">Target Variable Name</th>
+  </tr>
+  <tr><td>P_INIT_MSG_LIST (already done)</td></tr>
+  <tr><td>P_RETURN_VALUES</td></tr>
+  <tr><td>P_ACTION_COMMIT</td></tr>
+</table>
+<p>Progress Note: You have now already mapped 9 of the 26 target variables so we are 1/3 of the way to being completed!</p>
+<p><strong>2.5.14</strong> After setting the constant variables to <code>T</code>, expand the <code>P_HEADER_REC</code> variable so we can map the header record values</p>
+<p><img src="images/400/image041.png" alt="" /></p>
+<h3 id="26-map-the-p_header_rec-target-variables-for-the-createebsorder-api-invocation"><strong>2.6</strong> Map the <strong>P_HEADER_REC</strong> Target Variables for the <strong>createEBSOrder</strong> API invocation</h3>
+<hr />
+<p><strong>2.6.1</strong> There are hundreds of attributes in the <code>P_HEADER_REC</code> so we will leverage the <em>Search</em> field to find the fields we need to map.</p>
+<p><strong>2.6.2</strong> Map the <code>createOrderRequest -&gt; Comment</code> variable over to <code>P_HEADER_REC -&gt; ATTRIBUTE1</code>.  Click and drag the little circle just to the right of the source <code>Comment</code> variable and then drag and drop it on top of the little circle just to the left of the <code>ATTRIBUTE1</code> target variable.</p>
+<p><img src="images/400/image057.png" alt="" /></p>
+<p><strong>2.6.3</strong> Next, enter the target attribute name <code>CUST_PO_NUMBER</code> in the search field, then click on the search <em>magnifying glass</em>.  The <code>CUST_PO_NUMBER</code> field will be display on top of the target variable list.</p>
+<p><strong>IMPORTANT NOTE</strong>: Do not hit the search button for the variable more than once because it will go to the 2nd <code>CUST_PO_NUMBER</code> field which is in the next EBS payload section called <code>P_OLD_HEADER_REC</code>.</p>
+<p><img src="images/400/image042.png" alt="" /></p>
+<p><strong>2.6.4</strong> We need a unique number in the <code>CUST_PO_NUMBER</code> target field, so we will use an advanced XLST function to generate a random number between 0 and 12 digits.</p>
+<p><strong>2.6.5</strong> Click on the <code>CUST_PO_NUMBER</code> field to bring up the advanced mapping editor for that field.</p>
+<p><img src="images/400/image043.png" alt="" /></p>
+<p><strong>2.6.6</strong> Open up the <em>Mapping Functions</em> in the advanced mapping editor, then open up the <em>Advanced</em> section.</p>
+<p><strong>2.6.7</strong> Click and drag the <code>generate-guid</code> XSLT function over to the <code>CUST_PO_NUMBER</code> target.</p>
+<p><img src="images/400/image043a.png" alt="" /></p>
+<p><strong>2.6.8</strong> In order to limit the size of the random GUID to 13 digits, we will use the XSLT <em>substring</em> function.</p>
+<p><strong>2.6.9</strong> Close the <em>Advanced</em> functions sections, then open up the <em>String</em> section and scroll down so you can see the <code>substring</code> function.</p>
+<p><strong>2.6.10</strong> Drag and drop the <code>substring</code> function on top of the <code>generate-guid</code> function in the <em>Target</em> side of the mapping</p>
+<p><img src="images/400/image043b.png" alt="" /></p>
+<p><strong>2.6.11</strong> Select the radio button for <em>string</em> indicating that the generate-guid() function's value will be the base string for the substring function.  Select the <em>OK</em> button to close the dialog.</p>
+<p><img src="images/400/image043c.png" alt="" /></p>
+<p><strong>2.6.12</strong> Next, enter the value <em>1.0</em> for the starting location field of the substring.</p>
+<p><img src="images/400/image043d.png" alt="" /></p>
+<p><strong>2.6.13</strong> We need to give one more parameter to the <code>substring()</code> function for the ending index of the substring.  To add another parameter to the function, right-click on the substring() function, the select the menu item <em>Insert Child</em> as shown in the following screenshot:</p>
+<p><img src="images/400/image043e.png" alt="" /></p>
+<p><strong>2.6.14</strong> Enter the value <em>12.0</em> in the 3rd parameter for the <code>substring()</code> function and this advanced mapping is done.</p>
+<p><strong>2.6.15</strong> Select the <em>Save</em>, then <em>Close</em> buttons</p>
+<p><img src="images/400/image043f.png" alt="" /></p>
+<p><strong>2.6.16</strong> Next, we want to set the current date to the <code>ORDERED_DATE</code> header target variable.  Enter the target attribute name <code>ORDERED_DATE</code> in the search field, then click on the search <em>magnifying glass</em>.</p>
+<p><strong>2.6.17</strong> Click on the <code>ORDERED_DATE</code> header target variable to open up the advanced mapping editor.</p>
+<p><img src="images/400/image044.png" alt="" /></p>
+<p><strong>2.6.18</strong> Scroll down and select <code>Mapping Components</code> on the bottom left of the <em>Source</em> side.</p>
+<p>NOTE: The mapping functions may already be open from the last <code>string</code> operation we used to create the <code>CUST_PO_NUMBER</code> field - in that case, just collapse the group of XSLT string functions then continue to the next step.</p>
+<p><strong>2.6.19</strong> Click and expand <em>Functions</em>, then click and expand <em>Date</em> functions.</p>
+<p><strong>2.6.20</strong> Drag and Drop the function <code>current-dateTime</code> into the area labeled <code>-- Drag and Drop or Type here...</code></p>
+<p><img src="images/400/image045.png" alt="" /></p>
+<p><strong>2.6.21</strong> Select the <em>Save</em> and <em>Close</em> buttons</p>
+<p><img src="images/400/image046.png" alt="" /></p>
+<p><strong>2.6.22</strong> Search for and set the following <code>P_HEADER_REC</code> values:</p>
+<table border=2, border-width=2>
+  <tr>
+    <th  style="background-color: #008000">Source Value</th>
+    <th  style="background-color: #008000">Target Variable Name in P_HEADER_REC</th>
+  </tr>
+  <tr><td>$EBS_Order_Type_ID</td><td>ORDER_TYPE_ID</td></tr>
+  <tr><td>$EBS_Sold_From_Org_ID</td><td>SOLD_FROM_ORG_ID</td></tr>
+  <tr><td>constant: <em>USD</em> (no quotes)</td><td>TRANSACTIONAL_CURR_CODE</td></tr>
+  <tr><td>constant: <em>CREATE</em> (no quotes)</td><td>OPERATION</td></tr>
+</table>
+<p><strong>2.6.23</strong> We have mapped a lot of values and it's difficult to see what has been accomplished on the Target side because we were using the <em>Search</em> feature.  In order to make it easy to see what has been mapped, we will apply a <em>Filter</em> to the target variable side.</p>
+<p><strong>2.6.24</strong> Click on the <em>Filter</em> button on the <em>Target</em> side of the mapping editor.</p>
+<p><strong>2.6.25</strong> In the <em>Filter</em> dialog box in the <em>Is it Mapped?</em> section, select the radio button <code>Mapped</code>, then select the <em>Apply</em> button.</p>
+<p><img src="images/400/image047.png" alt="" /></p>
+<p><strong>2.6.26</strong> You will now have a good view of all the currently mapped fields in the <em>RESTHeader</em>, <em>InputParameters</em>, and <em>P<em>HEADER</em>REC</em> target variable sections.</p>
+<p><strong>2.6.26</strong> Compare your work to the screenshot below:</p>
+<p><img src="images/400/image048.png" alt="" /></p>
+<p><strong>2.6.28</strong> It is a good practice to occasionally save your work during a long mapping exercise.  Click on the <em>Validate</em> button in the upper right of the mapper to save your work up to this point.</p>
+<p>Progress Note: You have now already mapped 16 of the 26 target variables so we are 62% of the way to being completed!</p>
+<h3 id="27-map-the-p_line_tbl-target-variables-for-the-createebsorder-api-invocation"><strong>2.7</strong> Map the <strong>P_LINE_TBL</strong> Target Variables for the <strong>createEBSOrder</strong> API invocation</h3>
+<hr />
+<p><strong>2.7.1</strong> There are still 11 target fields left to map. </p>
+<p><strong>2.7.2</strong> We need to remove the target filter so we can find the final fields to map.  Click on the <em>Filter</em> button on the <em>Target</em> side of the mapping editor.</p>
+<p><strong>2.7.3</strong> In the <em>Filter</em> dialog box in the <em>Is it Mapped?</em> section, select the radio button <code>All Fields</code>, then select the <em>Apply</em> button.</p>
+<p><img src="images/400/image049.png" alt="" /></p>
+<p><strong>2.7.4</strong> In the <em>Search</em> field on the target side, enter the string <code>P_LINE_TBL</code>, then click on the little magnifying glass icon.</p>
+<p><strong>2.7.5</strong> Expand the <code>P_LINE_TBL</code> target node by clicking on the little chevron just to the left of the variable.</p>
+<p><strong>2.7.6</strong> Map the source <code>createOrderRequest -&gt; Lines</code> variable over to the <code>P_LINE_TBL_ITEM</code> target variable.  A <em>for-each(Lines)</em> XSLT expression is automatically added for this mapping because both the source <em>Lines</em> and the target <em>P<em>LINE</em>TBL_ITEM</em> are both arrays since there can be more than one line item in an order.</p>
+<p><img src="images/400/image050.png" alt="" /></p>
+<p><strong>2.7.7</strong> Expand the <code>P_LINE_TBL_ITEM</code> node, the enter <code>INVENTORY_ITEM_ID</code> in the target Search box then hit the search button (magnifying glass).</p>
+<p><strong>2.7.8</strong> If you want to be sure what the path to the target element you just searched for is, you can linger over the element to see that what it's path is as shown in the screenshot below:</p>
+<p><img src="images/400/image050a.png" alt="" /></p>
+<p><strong>2.7.9</strong> Map the source variable <code>ItemID</code> over to the target <code>INVENTORY_ITEM_ID</code> as shown below.</p>
+<p><img src="images/400/image051.png" alt="" /></p>
+<p><strong>2.7.10</strong> Continue to map the following source values into the <code>P_LINE_TBL_ITEM</code> target variables as shown in the following table:</p>
+<p>(Note: You can continue to use the search box or just scroll down - the target variables are in alphebetical order)</p>
+<table border=2, border-width=2>
+  <tr>
+    <th  style="background-color: #008000">Source Value</th>
+    <th  style="background-color: #008000">Target Variable Name in P_LINE_TBL_ITEM</th>
+  </tr>
+  <tr><td>createOrderRequest -> ItemID</td><td>INVENTORY_ITEM_ID (already mapped)</td></tr>
+  <tr><td>createOrderRequest -> Qty</td><td>ORDERED_QUANTITY</td></tr>
+  <tr><td>$EBS_Price_List_ID</td><td>PRICE_LIST_ID</td></tr>
+  <tr><td>Mapping Components -> Functions -> Date -> current-dateTime()</td><td>PRICING_DATE</td></tr>
+  <tr><td>constant in advanced mapper: <em>204</em> (no quotes)</td><td>SHIP_FROM_ORG_ID</td></tr>
+  <tr><td>createOrderRequest -> Price</td><td>UNIT_SELLING_PRICE</td></tr>
+  <tr><td>constant in advanced mapper: <em>CREATE</em> (no quotes)</td><td>OPERATION</td></tr>
+  <tr><td>constant in advanced mapper: <em>N</em> (no quotes)</td><td>CALCULATE_PRICE_FLAG</td></tr>
+</table>
+<p>Progress Note: You only have 1 more mapping to create… you've already mapped 25 target variables and are almost done… but let's make sure we mapped everything correctly so far.</p>
+<p><strong>2.7.11</strong> Once again, we have mapped a lot of values and it's difficult to see what has been accomplished on the Target side because we were using the <em>Search</em> feature.  In order to make it easy to see what has been mapped, we will apply a <em>Filter</em> to the target variable side.</p>
+<p><strong>2.7.12</strong> Click on the <em>Filter</em> button on the <em>Target</em> side of the mapping editor.</p>
+<p><strong>2.7.13</strong> In the <em>Filter</em> dialog box in the <em>Is it Mapped?</em> section, select the radio button <code>Mapped</code>, then select the <em>Apply</em> button.</p>
+<p><img src="images/400/image047.png" alt="" /></p>
+<p><strong>2.7.14</strong> You will now have a good view of all the currently mapped fields in the <em>RESTHeader</em>, <em>InputParameters</em>, and <em>P<em>HEADER</em>REC</em> target variable sections.</p>
+<p><strong>2.7.15</strong> Compare your work to the screenshot below:</p>
+<p><img src="images/400/image052.png" alt="" /></p>
+<p><strong>2.7.16</strong> It is a good practice to occasionally save your work during a long mapping exercise.  Click on the <em>Validate</em> button in the upper right of the mapper to save your work up to this point.</p>
+<h3 id="28-map-the-database-call-results-to-the-ebs-api-invocation"><strong>2.8:</strong> Map the Database Call Results to the EBS API Invocation</h3>
+<hr />
+<p><strong>2.8.1</strong> First, remove the filter on the target mappings as was done in step 2.7.3</p>
+<p><strong>2.8.2</strong> Next, click on the chevron in front of the <code>P_HEADER_REC</code> target variable to expand it.</p>
+<p><strong>2.8.3</strong> Now, enter the field <code>SOLD_TO_ORG_ID</code> in the target variable search box and hit the magnifying glass to search for it.</p>
+<p><img src="images/400/image052a.png" alt="" /></p>
+<p><strong>2.8.4</strong> To ensure that you're on the correct <code>SOLD_TO_ORG_ID</code> field in the massive EBS XML Payload, linger your mouse over the fieldname returned from the search.  You should see the path <em>/PROCESS</em>ORDER<em>Input/InputParameters/P</em>HEADER<em>REC/SOLD</em>TO<em>ORG</em>ID_ as shown in the screenshot below:</p>
+<p><img src="images/400/image052b.png" alt="" /></p>
+<p><strong>2.8.5</strong> Now we need to map the results from the Oracle Database call into the <code>SOLD_TO_ORG_ID</code> target variable.  Expand the source variable <code>lookupAccountIDOutput</code> and then drag the <code>LOOKUP_VALUE</code> over to the <code>SOLD_TO_ORG_ID</code> target.</p>
+<p><img src="images/400/image053c.png" alt="" /></p>
+<p><strong>2.8.6</strong> That was the last variable to be mapped! Do a final check of all the mappings by applying a filter again to the target variables (as was shown in step 2.7.13).  You should count a total of 26 mapped variables as (partially) shown below.</p>
+<p><img src="images/400/image053d.png" alt="" /></p>
+<h3 id="29-test-the-updated-mapping"><strong>2.9:</strong> Test the Updated Mapping</h3>
+<hr />
+<p><strong>2.9.1</strong> ICS has a built-in test harness so that you can see if the changes you made to your mapping actually work.</p>
+<p><strong>2.9.2</strong> First, select the <em>Test</em> button just below the <em>Validate</em> button just pressed.</p>
+<p><img src="images/400/image053.png" alt="" /></p>
+<p><strong>2.9.3</strong> Next, select the <code>Generate Inputs</code> button in the upper-right of the testing window.</p>
+<p><img src="images/400/image054.png" alt="" /></p>
+<p><strong>2.9.4</strong> We want to put an interesting comment in the input <code>&lt;ns0:Comment&gt;</code> element in the <code>Input: createOrderRequest</code> incoming payload.</p>
+<p><strong>2.9.5</strong> Edit the data in the generated inbound payload to something custom.  In this example it was set to <em>This is my Comment!</em></p>
+<p><img src="images/400/image055.png" alt="" /></p>
+<p><strong>2.9.6</strong> Now that the input data is ready, select the <code>Execute</code> button in the upper-right of the test window.</p>
+<p><img src="images/400/image056.png" alt="" /></p>
+<p><strong>2.9.7</strong> The mapping will be applied to the generated input data and the result will be shown in the <code>Output: PROCESS_ORDER_Input</code> section on the right side of the test window.</p>
+<p><strong>2.9.8</strong> Look for your custom comment and note that it has been mapped to the <code>P_HEADER_REC</code> -&gt; <code>ATTRIBUTE1</code> element.</p>
+<p><strong>2.9.9</strong> Now that we have seen that our mapping has been successfully modified, we can close the test window. Select the <code>Close</code> button in the lower-right of the test window.</p>
+<p><img src="images/400/image058.png" alt="" /></p>
+<p><strong>2.9.10</strong> Now we can close the Mapping Editor because our changes have been made and tested.</p>
+<p><strong>2.9.11</strong> Click on the <code>Close</code> button in the upper-right of the Mapping Editor.</p>
+<p><img src="images/400/image059.png" alt="" /></p>
+<p><strong>2.9.12</strong> If you haven't validated your changes to save them before you selected the <code>Close</code> button, a dialog box will appear asking if you want to apply your changes.  Select <em>Apply</em> to apply your changes before closing the mapping editor.</p>
+<p><img src="images/400/image060.png" alt="" /></p>
+<p><strong>2.9.13</strong> Save your changes made to the integration by pushing the <code>Save</code> button in the upper-right of the integration.</p>
+<p><img src="images/400/image060a.png" alt="" /></p>
+<h3 id="210-remap-the-return-payload"><strong>2.10:</strong> Remap the Return Payload</h3>
+<hr />
+<p>In Lab 300, we used a temporary mapping of the return values to verify the output of the query to the database.  In this section we will remap those to the final configuration.</p>
+<p><strong>2.10.1</strong> Scroll down to the bottom of the orchestration and open up the <em>createOrder</em> mapping action.</p>
+<p><img src="images/400/image061.png" alt="" /></p>
+<p><strong>2.10.2</strong> We need to delete the previous mappings from Lab 300.  Right-click on the target <code>OrderNumber</code> variable to pop-up the <em>Delete Mapping</em> menu.  </p>
+<p>(Note: If the menu doesn't pop-up on the first right-click, try it again and it should appear)</p>
+<p><img src="images/400/image062.png" alt="" /></p>
+<p><strong>2.10.3</strong> Select <em>Yes</em> from the pop-up dialog that asks if you're sure you want to delete this mapping?</p>
+<p><img src="images/400/image063.png" alt="" /></p>
+<p><strong>2.10.4</strong> In the mapping editor, scroll the bottom of the Source variables and then expand the <code>$createEBSOrder -&gt; PROCESS_ORDERResponse -&gt; OutputParameters</code> variable by clicking on the little chevron just to the left of the variable.</p>
+<p><strong>2.10.5</strong> After expanding the <code>OutputParameters</code>, then expand the <code>X_MESSAGES</code> source variable and then the <code>X_MESSAGES_ITEM</code> variable.</p>
+<p><strong>2.10.6</strong> Click and drag the <code>X_MESSAGES_ITEM</code> source variable over to the target <code>ErrorMsgs -&gt; Message</code> variable.</p>
+<p><img src="images/400/image064.png" alt="" /></p>
+<p><strong>2.10.7</strong> Click and drag the source variable <code>X_RETURN_STATUS</code> over to the target <code>Status</code> variable</p>
+<p><img src="images/400/image065.png" alt="" /></p>
+<p><strong>2.10.8</strong> Next, expand the source variable <code>X_HEADER_REC</code>, then in the search box on the source side, enter the string <code>ORDER_NUMBER</code> then select the search button (little magnifying glass)</p>
+<p><img src="images/400/image066.png" alt="" /></p>
+<p><strong>2.10.9</strong> Map the <code>ORDER_NUMBER</code> source variable over to the <code>OrderNumber</code> target variable.</p>
+<p><img src="images/400/image067.png" alt="" /></p>
+<p><strong>2.10.10</strong> Click on the <em>Validate</em> button in the upper right of the mapping editor.</p>
+<p><strong>2.10.10</strong> Now, click on the <em>Close</em> button in the upper right of the mapping editor.</p>
+<p><img src="images/400/image068.png" alt="" /></p>
+<p><strong>2.10.11</strong> From the orchestration, select the <em>Save</em> button to save all the changes made to the final mapping for the return payload.</p>
+<p><strong>2.10.12</strong> We are now completed with the design steps of the orchestration for Lab 400.  Finally, select the <em>Close</em> button in the upper right of the orchestration designer.</p>
+<p><img src="images/400/image069.png" alt="" /></p>
+<h3 id="211-activate-changes-to-the-integration"><strong>2.11:</strong> Activate Changes to the Integration</h3>
+<hr />
+<p><strong>2.11.1</strong> Click on the <em>Activate</em> switch/slider on the right of the <code>UserXX Create EBS Order</code> integration.</p>
+<p><img src="images/400/image070.png" alt="" /></p>
+<p><strong>2.11.2</strong> The <code>Activate Integration?</code> dialog will be displayed</p>
+<p><strong>2.11.3</strong> Select the <em>Enable tracing</em> and <em>Include Payload</em> checkboxes since this isn’t a production deployment.  The checkboxes will tell ICS that the payloads for each instance of the integration will be saved in the logfiles as explored in the first part of this lab earlier.</p>
+<p><strong>2.11.4</strong> Now select the <em>Activate</em> button to begin activation of the integration.</p>
+<p><img src="images/400/image071.png" alt="" /></p>
+<p><strong>2.11.5</strong> Once the integration is activated you will see that the activation slider now is colored green with a checkmark in it.</p>
+<p><strong>2.11.6</strong> A message will appear on the top of the ICS Designer Portal indicating that the integration activation was successful.  The WSDL for the service endpoint will also be displayed.</p>
+<p><img src="images/400/image072.png" alt="" /></p>
+<h3 id="212----check-the-service-endpoint"><strong>2.12:</strong>    Check the Service Endpoint</h3>
+<hr />
+<p><strong>2.12.1</strong> Click on the WSDL link so we can ensure that this integration has an available service endpoint.</p>
+<p><img src="images/400/image073.png" alt="" /></p>
+<p><strong>2.12.2</strong> The WSDL for you new ICS integration will now be displayed in your browser.</p>
+<p><strong>2.12.3</strong> Copy the WSDL URL into your copy buffer so we can test it in the next lab section.</p>
+<p><img src="images/400/image074.png" alt="" /></p>
+<p><strong>2.12.4</strong> Now that we have built and activated an integration and copied it's service endpoint, we can test it with some sample data to make sure it works.</p>
+<h2 id="part-3-test-the-ics-integration">Part 3: Test the ICS Integration</h2>
+<hr />
+<h3 id="31-test-using-soapui"><strong>3.1</strong>: Test Using SoapUI</h3>
+<p><strong>3.1</strong> Open SoapUI.  If you don't already have this installed, follow the instructions provided in the <strong>Prerequisites</strong> section of this workshop.</p>
+<p><img src="images/200/image052.png" alt="" /></p>
+<p><strong>3.2</strong> Click on the <strong>SOAP</strong> button so we can create a new project for testing our new ICS SOAP Web Service</p>
+<p><img src="images/300/image089.png" alt="" /></p>
+<p><strong>3.3</strong> In the <strong>New SOAP Project</strong> dialog window, paste the WSDL URL into the <strong>Initial WSDL</strong> window and give a meaningful <strong>Project Name</strong> such as <em>User03 Create EBS Order Lab 400</em>.  Keep the checkbox selected for <strong>create sample requests for all operations?</strong>.  Click on the <strong>OK</strong> button after you've initialized the settings for your new SoapUI SOAP project.</p>
+<p><img src="images/400/image075.png" alt="" /></p>
+<p><strong>3.4</strong> The new SOAP Project will appear in the left-hand navigation.</p>
+<p><strong>3.5</strong> Expand the <strong>createOrder</strong> operation by clicking on it, then open the auto-generated sample request <strong>Request 1</strong> by double-clicking on it.  An empty request payload will be generated.</p>
+<p><img src="images/400/image076.png" alt="" /></p>
+<p><strong>3.6</strong> In the request payload, as in Lab 300, replace the question marks with the following test values:</p>
+<ul>
+<li><strong>AccountName</strong>: <em>Imaging Innovations, Inc.</em></li>
+<li><strong>Comment</strong>: <em>Lab 400 request from SoapUI</em></li>
+<li><strong>ItemID</strong>: <em>2155</em></li>
+<li><strong>Qty</strong>: <em>1</em></li>
+<li><strong>Price</strong>: <em>3333</em></li>
+</ul>
+<p><img src="images/400/image077.png" alt="" /></p>
+<p><strong>3.7</strong> Next we need to add the authorization credentials so ICS will allow the request from SoapUI.  ICS uses basic username/password authentication.</p>
+<p><strong>3.8</strong> Click on the <strong>Auth</strong> button in the lower-left of the <strong>Request 1</strong> SoapUI window</p>
+<p><strong>3.9</strong> In the <strong>Authorization</strong> dropdown, select <em>Add New Authorization…</em></p>
+<p><img src="images/300/image093.png" alt="" /></p>
+<p><strong>3.10</strong> In the <strong>Add Authorization</strong> dialog pop-up window, select <strong>Type</strong> of <em>Basic</em> form the picklist, then select the <strong>OK</strong> button.</p>
+<p><img src="images/300/image094.png" alt="" /></p>
+<p><strong>3.11</strong> Fill in your assigned username and password in the <strong>Auth (Basic)</strong> window at the bottom of the SoapUI request window</p>
+<p><img src="images/300/image095.png" alt="" /></p>
+<p><strong>3.12</strong> ICS needs two headers in the request payload to satisfy the enforced Web Services Security (WSS) standards.  It needs both the <strong>WSS Username Token</strong> and the <strong>WS-Timestamp</strong>.</p>
+<p><strong>3.13</strong> Insert the <strong>WSS Username Token</strong> by right-clicking in the Request payload body and select <strong>Add WSS Username Token</strong> from the pull-down list</p>
+<p><img src="images/300/image096.png" alt="" /></p>
+<p><strong>3.14</strong> In the <strong>Specify Password Type</strong> dialog pop-up window, select <em>PasswordText</em> as the WSS Username Token type, then click on the <strong>OK</strong> button.</p>
+<p><img src="images/300/image097.png" alt="" /></p>
+<p><strong>3.15</strong> Insert the <strong>WS-Timestamp</strong> by right-clicking in the Request payload body and select <strong>Add WS-Timestamp</strong> from the pull-down list</p>
+<p><img src="images/300/image098.png" alt="" /></p>
+<p><strong>3.16</strong> In the <strong>Specify Time-To-Live value</strong> dialog pop-up window, set the value (in milliseconds) to <em>60000</em> (60 seconds), then click on the <strong>OK</strong> button.</p>
+<p><img src="images/300/image099.png" alt="" /></p>
+<p><strong>3.17</strong> Finally your request payload is ready to send to ICS.</p>
+<p><strong>3.18</strong> Click on the green <em>Submit Request</em> arrow in the upper left of the <strong>Request 1</strong> window.</p>
+<p><img src="images/300/image100.png" alt="" /></p>
+<p><strong>3.19</strong> The right side of the <strong>Request 1</strong> SoapUI window will display the results of the ICS integration call.</p>
+<p><strong>3.20</strong> The return payload of the ICS integration will show the Order Number and the status of <code>S</code> for <em>Success</em>.</p>
+<p><img src="images/400/image078.png" alt="" /></p>
+<h3 id="32----verify-the-order-was-created-in-ebs"><strong>3.2:</strong>    Verify the Order was Created in EBS</h3>
+<hr />
+<p><strong>3.2.1</strong> Login to EBS using the endpoint and credentials provided to you by the workshop organizer.  You will use the user <em>operations</em>.</p>
+<ul>
+<li><em>NOTE:</em> For the EBS instance used in this workshop, the Oracle Single Sign-On system is used to regulate access.  Unless individual users are explicitly added to have access to the EBS system, they will not be able to access the following EBS login page.  If you can't access the login page with your Oracle SSO login, then you can look at the following screenshots to see how you would be able to see your Order in an EBS R12.2 system.</li>
+</ul>
+<p><img src="images/400/image79.png" alt="" /></p>
+<p><strong>3.2.2</strong> Select the EBS Responsibility <em>Order Management, HTML User Interface</em>:</p>
+<p><img src="images/400/image80.png" alt="" /></p>
+<p><strong>3.2.3</strong> Examine the list in the <em>Open Orders</em> report and verify that your new order shows up in the list.</p>
+<p>Note that the <em>Order Amount</em> shown is larger than that of the quote because of shipping costs and taxes that were added automatically by EBS .</p>
+<p><img src="images/400/image81.png" alt="" /></p>
+<p>You have now completed the final lab of the ICS Developer Workshop.  </p>
+<p>Congratulations! You should now have a much better understanding of how to work with ICS to create complex integrations.</p>

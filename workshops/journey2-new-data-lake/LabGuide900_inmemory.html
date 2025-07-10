@@ -1,0 +1,153 @@
+<p><img src="images/400/400.JPG" alt="" /><br />
+Updated: June 19, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you learn about "In memory" options in Oracle Database how to use them. </p>
+<p>Oracle Database In-Memory is designed for mixed workloads. Its unique dual-format approach accelerates analytics while ensuring that the most up-to-date transactional data is constantly available—no moving of data out to a separate database.</p>
+<p>//TO DO add more description</p>
+<p>Documentation for Oracle In memory features can be found here: https://docs.oracle.com/database/122/INMEM/toc.htm.  </p>
+<p>Please direct comments to: Ram Posham () /Sadhana avasarala (sadhana.avasarala@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to work with Oracle In memory feature</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>A provisioned DBCS intance</li>
+</ul>
+<h1 id="procedure">Procedure</h1>
+<h2 id="prework">Prework</h2>
+<h2 id="step1--create-table-spaces-for-loading-the-data-star-schema">Step1:  Create Table spaces for loading the data (Star schema)</h2>
+<ul>
+<li>Run the following commands and wait until last command returns.  It might take a few mins</li>
+</ul>
+<p>. oraenv &lt;&lt;EOF
+salescA
+EOF
+sqlplus system/Manager123#@salesA &lt;&lt; EOF
+drop tablespace ts<em>temp;
+create temporary tablespace ts</em>temp tempfile '/u02/app/oracle/oradata/salescZ/salesZ/ts<em>temp01.dbf' size 1G reuse autoextend on;
+drop tablespace ts</em>data including contents and datafiles;
+create tablespace ts<em>data datafile '/u02/app/oracle/oradata/salescZ/salesZ/ts</em>data01.dbf' size 2G autoextend on;
+EOF</p>
+<ul>
+<li><img src="images/900/Inmemory-create-tablespace.gif" alt="" /> </li>
+</ul>
+<h3 id="step-2-download-data-to-be-loaded"><strong>STEP 2</strong>: Download Data to be loaded</h3>
+<p>Open SSH session to DBCS instance as shown in provisioning DBCS notebook</p>
+<p>Download the star schema export dump file using the following command. 
+wget -O /tmp/star-schema-benchmark-ssb.zip https://www.dropbox.com/s/vfea4snh8my3ngx/ssb.zip?dl=0 </p>
+<h3 id="step-3-create-ssb-user"><strong>STEP 3</strong> Create ssb user</h3>
+<ul>
+<li><img src="images/900/create-import-ssb.gif" alt="" /> </li>
+</ul>
+<p>sqlplus system/Manager123#@ [[databaseinstancename]] &lt;&lt; EOF
+drop user ssb cascade;
+create user ssb identified by ssb default tablespace ts<em>data temporary tablespace ts</em>temp;
+grant dba to ssb;
+connect ssb/ssb@[[databaseinstancename]]
+create or replace directory expdumpdir1 as '/tmp';
+EOF</p>
+<h3 id="step-4-import-schema"><strong>STEP 4</strong> Import Schema</h3>
+<p>cd /tmp
+unzip star-schema-benchmark-ssb.zip
+impdp ssb/ssb@[[Databse instance name]] parallel=4 directory=expdumpdir1  schemas=ssb dumpfile=ssb%u.dmp;</p>
+<h2 id="in-memory-workshop">In memory workshop</h2>
+<h3 id="step-1-configure-database-for-analytics----allocate-memory-for-columnar-store"><strong>STEP 1</strong>: Configure database for analytics -- Allocate memory for columnar store</h3>
+<ul>
+<li>Set inmemory databse size</li>
+<li>set mememory sizes and sga size</li>
+<li>Restart the database</li>
+</ul>
+<p>. oraenv &lt;&lt; EOF
+salescZ
+EOF
+sqlplus / as sysdba  &lt;&lt; EOF
+alter system set memory<em>target=4608M scope=spfile;
+alter system set memory</em>max<em>target=4608M scope=spfile;
+alter system set sga</em>max<em>size=3584M scope=spfile;
+alter system set inmemory</em>size=1536M scope=spfile;
+startup force;
+EOF</p>
+<h4 id="please-note-database-startup-is-needed-after-changing-inmemory-setting">Please note database startup is needed after changing inmemory setting</h4>
+<ul>
+<li><img src="images/900/set-inmemory-params.gif" alt="" /> </li>
+</ul>
+<h3 id="step-2-buffer-cache-ssb-tables-schema-to-compare-with-inmemory-columnar"><strong>STEP 2</strong>: Buffer Cache ssb tables schema to compare with inmemory columnar</h3>
+<p>sqlplus ssb/ssb@ [[database instance name]]   &lt;&lt; EOF
+alter table PART cache;
+alter table CUSTOMER cache;
+alter table SUPPLIER cache;
+alter table LINEORDER cache;
+alter table DATE_DIM cache;
+EOF</p>
+<h3 id="step-3-store-the-ssb-schema-tables-in-in-memory-columnar-store"><strong>STEP 3</strong>: Store the ssb schema tables in IN-MEMORY Columnar Store</h3>
+<p>sqlplus ssb/ssb@ [[ databaseinstancename]]  &lt;&lt; EOF
+alter table PART inmemory;
+alter table CUSTOMER inmemory;
+alter table SUPPLIER inmemory;
+alter table LINEORDER inmemory;
+alter table DATE_DIM inmemory;
+EOF</p>
+<h3 id="step-4-verify-inmemory-settings"><strong>STEP 4</strong>: Verify inmemory settings</h3>
+<ul>
+<li><p>Connect to SQL developer as described in provisioning DBCS document</p></li>
+<li><p>Execute following commands to verify in memory settings and current inmemory object status</p>
+<ul>
+<li>show sga</li>
+<li>show parameter inmemory</li>
+<li>select * from v$inmemory_area;</li>
+<li>SELECT v.owner, v.segment<em>name name, v.populate</em>status status
+FROM v$im_segments v;</li></ul></li>
+<li><p><img src="images/900/inmemory-settings.gif" alt="" /></p></li>
+</ul>
+<h3 id="step-5-populate-inmemory-store"><strong>STEP 5</strong>: Populate inmemory Store</h3>
+<ul>
+<li>Execute select with noparallel to force oracle database to load objects to columnar store</li>
+</ul>
+<p>SELECT /<em>+ full(d) noparallel (d )</em>/ Count(<em>) FROM date_dim d;
+SELECT /</em>+ full(s) noparallel (s )<em>/ Count(</em>) FROM supplier s;
+SELECT /<em>+ full(p) noparallel (p )</em>/ Count(<em>) FROM part p;
+SELECT /</em>+ full(c) noparallel (c )<em>/ Count(</em>) FROM customer c;
+SELECT /<em>+ full(lo) noparallel (lo )</em>/ Count(*) FROM lineorder lo;</p>
+<h3 id="step-6-verify-the-compression-status-and-data-in-memory"><strong>STEP 6</strong>: Verify the compression status and data in memory</h3>
+<p>-check the compression ratios. Higher the datasize, better compression.</p>
+<ul>
+<li><img src="images/900/compress.jpg" alt="" /></li>
+</ul>
+<p>SELECT v.owner, v.segment<em>name,
+v.bytes orig</em>size,
+v.inmemory<em>size in</em>mem<em>size,
+ROUND(v.bytes / v.inmemory</em>size, 2) comp<em>ratio
+FROM v$im</em>segments v
+ORDER BY 5;</p>
+<h3 id="step-7-verify-with-analytic-queries"><strong>STEP 7</strong>: Verify with analytic queries</h3>
+<p>In this step,  you can write your own querries or execute following sample queries and record the results</p>
+<ul>
+<li>SELECT Max(lo<em>ordtotalprice) most</em>expensive_order FROM lineorder;</li>
+<li>SELECT lo<em>orderkey, lo</em>custkey, lo<em>revenue WHERE lo</em>orderkey = 5000000;</li>
+<li>SELECT lo<em>orderkey, lo</em>custkey, lo<em>revenue FROM lineorder WHERE lo</em>custkey = 5641 AND lo<em>shipmode = 'XXX AIR'
+AND lo</em>orderpriority = '5-LOW';</li>
+<li>SELECT  Max(lo<em>supplycost) most</em>expensive<em>bluk</em>order FROM lineorder WHERE lo_quantity &gt; 52;</li>
+<li>SELECT d.d<em>year, c.c</em>nation, SUM(lo<em>revenue - lo</em>supplycost) profit FROM lineorder l, date<em>dim d,part p,
+supplier s,customer c  
+WHERE l.lo</em>orderdate = d.d<em>datekey
+AND l.lo</em>partkey = p.p<em>partkey
+AND l.lo</em>suppkey = s.s<em>suppkey
+AND l.lo</em>custkey = c.c<em>custkey
+AND s.s</em>region = 'AMERICA'
+AND c.c<em>region = 'AMERICA'
+GROUP BY d.d</em>year, c.c<em>nation
+ORDER BY d.d</em>year, c.c_nation;</li>
+</ul>
+<h3 id="step-8-verify-with-analytic-queries"><strong>STEP 8</strong>: Verify with analytic queries</h3>
+<p>Repeat the SQL queries in Step 7 with inmemory setting set to disabled</p>
+<ul>
+<li>alter session SET INMEMORY_QUERY=DISABLE;</li>
+<li>Execute queries in Step 7.</li>
+<li>Record the results</li>
+</ul>
+<h1 id="what-you-learned">What you Learned</h1>
+<h1 id="next-steps">Next Steps</h1>
+<ul>
+<li>Proceed to the next Lab to learn how to add Oracle Event Hub Cloud Service to the our Lab architcture and how to leverage DBCS -&gt;GGCS in our architecture</li>
+</ul>

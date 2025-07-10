@@ -1,0 +1,61 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="create-database-cloud-service-instance-using-user-interface">Create Database Cloud Service instance using user interface</h2>
+<h3 id="introduction">Introduction</h3>
+<p>Oracle Database Cloud Service provides you the ability to deploy Oracle databases in the Cloud, with each database deployment containing a single Oracle database. You have full access to the features and operations available with Oracle Database, but with Oracle providing the computing power, physical storage and (optionally) tooling to simplify routine database maintenance and management operations.</p>
+<p>When you create database deployments, Database Cloud Service creates compute nodes to host the database, using computing and storage resources provided by Oracle Compute Cloud Service. Additionally, it provides access to the compute nodes (and thus to the database) using networking resources provided by Oracle Compute Cloud Service.</p>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>create Database Cloud Service using the user interface.</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Oracle Public Cloud Service account including Database and Storage Cloud Service</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. First select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. On the dashboard click the hamburger icon on the Database tile. Select <strong>Open Service Console</strong>.
+<img src="images/01.png" alt="" /></p>
+<p>This is the Database Cloud Service Console page. To create new instance click <strong>Create Service</strong> button.
+<img src="images/02.png" alt="" /></p>
+<p>Select subscription type. Select the fully managed Oracle Database Cloud Service and the desired billing format. For more details about subscription types see the <a href="https://docs.oracle.com/cloud/latest/dbcs_dbaas/CSDBI/GUID-F1E6807A-D283-4170-AB2B-9D43CD8DCD92.htm#CSDBI3395">documentation</a>.
+<img src="images/03.png" alt="" /></p>
+<p>Select the latest 12c Software Release.
+<img src="images/04.png" alt="" /></p>
+<p>When creating a database deployment Oracle Database Cloud Service, the following Oracle Database editions are available:
+<img src="images/05.png" alt="" />
+Select Enterprise Edition.</p>
+<p>The last input page is the Service Details page. The following parameters have to be provided:</p>
+<ul>
+<li><p><strong>Service Name</strong>: the name of the service instance e.g. techcoDB.</p></li>
+<li><p><strong>Description</strong>: any description for your service.</p></li>
+<li><p><strong>Shape</strong>: number of OCPU and size of the RAM. Choose the smallest (default) one.</p></li>
+<li><p><strong>Timezone</strong>: set your timezone.</p></li>
+<li><p><strong>SSH Public Key</strong>: public key which will be uploaded to the VM during the creation. It allows to connect to the VM through ssh connection using the private key. To avoid additional task to create keypairs select Create a New Key option and download the newly generated keypair for later usage. Download the zip file to your <code>GIT_REPO_LOCAL_CLONE/cloud-utils</code> folder and unzip for later usage.
+<img src="images/06.png" alt="" /> 
+Open a terminal and change to folder <code>/GIT_REPO_LOCAL_CLONE/cloud-utils</code>. Unzip the file which contains the private and public keys. Most likely its (default) name is <em>sshkeybundle.zip</em>.</p>
+<pre><code>$ [oracle@localhost Desktop]$ cd /GIT_REPO_LOCAL_CLONE/cloud-utils
+$ [oracle@localhost cloud-utils]$ unzip sshkeybundle.zip
+Archive:  sshkeybundle.zip
+  inflating: privateKey              
+  inflating: publicKey
+</code></pre>
+<p>Before using privateKey it is required to change the mode of the file to rw by owner only.</p>
+<pre><code>$ [oracle@localhost cloud-utils]$  chmod 600 privateKey
+</code></pre></li>
+<li><p><strong>Administrator Password</strong>: database instance's system password. Don't forget to note the provided password.</p></li>
+<li><p><strong>DB Name (SID)</strong>: container database service identifier.</p></li>
+<li><p><strong>PDB Name</strong>: pluggable database service identifier. You can leave the default PDB1</p></li>
+<li><p><strong>Backup Destination</strong>: Leave default; Both Cloud and Local Storage</p></li>
+<li><p><strong>Cloud Storage Container</strong>: the name of the container for database instance. The format is the following: Storage-IDENTITYDOMAIN/CONTAINERNAME. Replace the identitydomain value according to your environment and specify a container name. Container name is up to you. The container don't need to be created in advance, because -see below- there is an option to create automatically.</p></li>
+<li><p><strong>Cloud Storage User Name and Password</strong>: the credentials for storage. Usually it is the same what was used to sign in to Oracle Cloud Services.</p></li>
+<li><p><strong>Create Cloud Storage Containers</strong>: check in because the container does not exist what you specified above.</p></li>
+<li><p><strong>Character Set</strong>: The database character set for the database. Leave default.</p></li>
+<li><p><strong>National Character Set</strong>: The national character set is used for data stored in SQL NCHAR data types. Leave default.</p></li>
+</ul>
+<p><img src="images/07.png" alt="" />
+For more details about parameters see the <a href="https://docs.oracle.com/cloud/latest/dbcs_dbaas/CSDBI/GUID-D4A35763-53ED-4FBB-97BF-0366F21B05E0.htm#CSDBI3401">documentation</a>. Click <strong>Next</strong>.</p>
+<p>The final page is the summary about the configuration before submit the instance creation request. Click <strong>Create</strong> to start the provisioning of the new service instance.
+<img src="images/08.png" alt="" /></p>
+<p>When the request has been accepted the Database Service Console page appears and shows the new instance. The instance now is in Maintenance (Progress) mode. Click on In Progress to get more information about the status.
+<img src="images/09.png" alt="" /></p>

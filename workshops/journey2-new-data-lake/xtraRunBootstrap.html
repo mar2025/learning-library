@@ -1,0 +1,41 @@
+<h1 id="instructions-to-run-the-bootstrapsh-script-manually">Instructions to run the bootstrap.sh script manually</h1>
+<p>Updated: March 9, 2018</p>
+<h2 id="introduction">Introduction</h2>
+<p>The New Data Lake journey provides instructions in <a href="LabGuide100StartHere.md">Lab 100 Start Here</a> that specify a bootstrap.sh script to use when the BDCS-CE instance is provisioned.  This bootstrap.sh does a number of key configuration steps for the journey, including populated the needed Zeppelin notebooks.</p>
+<p>While we recommend you follow the Lab100 instructions, this document provides instructions on how to do run the bootstrap script manually.</p>
+<h1 id="steps">Steps</h1>
+<h2 id="open-up-network-access-to-your-bdcs-ce-instance-for-ssh-oci-classic">Open up network Access to your BDCS-CE instance for SSH (OCI-Classic)</h2>
+<p>Our first step is to enable network access to our BDCS-CE server via the SSH protocol.  You will do this from the BDCS-CE Service Console.  Here are the steps (these steps are for OCI-Classic.  For OCI, SSH ports should already be open by default):</p>
+<ul>
+<li><p>From the BDCS-CE Service Console, navigate to Access Rules for your BDCS-CE instance.  </p></li>
+<li><p>Then, on the Access Rules page, enable the ssh (port 22) access rule by choosing Enable from the clickable menu under the Actions column as shown below.
+<img src="images/300/AllowSSH.gif" alt="" /></p></li>
+</ul>
+<h2 id="connect-via-ssh">Connect via SSH</h2>
+<p>Now that the network access is setup, we will proceed to connect to the BDCS-CE server via SSH.  </p>
+<p>If you do not know how to connect to BDCS-CE via SSH and private keys, you can review the documentation here:</p>
+<ul>
+<li>Navigate to the product documentation at <a href="http://docs.oracle.com/cloud/latest/big-data-compute-cloud/bigdata-compute-cloud-tasks.html">http://docs.oracle.com/cloud/latest/big-data-compute-cloud/bigdata-compute-cloud-tasks.html</a> .  </li>
+<li>Click “Tasks” in the navigation bar on the left hands side of the screen.  </li>
+<li>Then click the “Connect to a node through SSH” topic under the “Access the Service” category.
+<img src="images/300/SSH.gif" alt="ssh" /></li>
+</ul>
+<h3 id="instructions-for-windows-users">Instructions for Windows Users:</h3>
+<p>Windows users typically use Putty for SSH.  If you generated a private key via the web console during BDCS-CE instance creation, the downloaded private key will be in openSSH format, which can not be used directly with Putty.  Therefore, you will need to run the puttygen command (which gets installed with Putty) on your private key to convert it to ppk format.  Here is an example:</p>
+<p><img src="images/300/PuttyPrivateKey.gif" alt="ssh1" /></p>
+<p>Next, Windows users will specify the location of the private key (in .ppk format) when connecting.  Here is an example:
+<img src="images/300/PuttySSH.gif" alt="ssh2" /></p>
+<h2 id="connect-now-via-ssh-to-your-bdcs-ce-master-server--use-the-private-key-and-connect-as-the-user-opc">Connect now via SSH to your BDCS-CE Master Server.  Use the private key and connect as the user opc</h2>
+<p><img src="images/300/snap0011403.jpg" alt="ssh" /></p>
+<h2 id="now-run-these-commands-hint-in-putty-right-click-does-a-paste">Now run these commands (hint: in putty, right-click does a paste)</h2>
+<p>When you run this, it will take a few minutes so please be patient.</p>
+<pre><code>sudo bash
+wget -nc https://github.com/millerhoo/journey2-new-data-lake/raw/master/workshops/journey2-new-data-lake/files/100/bootstrap.sh
+chmod u+x bootstrap.sh
+./bootstrap.sh
+echo "done"
+</code></pre>
+<h2 id="if-you-have-a-multi-node-cluster-repeat-these-steps-on-each-node">If you have a multi-node cluster, repeat these steps on each node.</h2>
+<p>If you have more than 1 node in your cluster, repeat these steps for the other nodes.</p>
+<h2 id="begin-your-big-data-journey">Begin Your Big Data Journey</h2>
+<p>Return to the instructions in <a href="LabGuide200.md">Lab200</a> and start with Tutorial 1. </p>

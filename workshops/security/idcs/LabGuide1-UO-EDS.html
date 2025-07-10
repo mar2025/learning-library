@@ -1,0 +1,169 @@
+<h1 id="user-on-boarding---active-directory-synchronization">User On-boarding - Active Directory Synchronization</h1>
+<p><img src="images/1/header.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>Active Directory's Users and Groups can be synchronized to IDCS using the <strong>Microsoft Active Directory Bridge</strong>.</p>
+<p>You can select which AD containers of Users and Groups will be synchronized.
+A User's password is <strong>NOT</strong> synchronized. So users will need to either -</p>
+<ul>
+<li><strong>Activate</strong> (have email sent to them with link) which will let them set a password, or </li>
+<li><strong>Federate into IDCS</strong> - using your company's SAML Identity Provider (IDP) - for example - <strong>Active Directory Federation Service (ADFS)</strong></li>
+</ul>
+<h2 id="persona">Persona</h2>
+<p>Administrators, End-Users</p>
+<h2 id="objectives">Objectives</h2>
+<p><strong>Onboard users from On-premise Active Directory</strong></p>
+<ul>
+<li>Synchronization setup<ul>
+<li>AD Setup</li>
+<li>Configure Identity Bridge</li>
+<li>Initial Synchronization</li>
+<li>Verify Synchronization</li>
+<li>Synchronize Changes in Active Directory</li></ul></li>
+<li>End-user verfication<ul>
+<li>Activate IDCS Account</li></ul></li>
+</ul>
+<h2 id="logistics">Logistics</h2>
+<p>Windows Server 2012 equipped with .NET framework 4.6+. The script has been tested with Windows 2012 64-bit Server.</p>
+<h2 id="synchronization-setup">Synchronization setup</h2>
+<h3 id="step-1-active-directory-setup"><strong>STEP 1</strong>: Active Directory Setup</h3>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li><p><strong>Install Active Directory if not already done.</strong></p>
+<ul>
+<li><p>Log into Active Directory Machine as Administrator</p></li>
+<li><p>Copy install script file <a href="resources/createDomain.ps1">createDomain.ps1</a> onto your Active Directory machine.</p></li>
+<li><p>Right click on <strong>createDomain.ps1</strong> and choose run with PowerShell.</p>
+<p><img src="images/1/UO-EDS-1.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-2.jpg" alt="" /></p></li>
+<li><p>This will run a script and then reboot. It will show a list of errors which can be disregarded. The process should take between 5-10 minutes.</p>
+<p><img src="images/1/UO-EDS-3.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-4.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-5.jpg" alt="" /></p></li></ul></li>
+<li><p><strong>Populate Active Directory with required users and Orgs</strong></p>
+<ul>
+<li><p>Log into Active Directory Machine as <code>administrator@oracledemo.com</code>. </p></li>
+<li><p>Download and copy <a href="resources/populateAD.ps1">populateAD.ps1 </a> to this machine if you have not done so already.</p></li>
+<li><p>Right click on <strong>populateAD.ps1</strong> and choose run with PowerShell.</p>
+<p><img src="images/1/UO-EDS-6.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-7.jpg" alt="" /></p></li>
+<li><p>The powershell script will say <em>complete</em> when completed. You can then close the powershell window. </p>
+<p><img src="images/1/UO-EDS-8.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-9.jpg" alt="" /></p></li>
+<li><p>The Users, OU's and groups should now exist.</p>
+<p><img src="images/1/UO-EDS-10.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-11.jpg" alt="" /></p></li></ul></li>
+</ul>
+<h3 id="step-2-configure-identity-bridge"><strong>STEP 2</strong>: Configure Identity Bridge</h3>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li><p>Log into IDCS Admin Console </p>
+<p><img src="images/1/UO-EDS-12.jpg" alt="" /></p></li>
+<li><p>Click [Download and Configure]() under the title <strong>Directory Integrations</strong> from bottom of screen. </p></li>
+<li><p>Click the button <strong>Add a Microsoft Active Directory Bridge</strong></p>
+<p><img src="images/1/UO-EDS-13.jpg" alt="" /></p></li>
+<li><p>Click <strong>Download</strong>. This will download the Bridge installer to your local machine. </p>
+<p><img src="images/1/UO-EDS-14.jpg" alt="" />
+<img src="images/1/UO-EDS-15.jpg" alt="" /></p></li>
+<li><p>Copy the ClientID and Shared secret information</p>
+<p><img src="images/1/UO-EDS-16.jpg" alt="" /></p></li>
+<li><p>Copy the downloaded installer on the Windows server</p></li>
+<li><p>Launch the Oracle Identity Cloud Service Active Directory Agent installer (double click the <strong>EXE</strong> file) from the Windows Server.</p></li>
+<li><p>Click on <strong>Next</strong> on the next 3 screens on the Wizard</p>
+<p><img src="images/1/UO-EDS-17.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-18.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-19.jpg" alt="" /></p></li>
+<li><p>In the <em>Enter Provided Credentials</em> window, provide information about your Oracle Identity Cloud Service:</p>
+<ul>
+<li><p><strong>Cloud Service URL:</strong> The Oracle Identity Cloud Service URL. For example, <a href="https://example.oraclecloud.com">https://example.oraclecloud.com</a></p></li>
+<li><p><strong>Identity Bridge Client ID</strong> and <strong>Identity Bridge Secret</strong> - The information you copied from Oracle Identity Cloud Service earlier</p></li>
+<li><p>Click on <strong>Next</strong></p>
+<p><img src="images/1/UO-EDS-20.jpg" alt="" /></p></li></ul></li>
+<li><p>Provide Active Directory Administrator credentials, uncheck <strong>Use SSL</strong> checkbox, and click on <strong>Test Connection</strong></p>
+<p><img src="images/1/UO-EDS-21.jpg" alt="" /></p></li>
+<li><p>After successful connection test, click on <strong>Next</strong></p>
+<p><img src="images/1/UO-EDS-22.jpg" alt="" /></p></li>
+<li><p>Installer will now install the agent. When finished exist the installer by clicking <strong>Close</strong>.</p>
+<p><img src="images/1/UO-EDS-23.jpg" alt="" /></p></li>
+<li><p>Go back to the IDCS Admin Console. Move to <strong>Directory Integrations</strong> menu under <strong>Settings</strong>. The registered client will be listed as active.</p>
+<p><img src="images/1/UO-EDS-24.jpg" alt="" /></p></li>
+<li><p>Click the bridge you just registered. The page contains four items where you can select organizational units for users, for groups and configure the synchronization.</p>
+<p><img src="images/1/UO-EDS-25.jpg" alt="" /></p></li>
+<li><p>In the <strong>Select Organizational Units (OU's) for Users</strong> section, select the OU's containing the users that you want to synchronize with IDCS. Select <strong>DemoUsers</strong> OU.</p></li>
+<li><p>In the <strong>Select organizational units(OU's) for Groups</strong> Section, select OU's containing the groups to be synchronized with IDCS. Select <strong>Groups</strong> OU.</p></li>
+<li><p>In the <strong>Set import frequency</strong> section, select the interval at which the agent will run and synchronize users and groups with IDCS. Change the interval to something shorter than 1 Hour. (1-5 minutes are good options)</p></li>
+<li><p>The <strong>federated authentication</strong> is enabled by default. This configuration means the user credentials will be validated against a configured Identity Provider. In this demo, uncheck the federated authentication checkbox. IDCS will generate the password for the users and send the notification by email (the email attribute must be filled in Microsoft Active Directory and mapped to IDCS).</p>
+<p><img src="images/1/UO-EDS-26.jpg" alt="" /></p></li>
+<li><p>Click on <strong>Save</strong>.</p>
+<p><img src="images/1/UO-EDS-27.jpg" alt="" /></p></li>
+<li><p>Summary of the bridge configuration is displayed.</p>
+<p><img src="images/1/UO-EDS-28.jpg" alt="" /></p></li>
+<li><p>Click <strong>Attribute Mappings</strong> tab to modify the default attribute mappings between the Microsoft Active Directory and IDCS. Keep the default mappings for the demo.</p>
+<p><img src="images/1/UO-EDS-29.jpg" alt="" /></p></li>
+<li><p>Click <strong>Import</strong> tab to see information about the last time the bridge ran. At this moment no information is shown as you did not run it yet.</p>
+<p><img src="images/1/UO-EDS-30.jpg" alt="" /></p></li>
+</ul>
+<h3 id="step-3-initial-synchronization"><strong>STEP 3</strong>: Initial Synchronization</h3>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li><p>Click <strong>Import</strong> to manually start the import job.</p></li>
+<li><p>Refresh the page until the synchronization is completed.</p>
+<p><img src="images/1/UO-EDS-31.jpg" alt="" /></p></li>
+<li><p>Review the synchronization summary displayed :</p></li>
+</ul>
+<pre><code>How many users were successfully imported.
+How many groups were successfully imported.
+How many users failed to import.
+How many groups failed to import.
+</code></pre>
+<pre><code>![](images/1/UO-EDS-32.jpg)
+</code></pre>
+<h3 id="step-4-verify-synchronization"><strong>STEP 4</strong>: Verify Synchronization</h3>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li><p>In the IDCS admin console, click <strong>Users</strong>. </p></li>
+<li><p>The users imported from the Microsoft Active Directory are displayed in IDCS</p>
+<p><img src="images/1/UO-EDS-33.jpg" alt="" /></p></li>
+<li><p>Click <strong>Groups</strong>. </p></li>
+<li><p>The groups imported from Microsoft Active Directory are displayed in IDCS.</p>
+<p><img src="images/1/UO-EDS-34.jpg" alt="" /></p></li>
+<li><p>Click the group <strong>Employees</strong> and then click <strong>Users</strong> tab. The group membership reflects the membership from Active Directory. Verify that <strong>Danny Crane</strong> is part of the <strong>Employees</strong> group.</p>
+<p><img src="images/1/UO-EDS-35.jpg" alt="" /></p></li>
+</ul>
+<h3 id="step-5-synchronize-changes-in-active-directory"><strong>STEP 5</strong>: Synchronize Changes in Active Directory</h3>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li><p>From IDCS admin console, click the group <strong>OurVendor</strong> and then click <strong>Users</strong> tab. Ensure that no user is assigned to the group.</p>
+<p><img src="images/1/UO-EDS-36.jpg" alt="" /></p></li>
+<li><p>Go to <strong>Active Directory Users and Computers</strong> inside the Windows Server. Open the group <strong>OurVendor</strong>. Add <strong>John Wells</strong> as the member.</p>
+<p><img src="images/1/UO-EDS-37.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-38.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-39.jpg" alt="" /></p></li>
+<li><p>Run the <strong>Import</strong> job of the bridge again from IDCS admin console. Refresh until finished.</p>
+<p><img src="images/1/UO-EDS-40.jpg" alt="" /></p></li>
+<li><p>Verify that <strong>John Wells</strong> is now a member of the group <strong>OurVendor</strong> in IDCS.</p>
+<p><img src="images/1/UO-EDS-41.jpg" alt="" /></p></li>
+</ul>
+<h2 id="end-user-verfication">End-user verfication</h2>
+<h3 id="step-1-activate-idcs-account"><strong>STEP 1</strong>: Activate IDCS Account</h3>
+<p><code>(Persona: End-Users)</code></p>
+<ul>
+<li><p>Login to Gmail as [demoidcs@gmail.com](). Go to the <strong>User1</strong> label. Verify that there is an activation email from IDCS for <strong>Danny Crane</strong></p>
+<p><img src="images/1/UO-EDS-42.jpg" alt="" /></p></li>
+<li><p>Open and review the email. Click on the <strong>Activate Your Account</strong> button.  </p>
+<p><img src="images/1/UO-EDS-43.jpg" alt="" /></p></li>
+<li><p>IDCS Change Password page will open up. Provide a suitable password that matches the listed <strong>Password Criteria</strong>. Click on <strong>Submit</strong>.</p>
+<p><img src="images/1/UO-EDS-44.jpg" alt="" /></p></li>
+<li><p>Verify that you are redirected to IDCS <strong>MyApps</strong> portal, which would be empty for now.</p>
+<p><img src="images/1/UO-EDS-45.jpg" alt="" /></p>
+<p><img src="images/1/UO-EDS-46.jpg" alt="" /></p></li>
+<li><p>Go to <code>My Profile</code> section from menu located top-right</p>
+<p><img src="images/1/UO-EDS-47.jpg" alt="" /></p></li>
+<li><p>Ensure that <strong>Employee</strong> group is visible under <strong>My Access</strong> sub-tab</p></li>
+</ul>
+<p><img src="images/1/UO-EDS-48.jpg" alt="" /></p>
+<h2 id="additional-resources">Additional Resources</h2>
+<ul>
+<li><p><a href="https://docs.oracle.com/en/cloud/paas/identity-cloud/uaids/understanding-bridge.html">Understanding the Bridge</a></p></li>
+<li><p>Tutorial: <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/cloud/idcs/idcs_idbridge_obe/idbridge.html">Oracle By Example (OBE): Oracle Identity Cloud Service: Integrating with Microsoft Active Directory Using Directory Integrations</a> </p></li>
+<li><p>An Approach to AD Bridge HA using Docker and Windows Containers - <a href="http://www.oracle.com/technetwork/articles/idm/gutierrez-idcs-idbridge-3960710.html">OTN Link</a></p></li>
+</ul>

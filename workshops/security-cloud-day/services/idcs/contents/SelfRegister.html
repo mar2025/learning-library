@@ -1,0 +1,54 @@
+<h1 id="b2c-self-registration">B2C: Self-Registration</h1>
+<h2 id="create-external-group">Create External Group</h2>
+<ul>
+<li><p>Go to IDCS Admin Console -&gt; Groups tab </p></li>
+<li><p>Add group <code>OurPartner</code></p>
+<p><img src="images/SelfRegister-1.png" alt="" /></p></li>
+<li><p>Click on <code>Finish</code></p>
+<p><img src="images/SelfRegister-2.png" alt="" /> </p></li>
+</ul>
+<h2 id="create-registration-profile----persona-administrator">Create Registration profile  - (Persona: Administrator)</h2>
+<ul>
+<li><p>Login to IDCS Admin Console as an Administrator. Go to the <strong>Settings</strong> tab and click on the <strong>Self Registration</strong> menu from the sidebar.</p>
+<p><img src="images/SelfRegister-3.png" alt="" /></p></li>
+<li><p>Click on <strong>Add Profile</strong></p></li>
+<li><p>On the Profile creation page, enter <code>Profile Name -</code> <strong><code>OurPartner</code></strong>. </p>
+<p><img src="images/SelfRegister-4.png" alt="" /></p></li>
+<li><p>Click on <strong>Add</strong> under <code>Assign to Group</code> section. Select the external group <strong><code>OurPartner</code></strong> and click on <strong>OK</strong></p>
+<p><img src="images/100/SelfRegister-5.png" alt="" /></p></li>
+<li><p>Under <code>Self-Registration Content</code> section, enter <code>Registration Page Name -</code> <strong><code>OurPartner</code></strong>.</p>
+<p><img src="images/SelfRegister-6.png" alt="" /></p></li>
+<li><p>Review the remaining sections. Keep the default values.</p>
+<p><img src="images/SelfRegister-7.png" alt="" /></p></li>
+<li><p>Click on <strong>Save</strong> and then click <strong>Yes</strong> on the <strong>Confirmation</strong>.</p>
+<p><img src="images/SelfRegister-8.png" alt="" /></p>
+<p><img src="images/SelfRegister-9.png" alt="" /></p></li>
+<li><p>Click on <strong>Activate</strong> and then <strong>Activate Profile</strong></p>
+<p><img src="images/SelfRegister-10.png" alt="" /></p>
+<p><img src="images/SelfRegister-11.png" alt="" /></p></li>
+<li><p>Note the <strong><code>Profile ID</code></strong> and create the self-registration link in the following format :</p>
+<pre><code class="js language-js">https://&lt;tenant&gt;.identity.oraclecloud.com/ui/v1/signup?profileid=&lt;Noted Profile ID&gt;
+</code></pre>
+<blockquote>
+This link can be forwarded in the registration invitation email or other channel to the external users.
+</blockquote>
+<p><img src="images/SelfRegister-12.png" alt="" /></p></li>
+</ul>
+<h2 id="self-registration---persona-end-user">Self Registration - (Persona: End-User)</h2>
+<ul>
+<li><p>Click on the Registration link supplied.</p>
+<p><img src="images/SelfRegister-13.png" alt="" /></p></li>
+<li><p>Enter required profile information and <strong>submit</strong></p>
+<p><img src="images/SelfRegister-14.png" alt="" /></p></li>
+<li><p>On the Success message page, click on <strong>continue</strong>. <strong>Skip</strong> the 2-step verification.</p>
+<p><img src="images/SelfRegister-15.png" alt="" /></p>
+<p><img src="images/SelfRegister-16.png" alt="" /></p></li>
+<li><p>From the <code>My Apps</code> page access the <code>My Profile</code> menu. </p>
+<p><img src="images/SelfRegister-17.png" alt="" /></p>
+<p><img src="images/SelfRegister-18.png" alt="" /></p></li>
+<li><p>Go to the <code>My Access</code> tab. Ensure that user is part of the group configured in the registration profile. </p>
+<blockquote>
+If the group is assigned to one or more apps in IDCS, the new user will automatically gain access to those apps, and the apps will be visible on the My Apps page.
+</blockquote>
+<p><img src="images/SelfRegister-19.png" alt="" /></p></li>
+</ul>

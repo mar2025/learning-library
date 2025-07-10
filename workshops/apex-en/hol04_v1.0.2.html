@@ -1,0 +1,86 @@
+<h1 id="unit-4-managing-pages-in-page-designer">Unit 4: Managing Pages in Page Designer</h1>
+<p>In this lab, you create a dashboard by adding a new component to the Home page of the Demo Projects application. You open the home page in page designer, navigate through and review the page designer panes, add a chart region and edit the chart attributes.</p>
+<ol>
+<li><p>In the lab <strong>HOL 3-1</strong>, you finished by running the application. Given that you ran the application from the Application Builder, there is a Developer Toolbar at the bottom of the screen. This toolbar allows developers to quickly navigate between runtime and various sections within the Application Builder.</p>
+<p>Navigate to the <strong>Home</strong> page in the runtime application.</p>
+<p>In the Developer Toolbar, click <strong>Edit Page 1</strong>.</p>
+<p><strong>Note</strong>: If you are not on the Home page then the Developer Toolbar will show the current page number, and clicking on Edit Page xx will navigate to that page, instead of Page 1.
+<img src="images/hol04/image3.png" alt="1a" /></p></li>
+<li><p>The Page Designer is displayed for Page 1. There are three main panes within Page Designer: Left Pane, Central Pane, and Right Pane.</p>
+<p>You can change the size of each pane by selecting the dividers and sliding them left or right. Change the size of <strong>Grid Layout</strong> and <strong>Gallery</strong> by sliding the divider between them up and down.
+<img src="images/hol04/image4.png" alt="1b" /></p></li>
+<li><p>In the Page Designer, you can invoke help on any attribute by clicking Help icon (shown as a question mark) on the toolbar. Select a component and then select an attribute in the Property Editor to display help on that attribute.
+<img src="images/hol04/image5.png" alt="1c" /></p></li>
+<li><p>Add a bar chart using drag and drop. The chart shows projects with the number of tasks.</p>
+<p>a) Click <strong>Layout</strong>. 
+    </p>
+    <img src="images/hol04/image6.png" alt="1d1" /></p>
+<p>b) In the Gallery (directly below the Grid Layout), click <strong>Regions</strong>, and locate <strong>Chart</strong>.
+    <img src="images/hol04/image7.png" alt="1d2" /></p>
+<p>c) Click and hold <strong>Chart</strong> and drag it to the <strong>Content Body</strong> region. It should appear as a darkened tile before you drop it into place.
+    <img src="images/hol04/image8.png" alt="1d3" /></p>
+<p><strong>Note</strong>: When you drag the region up, and hover over the small yellow section, below Content Body, the yellow section will expand. A darker yellow section, with a black box around it, will indicate where the region will be placed.</p>
+<p>d) Now you modify the properties for a region, such as the Title and Template Options. When you first create a region, it is created with default properties, such as a Title of <strong>New</strong>.</p>
+<p>Use the Property Editor to edit attributes for the currently selected component.</p>
+<p>In the <strong>Property Editor</strong>, under Identification, for Title - enter <strong>Project Tasks</strong>.</p>
+<p><strong>Note</strong>: The region name in the Rendering tree (left pane) and the Grid Layout (central pane) are updated to reflect the new title, as soon as you navigate out of the Title attribute in the Property Editor.
+   <img src="images/hol04/image9.png" alt="1de" /></p>
+<p>e) In the Property Editor, under <strong>Appearance</strong>, locate <strong>Template Options</strong> and click <strong>Use Template Defaults, Scroll - Default</strong>.
+    <img src="images/hol04/image10.png" alt="1f" /></p>
+<p>f) For Body Height select <strong>480px</strong>.
+   Click <strong>OK</strong>.<br />
+   </br>
+   <img src="images/hol04/image11.png" alt="1g" /></p>
+<p>g) For certain region types, such as Charts, there are also Attribute properties. The region properties determine how the region is displayed, whereas, the Attributes for a region (where available) are used to define the characteristics of the region, and how the contents of the region are displayed.</p>
+<p>Locate the Rendering tree. Under the <strong>Project Tasks</strong> region, click <strong>Attributes</strong>.</p>
+<p><img src="images/hol04/image12.png" alt="1e" /></p>
+<p>h) In the Property Editor:</p>
+<ul>
+<li><p>Chart: Type - select <strong>Bar</strong></p></li>
+<li><p>Appearance: Orientation - select <strong>Horizontal</strong></p></li>
+<li><p>Appearance: Stack - select <strong>Yes</strong></p></li>
+<li><p>Layout: Height - enter <strong>480</strong><br />
+<img src="images/hol04/image13.png" alt="1i" /></p>
+<p>i) Under Rendering &gt; Project Tasks region, navigate to <strong>Axes</strong> and select <strong>y</strong>. 
+In the property editor, enter <strong>Tasks</strong> for Title.
+<img src="images/hol04/image14.png" alt="1j" /></p>
+<p>j) The DEMO_PROJ_TASKS table includes a column called IS_COMPLETE_YN. This column is populated by users to indicate that a task is complete. Next, enter chart series details for 
+completed and incomplete tasks within a project.
+In the Rendering tree, nested under the Project Tasks region, click Series <strong>X New</strong>. </br>
+<img src="images/hol04/image15.png" alt="1k" /></p>
+<p>k)  In the property editor, under Identification &gt; Name, enter <strong>Tasks</strong>.</p>
+<p>l)  In the property editor, under Source, click the Code Editor icon.</br>
+ <img src="images/hol04/image16.png" alt="1m" /></p>
+<p>m)  For SQL Query, copy and paste the following code and then click <strong>OK</strong>.</p>
+<p>select p.id</p>
+<p>, p.name as label</p>
+<p>, (select count('x') from demo<em>proj</em>tasks t</p>
+<p>where p.id = t.project_id</p>
+<p>and nvl(t.is<em>complete</em>yn,'N') = 'Y'</p>
+<p>) value</p>
+<p>, 'Completed Tasks' series</p>
+<p>, p.created</p>
+<p>from demo_projects p</p>
+<p>UNION ALL</p>
+<p>select p.id</p>
+<p>, p.name as label</p>
+<p>, (select count('x') from demo<em>proj</em>tasks t</p>
+<p>where p.id = t.project_id</p>
+<p>and nvl(t.is<em>complete</em>yn,'N') = 'N'</p>
+<p>) value</p>
+<p>, 'Incomplete Tasks' series</p>
+<p>, p.created</p>
+<p>from demo_projects p</p>
+<p>order by 5</p></li></ul>
+<p><img src="images/hol04/image17.png" alt="Snap1" /></p>
+<p>n) Under Column Mapping, select:</p>
+<ul>
+<li><p>Series Name: <strong>SERIES</strong></p></li>
+<li><p>Label: <strong>LABEL</strong></p></li>
+<li><p>Value: <strong>VALUE</strong> </br></p>
+<p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</br>
+<img src="images/hol04/image18.png" alt="Snap2" /></p></li></ul>
+<p>o)  You might have to log in using Workspace username and password. The Demo Projects application home page now looks like:</br>
+    <img src="images/hol04/image19.png" alt="1" /></p></li>
+</ol>
+<h2 id="snap3jpegimageshol04image20png"><img src="images/hol04/image20.png" alt="Snap3.jpeg" /></h2>

@@ -1,0 +1,230 @@
+<p><img src="images/IL-100/001.png" alt="" /></p>
+<p>Update January 25, 2018</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the first of several labs that are part of the Oracle Public Cloud Database Cloud Service workshop. These labs will give you a basic understanding of the Oracle Database Cloud Service and many of the capabilities around administration and database development.  Note that this workshop uses Oracle's Oracle Compute Infrastructure (OCI) Database VM service, and not the legacy 'Classic' service or Bare Metal service.</p>
+<p>This lab will walk you through creating a new Database Cloud Service, and then have you connect into the Database image using the ssh private key to familiarize yourself with the image layout. Next you will learn how to create a ssh tunnel to access ports that are closed on a remote OPC instance. Using the tunnels, you will learn how to access various Database consoles.  </p>
+<p><strong>Note:  It will be helpful to have a notepad open as a holding place to copy and paste various items throughout all the labs.</strong> </p>
+<p>Note that if you performed the setup steps for this and the following labs some of these steps will be familiar.</p>
+<ul>
+<li>To log issues and view the Lab Guide source, go to the <a href="https://github.com/oracle/learning-library/tree/master/workshops/dbcs-dba-oci">github oracle</a> repository.</li>
+</ul>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Familiarize yourself with the Oracle Cloud Infrastructure.</li>
+<li>Create a Virtual Cloud Network (VCN).</li>
+<li>Create Database Cloud Service.</li>
+<li>SSH configuration.</li>
+<li>Explore VM and consoles.</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires a VNC Viewer to connect to an Image running on Oracle's IaaS Compute Service.</li>
+</ul>
+<h2 id="log-into-the-oracle-cloud-infrastructure-console">Log into the Oracle Cloud Infrastructure Console</h2>
+<h3 id="step-1--log-into-your-oracle-cloud-account"><strong>STEP 1</strong>:  Log into your Oracle Cloud Account</h3>
+<p><img src="images/IL-100/002.png" alt="" /></p>
+<h3 id="step-2--access-database-console-and-copy-public-ip-for-workshopimage"><strong>STEP 2</strong>:  Access Database Console and Copy Public IP for WorkshopImage</h3>
+<ul>
+<li><p>You will be accessing the <strong>Database (OCI)</strong> service.  If it is not already visible select <code>Customize Dashboard</code>.</p>
+<p><img src="images/IL-100/003.png" alt="" /></p></li>
+<li><p>Scroll down and select <code>Show</code> for <code>Database (OCI)</code>.  Do <strong>not</strong> select just <code>Database</code> (the one above).  Then close the window.</p>
+<p><img src="images/IL-100/004.png" alt="" /></p></li>
+<li><p>Select <strong>Database (OCI)</strong> Service and then Console.</p>
+<p><img src="images/IL-100/005.png" alt="" /></p>
+<p><img src="images/IL-100/006.png" alt="" />  </p></li>
+<li><p>Then select Database - DB Systems.</p>
+<p><img src="images/IL-100/007.png" alt="" />  </p></li>
+<li><p>Note the <strong>Public IP Address</strong> on the WorkshopImage.  Write this down.  We will be using it several times throughout the labs.</p>
+<p><img src="images/IL-100/008.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-3--connect-to-the-workshopimage-using-your-vnc-viewer"><strong>STEP 3</strong>:  Connect to the WorkshopImage using your VNC Viewer</h3>
+<ul>
+<li><p>If you do not already have a VNC Viewer, download realvnc or tightvnc from the internet and install on your computer. Run the VNC Viewer and enter the Public IP you just copied, along with appending :1. You will be prompted for a password.  If you ran the setup instructions for vnc server you would have entered this password yourself.  Obtain this from the person who ran the setup for you if it was another person.</p>
+<p><img src="images/IL-100/009.png" alt="" />  </p></li>
+<li><p>You will log into the following desktop.</p>
+<p><img src="images/IL-100/010.png" alt="" />  </p></li>
+<li><p>Right click on the desktop and create a new launcher on the desktop.  Enter the Name and Command.  If you have chosen to deploy on 18c replace 12.2.0.1 with 18.1).</p>
+<ul>
+<li><strong>Name:</strong> <code>SqlDeveloper</code></li>
+<li><strong>Command:</strong> <code>/u01/app/oracle/product/12.2.0.1/dbhome_1/sqldeveloper/sqldeveloper/bin/sqldeveloper</code></li></ul>
+<p><img src="images/SG-setup-manual/062.png" alt="" /></p>
+<p><img src="images/SG-setup-manual/063.png" alt="" /></p></li>
+<li><p>Select the sqldeveloper icon from the following directory: <code>/u01/app/oracle/product/12.2.0.1/dbhome_1/sqldeveloper/</code></p>
+<p><img src="images/SG-setup-manual/064.png" alt="" /></p>
+<p><img src="images/SG-setup-manual/065.png" alt="" /></p></li>
+<li><p>Double click on the desktop icon to start sqldeveloper. Select no to import connections.</p>
+<p><img src="images/SG-setup-manual/066.png" alt="" /></p></li>
+<li><p>Right click on connections and select import connections.</p>
+<p><img src="images/SG-setup-manual/067.png" alt="" /></p></li>
+<li><p>Browse for connections file <code>/tmp/ws/oci_ws_sqldev.xml</code>.</p>
+<p><img src="images/SG-setup-manual/068.1.png" alt="" /></p>
+<p><img src="images/SG-setup-manual/069.1.png" alt="" /></p>
+<p><img src="images/SG-setup-manual/070.png" alt="" /></p>
+<p><img src="images/SG-setup-manual/071.png" alt="" /></p></li>
+</ul>
+<h2 id="create-database-cloud-service">Create Database Cloud Service</h2>
+<h3 id="step-4--create-a-virtual-cloud-network-vcn--note-you-will-not-actually-create-a-vnc-but-will-just-go-through-the-steps-and-then-cancel"><strong>STEP 4</strong>:  Create a Virtual Cloud Network (VCN).  <strong>Note you will not actually create a VNC, but will just go through the steps and then cancel.</strong></h3>
+<ul>
+<li><p>Open the browser on the image desktop.  Note that while you can use your own browser on your own desktop, in step 5 below you will need a public key, and to keep things simple we'll be using the same key that was used to create the WorkshopImage, and so you need to be running the browser inside the image to select the key (below).</p>
+<p><img src="images/IL-100/011.png" alt="" />  </p></li>
+<li><p>Log into your cloud account.</p>
+<p><img src="images/IL-100/012.png" alt="" />  </p></li>
+<li><p>Go to Networking - Virtual Cloud Networks.  Note that if you previously set up a VCN as part of the setup process you can use that VNC instead of creating another in this step.</p>
+<p><img src="images/IL-100/013.png" alt="" />  </p></li>
+<li><p>Select Compartment <code>Demo</code>.</p>
+<p><img src="images/IL-100/014.png" alt="" /></p></li>
+<li><p>Next select <code>Create Virtual Cloud Network</code>.</p>
+<p><img src="images/IL-100/015.png" alt="" /></p></li>
+<li><p>Take defaults for all the fields except ensure you select <code>CREATE VIRTUAL CLOUD NETWORK PLUS RELATED RESOURCES</code> option.</p>
+<p><img src="images/IL-100/016.png" alt="" /></p></li>
+<li><p><strong>Cancel</strong> this step.</p>
+<p><img src="images/IL-100/017.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5--create-a-database-cloud-service-note-will-will-not-actually-create-a-dbcs-instance-but-will-just-go-through-the-steps-and-then-cancel"><strong>STEP 5</strong>:  Create a Database Cloud Service <strong>Note will will not actually create a DBCS instance, but will just go through the steps and then cancel.</strong></h3>
+<ul>
+<li><p>Select Database (OCI) (if you are not already in the Database Console), and then open Console.</p>
+<p><img src="images/IL-100/018.png" alt="" /></p>
+<p><img src="images/IL-100/018.1.png" alt="" /></p></li>
+<li><p>Select Database - DB Systems.</p>
+<p><img src="images/IL-100/019.png" alt="" /></p></li>
+<li><p>Select Launch DB System</p>
+<p><img src="images/IL-100/020.png" alt="" /></p></li>
+<li><p>Enter the follwing details:</p>
+<ul>
+<li><strong>Display Name:</strong>  <code>Alpha01A-DBCS</code></li>
+<li><strong>Availability Zone:</strong>  Select what is available.  Note depending on capacity you may need to try more than one zone.  If you do not have capacity then you will be advised when you save the configuration, after which you can try another zone.</li>
+<li><strong>Shape Type:</strong>  <code>VM.Standard1.1</code></li>
+<li><strong>Software Edition:</strong>  <code>Enterprise Edition</code> (note if you select Standard Edition you will not be able to migrate transportable tablespaces in lab 200).</li>
+<li><strong>Available Storage Size:</strong> 256GB</li>
+<li><strong>Licence Type:</strong>  <code>License Included</code></li></ul>
+<p><img src="images/IL-100/021.png" alt="" /></p></li>
+<li><p>Scroll down and select SSH public key.</p>
+<p><img src="images/IL-100/022.png" alt="" /></p></li>
+<li><p>Select File System on the left and select the tmp and then ws directory</p>
+<p><img src="images/IL-100/023.png" alt="" /></p></li>
+<li><p>Select publicKey.pub file in the /tmp/ws directory.</p>
+<p><img src="images/IL-100/024.png" alt="" /></p></li>
+<li><p>Select vcn1. </p>
+<p><img src="images/IL-100/025.png" alt="" /></p></li>
+<li><p>Select the available Client Subnet (only one should be available in the dropdown), and enter <code>alpha</code> as the HOSTNAME PREFIX.</p>
+<p><img src="images/IL-100/026.png" alt="" /></p></li>
+<li><p>Enter the following database details:</p>
+<ul>
+<li><strong>Database Name:</strong> <code>ORCL</code></li>
+<li><strong>Database Version:</strong> <code>12.2.0.1</code></li>
+<li><strong>PDB Name:</strong>  <code>PDB1</code></li>
+<li><strong>Database Admin Password:</strong> <code>ALpha2018__</code> (with two underscores)</li>
+<li><strong>Do not select automatic backup</strong></li></ul>
+<p><img src="images/IL-100/027.png" alt="" /></p></li>
+<li><p><strong>Cancel</strong> at this point.  We will use the pre-created Alpha01A-DBCS instance, since this step takes approximately 70 minutes to complete.</p>
+<p><img src="images/IL-100/028.png" alt="" /></p></li>
+</ul>
+<h2 id="ssh-configuration-and-image-exploration">SSH Configuration and Image Exploration</h2>
+<h3 id="step-6--record-the-ip-addresses-of-the-database-cloud-service"><strong>STEP 6</strong>:  Record the IP Addresses of the Database Cloud Service</h3>
+<ul>
+<li><p>Log back into the Cloud Console to copy the IP address of the new Alpha01A-DBCS instance.</p>
+<p><img src="images/IL-100/029.png" alt="" /></p></li>
+<li><p>Note the Private and Public IP addresses of the <code>Alpha01A-DBCS</code> instance.  Write these down, we will use them later.</p>
+<p><img src="images/IL-100/030.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7--open-a-new-ssh-connection-to-browse-the-database-image"><strong>STEP 7</strong>:  Open a New SSH Connection to Browse the Database Image</h3>
+<ul>
+<li><p>Since we will be using a terminal window frequently we will pin the terminal window to the panel.  Open a new terminal window on the VNC desktop and enter the following.</p>
+<p><img src="images/IL-100/031.png" alt="" /></p></li>
+<li><p>Open a new terminal window.</p>
+<p><img src="images/IL-100/032.png" alt="" /></p></li>
+<li><p>Enter the following to connect.</p></li>
+</ul>
+<pre><code>ssh -o StrictHostKeyChecking=no -i /tmp/ws/privateKey opc@&lt;Alpha01A-DBCS IP&gt;
+</code></pre>
+<ul>
+<li>Enter the following to review the image layout.</li>
+</ul>
+<pre><code>sudo su - oracle
+. oraenv ( note there is a space between dot and ora - enter `ORCL`)
+env | grep ORA
+cd $ORACLE_HOME
+ls
+exit
+exit
+</code></pre>
+<p><img src="images/IL-100/033.png" alt="" /></p>
+<h2 id="create-connection-in-sql-developer">Create Connection in SQL Developer</h2>
+<h3 id="step-8--set-up-cdb-connection-in-sql-developer"><strong>STEP 8</strong>:  Set up CDB Connection in SQL Developer</h3>
+<ul>
+<li><p>Open SQL Developer off the desktop and select the View - SSH menu.</p>
+<p><img src="images/IL-100/034.png" alt="" /></p></li>
+<li><p>Right click on SSH Host and select New SSH Host.</p>
+<p><img src="images/IL-100/035.png" alt="" /></p></li>
+<li><p>Enter the following.</p>
+<ul>
+<li><strong>Name:</strong> <code>Alpha01A-DBCS</code></li>
+<li><strong>Host:</strong> <code>&lt;Alpha01A-DBCS IP&gt;</code></li>
+<li><strong>Username:</strong> <code>opc</code></li>
+<li>Select Use Key File</li></ul>
+<p><img src="images/IL-100/036.png" alt="" /></p></li>
+<li><p>Select <code>privateKey</code> in the <code>/tmp/ws</code> directory.</p>
+<p><img src="images/IL-100/037.png" alt="" /></p></li>
+<li><p>Add a Local Port Forward.  Be sure to specify the private IP (not public one you have  been using).</p>
+<ul>
+<li><strong>Name:</strong> <code>Database</code></li>
+<li><strong>Host:</strong> <code>&lt;Private IP for Alpha01A-DBCS&gt;</code></li>
+<li><strong>Use specific local port:</strong> <code>1530</code></li></ul>
+<p><img src="images/IL-100/038.png" alt="" /></p></li>
+<li><p>Test the tunnel by right clicking on it and select test.</p>
+<p><img src="images/IL-100/039.png" alt="" /></p>
+<p><img src="images/IL-100/040.png" alt="" /></p></li>
+<li><p>In a separate window log into the Cloud Console and select the <code>Alpha01A-DBCS</code> instance.  We will copy/paste the host and database name from the instance information.</p>
+<p><img src="images/IL-100/041.png" alt="" /></p></li>
+<li><p>The connect string will be a concatination of the Database Unique Name and the Host Domain Name.</p>
+<p><img src="images/IL-100/042.png" alt="" /></p></li>
+<li><p>Go back to SQL Developer and create a new connection.  Right click on Connections and then select the New Connection.</p>
+<p><img src="images/IL-100/043.png" alt="" /></p></li>
+<li><p>Enter the following and then select Test:</p>
+<ul>
+<li><strong>Connection Name:</strong> <code>Alpha01A-DBCS</code></li>
+<li><strong>Username:</strong> <code>sys</code></li>
+<li><strong>Password:</strong> <code>ALpha2018__</code></li>
+<li><strong>Connection Type:</strong> <code>SSH</code></li>
+<li><strong>Role:</strong> <code>SYSDBA</code></li>
+<li><strong>Port Forward:</strong> `Database (Alpha01A-DBCS)</li>
+<li><strong>Service Name:</strong> <code>&lt;your database unique name.hostname&gt;</code> from above</li></ul>
+<p><img src="images/IL-100/044.png" alt="" /></p></li>
+<li><p>Select Connect.</p>
+<p><img src="images/IL-100/045.png" alt="" /></p></li>
+</ul>
+<h3 id="step-9--access-enterprise-manager-db-express"><strong>STEP 9</strong>:  Access Enterprise Manager DB Express</h3>
+<ul>
+<li>We first need to configure the http port.  To verify whether the EM Express port is configured we need to set the http port.  Using the connection you just created above enter these commands one by one, hightlight them and then execute them.</li>
+</ul>
+<pre><code>exec dbms_xdb_config.sethttpport(5500);
+select dbms_xdb.gethttpport() from dual;
+</code></pre>
+<p><img src="images/IL-100/046.png" alt="" /></p>
+<p><img src="images/IL-100/047.png" alt="" /></p>
+<ul>
+<li>We will use tunneling to access the EM Express Console on Alpha01A-DBCS, which is running on port 5500.  Since we are doing this from the WorkshopImage, and that image is also running EM Express on 5500, we will tunnel using 5555 (an arbitrary open port).  Open a terminal window and enter the following.  Note - do <strong>NOT</strong> close the window after the tunnel is opened.  Note you are entering BOTH the private and public IPs.</li>
+</ul>
+<pre><code>ssh -o StrictHostKeyChecking=no -i /tmp/ws/privateKey -L 5555:&lt;Private IP of Alpha01A-DBCS&gt;:5500 opc@&lt;Alpha01A-DBCS IP&gt;
+</code></pre>
+<p><img src="images/IL-100/048.png" alt="" /></p>
+<ul>
+<li>Open a Firefox Browser and enter the following URL.  Note you may be prompted to confirm a security exception - accept all the prompts.</li>
+</ul>
+<pre><code>http://localhost:5555/em
+</code></pre>
+<p><img src="images/IL-100/050.png" alt="" /></p>
+<p><img src="images/IL-100/051.png" alt="" /></p>
+<p><img src="images/IL-100/052.png" alt="" /></p>
+<ul>
+<li><p>Login with the following details.  Note the first time you log in it will take a minute or two.</p>
+<ul>
+<li><strong>User Name:</strong> <code>sys</code></li>
+<li><strong>Password:</strong> <code>ALpha2018__</code> (two underscores)</li>
+<li><strong>check as sysdba:</strong> </li></ul>
+<p><img src="images/IL-100/053.png" alt="" /></p></li>
+<li><p>Wait several seconds for the page to come up.  You may encounter a bug whereby the browser fails to fully open the web page.  This is due to an adobe-flash bug with certain browsers.  To resolve this go (while the browser is locked opening the page) to tools (top menu in the browser) and select <code>tools &gt; Web Developer &gt; Debugger</code>.  You may need to first right click on the top of the page and select <code>menu</code> to view the menu.</p>
+<p><img src="images/IL-100/054.png" alt="" /></p>
+<p><img src="images/IL-100/055.png" alt="" /></p></li>
+</ul>
+<p>This completes Lab 100.  You can proceed to Lab 200.</p>

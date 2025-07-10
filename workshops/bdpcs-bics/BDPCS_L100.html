@@ -1,0 +1,281 @@
+<p><img src="images/L100/BDPCS-BICS_L100_Title.png" alt="" /></p>
+<p>Updated: February 1, 2017</p>
+<h1 id="introduction">Introduction</h1>
+<p>This lab will introduce the Oracle Big Data Preparation Cloud Service and reinforce the themes we have already discussed in the workshop presentations.  This hands-on exercise will allow you to gain a better understanding of the basic features of functions of the service.  It should become apparent that this service can be easily utilized by both technical and non-technical users to cleanse and enrich basic information in an independent fashion.</p>
+<p>The following provides a high-level overview the information and process flow.
+<img src="images/L100/p1.png" alt="" /></p>
+<p>The goal of course, is to ensure data consistency and thus higher quality analysis results as a self-service activity.</p>
+<p>The analysis components of the workshop will be covered during the afternoon session.</p>
+<p><strong>Please direct comments to:  Derrick Cameron (derrick.cameron@oracle.com)</strong></p>
+<h2 id="credits">Credits</h2>
+<p>This lab was originally developed by Richard Stang and has been updated to reflect deployment and delivery logistics.  The NAS Innovation and Shared Services Team support this workshop.  </p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>How to connect to the Big Data Preparation Service (BDPCS).</li>
+<li>Exploration of the basic features of the service.</li>
+<li>How to create a Transform and add a dataset.</li>
+<li>How to configure a Transform, reviewing recommendations and tailoring the Transform script.</li>
+</ul>
+<h1 id="pre-lab-information">Pre-Lab information</h1>
+<h2 id="assumptions">Assumptions</h2>
+<p>You have brought a laptop to the workshop with wireless networking that is capable of connecting to Oracle’s public cloud.  Specifically, the Big Data Preparation Cloud Service. A compatible web browser as specified in the workshop invitation.</p>
+<h2 id="objective">Objective</h2>
+<p>We will be creating a BDPCS Transform that results in a cleansed and enriched customer information dataset that approximates what is shown here:
+<img src="images/L100/p2.png" alt="" /></p>
+<h1 id="big-data-preparation-cloud-service-overview">Big Data Preparation Cloud Service overview</h1>
+<h2 id="accessing-the-big-data-preparation-cloud-service">Accessing the Big Data Preparation Cloud Service</h2>
+<p>Your workshop leader will provide the specific cloud service URL as well as the credentials needed to login to the service.  Open a web browser and type-in the URL to access the BDP Cloud Service.  When presented with the following screen, enter your workshop User Name, Password and Identity Domain.</p>
+<ul>
+<li><p>Sign in</p>
+<p><img src="images/L100/p3.png" alt="" /></p></li>
+<li><p>Select Home page:</p>
+<p><img src="images/L100/p4.png" alt="" /></p></li>
+<li><p>Explore the OVERVIEW Page:</p>
+<p><img src="images/L100/p5.png" alt="" /></p></li>
+<li><p>Explore the RESOURCES Page:  </p>
+<p><img src="images/L100/p6.png" alt="" /></p></li>
+<li><p>Explore the QUICKSTART Page:</p>
+<p><img src="images/L100/p7.png" alt="" /></p></li>
+<li><p>Explore the JOBS Page:</p>
+<p><img src="images/L100/p8.png" alt="" /></p></li>
+<li><p>Explore the CATALOG Page:</p>
+<p><img src="images/L100/p9.png" alt="" /></p></li>
+<li><p>Explore the KNOWLEDGE Page:</p>
+<p><img src="images/L100/p10.png" alt="" /></p></li>
+<li><p>Explore the POLICIES Page:</p>
+<p><img src="images/L100/p11.png" alt="" /></p></li>
+</ul>
+<h1 id="bdpcs-workshop-source-connections">BDPCS Workshop Source Connections</h1>
+<h2 id="source-connection-setup">Source Connection Setup</h2>
+<p>The two BDPCS Source Connections utilized in this workshop will be used:</p>
+<ul>
+<li>Default_Oracle_Cloud_Storage</li>
+<li>Oracle_BICS</li>
+</ul>
+<p>The sections below provide examples of the configuration information that is required for the two sources:</p>
+<ul>
+<li><p>An Oracle Cloud Storage Service instance where our input files to be Transformed will reside.</p>
+<p><img src="images/L100/p12.png" alt="" /></p></li>
+<li><p>A Transformation target source, a Business Intelligence Cloud Service (BICS) instance that will be used in the afternoon analytics lab sessions.</p>
+<p><img src="images/L100/p13.png" alt="" /></p></li>
+</ul>
+<p><strong>Note:</strong>  You may explore the specific settings for connections via the Catalog page tab.  Please do not modify any of the specified connection information.</p>
+<h1 id="big-data-preparation-transformations">Big Data Preparation Transformations</h1>
+<h2 id="create-a-transformation">Create a Transformation</h2>
+<h3 id="step-1-upload-a-file"><strong>STEP 1:</strong> Upload a File</h3>
+<ul>
+<li><p>From the Home Page, Click the Upload button.</p>
+<p><img src="images/L100/p14.png" alt="" /></p></li>
+<li><p>Select Source</p>
+<p><img src="images/L100/p15.png" alt="" />
+<img src="images/L100/p16.png" alt="" /></p></li>
+<li><p>Select file (provided by your instructor)</p>
+<p><img src="images/L100/p17.png" alt="" />
+<img src="images/L100/p18.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-create-transform"><strong>STEP 2:</strong> Create Transform</h3>
+<ul>
+<li><p>From the Home Page, Click the + graphic to Create a new Transform.</p>
+<p><img src="images/L100/p19.png" alt="" /></p></li>
+<li><p>Specify Name and Source.  Name the Transform CustomerActivity_U[User:1..20]-MMMDD.  Example: CustomerActivity_U1-Jan24.  ** Note that transform names should be unique.  That is, if you create a transform and then delete it, new transform names should not be the same name as current AND deleted transforms.**</p></li>
+<li><p>Uncheck the Contains Header checkbox</p></li>
+<li><p>Press the Select button to select a Source and File</p>
+<p><img src="images/L100/p20.png" alt="" /></p></li>
+<li><p>Select the Default_Oracle_Cloud_Storage source.</p></li>
+<li><p>Select Workshop-Customer folder.</p></li>
+<li><p>Press OK.</p>
+<p><img src="images/L100/p21.png" alt="" /></p></li>
+<li><p>Press the Submit button on the Create Transform dialog to create the Transform and to initiate dataset processing</p>
+<p><img src="images/L100/p22.png" alt="" /></p></li>
+<li><p>This will return you to the Catalog page where you will see the CustomerActivity_U01_Jan24 Transform.  Its Status should be In Progress as shown below.</p>
+<p><img src="images/L100/p23.png" alt="" /></p></li>
+<li><p>After a few minutes, BDPCS processing of the file will complete and the Transform Status will change to Ready.</p></li>
+</ul>
+<h2 id="edit-and-configure-the-transform">Edit and Configure the Transform</h2>
+<h3 id="step-1-edit-the-transform"><strong>STEP 1:</strong> Edit the Transform</h3>
+<ul>
+<li><p>After the Transform processing has completed and the Status is <strong>Ready</strong>, Click the catalog menu and select Edit to edit the transform.</p>
+<p><img src="images/L100/p24.png" alt="" /></p></li>
+<li><p>The following should be displayed:</p>
+<p><img src="images/L100/p25.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2--explore-recommendations"><strong>STEP 2:</strong>  Explore Recommendations</h3>
+<h4 id="bdpcs-recommendations-for-col_0001">BDPCS Recommendations for Col_0001:</h4>
+<ul>
+<li><p>Click the Recommendations toolbar button.  This open a menu list of field recommendations.</p></li>
+<li><p>Select the recommendations for Col_0001</p>
+<p><img src="images/L100/p26.png" alt="" /></p></li>
+<li><p>Recommendations for the field will be displayed in the lower left pane of the screen.  For Col_0001, the field has been identified as a field with unique values and the recommendation is to rename the field to “identifier”.  </p></li>
+<li><p>Click the checkmark next to the recommendation to accept and add it to the Transform Script.</p>
+<p><img src="images/L100/p27.png" alt="" /></p></li>
+</ul>
+<h4 id="bdpcs-recommendations-for-col_0005">BDPCS Recommendations for Col_0005</h4>
+<ul>
+<li><p>Click the Recommendations toolbar button and select the recommendations for Col_0005.</p>
+<p><img src="images/L100/p28.png" alt="" /></p></li>
+<li><p>BDPCS has noticed that this field is sandwiched between fields that are a first name and last name and has deduced that this field is most likely a name middle initial.  Click the checkmark next to the recommendation to accept and add it to the Transform Script.</p>
+<p><img src="images/L100/p29.png" alt="" /></p></li>
+</ul>
+<h4 id="recommendations-for-customeractivity_u">Recommendations for CustomerActivity_U</h4>
+<ul>
+<li><p>Click the Recommendations toolbar button and select the recommendations for City.</p>
+<p><img src="images/L100/p30.png" alt="" /></p></li>
+<li><p>BDPCS recognizes the field values as valid cities and the recommendations listed are optional data enrichments.  For example, geocodes and other useful attributes associated with the city value.  In this exercise, we will select Jurisdiction and Population.</p>
+<p><img src="images/L100/p31.png" alt="" /></p></li>
+</ul>
+<h4 id="rename-jurisdiction-to-county">Rename Jurisdiction to County</h4>
+<ul>
+<li><p>Notice the two new fields contain a plus (+) sign to indicate we are adding new information to our dataset.  The Jurisdiction added to our dataset is actually the County in which the City resides.  We will rename this field as County.  The the field view, select the column and then the operations menu associated with the field.  This will display a menu of operations that can be performed on the field.  We will select the Rename operation.</p>
+<p><img src="images/L100/p32.png" alt="" /></p></li>
+<li><p>This will display a dialog to rename the field.  Type County as the Name and press the Apply button.</p>
+<p><img src="images/L100/p33.png" alt="" /></p></li>
+</ul>
+<h4 id="recommendations-for-email">Recommendations for email</h4>
+<ul>
+<li><p>Next, we will explore the Recommendations for the email field.  As we have done before, click the Recommendations toolbar button and select the recommendations for email.</p>
+<p><img src="images/L100/p34.png" alt="" /></p></li>
+<li><p>Click the checkmark for Extract email_domain from email.  This will add a field to our dataset containing the customer’s email domain.</p>
+<p><img src="images/L100/p35.png" alt="" /></p></li>
+</ul>
+<h4 id="remove-email-field">Remove email field</h4>
+<ul>
+<li><p>Being sensitive to privacy concerns, we will remove the customer’s email address, but we will keep the domain for analytical purposes.  Delete the email field by selecting the email field and clicking the respective operations menu.  We select Delete to remove the email field from our dataset.</p>
+<p><img src="images/L100/p36.png" alt="" /></p></li>
+</ul>
+<h4 id="recommendations-for-us_phone">Recommendations for us_phone</h4>
+<ul>
+<li><p>Next, we will review the us_phone field recommendations.  Click the Recommendations toolbar button and select the recommendations for us_phone.</p>
+<p><img src="images/L100/p37.png" alt="" /></p></li>
+<li><p>Here we will click the checkmarks to accept the recommendation to extract area_code and the recommendations to Reformat our phone numbers so that they are in a consistent 999-999-9999 format.</p>
+<p><img src="images/L100/p38.png" alt="" /></p></li>
+</ul>
+<h4 id="recommendations-for-date_02">Recommendations for date_02</h4>
+<ul>
+<li><p>Returning to our transform Recommendations, we will focus on the date_02 field.  Click the Recommendations toolbar button and select the recommendations for date_02.  We know this is the customer’s birthdate, so we’ll apply transforms that make the most sense.</p>
+<p><img src="images/L100/p39.png" alt="" /></p></li>
+<li><p>Here we see many formatting and extract recommendations.  We don’t really want the specific customer birthdate, but we would like to retain the birthmonth.  Click the checkmark to accept the recommendation to extract month from date_02.</p>
+<p><img src="images/L100/p40.png" alt="" /></p></li>
+</ul>
+<h4 id="remove-the-date_02-field">Remove the date_02 field</h4>
+<ul>
+<li><p>Select date_02 from the dataset field list</p></li>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Delete menu item.</p>
+<p><img src="images/L100/p41.png" alt="" /></p></li>
+</ul>
+<h4 id="rename-month-field-to-birthmonth">Rename month field to birthmonth</h4>
+<ul>
+<li><p>Select month from the dataset field list</p></li>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Rename menu item.</p>
+<p><img src="images/L100/p42.png" alt="" /></p></li>
+<li><p>This should display the Rename dialog.  Type Birthmonth as the Name and press the Apply button.</p>
+<p><img src="images/L100/p43.png" alt="" /></p></li>
+</ul>
+<h4 id="remove-the-credit_card-field">Remove the credit_card field</h4>
+<ul>
+<li><p>Notice the extra privacy icon that accompanies the credit_card and us_ssn fields:</p>
+<p><img src="images/L100/p44.png" alt="" /></p></li>
+</ul>
+<p>This icon indicates that BDPCS has identified that these fields contain sensitive personal information.  Depending on how we are using this information, we might consider removing or obfuscating this data to ensure we are protecting our customer’s privacy.  For our purposes, we do not need credit card information.  We’ll simply remove this field.</p>
+<ul>
+<li><p>Select the credit_card field</p></li>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Delete menu item</p>
+<p><img src="images/L100/p45.png" alt="" /></p></li>
+</ul>
+<h4 id="remove-the-col_0017-field">Remove the Col_0017 field</h4>
+<p>Col_0017 contains extraneous data that has no value.  We will remove this field.  To remove the field:</p>
+<ul>
+<li><p>Select the Col_0017 field</p></li>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Delete menu item</p>
+<p><img src="images/L100/p46.png" alt="" /></p></li>
+</ul>
+<h4 id="obfuscate-us_ssn">Obfuscate us_ssn</h4>
+<ul>
+<li><p>Review the Recommendations for the us_ssn field.</p>
+<p><img src="images/L100/p47.png" alt="" /></p></li>
+<li><p>Click the checkmark to accept the recommendation to Obfuscate first 5 digits in column us_ssn.</p>
+<p><img src="images/L100/p48.png" alt="" /></p></li>
+<li><p>Notice how this masks the first 5 digits of the us_ssn with the # character.</p></li>
+</ul>
+<h4 id="extract-field_3-from-us_ssn">Extract field_3 from us_ssn</h4>
+<ul>
+<li><p>We could use the us_ssn column as is, but instead, we will simply keep the last four (4) relevant ssn digits.  Click the checkmark to accept the recommendation to Extract field_3 from us_ssn.</p>
+<p><img src="images/L100/p49.png" alt="" /></p></li>
+<li><p>The result should add a column to our dataset as shown here:</p>
+<p><img src="images/L100/p50.png" alt="" /></p></li>
+</ul>
+<h4 id="rename-field_3-to-last_4_ssn">Rename field_3 to Last_4_SSN</h4>
+<p>Here we will rename our new field to something more descriptive, Last_4_SSN, by doing the following:</p>
+<ul>
+<li><p>Select the field_3 column</p></li>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Rename menu item</p>
+<p><img src="images/L100/p51.png" alt="" /></p></li>
+<li><p>This will open the Rename dialog.  Specify Last_4_SSN as the Name and press the Apply button.</p>
+<p><img src="images/L100/p52.png" alt="" /></p></li>
+</ul>
+<h4 id="remove-the-us_ssn_field">Remove the us_ssn_field</h4>
+<p>Since we no longer need the us_ssn column, we will remove it by doing the following:</p>
+<ul>
+<li><p>Select the us_ssn column</p></li>
+<li><p>Click the column operations menu</p></li>
+<li><p>Select the Delete menu item</p>
+<p><img src="images/L100/p53.png" alt="" /></p></li>
+</ul>
+<h4 id="apply-occupations-enrichments">Apply occupations enrichments</h4>
+<ul>
+<li><p>Explore the Recommendations for the SOC_Occupations_Knowledge column.</p>
+<p><img src="images/L100/p54.png" alt="" /></p></li>
+<li><p>Click the checkmark to accept the recommendation to Enrich SOC_Occupations_Knowledge with SOC_Occupations_Knowledges.Mean_annual_wage.</p>
+<p><img src="images/L100/p55.png" alt="" /></p></li>
+<li><p>This will add the mean annual wage for the respective occupation to our dataset.</p></li>
+</ul>
+<h4 id="rename-the-soc_occupations_knowledge">Rename the SOC_Occupations_Knowledge</h4>
+<ul>
+<li><p>Select the SOC_Occupations_Knowledge column</p></li>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Rename menu item</p>
+<p><img src="images/L100/p56.png" alt="" /></p></li>
+<li><p>Specify Occ_SOC as the Name and press the Apply button.</p>
+<p><img src="images/L100/p57.png" alt="" /></p></li>
+</ul>
+<h4 id="move-the-company_name-column-to-above-street_address">Move the company_name column to above street_address</h4>
+<ul>
+<li><p>Click and drag the company_name column</p></li>
+<li><p>Drop the column above the street_address column</p>
+<p><img src="images/L100/p58.png" alt="" /></p></li>
+</ul>
+<h4 id="normalize-the-value-in-the-gender-column">Normalize the value in the gender column</h4>
+<ul>
+<li><p>Select the gender column.  <strong>Notice that the values include male, female, M and F</strong>.</p>
+<p><img src="images/L100/p59.png" alt="" /></p></li>
+</ul>
+<p>We would like to ensure the results for gender are consistent, so we will change M to male and F to female using the Search and Replace operation.  To accomplish this, do the following:</p>
+<ul>
+<li><p>Click the field operations menu</p></li>
+<li><p>Select the Search and Replace menu item</p>
+<p><img src="images/L100/p60.png" alt="" /></p></li>
+</ul>
+<p>In the search and replace dialog, do the following:</p>
+<ul>
+<li>Press Add to add a new search and replace row.</li>
+<li>In the first row specify M as the Find Value and male as the Replace By value.</li>
+<li>In the second row specify F as the Find Value and female as the Replace By value.</li>
+<li>Press the Apply button</li>
+</ul>
+<p><img src="images/L100/p61.png" alt="" /></p>
+<ul>
+<li>The result of the Search and Replace should be:</li>
+</ul>
+<p><img src="images/L100/p62.png" alt="" />
+<img src="images/L100/p63.png" alt="" /></p>
+<ul>
+<li>Press the Done button to close the Transform.</li>
+</ul>
+<h1 id="lab-100-summary">Lab 100 Summary</h1>
+<p>This completes Lab 100 and your preparation results should resemble this:</p>
+<p><img src="images/L100/p64.png" alt="" /></p>
+<p>Hands-on Lab 200 will focus on blending an additional dataset and publishing your prepared dataset results to the Business Intelligence Cloud Service.</p>

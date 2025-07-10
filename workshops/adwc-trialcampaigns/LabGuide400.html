@@ -1,0 +1,178 @@
+<h1 id="introduction">Introduction</h1>
+<p>This is the fourth of several labs that are part of the <strong>Oracle Autonomous Data Warehouse Cloud Workshop</strong>. This workshop will walk you through several use cases of using an autonomous data warehouse's conle and Oracle Machine Learning Notebook.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Access Oracle Machine Learning Interface<ul>
+<li>Create OML user</li></ul></li>
+<li>Work in Oracle Machine Learning Interface<ul>
+<li>Create OML SQL notebook</li>
+<li>Create machine learning notebook using OML Gallery template</li></ul></li>
+<li>Monitor Oracle Autonomous Data Warehouse Cloud and SQL statements</li>
+<li>Scaling ADWC Service</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud trial account.</li>
+</ul>
+<h1 id="access-oracle-machine-learning-interface">Access Oracle Machine Learning Interface</h1>
+<p>Oracle Machine Learning is a collaborative web-based interface that provides a development environment to create data mining notebooks where you can perform data analytics, data discovery and data visualizations.</p>
+<p>Key features of Oracle Machine Learning:</p>
+<ul>
+<li><p>Allows collaboration among data scientists, developers, business users</p></li>
+<li><p>Leverages the scalability and performance of Oracle Platform and its Cloud Services</p></li>
+</ul>
+<h2 id="create-oracle-machine-learning-user">Create Oracle Machine Learning User</h2>
+<h3 id="step-1-login-to-your-oracle-public-cloud-dashboard"><strong>STEP 1</strong>: Login to your Oracle Public Cloud Dashboard</h3>
+<ul>
+<li><p>From any browser, go to the URL:
+<code>https://cloud.oracle.com</code></p></li>
+<li><p>Click <strong>Sign In</strong> in the upper right hand corner of the browser</p></li>
+<li><p>Enter your Cloud Account Name and click <strong>Go</strong>.</p></li>
+<li><p>Enter your User Name and Password and click <strong>Sign In</strong></p></li>
+<li><p>You will be presented with a Dashboard displaying the various cloud services available to this account. Then, click on <strong>Autonomous DW</strong> (Note: If all your services are not visible, <strong>click</strong> on the <strong>Customize Dashboard</strong>, you can add services to the dashboard by clicking <strong>Show.</strong> If you do not want to see a specific service click <strong>Hide</strong>)</p>
+<p><img src="images/400/1.PNG" alt="" /></p></li>
+<li><p>Click <strong>Open Service Console</strong> on the upper right of the screen</p></li>
+</ul>
+<h3 id="step-2-login-to-autonomous-data-warehouse-service-console"><strong>STEP 2</strong>: Login to Autonomous Data Warehouse Service Console</h3>
+<ul>
+<li><p>Click on the hamburger icon for your Autonomous Data Warehouse Cloud (ADWC) instance you provisioned earlier and click on <strong>Service Console</strong></p>
+<p><img src="images/400/2.png" alt="" /></p></li>
+<li><p>Enter your credentials you specified and click on <strong>Sign In</strong></p>
+<p><img src="images/400/3.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-create-oracle-machine-learning-oml-user"><strong>STEP 3</strong>: Create Oracle Machine Learning (OML) User</h3>
+<ul>
+<li><p>After you sign in, you are taken to the ADWC service console dashboard. We will come back to this. Now click on <strong>Administration</strong> on the upper right of the screen</p>
+<p><img src="images/400/4.png" alt="" /></p></li>
+<li><p>On Administration screen, click on <strong>Manage OML Users</strong></p>
+<p><img src="images/400/5.PNG" alt="" /></p></li>
+<li><p>Log in using the same credentials you used to log in to ADWC service console</p>
+<p><img src="images/400/6.png" alt="" /></p></li>
+<li><p>On OML Users administration screen, you can see all available users. If you have not created any user, it should just have ADMIN user. For more information about User Permissions, please refer to this: <code>https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/omlug/getting-started-oracle-machine-learning1.html#GUID-2BCF2A11-D445-48D5-9299-30B18D944499</code></p></li>
+<li><p>Click on <strong>+ Create</strong> to add a new user</p>
+<p><img src="images/400/7.png" alt="" /></p></li>
+<li><p>Enter the information for your new user, check the checkbox for "Email account details to user" and click on <strong>Create</strong></p>
+<p><img src="images/400/8.png" alt="" /></p></li>
+<li><p>You should receive an email shortly about user creation. Click on <strong>here</strong> from the email to sign in</p>
+<p><img src="images/400/9.png" alt="" /></p></li>
+<li><p>Enter new user's credentials and sign in</p></li>
+<li><p>Now you should be in your OML dashboard.</p>
+<p><img src="images/400/10.png" alt="" /></p></li>
+</ul>
+<h1 id="work-in-oracle-machine-learning-console">Work in Oracle Machine Learning Console</h1>
+<h2 id="create-your-first-oracle-machine-learning-notebook">Create your first Oracle Machine Learning Notebook</h2>
+<h3 id="step-4-create-a-new-project"><strong>STEP 4</strong>: Create a new project</h3>
+<p>Oracle Machine Learning uses Zeppelin Notebook, a collaborative interface where you can write code, equations, and text, create visualizations, and perform data analytics. Notebooks work with interpreters in the back-end. In Oracle Machine Learning, notebooks are available in a project, where you can create, edit, delete, and even save notebooks as templates.</p>
+<ul>
+<li><p>Before creating a notebook, it is a good idea to create a new project first where your notebook is contained in. To do that, click on <strong>Workspace</strong> next to your user name on the upper right screen and click on <strong>New Project…</strong></p>
+<p><img src="images/400/11.png" alt="" /></p></li>
+<li><p>Enter information about this new project and click <strong>OK</strong></p>
+<p><img src="images/400/12.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-create-a-new-notebook"><strong>STEP 5</strong>: Create a new notebook</h3>
+<ul>
+<li><p>Once have a new project, we are ready for your first OML Notebook. Click on <strong>Go to Notebooks</strong> on the dashboard</p>
+<p><img src="images/400/13.png" alt="" /></p></li>
+<li><p>Click on <strong>+ Create</strong> to start a new Notebook</p>
+<p><img src="images/400/14.png" alt="" /></p></li>
+<li><p>Enter in information about this notebook</p>
+<p><img src="images/400/39.PNG" alt="" /></p></li>
+<li><p>Click on the notebook you just created</p>
+<p><img src="images/400/40.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-edit-your-notebook"><strong>STEP 6</strong>: Edit your notebook</h3>
+<ul>
+<li><p>In the first paragraph of the notebook, enter in the following SQL script: </p>
+<pre><code>%sql
+
+select prod_id, channel_desc from sh.sales s join sh.channels c on s.channel_id = c.channel_id;
+</code></pre>
+<p><img src="images/400/41.png" alt="" /></p></li>
+<li><p>SH schema comes with a newly provisioned instance of ADWC for testing purpose. It is a simple database for small online shopping website. The script simply joins sales transactions table with sales channels table. To run the script, you can either press <strong>SHIFT + ENTER</strong> or click on the run icon <img src="images/400/16.png" alt="" />. You should get the results in a table format.</p>
+<p><img src="images/400/42.png" alt="" /></p>
+<p><img src="images/400/15.png" alt="" /></p></li>
+<li><p>In the SQL interpreter, the output section of the paragraph comprises a charting component that displays the results in graphical output. The chart interface allows you to interact with the output in the notebook paragraph. You have the option to run and edit single a paragraph or all paragraphs in a notebook. You can visualize the data by clicking the respective icons for the   each graphical representation, as shown here:</p>
+<ul>
+<li>Click <img src="images/400/17.png" alt="" /> histogram to represent the data in a histogram.</li>
+<li>Click <img src="images/400/18.png" alt="" /> pie-chart to represent the data in a pie chart.</li>
+<li>Click <img src="images/400/19.png" alt="" /> line diagram to represent the data in a line chart.</li>
+<li>Click <img src="images/400/20.png" alt="" /> cumulative gain chart to represent the data in a cumulative gain chart.</li>
+<li>Click <img src="images/400/21.png" alt="" /> scatter plot to represent the data in a scatter plot.</li></ul></li>
+<li><p>To visualize and make sense of this result, click on <img src="images/400/17.png" alt="" /> histogram icon and drag and drop <strong>CHANNEL_DESC</strong> to <strong>Groups</strong> box</p>
+<p><img src="images/400/22.png" alt="" /></p></li>
+<li><p>The visulization should look similar to this after the change:</p>
+<p><img src="images/400/23.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-explore-more-features-of-notebook"><strong>STEP 7</strong>: Explore more features of notebook</h3>
+<p>In notebook, you can create text input form on the fly. Text Input form allows you to dynamically retrieve values as defined in the notebook. </p>
+<ul>
+<li>Run the following sql statement in a new paragraph and run:</li>
+</ul>
+<pre><code>%sql
+
+SELECT * FROM ALL_OBJECTS WHERE OBJECT_TYPE = ‘${OBJ}’;
+</code></pre>
+<ul>
+<li><p>The notebook now displays the text input form field obj, as shown in the screenshot. You can enter values in the obj field, and run the notebook to retrieve the corresponding values for the column OBJECT<em>TYPE in the table ALL</em>OBJECTS. If you enter TABLE in the obj field, and run the notebook, then the notebook retrieves TABLE in the column OBJECT_TYPE, as shown in the screenshot.</p>
+<p><img src="images/400/24.png" alt="" /></p></li>
+<li><p>You can also also create dropdown input or checkboxes using similar syntax. For more information please refer to <code>https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/omlug/using-notebooks-data-analysis-and-data-visualization.html#GUID-1379F259-D510-45DE-8596-5A2EB8BB82E9</code></p></li>
+</ul>
+<h2 id="create-machine-learning-notebook-using-oml-gallery-template">Create machine learning notebook using OML Gallery template</h2>
+<h3 id="step-8-create-a-machine-learning-notebook"><strong>STEP 8</strong>: Create a machine learning notebook</h3>
+<ul>
+<li><p>Go back to OML dashboard and click on <strong>Go to Gallery</strong>. The Gallery page lists pre-populated Oracle Machine Learning notebook templates which you can view, like, and use it to create new templates. </p>
+<p><img src="images/400/25.png" alt="" /></p></li>
+<li><p>In the Gallery page, select the template based on which you want to create a notebook. </p>
+<p><img src="images/400/26.png" alt="" /></p></li>
+<li><p>Click <strong>New Notebook</strong>, and in the Create Notebook window, the name of the selected template appears. Enter information for notebook name and description and click on <strong>OK</strong>. For Association Rules example, it performs analysis based on SH schema. The results of the paragraphs have been shown. You can rerun each paragraph if you would like. You can go through this notebook at your own pace.</p>
+<p><img src="images/400/27.png" alt="" /></p></li>
+<li><p>One of the interesting things from this notebook is that it uses <code>DBMS_DATA_MINING</code> PL/SQL package which is an analytical technology that derives actionable information from data in an Oracle Database or Oracle Data Warehouse. This is a out-of-box function in ADWC that you can utilize to perform machine learning just using SQL scripts. Please refer to this for more information: <code>https://docs.oracle.com/cd/E18283_01/appdev.112/e16760/d_datmin.htm</code></p></li>
+</ul>
+<h2 id="monitor-oracle-autonomous-data-warehouse-cloud-and-sql-statements">Monitor Oracle Autonomous Data Warehouse Cloud and SQL statements</h2>
+<h3 id="step-9-monitoring-adwc"><strong>STEP 9</strong>: Monitoring ADWC</h3>
+<p>At this point, you have ran some queries in ADWC. We can use ADWC built-in console and dashboard to monitor the performance of ADWC and SQL statements.</p>
+<ul>
+<li><p>Go to your ADWC instance service console</p>
+<p><img src="images/400/28.png" alt="" /></p></li>
+<li><p>On the landing page, you can see an overview of the metrics for your ADWC instance. </p>
+<p><img src="images/400/29.png" alt="" /></p>
+<ul>
+<li><p>Storage: This chart shows the total and used storage capacity of the service. It indicates what percentage of the space is currently in-use.</p></li>
+<li><p>CPU utilization (%): This chart shows the historical CPU utilization of the service. </p></li>
+<li><p>Running statements: This chart shows the average number of running SQL statements historically.</p></li>
+<li><p>Average SQL response time: This chart shows the average response time of SQL statements historically.</p></li></ul></li>
+<li><p>To have a more granular view of the metrics, click on <strong>Activity</strong> tab on the top right of the screen</p>
+<p><img src="images/400/30.png" alt="" /></p></li>
+<li><p>On this page, you can monitor the following information:</p>
+<ul>
+<li>Database Activity: This chart shows the average number of sessions in the database using CPU or waiting on a wait event. </li>
+<li>CPU Utilization: This chart shows the CPU utilization of each consumer group. </li>
+<li>Running Statements: This chart shows the average number of running SQL statements in each consumer group. </li>
+<li>Queued Statements: This chart shows the average number of queued SQL statements in each consumer group. </li></ul></li>
+<li><p>You can also limit a time period to monitor a specific time interval</p>
+<p><img src="images/400/31.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10-monitoring-sql-statements"><strong>STEP 10</strong>: Monitoring SQL Statements</h3>
+<ul>
+<li><p>To see the statistics and performance for a specific SQL statment, click on <strong>Monitored SQL</strong> tab</p>
+<p><img src="images/400/32.png" alt="" /></p></li>
+<li><p>Select a SQL statement you would like to monitor and click on <strong>Show Details</strong></p></li>
+<li><p>The <strong>Overview</strong> tab in the pop-up shows general information for that statement. </p></li>
+<li><p>Click <strong>Plan Statistics</strong> tab to see the runtime execution plan of the statement.</p>
+<p><img src="images/400/33.png" alt="" /></p></li>
+<li><p>Click <strong>Parallel</strong> tab to see information about the parallel processes, if the statement uses parallelism.</p></li>
+<li><p>You can also download an active SQL Monitor report for a statement, select the statement in the Monitored SQL page and click the <strong>Download report</strong> button. This will save the active SQL Monitor report to your client. </p>
+<p><img src="images/400/34.png" alt="" /></p></li>
+<li><p>The SQL monitor report looks very similar to a report from Oracle Enterprise Manager if you are familiar to the interface. </p>
+<p><img src="images/400/35.png" alt="" /></p></li>
+</ul>
+<h2 id="scaling-adwc-service">Scaling ADWC Service</h2>
+<h3 id="step-11-scaling-your-service"><strong>STEP 11</strong>: Scaling your service</h3>
+<ul>
+<li><p>One of the features of ADWC is that it is elastic and easily scalable based on your needs. To do that go to the home page of ADWC Service Console</p>
+<p><img src="images/400/38.png" alt="" /></p></li>
+<li><p>Click on the hamburger menu for your instance and click on <strong>Scale Service</strong></p>
+<p><img src="images/400/37.png" alt="" /></p></li>
+<li><p>On Scale Service box, you can choose whether to Scale Up or Scale Down, and then enter in the number of Cores and/or Storage Capacity in GBs to scale. </p></li>
+<li><p>You are now have completed this lab!</p></li>
+</ul>

@@ -1,0 +1,148 @@
+<h1 id="continuous-delivery-of-database-microservices">Continuous Delivery of Database Microservices</h1>
+<p><img src="images/300/PictureLab.png" alt="" /><br />
+Update: Dec 7, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>Oracle Cloud DevOps and Cloud Native Microservices workshop.</strong> This workshop will walk you through the Software Development Lifecycle (SDLC) for a Cloud Native project that will create and use several Microservices.</p>
+<p>In the first lab (100), the Project Manager created a new project in the Developer Cloud Service and also created and assigned tasks to the developers of this application. In the second lab (200), the java developer created a new microservice to retrieve and filter twitter data. In this lab you will assume the persona of the full stack developer, who will be tasked with creating a microservices that will supply JSON data from a product database.</p>
+<p><strong>To log issues</strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Access Developer Cloud Service</li>
+<li>Import Code from external Git Repository</li>
+<li>Build and Deploy project using Developer Cloud Service and Oracle Application Container Cloud Service</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account that will be supplied by your instructor.</li>
+</ul>
+<h1 id="create-rest-microservice">Create REST Microservice</h1>
+<h2 id="explore-developer-cloud-service">Explore Developer Cloud Service</h2>
+<h3 id="step-1-review-agile-board"><strong>STEP 1</strong>: Review Agile Board</h3>
+<ul>
+<li><p>This Lab assumes that you just completed Lab 200 and are still connected to the Oracle Cloud, that you're still in the Developer cloud Service Dashboard, and you're viewing the "Alpha Office Product Catalog Project." If for some reason that is not the case, follow the first several Steps of Lab 100 to once again view the Developer Cloud Service Console.</p></li>
+<li><p>Although you will remain connected to the Oracle Cloud using the user account you were provided, you will take on the Persona of <strong><em>Roland Dubois</em></strong> as you perform the following steps.</p>
+<p><img src="images/Roland.png" alt="" />  </p></li>
+<li><p>Within the <strong>Alpha Office Product Catalog Project</strong>, click on <strong>Agile</strong> found on the left hand navigation.</p>
+<p><img src="images/300/Picture11.png" alt="" />  </p></li>
+</ul>
+<h3 id="step-2-display-the-active-sprint"><strong>STEP 2</strong>: Display the Active Sprint</h3>
+<ul>
+<li><p>On the <strong>Microservices</strong> Board, click <strong>Active Sprints</strong></p>
+<p><img src="images/300/Picture13.png" alt="" />  </p></li>
+</ul>
+<h2 id="create-initial-git-repository">Create Initial Git Repository</h2>
+<h3 id="step-3-create-initial-git-repository"><strong>STEP 3</strong>: Create Initial Git Repository</h3>
+<p>To begin development on our Catalog REST microservices, we could start coding from scratch. However, prior to the formal kickoff of this project, you (as Roland Dubois) have already started doing some proof-of-concept development outside of the Developer Cloud Service in order to assess the feasibility of your assignment. You want to bring that existing code into the Developer Cloud Service as a starting point for your microservices. You will do that by cloning your external GIT repository into the Developer Cloud Service. Your first step will be to accept your task using the agile board.</p>
+<ul>
+<li><p>Drag and drop <strong>Feature 3 - Create Microservice to allow access to Product Catalog data</strong> into the <strong>In Progress</strong> swim-lane.  </p>
+<p><img src="images/300/Picture14.1.png" alt="" />  </p></li>
+<li><p>Leave the defaults, and Click <strong>OK</strong>.</p>
+<p><img src="images/300/Picture14.2.png" alt="" />  </p></li>
+<li><p>Your Sprint progress will appear as shown below.</p>
+<p><img src="images/300/Picture16.2.png" alt="" />  </p></li>
+<li><p>In the left hand navigation panel, click <strong>Project</strong></p></li>
+<li><p>Click <strong>New Repository</strong>. In the New Repository wizard enter the following information and click <strong>Create</strong>.</p>
+<p><strong>Name:</strong> <code>AlphaOfficeREST</code></p>
+<p><strong>Description:</strong> <code>AlphaOffice REST</code></p>
+<p><strong>Initial content:</strong> <code>Import existing repository</code></p>
+<p><strong>Enter the URL:</strong> <code>https://github.com/pcdavies/AlphaOfficeREST.git</code></p>
+<p><img src="images/300/Picture18.3.png" alt="" />  </p></li>
+<li><p>You have now created a new GIT repository stored within the Developer Cloud Services that is based on an existing repository.</p>
+<p><img src="images/300/Picture19.2.png" alt="" />  </p></li>
+</ul>
+<h2 id="create-default-build-and-deployment-process">Create Default Build and Deployment Process</h2>
+<h3 id="step-4-create-default-build-process"><strong>STEP 4</strong>: Create Default Build Process</h3>
+<p>Now that we have the source code in our managed GIT repository, we need to create a build process that will be triggered whenever a commit is made to the master branch.  We will use NPM package manager to set up a Node.js build process in this section.</p>
+<ul>
+<li><p>On the left side navigation panel click <strong>Build</strong> to access the build page.</p></li>
+<li><p>Click <strong>New Job</strong>.</p></li>
+<li><p>In the New Job popup enter <code>Alpha REST Build</code> for the Job Name, and then click <strong>Save</strong>.</p>
+<p><img src="images/300/Picture21.3.png" alt="" />  </p></li>
+<li><p>You are now placed into the job configuration screen.</p>
+<p><img src="images/300/Picture22.3.png" alt="" />  </p></li>
+<li><p>Click the <strong>Source Control</strong> tab. Click <strong>Git</strong> and select the <strong>AlphaOfficeREST.git</strong> from the drop down.</p>
+<p><img src="images/300/Picture24.3.png" alt="" />  </p></li>
+<li><p>Click the <strong>Triggers</strong> tab.</p>
+<p><strong>Select</strong>: <code>Based on SCM polling schedule</code></p>
+<p><img src="images/300/Picture25.3.png" alt="" /></p></li>
+<li><p>Click the <strong>Build Steps</strong> tab. Click <strong>Add Build Step</strong>, and select <strong>Execute shell</strong>.</p>
+<p><img src="images/300/Picture26.png" alt="" /></p></li>
+<li><p>For <strong>Command</strong> enter: <code>npm install</code></p>
+<p><strong>NOTE:</strong> <strong>npm</strong> can manage packages that are local dependencies of a particular project, as well as globally-installed JavaScript tools. When used as a dependency manager for a local project, npm can install, in one command, all the dependencies of a project through the package.json file.</p>
+<p><img src="images/300/Picture27.3.png" alt="" />  </p></li>
+<li><p>Click the <strong>Post Build</strong> tab and complete the following:</p></li>
+<li><p>Check <strong>Archive the artifacts</strong>.</p></li>
+<li><p>Enter <code>**/target/*</code> for <strong>Files to Archive</strong>.  </p></li>
+<li><p>Verify <strong>GZIP</strong> in the Compression Type.</p>
+<p><img src="images/300/Picture28.3.png" alt="" />  </p></li>
+<li><p>Click <strong>Save</strong> to complete the configuration.</p></li>
+<li><p>Click the <strong>Build Now</strong> button to start the build immediately. Wait, as it may take 30 seconds to a few minutes for the queued job to execute, but when it does, the status will change to the following:</p>
+<p><img src="images/300/Picture28_5.png" alt="" />  </p></li>
+<li><p>Wait, as it may take 30 seconds to a few minutes for the queued job to execute, but when it does, the status will change to the following:</p>
+<p><img src="images/300/Picture29.png" alt="" />  </p>
+<p><strong>NOTE:</strong> Once the build begins, it should take about approximately 1 to 2 minutes for the build to complete. Once complete, you will be able to see the number of successful test runs in the Test Result Trend section. <strong><em>Wait for the build to complete before continuing to the next step</em></strong>, as we need the build artifact to complete the deployment configuration.</p></li>
+<li><p>After the build begins, you can also click on the <strong>Console Icon</strong> <img src="images/300/Picture29.1.png" alt="" /> to monitor the build log details.</p>
+<p><img src="images/300/Picture30.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-create-default-deployment-process"><strong>STEP 5</strong>: Create Default Deployment Process</h3>
+<p>Now that we have an automated build process, we will setup up a deployment configuration that will push out build artifacts to a node.js environment running on Application Container Cloud Service whenever a successful build occurs.</p>
+<ul>
+<li><p>On the navigation panel click <strong>Deploy</strong> to access the Deployment page. Click <strong>New Configuration</strong>.</p></li>
+<li><p>Enter the following data:</p>
+<p><strong>Configuration Name</strong>: <code>DeployREST</code></p>
+<p><strong>Application Name</strong>: <code>AlphaOfficeREST</code></p>
+<p><img src="images/300/Picture32.3.png" alt="" />  </p></li>
+<li><p>Click on <strong>Deployment Target</strong> drop down and select deployment defined in lab 200.</p>
+<p><img src="images/300/Picture33.png" alt="" />  </p></li>
+<li><p>In Deployment window, click <strong>Test Connection</strong>. If Successful, click <strong>Use Connection</strong>:</p>
+<p><img src="images/300/Picture34.3.png" alt="" />  </p></li>
+<li><p>Set the following Properties as follows:</p></li>
+<li><p><strong>Runtime</strong>: <code>Node</code></p></li>
+<li><p><strong>Subscription</strong>: <code>Hourly</code></p></li>
+<li><p><strong>Type:</strong> <code>Automatic</code> and <code>Deploy stable builds only</code></p></li>
+<li><p><strong>Job:</strong> <code>Alpha REST Build</code></p></li>
+<li><p><strong>Artifact:</strong> <code>target/msdbw-microservice.zip</code></p>
+<p><img src="images/300/Picture36.png" alt="" />  </p></li>
+<li><p>To reduce the number of resources that are used, we will modify the default deployment of 2 instances. Click Include ACCS Deployment and enter the following in the text box:</p></li>
+</ul>
+<pre><code>{
+  "memory": "1G",
+  "instances": "1"
+}
+</code></pre>
+<p><img src="images/300/Picture36.3.png" alt="" />  </p>
+<ul>
+<li><p>Click <strong>Save</strong></p>
+<p><img src="images/200/Picture36.2.png" alt="" />  </p></li>
+<li><p>Click the gear drop down for <strong>AlphaOfficeREST</strong> and select <strong>Start</strong></p>
+<p><img src="images/300/Picture37.3.png" alt="" />  </p></li>
+<li><p>Wait until the message <strong>Starting application</strong> changes to <strong>Last deployment succeeded</strong></p>
+<p><img src="images/300/Picture38.2.png" alt="" />  </p>
+<p><img src="images/300/Picture38.4.png" alt="" />  </p></li>
+</ul>
+<h2 id="verify-rest-microservice-deployment">Verify REST Microservice deployment</h2>
+<h3 id="step-6-test-rest-services"><strong>STEP 6</strong>: Test REST services</h3>
+<ul>
+<li><p>We are able to access the application directly from Developer Cloud Service. Click <strong>AlphaOfficeREST</strong> to launch the application.</p>
+<p><img src="images/300/Picture39.3.png" alt="" />  </p></li>
+<li><p>A new tab in the browser should open with application running.</p>
+<p><img src="images/300/Picture42.png" alt="" />  </p></li>
+<li><p>Now lets test out the <strong>products</strong> REST call.  Append <strong>/products</strong> to the end of the URL and hit <strong>enter</strong>.  All of the Alpha Office products should be returned in a JSON payload. </p>
+<p><img src="images/300/Picture43.3.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-complete-task"><strong>STEP 7</strong>: Complete Task</h3>
+<p>We have now verified that the REST microservice has been deployed and functions properly. To finish up this lab, we will mark the Issue as completed in the Sprint.</p>
+<ul>
+<li><p>Back in the Developer Cloud Service window, click <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>.</p></li>
+<li><p>Drag and drop <strong>Feature 3</strong> from <strong>In Progress</strong> to <strong>Completed</strong>.</p>
+<p><img src="images/300/Picture46.2.png" alt="" />  </p></li>
+<li><p>In the Change Progress popup click <strong>Next</strong>.</p>
+<p><img src="images/300/Picture47.png" alt="" />  </p></li>
+<li><p>In the <strong>Add Time Spent</strong> popup, set the <strong>Time Spent</strong> to <code>1</code> and click <strong>OK</strong>.</p>
+<p><img src="images/200/Picture47.5.png" alt="" />  </p></li>
+<li><p>Your Sprint should now look like the following:</p>
+<p><img src="images/300/Picture48.2.png" alt="" />  </p></li>
+<li><p>You can also click on the <strong>Reports</strong> button and view your progress in the <strong>Burndown Chart</strong> and <strong>Sprint Report</strong>.</p>
+<p><img src="images/300/Picture49.png" alt="" />  </p></li>
+<li><p><strong>You are now done with this lab.</strong></p></li>
+</ul>

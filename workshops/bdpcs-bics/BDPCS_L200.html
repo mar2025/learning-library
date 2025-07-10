@@ -1,0 +1,157 @@
+<p><img src="images/L200/BDPCS-BICS_L200_Title.png" alt="" /></p>
+<p>Updated: February 1, 2017</p>
+<h1 id="introduction">Introduction</h1>
+<p>This lab will build upon the previous workshop lab by adding a new related dataset into the mix and completion of the final step of processing and publishing your prepared results.  These processes are as easy to complete as the first workshop lab and again by both technical and non-technical users in an independent fashion.</p>
+<p>To refresh from the first workshop lab, we are still within the Big Data Preparation process phase, but we are nearing the point where we can transition to analysis and reporting of our prepared and enriched dataset.</p>
+<p><img src="images/L200/p1.png" alt="" /></p>
+<p>Again, the overall goal is to ensure data consistency and thus higher quality analysis results as a self-service activity.</p>
+<p>This will be the final data preparation workshop lab before we transition to analyzing our processed dataset this afternoon.</p>
+<p><strong>Please direct comments to:  Derrick Cameron (derrick.cameron@oracle.com)</strong></p>
+<h2 id="credits">Credits</h2>
+<p>This lab was originally developed by Richard Stang and has been updated to reflect deployment and delivery logistics.  The NAS Innovation and Shared Services Team supports this workshop.  </p>
+<h2 id="workshop-objectives">Workshop Objectives</h2>
+<ul>
+<li>How to connect to the Big Data Preparation Service (BDPCS).</li>
+<li>Exploration of the basic features of the service.</li>
+<li>How to create a Transform and add an additional related dataset.</li>
+<li>How to configure a Transform, reviewing recommendations and tailoring the Transform script.</li>
+<li>How to publish our results to the Business Intelligence Cloud Service so that one can begin analyzing the processed and enriched results.</li>
+</ul>
+<h1 id="pre-lab-information">Pre-Lab Information</h1>
+<h2 id="assumptions">Assumptions</h2>
+<p>You have brought a laptop to the workshop with wireless networking that is capable of connecting to Oracle’s public cloud.  Specifically, the Big Data Preparation Cloud Service.  A compatible web browser as specified in the workshop invitation.</p>
+<h2 id="objective">Objective</h2>
+<p>We will be taking the cleansed and enriched customer information from the first workshop lab and blending a related dataset that contains customer sales activity.  Once the results are successfully blended, we will then process and publish the blended results to the Business Intelligence Cloud Service (BICS).</p>
+<h1 id="big-data-preparation-cloud-service-overview">Big Data Preparation Cloud Service Overview</h1>
+<h3 id="step-1--accessing-the-service-url"><strong>Step 1:</strong>  Accessing the Service URL</h3>
+<p>Your workshop leader will provide the specific cloud service URL as well as the credentials needed to login to the service.</p>
+<ul>
+<li><p>Open a web browser and type-in the URL to access the BDP Cloud Service.</p></li>
+<li><p>When presented with the following screen, enter your workshop User Name, Password and Identity Domain.</p>
+<p><img src="images/L200/p2.png" alt="" /></p></li>
+</ul>
+<h3 id="step2--login-success---the-home-page"><strong>Step2:</strong>  Login Success - The Home Page</h3>
+<p>Upon successful login, you should see the following Home page:</p>
+<p><img src="images/L200/p3.png" alt="" /></p>
+<h2 id="source-connection-setup">Source Connection Setup</h2>
+<p>The two BDPCS Source Connections utilized in this workshop will be used:</p>
+<ul>
+<li>Default_Oracle_Cloud_Storage</li>
+<li>Oracle_BICS</li>
+</ul>
+<p>The sections below provide examples of the configuration information that is required for the two sources:</p>
+<ul>
+<li><p>An Oracle Cloud Storage Service instance where our input files to be Transformed will reside.</p>
+<p><img src="images/L200/p4.png" alt="" /></p></li>
+<li><p>A Transformation target source, a Business Intelligence Cloud Service (BICS) instance that will be used in the afternoon analytics lab sessions.</p>
+<p><img src="images/L200/p5.png" alt="" /></p></li>
+</ul>
+<p><strong>Note:</strong>  You may explore the specific settings for connections via the Catalog page tab.  Please do not modify any of the specified connection information.</p>
+<h1 id="blending-datasets-with-big-data-preparation-cloud-service">Blending Datasets with Big Data Preparation Cloud Service</h1>
+<h2 id="add-a-dataset-to-an-existing-transform">Add a dataset to an existing transform</h2>
+<h3 id="step-1--upload-a-file"><strong>Step 1:</strong>  Upload a File</h3>
+<ul>
+<li><p>From the Home Page, click the Upload button.</p>
+<p><img src="images/L200/p6.png" alt="" /></p></li>
+<li><p>Select source.</p>
+<p><img src="images/L200/p7.png" alt="" /></p>
+<p><img src="images/L200/p8.png" alt="" /></p></li>
+<li><p>Select file (provided by your instructor).</p>
+<p><img src="images/L200/p9.png" alt="" /></p>
+<p><img src="images/L200/p10.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2--edit-the-transform-from-workshop-lab-100"><strong>Step 2:</strong>  Edit the Transform from Workshop Lab 100</h3>
+<ul>
+<li><p>Click the Catalog tab</p></li>
+<li><p>Access the operations menu associated with your Customer_Activity Transform from Lab 100 and select Edit menu item to edit the Transform.</p>
+<p><img src="images/L200/p11.png" alt="" /></p></li>
+<li><p>The displayed transform should resemble the following:</p>
+<p><img src="images/L200/p12.png" alt="" /></p></li>
+<li><p>Add file to Transform.  With the transform open, press the Add File button in the upper right of the screen.  This opens a dialog where you will specify the file and processing options.  </p></li>
+<li><p>Press the Select button to select the file to be added to the Transform.</p>
+<p><img src="images/L200/p13.png" alt="" /></p></li>
+<li><p>Select the Source (Default_Oracle_Cloud_Storage) or the Source name provided to you by your workshop leader, and then the Workshops-Customer folder.</p></li>
+<li><p>Select the Customer Sales Activity (WS_CustomerSalesActivity.xlsx) or the filename as provided by the workshop leader and press OK.</p>
+<p><img src="images/L200/p14.png" alt="" /></p></li>
+<li><p>This will return you to the Transform page.  Next to the Transform name, note the yellow asterisk indicating that BDPCS is currently processing the request to add the file to the Transform.</p></li>
+<li><p><strong>Note:</strong> Processing the request to add a file to the Transform will take a few minutes.  Please be patient.</p>
+<p><img src="images/L200/p15.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-configure-the-customer-sales-activity-dataset-transforms"><strong>Step 3:</strong> Configure the Customer Sales Activity dataset Transforms</h3>
+<ul>
+<li><p>Select the dataset/file in the Transform.</p></li>
+<li><p>Click the dropdown list icon</p></li>
+<li><p>Select the dataset/file that you just added</p>
+<p><img src="images/L200/p16.png" alt="" /></p></li>
+<li><p>The file transform should resemble this:</p>
+<p><img src="images/L200/p17.png" alt="" /></p></li>
+<li><p>Step 7: Extract Day of the Week from OrderDate.  Select OrderDate from the Recommendations list.</p>
+<p><img src="images/L200/p18.png" alt="" /></p></li>
+<li><p>From the list of Recommendations, click the checkmark for Extract day_of_week from OrderDate to apply this transform.</p>
+<p><img src="images/L200/p19.png" alt="" /></p></li>
+<li><p>This will add a column to the dataset containing the day of the week associated with the respective OrderDate.</p>
+<p><img src="images/L200/p20.png" alt="" /></p></li>
+<li><p>Format OrderDate.  Returning to the list of Recommendations, click the checkmark for Format epoch date in OrderDate as MM/dd/yyyy to apply this transform.  <strong><em>Note: An epoch date is a date value using a POSIX/UNIX encoding format.  The number of seconds from January 1, 1970.</em></strong></p>
+<p><img src="images/L200/p21.png" alt="" /></p></li>
+<li><p>This will format the data as shown here:</p>
+<p><img src="images/L200/p21.1.png" alt="" /></p></li>
+<li><p>Step 9: Associate BrandName with Brand_Cat domain.  Select BrandName from the Recommendations list.</p>
+<p><img src="images/L200/p22.png" alt="" /></p></li>
+<li><p>Click the checkmark for Classify BrandName as domain Brand_Cat.</p>
+<p><img src="images/L200/p23.png" alt="" /></p></li>
+<li><p>This associates BrandName with a knowledge object that will allow us add a product category to our dataset.  After the domain assignment recommendation has been accepted, an additional Recommendation appears.  Click the checkmark for Enrich BrandName with Brand_Cat.BrandCategory to accept the Recommendation to add a Brand Category column to our dataset.</p>
+<p><img src="images/L200/p24.png" alt="" /></p></li>
+<li><p>The resulting enrichment:</p>
+<p><img src="images/L200/p25.png" alt="" /></p></li>
+</ul>
+<h2 id="blending-two-datasets-within-a-transform">Blending Two Datasets Within a Transform</h2>
+<ul>
+<li><p>Invoke the dataset Blend.  From the main Transform screen, press the Blend button.  This will display the Blending Configuration dialog.</p>
+<p><img src="images/L200/p26.png" alt="" /></p></li>
+<li><p>Configure the blend conditions.</p></li>
+<li><p>Click the checkmark next to Use F1.identifier with F2.UserAccount as blend key to accept these fields as our Blending Conditions.</p></li>
+<li><p>Click the Right Join radio button to select Right Join as the Output Option.</p>
+<p><strong>Blending Conditions:</strong>  Blending or joining two datasets in BDPCS requires columns from each dataset that contain matching values.  These are used to stitch or blend the two datasets together in a coherent fashion.  In this particular instance, the identifier column in our first dataset contains values that match the UserAccount column values in the dataset we just added.  BDPCS noticed this column value similarity and has already provided a Recommendation that we use this pair of columns for our Blend Conditions.  We will accept this Recommendation.</p>
+<p>** Output Options:** In addition to the Blending Conditions, we also need to configure our Output Options.  We have three options to choose from as shown below, but for our purposes, we are focused on customer sales activity, so the most appropriate choice is Right Join.  This will ensure all of our activity records are included while excluding any customers that do not have sales activity.  The join behavior is show via the Output Options graphic.  The Match, Left and Right options correspond to how the datasets are shown in the Blending Conditions.  Here the Customer Accounts information is the left dataset and the right dataset contains our Sales Activity.</p>
+<p><img src="images/L200/p27.png" alt="" /></p></li>
+<li><p>Note that the Blending Conditions are populated after accepting the Recommendations.</p>
+<p><img src="images/L200/p28.png" alt="" /></p></li>
+<li><p>Select the Column Selection tab.  Here we have an opportunity to exclude columns from the blended output dataset.  We will accept the default of all columns selected.</p></li>
+<li><p>Press the Submit Button to invoke Blend processing</p>
+<p><img src="images/L200/p29.png" alt="" /></p></li>
+<li><p>This will return you to the Transform page.  Next to the Transform name, note the yellow asterisk indicating that BDPCS is currently processing the dataset Blend request.</p></li>
+<li><p><strong>Note:</strong> Blend processing will take a few minutes.  Please be patient.</p>
+<p><img src="images/L200/p30.png" alt="" /></p></li>
+</ul>
+<h2 id="configure-the-blended-dataset-transforms">Configure the Blended Dataset transforms</h2>
+<ul>
+<li><p>After Blend processing successfully completes, edit the Transform and select the Blend dataset.</p>
+<p><img src="images/L200/p31.png" alt="" /></p></li>
+<li><p>Move the UserAccount column before the gender column.  Scroll down the list of columns then click and drag the UserAccount column, then drop above the gender column.</p>
+<p><img src="images/L200/p32.png" alt="" /></p></li>
+</ul>
+<p>This completes the transforms for the blended dataset.  Press the Done button to close the Transform.</p>
+<h2 id="publishing-the-transform">Publishing the Transform</h2>
+<ul>
+<li><p>From the Catalog tab, click the Transform operations menu
+Select the Publish menu item.</p>
+<p><img src="images/L200/p33.png" alt="" /></p></li>
+<li><p>Specify the Publishing Target.  The Source 1 and 2 fields are prepopulated with your default input datasets.  You need to specify the Target, which will be the Business Intelligence Cloud Service (BICS) Source.</p></li>
+<li><p>Press the Select button associated with the Target Source.</p></li>
+<li><p>Select the BICS Source that your workshop instructor has provided to you.</p>
+<p><img src="images/L200/p34.png" alt="" /></p></li>
+<li><p>Press the Publish button to invoke Blend processing and to Publish to the BICS Target.</p></li>
+<li><p><strong>Note:</strong> Blend and Publish processing will take a few minutes.  Please be patient.</p>
+<p><img src="images/L200/p35.png" alt="" /></p></li>
+<li><p>Review the Blend and Publish Job Status.  Click the Jobs Tab.</p>
+<p><img src="images/L200/p36.png" alt="" /></p></li>
+<li><p>You should see a job associated with your Publish request.  Click the Name to see more Job details.</p>
+<p><img src="images/L200/p37.png" alt="" /></p></li>
+<li><p>The details displayed should indicate Success or Failure.  Successful BICS Publishing log output example:</p>
+<p><img src="images/L200/p38.png" alt="" /></p></li>
+</ul>
+<p>Note the writeThroughput is 10613, the number of customer sales activity records.</p>
+<h1 id="lab-200-summary">Lab 200 Summary</h1>
+<p>This completes Lab 200.  The results published exist as a database table in the Business Intelligence Cloud Service (BICS).  Here is an example of the results in BICS.</p>
+<p><img src="images/L200/p39.png" alt="" /></p>
+<p>Hands-on Lab 300 will focus on analyzing and reporting the results we just published to the Business Intelligence Cloud Service.</p>

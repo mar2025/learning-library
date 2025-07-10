@@ -1,0 +1,45 @@
+<h1 id="cleaning-up-after-the-workshop">Cleaning Up After the Workshop</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Now that you have completed the workshop, you may want to remove the artifacts left behind in your Oracle Cloud trial account. This guide will show you how to remove everything that you created during the workshop. Note that compute instances and load balancers left running in your Oracle Cloud trial account will continue to consume trial credits until they are terminated.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h1 id="remove-all-deployed-and-installed-workshop-components">Remove All Deployed and Installed Workshop Components</h1>
+<h2 id="clean-up-oracle-cloud-account">Clean up Oracle Cloud Account</h2>
+<h3 id="step-1-delete-instances"><strong>STEP 1</strong>: Delete Instances</h3>
+<ul>
+<li><p>As documented in the other labs, connect into your Oracle Cloud Account, and go to the Cloud Console.</p></li>
+<li><p>From the Cloud Console, select <strong>Compute > Images</strong> from the top menu option</p>
+<p><img src="images/manualcleanup/pic01.png" alt="" /></p></li>
+<li><p>We will now delete the three instances created by the Workshop. Delete each of the following three images by clicking in the <strong>three dots</strong> to the right of the image, then select <strong>Terminate</strong></p>
+<p><img src="images/manualcleanup/pic03.png" alt="" /></p></li>
+<li><p>Ensure the <strong>Permanently delete</strong> box is checked, and click on <strong>Terminate Instance</strong>.</p>
+<p><img src="images/manualcleanup/pic04.png" alt="" /></p></li>
+<li><p>Repeat the previous steps to delete the other two instances, and wait until the instances show <strong>Terminated</strong>.</p></li>
+</ul>
+<h3 id="step-2-delete-load-balancers"><strong>STEP 2</strong>: Delete Load Balancers</h3>
+<p><img src="images/manualcleanup/pic05.png" alt="" /></p>
+<ul>
+<li><p>From the top menu bar, click on <strong>Networking > Load Balancers</strong></p>
+<p><img src="images/manualcleanup/pic06.png" alt="" /></p></li>
+<li><p>Click on the <strong>three dots</strong> next to the First load balancer in the list, and click on <strong>Terminate</strong></p>
+<p><img src="images/manualcleanup/pic07.png" alt="" /></p></li>
+<li><p>Click on <strong>OK</strong></p>
+<p><img src="images/manualcleanup/pic08.png" alt="" /></p></li>
+<li><p><strong>Repeat the steps</strong> for the remaining Load Balancers until all used by the workshop have been removed.</p>
+<p><img src="images/manualcleanup/pic09.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-delete-the-virtual-network"><strong>STEP 3</strong>: Delete the Virtual Network</h3>
+<ul>
+<li><p>Using the top menu bar, go to <strong>Networking > Virtual Cloud Networks</strong>.</p>
+<p><img src="images/manualcleanup/pic10.png" alt="" /></p></li>
+<li><p>Click on the <strong>Three Dots</strong> to the right of the Virtual Cloud Network, and click on <strong>Terminate</strong>.</p>
+<p><img src="images/manualcleanup/pic11.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-delete-the-api-key-fingerprint"><strong>STEP 4</strong>: Delete the API Key Fingerprint</h3>
+<ul>
+<li><p>Using the top menu bar, go to <strong>Identity > Users</strong>.</p>
+<p><img src="images/manualcleanup/pic12.png" alt="" /></p></li>
+<li><p>Click on the <strong>User's Name</strong>.</p>
+<p><img src="images/manualcleanup/pic13.png" alt="" /></p></li>
+<li><p>From the <strong>API Key</strong> section, click on the <strong>Delete</strong> button to the right of the <strong>Fingerprint</strong> you created during this workshop. Confirm the delete by clicking on <strong>OK</strong> in the popup dialog box.</p>
+<p><img src="images/manualcleanup/pic14.png" alt="" /></p></li>
+</ul>

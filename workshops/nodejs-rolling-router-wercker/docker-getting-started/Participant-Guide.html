@@ -1,0 +1,539 @@
+<h1 id="intro-to-containers-hands-on-lab">Intro to Containers Hands On Lab</h1>
+<p>This Hands on Lab (HOL) will take the participant through the basics of containerization, explore its advantages and introduce Docker technology with entry level exercises.  The topics to be covered in this 2 hour session are:</p>
+<ol>
+<li><a href="Participant-Guide.md#intro-to-basic-container-concepts">Intro to Basic Container Concepts</a></li>
+<li><a href="Participant-Guide.md#verify-docker-engine-hands-on-lab-environment">Verify Docker Engine Hands on Lab Environment</a></li>
+<li><a href="Participant-Guide.md#hello-helloworld">Hello Helloworld</a></li>
+<li><a href="Participant-Guide.md#create-a-dockerfile-and-docker-image">Create a Dockerfile and Docker Image</a></li>
+<li><a href="Participant-Guide.md#push-an-image-to-your-docker-hub-account">Push an Image to your Docker Hub Account</a></li>
+<li><a href="Participant-Guide.md#install-docker-compose">Install Docker Compose</a></li>
+<li><a href="Participant-Guide.md#create-a-wordpress-stack">Create Wordpress "stack"</a></li>
+<li><a href="Participant-Guide.md#basics-of-persistent-storage">Basics of Persistent storage</a></li>
+<li><a href="Participant-Guide.md#use-github-and-docker-hub-together-to-build-an-image-and-run-the-container">Use Github and Docker Hub together to build an Image and Run the Container</a></li>
+<li><a href="Participant-Guide.md#demo-of-oracle-container-cloud-service-showing-participants-containers">Demo of Oracle Container Cloud Service Showing Participant's Containers</a></li>
+</ol>
+<h3 id="requirements-to-complete-this-hol">Requirements to Complete this HOL:</h3>
+<ul>
+<li><p>A pre-configured Docker-Engine environment - See <a href="Prerequisites.md">Prerequisites</a></p></li>
+<li><p>Access to the Internet</p></li>
+<li><p>A laptop</p></li>
+<li><p>A text editor to keep notes and snippets as you go along</p></li>
+<li><p>A Docker Hub account</p></li>
+<li><p>A Github account</p></li>
+</ul>
+<hr />
+<h2 id="intro-to-basic-container-concepts">Intro to Basic Container Concepts</h2>
+<p>A container is a runtime instance of a Docker image.</p>
+<p><a href="https://docs.docker.com/engine/reference/glossary/#/container">https://docs.docker.com/engine/reference/glossary/#/container</a></p>
+<p>Docker is the company and containerization technology.</p>
+<p><a href="https://docs.docker.com/engine/reference/glossary/#/docker">https://docs.docker.com/engine/reference/glossary/#/docker</a>  </p>
+<p>Containers have been around for many years.  Docker created a technology that was usable by mere humans, and was much easier to understand than before.  Thus, has enjoyed a tremendous amount of support for creating a technology for packaging applications to be <strong>portable and lightweight.</strong></p>
+<p>However, there have been and still are variations on container technology.  Here are some of the technologies we have seen through the years.</p>
+<p>History of Linux Containers:</p>
+<p><img src=images/002-container-history.png /></p>
+<p>Now, let's look at how a virtual machine (VM) is different from a container.</p>
+<p>While containers may sound like a VM, the two are distinct technologies. With VMs each virtual machine includes the application, the necessary binaries and libraries and the <strong>entire guest operating system.</strong></p>
+<p>Whereas, Containers include the application, all of its dependencies, but share the kernel with other containers and are not tied to any specific infrastructure, other than having the Docker engine installed on its host – allowing containers to run on almost any computer, infrastructure and cloud.  </p>
+<p><img src=images/002-vm-vs-container.png /></p>
+<blockquote>
+  <p><em>Note - at this time, Windows and Linux containers require that they run on their respective kernel base, therefore, Windows containers cannot run on Linux hosts and vice versa.</em></p>
+</blockquote>
+<p>Docker images are a collection of files, which have everything needed to run the software application inside the container.  However, they are ephemeral, meaning that any data that is written inside the container, while it is running, will not be retained.  </p>
+<p>If the container is stopped and restarted from its image, the container will run exactly the same as the first time, absent of any changes made during the last run cycle.  Changes to the container either have to be made during the image creation process, using the Dockerfile that become part of the image, or data can be retained by mounting a persistent storage volume, from inside the container to the outside.  This will be explored further in the HOL exercises below. </p>
+<p><img src=images/004-docker-images.jpg /></p>
+<p>Jumping back a bit, there is a new nomenclature that Docker introduces, here are terms that you will need to be familiar with.  </p>
+<p>Each of these Docker technologies will be explored in this HOL.  It's important to note that this core technology is open source.  There are other technologies in the greater ecosystem, that could be open source, or licensed or even a hybrid, with a paid support option.</p>
+<p><img src=images/005-docker-terms.jpg /></p>
+<p>The Docker Engine is THE core piece of technology that allows you to run containers.  In order for a container to run on any Linux host, at a minimum, the Docker Engine needs to be installed.  Then the container can run on any Linux host where Docker Engine is installed, providing the benefit of portability, without doing any application specific configuration changes on each host.</p>
+<p><img src=images/004-docker-engine.jpg /></p>
+<p>Ok, so those are some of the mechanics of the technology, but why is Docker popular among all types of IT people?  Let's look at these proof points from Developers and IT Ops.</p>
+<p><img src=images/004-why-containers.jpg /></p>
+<p>Additionally, in speaking with hundreds of organizations that are exploring and using Docker, these are the core advantages that Docker brings.  </p>
+<p><img src=images/005-docker-usage.jpg /></p>
+<p>All of this is part of a transformation of technologies along a number of fronts, and is the basis for modern agile application development.</p>
+<p><img src=images/006-evolution.jpg /></p>
+<hr />
+<h2 id="verify-docker-engine-hands-on-lab-environment">Verify Docker Engine Hands on Lab Environment</h2>
+<p>In this first section you are going to verify that you are able to connect to your Docker Engine environment as requested in the <a href="Prerequisites.md">Prerequisites document</a>.  Please access the environment now, and execute the following commands at the terminal.</p>
+<blockquote>
+  <p>*Note - if you are using one of the Worker Nodes in an Oracle Container Cloud Service instance, as your Docker Engine environment, <a href="supplemental/Access-OCCS-VM-SSH.md">access it via SSH per these instructions</a></p>
+</blockquote>
+<p><strong>Optional</strong> - for convenience, run as root, so that you do not have to preface everything with sudo (not applicable if you are running Docker for Windows):</p>
+<pre><code>$ sudo -s
+</code></pre>
+<p>Now, here is the Docker specific command to check what version is installed:</p>
+<pre><code>$ docker --version
+</code></pre>
+<p>If Docker is installed and running, you should see an output of something like this:</p>
+<pre><code>Docker version 1.1x.x, build 57bf6fd
+</code></pre>
+<hr />
+<h2 id="hello-helloworld">Hello Helloworld</h2>
+<p>Run Docker’s Hello-world example:</p>
+<pre><code>$ docker run hello-world
+</code></pre>
+<p>Since the "hello-world" image is not available locally on the host, the command automatically pulls the hello-world image from the public Docker Hub image repository and runs the container in the foreground.</p>
+<p><img src=images/2017-03-16_13-40-42.jpg /></p>
+<hr />
+<p><strong>Congratulations, you have just run your first Docker container!</strong></p>
+<p>List all containers: </p>
+<blockquote>
+  <p><em>Note - the "- a" option = running <strong>and</strong> stopped</em></p>
+</blockquote>
+<pre><code>$ docker ps -a
+</code></pre>
+<p>Notice that the hello-world container ran once and then exited:</p>
+<p><img src=images/2017-03-16_14-46-49.jpg /></p>
+<hr />
+<p>In this exercise you will explore another Docker image from Docker Hub.</p>
+<p><strong>Browse to another public image Helloworld example on Docker Hub.  Run it.</strong></p>
+<p>Use this Docker Hub image:</p>
+<p><a href="https://hub.docker.com/r/karthequian/helloworld">https://hub.docker.com/r/karthequian/helloworld</a></p>
+<p>Pull the image from the Docker Hub Registry:</p>
+<blockquote>
+  <p><em>Note - observe how the layers are pulled individually.  Docker image files are composed of multiple layers, for more information, read the <a href="https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/">Docker docs here about images and layers</a></em></p>
+</blockquote>
+<pre><code>$ docker pull karthequian/helloworld:latest
+</code></pre>
+<p>Copy/Paste the Docker Run command from the Docker Hub page and add a "-d" option so the container runs in "detached" mode:</p>
+<blockquote>
+  <p><em>Note - the "-d" option run the container in detached mode, as opposed to the foreground mode that you saw in the last exercise.  The benefit of this is that for longer running containers, it frees up your terminal window.</em></p>
+</blockquote>
+<pre><code>$ docker run -d -p 80:80/tcp "karthequian/helloworld:latest"
+</code></pre>
+<p>Explore this Helloworld app in the browser.  Navigate to the IP of the Docker Host where it is running and note the number of visits: </p>
+<blockquote>
+  <p><em>Note - the IP is the same as the Host that you are SSH’d into http://host_ip or on your localhost http://localhost (for the rest of this document, it may just be referred to as host IP or Docker host IP for simplicity)</em></p>
+</blockquote>
+<p><img src=images/004-hello-world.png /></p>
+<hr />
+<p>You are now actually using an application that is in the Docker container.  Refresh the browser and observe how the visits count increments.  This is a live application. A simple example, but an example of the experience of using an application running in a container, which is no different than if it was not running in a container.</p>
+<blockquote>
+  <p><em>Makes you wonder about how many apps that you are using on a day to day basis, may indeed be running in a Docker container?</em></p>
+</blockquote>
+<p>Now, look at the name that Docker has assigned the Helloworld container that is running.  </p>
+<p>List all running containers:</p>
+<pre><code>$ docker ps
+</code></pre>
+<p>Notice that Docker has assigned a container name, something like "ecstatic_lamport" in the below?  What name did Docker give your container?  Remember this name, as we will use it in a bit.</p>
+<p><img src=images/2017-03-16_13-49-25.jpg /></p>
+<hr />
+<blockquote>
+  <p><em>Note - unless you specify a container name, Docker will assign a similar 2 part name automatically</em></p>
+</blockquote>
+<p><strong>Stop and Re-run Your Container with a More Descriptive Name</strong></p>
+<p>Now, go back to the terminal window, stop the container and give it a more descriptive name, so that we could find it easier if there were many containers running.</p>
+<p>Stop the Running Container - Replace <strong>your_container</strong> below with an actual name of your running container:</p>
+<pre><code>$ docker stop your_container
+</code></pre>
+<p>Now, remove the container with the "rm" command:</p>
+<pre><code>$ docker rm your_container
+</code></pre>
+<p>Check to be sure that the container has been removed:</p>
+<pre><code>$ docker ps -a
+</code></pre>
+<blockquote>
+  <p><em>Note - containers can be stopped and removed by using their name <strong>(if there are no dependent image layers)</strong>, their long id or their short id</em></p>
+</blockquote>
+<p>Now run the container with a more descriptive name, such as "helloworld_app":</p>
+<pre><code>$ docker run -d --name helloworld_app -p 80:80/tcp "karthequian/helloworld:latest"
+</code></pre>
+<p>List all running containers again:</p>
+<pre><code>$ docker ps
+</code></pre>
+<blockquote>
+  <p><em>Is the container easier to find now, especially that there is context to the name of the container?  Especially if there were many containers running?</em></p>
+</blockquote>
+<p>Stop and Remove the container:</p>
+<pre><code>$ docker stop helloworld_app
+
+$ docker rm helloworld_app
+</code></pre>
+<p>We are done with this part of the HOL.</p>
+<hr />
+<h2 id="create-a-dockerfile-and-docker-image">Create a Dockerfile and Docker Image</h2>
+<p>In this exercise you will build your own image from a Dockerfile.</p>
+<p><strong>About DockerFiles</strong></p>
+<p>A Dockerfile is a recipe that starts with a base image, typically a thin Linux OS distribution such as Alpine Linux, and then layers on an app and configuration.  <a href="https://docs.docker.com/engine/reference/builder/">According to Docker</a>: </p>
+<p><em>"Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image. Using docker build users can create an automated build that executes several command-line instructions in succession."</em></p>
+<p><strong>Build the Docker image</strong></p>
+<p>Use the <a href="https://hub.docker.com/r/docker/whalesay/">Docker Whalesay</a> example to build your first image.  </p>
+<p>Follow these steps:</p>
+<p>From your home directory, make a directory to store your Dockerfile:</p>
+<pre><code>$ cd ~ 
+
+$ mkdir mydockerbuild
+</code></pre>
+<p>Change to the new directory:</p>
+<pre><code>$ cd mydockerbuild
+</code></pre>
+<p>In Step 1.3, use VI or editor of your choice, like nano.  </p>
+<p>Use VI, if you are on Oracle Linux:</p>
+<blockquote>
+  <p><em>Note - case is important in the file name "Dockerfile".  Use a capital D and lower case for the rest of the letters.</em></p>
+</blockquote>
+<pre><code>$ vi Dockerfile
+</code></pre>
+<p>Create a text file named Dockerfile with these 3 lines:</p>
+<blockquote>
+  <p>*Note - if you are using VI, press the "i" key first to enter insert mode, before you paste.</p>
+</blockquote>
+<pre><code>FROM docker/whalesay:latest
+
+RUN apt-get -y update &amp;&amp; apt-get install -y fortunes
+
+CMD /usr/games/fortune -a | cowsay
+</code></pre>
+<p>In Step 1.8, after you are done adding the 3 lines to your Dockerfile with VI, save the file by typing the Esc key - colon - w (for write) - q (for quit):</p>
+<pre><code>esc : w q 
+</code></pre>
+<p>Verify the Dockerfile has the correct content:</p>
+<pre><code>$ cat Dockerfile
+</code></pre>
+<blockquote>
+  <p><em>Note - the docs for VI are here: <a href="https://www.cs.colostate.edu/helpdocs/vi.html">https://www.cs.colostate.edu/helpdocs/vi.html</a></em></p>
+</blockquote>
+<p>Then per section 2, build your Docker image, be sure to include the "." at the end of the command:</p>
+<pre><code>$ docker build -t docker-whale .
+</code></pre>
+<p>Then per section 4, list the images on your host and run the docker-whale image as a container:</p>
+<pre><code>$ docker images
+</code></pre>
+<pre><code>$ docker run docker-whale
+</code></pre>
+<p>Notice the output in the terminal, the container will run once, then stop.</p>
+<p><img src=images/2017-03-16_14-10-47.jpg /> </p>
+<hr />
+<h2 id="push-an-image-to-your-docker-hub-account">Push an Image to your Docker Hub Account</h2>
+<p><strong>Registries</strong></p>
+<p>Registries store Docker images.  Using a registry is the first step towards moving Docker off the laptop.  The most widely used registry is the Docker Hub: <a href="https://hub.docker.com">https://hub.docker.com</a> </p>
+<blockquote>
+  <p><em>Note - in this exercise you will need a Docker Hub account to use the public Docker registry.  If you do not have one already, you can sign up for free, navigate to: <a href="https://hub.docker.com/">https://hub.docker.com/</a></em></p>
+</blockquote>
+<p><strong>Tag and Push your new image to the Docker Hub registry.  In this exercise username will be your Docker Hub account name.</strong></p>
+<p>First, log into your Docker Hub account from the terminal:</p>
+<pre><code>$ docker login
+</code></pre>
+<p>When prompted, enter your Docker account username (lowercase), password and email</p>
+<p>Now, tag and push your new docker-whale image to your account on Docker Hub</p>
+<p>Substitute your Docker <strong>username</strong> below</p>
+<pre><code>$ docker tag docker-whale:latest username/docker-whale:latest
+</code></pre>
+<p>Push the Docker image to your account.  This will create a new repository called "docker-whale" for this image.</p>
+<pre><code>$ docker push username/docker-whale:latest
+</code></pre>
+<p>Navigate to your account page in Docker Hub via this URL, substituting your <strong>username</strong>:</p>
+<p><a href="https://hub.docker.com/r/username">https://hub/docker.com/r/username</a></p>
+<p>Do you see the image that you pushed?</p>
+<p><img src=images/010-docker-hub.png /></p>
+<hr />
+<p>Now, remove the local image and force the image to be pulled and run from the Docker Hub registry.</p>
+<p>To do this, you must first remove the stopped container by using its short id, not its name.  Find the short id:</p>
+<pre><code>$ docker ps -a 
+</code></pre>
+<p>Copy the short id for the appropriate container, it will be similar to this format: ee31fe1dd8f8 and use the "rm" command to remove the container: </p>
+<pre><code>$ docker rm short_id
+</code></pre>
+<p>Now that the container is removed, you can remove the image locally on the host, and force the container to be run from the image on the Docker Hub.  Use the "rmi" command to remove an image.</p>
+<p>Remove the image locally that you pushed to the Docker Hub:</p>
+<pre><code>$ docker rmi username/docker-whale
+</code></pre>
+<p>Verify the images are removed from your host.  View all Docker images with the images command:</p>
+<pre><code>$ docker images
+</code></pre>
+<p>Now, run the image directly from your repository on Docker Hub, and force a new pull of the image, because the image does not exist locally:</p>
+<pre><code>$ docker run username/docker-whale
+</code></pre>
+<blockquote>
+  <p><em>Note - if no tag is used, the default tag is "latest", and it is pulled from your registry</em></p>
+</blockquote>
+<p><img src=images/2017-03-16_14-17-38-2.jpg /></p>
+<hr />
+<p><strong>At this point please stop and remove all containers.  To do this for all containers, use these commands:</strong></p>
+<pre><code>$ docker stop $(docker ps -a -q)
+
+$ docker rm $(docker ps -a -q)
+</code></pre>
+<hr />
+<h2 id="install-docker-compose">Install Docker Compose</h2>
+<p><strong>Introduction to Docker Compose</strong></p>
+<p>What is Docker Compose, why use it?</p>
+<p>According to Docker: <em>Docker Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a Compose file to configure your application’s services. Then, using a single command, you create and start all the services from your configuration.</em></p>
+<p><strong>Install Docker Compose.</strong></p>
+<blockquote>
+  <p><em>For simplicity, you will install Docker Compose v1.12 in a directory called "compose", under the root home directory to avoid any path issues with the variety of Linux environments that may be used in this HOL.  This is also where you will run Docker Compose locally in that directory and create your first docker-compose.yml file.</em></p>
+</blockquote>
+<p>Change to root home directory:</p>
+<pre><code>$ cd ~
+</code></pre>
+<p>Verify that you are in the root home directory:</p>
+<pre><code>$ pwd
+</code></pre>
+<p>Make a new directory called "compose":</p>
+<pre><code>$ mkdir compose
+</code></pre>
+<p>Change into this new directory:</p>
+<pre><code>$ cd compose
+</code></pre>
+<p>Then, use this curl command to install Docker Compose v1.12 locally, in that directory:</p>
+<pre><code>$ curl -L "https://github.com/docker/compose/releases/download/1.12.0/docker-compose-$(uname -s)-$(uname -m)" -o docker-compose
+</code></pre>
+<p>Change the executable permissions:</p>
+<pre><code>$ chmod +x docker-compose
+</code></pre>
+<p>Verify and check which version of Docker Compose was installed:</p>
+<pre><code>$ ./docker-compose --version
+</code></pre>
+<blockquote>
+  <p><em>Note - for further information, please refer to these Docker docs at a later time: <a href="https://docs.docker.com/compose/install/">https://docs.docker.com/compose/install/</a></em></p>
+  <hr />
+</blockquote>
+<h2 id="create-a-wordpress-stack">Create a Wordpress "stack"</h2>
+<p>Follow these steps to create a simple Wordpress stack:</p>
+<p>Use an editor or VI to create a file named "docker-compose.yml":</p>
+<blockquote>
+  <p><em>Note - just as with the Dockerfile above, case of the file name is important.  Use all lower case for "docker-compose.yml"</em></p>
+</blockquote>
+<pre><code>$ vi docker-compose.yml
+</code></pre>
+<p>Copy / paste the following text, or YAML:</p>
+<pre><code>version: '2'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: wordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - "80:80"
+     restart: always
+     volumes:
+       - /var/www/html:/var/www/html:rw
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:
+     db_data:
+</code></pre>
+<p>Save the docker-compose.yml:</p>
+<p>If you are using  VI, save the file by typing the Esc key - colon - w (for write) - q (for quit):</p>
+<pre><code>esc : w q 
+</code></pre>
+<p>Verify the docker-compose.yml file has the correct content:</p>
+<pre><code>$ cat docker-compose.yml
+</code></pre>
+<p>Run the Wordpress stack by this command:</p>
+<pre><code>$ ./docker-compose up -d
+</code></pre>
+<p><strong>Verify the running stack, by visiting the Wordpress setup page.</strong></p>
+<p>In your browser, copy the below URL, using your host IP, to initiate the Wordpress setup:</p>
+<pre><code>http://host_ip/wp-admin/install.php
+</code></pre>
+<blockquote>
+  <p><em>Note - Docker for Mac users - if the following error is observed, try restarting the Docker service on the Mac, to allow writes to /var/www/html</em></p>
+</blockquote>
+<pre><code>ERROR: for wordpress  Cannot start service wordpress: Mounts denied: 
+The path /var/www/html
+is not shared from OS X and is not known to Docker.
+You can configure shared paths from Docker -&gt; Preferences... -&gt; File Sharing.
+See https://docs.docker.com/docker-for-mac/osxfs/#namespaces for more info.
+</code></pre>
+<p><strong>Congratulations, you have successfully launched your first Wordpress app in Docker!</strong></p>
+<p>For further info on this stack, see: <a href="https://docs.docker.com/compose/wordpress/">https://docs.docker.com/compose/wordpress/</a> </p>
+<hr />
+<h2 id="basics-of-persistent-storage">Basics of Persistent storage</h2>
+<p><strong>Understand Docker Volumes</strong></p>
+<p>This section will explore data persistence through the use of host data volumes.</p>
+<p>A full introduction to Docker volumes is located here: <a href="https://docs.docker.com/engine/tutorials/dockervolumes/">https://docs.docker.com/engine/tutorials/dockervolumes/</a></p>
+<p>In short, unless a container volume is mounted to a persistent host volume, any data stored within the container will be lost when the container is removed.</p>
+<p>So let's explore how data is persisted in the Wordpress stack we just used.</p>
+<p>Most importantly, in the Docker Compose YAML file, we used 2 volume statements, one for Wordpress and one for the DB.  </p>
+<p>For example, this statement in the YAML for Wordpress, allows for images to be retained in blog posts.  In this example, you are explicitly stating where the data is stored on the host volume.</p>
+<pre><code>     volumes:
+       - /var/www/html:/var/www/html:rw
+</code></pre>
+<p>Plus this volume statement for the database.  In this example, you are letting Docker map where "db_data" is stored on the host volume:</p>
+<pre><code>     volumes:
+       - db_data:/var/lib/mysql
+</code></pre>
+<p>The host volume is listed first, then the container volume, separated by a colon.  This binds any data written in the specified container volume path to the host volume.  When the container is stopped and rerun on the same host, it will pull any existing data from the host volume. </p>
+<p><em>Now you know the magic that we will now explore.</em></p>
+<p><strong>Complete the Wordpress setup and create blog post.</strong></p>
+<p>In your browser navigate to Host_IP and append it with the Wordpress initialization URL: /wp-admin/install.php like this:  </p>
+<blockquote>
+  <p><em>Note - this is the same setup URL you saw when you deployed with Docker Compose above.  You may already have this loaded in a browser tab.</em></p>
+</blockquote>
+<pre><code>http://docker_host_ip/wp-admin/install.php
+</code></pre>
+<p>First, select your language:</p>
+<p><img src=images/033-wp-setup1.png /></p>
+<hr />
+<p>Setup the Wordpress login details.  Be sure to keep the Username and Password in your notes:</p>
+<p><img src=images/034-wp-setup2.png /></p>
+<hr />
+<p>Click the "log In" button to log into to Wordpress:</p>
+<p><img src=images/034-wp-setup2.png /></p>
+<hr />
+<p>Login using the credentials you created earlier:</p>
+<p><img src=images/036-wp-login2.png /></p>
+<hr />
+<p>Select "Write your first blog post" in the Next Steps section:</p>
+<p><img src=images/037-write-blog.png /></p>
+<hr />
+<p>Create a sample blog post.  Include an image of your choosing, if you would like and click Publish:</p>
+<p><img src=images/038-publish-blog.png /></p>
+<hr />
+<p>Click on the "Permalink" to navigate to the blog post:</p>
+<p><img src=images/039-permalink.png /></p>
+<hr />
+<p>Copy the Permalink URL of the blog post and keep this in your notes, as you will need it later:</p>
+<p><img src=images/040-view-blog.png /></p>
+<hr />
+<p>Stop and Remove the running Wordpress and Database containers by using their short id.</p>
+<p>Remember this from a previous exercise:</p>
+<pre><code>$ docker ps -a
+
+$ docker stop short_id
+
+$ docker rm short_id
+</code></pre>
+<p>Repeat for next container until all are stopped and removed, or use the bulk removal that was shown before.</p>
+<p>Verify in the browser that the Wordpress blog post is gone by refreshing the page:</p>
+<p><img src=images/043-refresh.png /></p>
+<hr />
+<p>Redeploy the Wordpress stack:</p>
+<pre><code>$ ./docker-compose up -d
+</code></pre>
+<p>Navigate back to the blog post URL that you noted, in your browser and refresh the page:</p>
+<p><img src=images/047-refresh-blog.png /></p>
+<hr />
+<p>The data persisted because it was written to the host volume, and then re-joined to the containers when they were re-deployed on the same hosts.</p>
+<p><strong>Please stop and remove all containers before going to the next section:</strong></p>
+<pre><code>$ docker stop $(docker ps -a -q)
+
+$ docker rm $(docker ps -a -q)
+</code></pre>
+<hr />
+<h2 id="use-github-and-docker-hub-together-to-build-an-image-and-run-the-container">Use GitHub and Docker Hub together to build an Image and Run the Container</h2>
+<p><strong>Requirements: user account for GitHub and Docker Hub</strong></p>
+<blockquote>
+  <p><em>Note - if you do not have a Github account, get a free one here: <a href="https://github.com/join">https://github.com/join</a></em> </p>
+</blockquote>
+<p>Now, you will explore another method of creating an image using GitHub and Docker Hub.</p>
+<blockquote>
+  <p><em>Note - in this exercise you will fork an existing hello-world like repository, that you will call hello-earth, then modify its web page: Index.html in GitHub to trigger an automated Docker image build in Docker Hub.  You will then verify the successful build and run the image as a container in your Docker environment.</em></p>
+</blockquote>
+<p><strong>To begin, fork this GitHub Docker001 repo to your own</strong></p>
+<p>Log into you GitHub account: </p>
+<p>https://github.com/login</p>
+<p>In your browser, navigate to this GitHub repository: </p>
+<p>https://github.com/oracle/cloud-native-devops-workshop/tree/master/containers/docker001</p>
+<p>Select the "Fork" button in for the particular GitHub repository:</p>
+<p><img src=images/github-dockerhub_14.jpg /></p>
+<hr />
+<p>This will automatically copy this repository to your own GitHub account, where you will be able to edit it as you need:</p>
+<p><img src=images/github-dockerhub_9.jpg /></p>
+<hr />
+<p>Now, in your browser, in another tab, log into your Docker Hub Account: </p>
+<p>https://hub.docker.com/login</p>
+<p>Within your Docker Hub account, select "Create Automated Build" in the Top Menu under the Create:</p>
+<p><img src=images/github-dockerhub_13.jpg /></p>
+<hr />
+<p>This will prompt you to link your GitHub account, so that Docker Hub can pull the source code:</p>
+<p><img src=images/2017-03-16_10-41-09.jpg /></p>
+<hr />
+<p>Select GitHub as shown here:</p>
+<p><img src=images/2017-03-16_10-41-14.jpg /></p>
+<hr />
+<p>Select for both Public and Private repositories:</p>
+<p><img src=images/2017-03-16_10-41-23.jpg /></p>
+<hr />
+<p>Again, within your Docker Hub account, select "Create Automated Build" in the Top Menu under the Create:</p>
+<p><img src=images/github-dockerhub_13.jpg /></p>
+<hr />
+<p>Select Create Auto-build:</p>
+<p><img src=images/github-dockerhub_11-2.jpg /></p>
+<hr />
+<p>Select the "cloud-native-devops-workshop" repository:</p>
+<p><img src=images/github-dockerhub-21.jpg /></p>
+<hr />
+<p>Make the repository name "hello-earth" and add a Short Description and press Save:</p>
+<blockquote>
+  <p><em>Note - naming the repository will also result in the image name being "hello-earth", after you do the first build.</em></p>
+</blockquote>
+<p><img src=images/github-dockerhub_10.jpg /></p>
+<hr />
+<p>Within the Build Settings tab, enter "/containers/docker001/lab1" for the Dockerfile Location and press the "Save Changes" button: </p>
+<p><img src=images/github-dockerhub-20.jpg /></p>
+<hr />
+<p>Back in your GitHub account navigate to the URL where you have forked the above Docker001 repo, and specifically open the "lab1" folder.  Replace your GitHub username in the below URL.</p>
+<p>https://github.com/<em>username</em>/cloud-native-devops-workshop/tree/master/containers/docker001/lab1</p>
+<p>On the GitHub page, click on the link for "Index.html":</p>
+<p><img src=images/2017-03-16_11-15-12.png /></p>
+<hr />
+<p>You are going to modify this Index.html to create a new "Hello Earth" web page, this will automatically trigger a new (and first) image build in Docker Hub.  You will then run the resulting image as a container to observe your changes.</p>
+<p>Edit the page via the pencil icon:</p>
+<p><img src=images/050-edit-index.png /></p>
+<hr />
+<p>Make the following changes to Line 12, replacing your own name and city where it says myName and myCity:</p>
+<p><img src=images/2017-03-16_11-19-42.jpg /></p>
+<hr />
+<p>Scroll down and Commit your Changes.  Add a description and press the "Commit Changes" button:</p>
+<p><img src=images/052-commit-index.png /></p>
+<hr />
+<p>This will trigger a new automated build in Docker Hub, which will run the Dockerfile, which incorporates the new changes in Index.html as part of the build process.  Status is seen in the "Build Details" tab.  You need to refresh the browser to see updates to the build status:  </p>
+<blockquote>
+  <p><em>Note - if the automated build does not happen automatically, you can just use the "Trigger" button in the Docker Hub - Build Settings tab to manually start an image build.</em></p>
+</blockquote>
+<p><img src=images/github-dockerhub_3.jpg /></p>
+<hr />
+<p>The build will take a few minutes to complete in Docker Hub.  When it does, Success will be noted in the Status column:</p>
+<blockquote>
+  <p><em>Note - you may need to refresh your browser tab to see the updated status.</em></p>
+</blockquote>
+<p><img src=images/github-dockerhub_1.jpg /></p>
+<hr />
+<p>When you have a successful built, go back into your Docker CLI environment, run the new container.  Replace your Docker Hub name for "username" in the below command:</p>
+<pre><code>$ docker run -d -p 80:80 "username/hello-earth"
+</code></pre>
+<p>Once the container is running, visit the docker host’s IP and observe your changes for a new hello-earth container that you just built and ran!</p>
+<p><img src=images/github-dockerhub_15.jpg /></p>
+<hr />
+<p>Tweet to the world that you have created your own Hello Earth containerized app! </p>
+<blockquote>
+  <p><em>Note - remember to use your Docker Hub account name where it says "username" in the tweet.</em></p>
+</blockquote>
+<pre><code>Check out my Hello Earth #Docker app that I just created in my #OracleCode HOL.  It's in my Docker Hub https://hub.docker.com/r/username/hello-earth
+</code></pre>
+<p><strong>Congratulations!</strong>  You have successfully completed this Hands On Lab!</p>
+<hr />
+<h2 id="demo-of-oracle-container-cloud-service-showing-participants-containers">Demo of Oracle Container Cloud Service Showing Participant's Containers</h2>
+<p>Check out running your container in the Oracle Container Cloud Service:</p>
+<ul>
+<li><a href="https://cloud.oracle.com/tryit">Get Started for Free</a></li>
+</ul>
+<hr />
+<h2 id="summaryrecap-pointer-to-further-resources">Summary/Recap Pointer to Further Resources</h2>
+<ul>
+<li><p><a href="https://github.com/oracle/docker-images">Oracle GitHub</a></p></li>
+<li><p><a href="https://store.docker.com/search?q=oracle&source=verified&type=image">Oracle Images on the Docker Store</a></p></li>
+<li><p><a href="https://container-registry.oracle.com">Oracle Container Registry</a></p></li>
+<li><p><a href="http://docs.oracle.com/en/cloud/iaas/container-cloud/index.html">Oracle Container Cloud Service Docs</a></p></li>
+</ul>
+<p>Oracle Blogs:</p>
+<ul>
+<li><p><a href="https://community.oracle.com/community/cloud_computing/containers-docker-and-microservices">Containers, Docker and Microservices</a></p></li>
+<li><p><a href="https://community.oracle.com/community/cloud_computing/infrastructure-as-a-service-iaas/oracle-container-cloud-service">Container Cloud Service Blog</a></p></li>
+</ul>
+<p><strong>DONE</strong></p>

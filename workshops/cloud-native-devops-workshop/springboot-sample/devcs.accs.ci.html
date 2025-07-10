@@ -1,0 +1,84 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h1 id="oracle-cloud-native-devops-workshop">ORACLE Cloud-Native DevOps workshop</h1>
+<h2 id="deploy-springboot-demo-application-to-application-container-cloud-services-using-developer-cloud-services">Deploy SpringBoot demo application to Application Container Cloud Services using Developer Cloud Services</h2>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p><strong>Oracle Application Container Cloud Service</strong> includes Oracle Java SE Cloud Service and Oracle Node Cloud Service. It provides a lightweight infrastructure so that you can run Java SE 7, Java SE 8, and Node.js applications in the Oracle Cloud.</p>
+<p><strong>Oracle Developer Cloud Service</strong> is a cloud-based software development Platform as a Service (PaaS) and a hosted environment for your application development infrastructure. It provides an open-source standards-based solution to manage the application development life cycle effectively through integration with Hudson, Git, Maven, issues, and wikis. Using Oracle Developer Cloud Service, you can commit your application source code to the Git repository on the Oracle Cloud, track assigned issues and defects online, share information using wiki pages, peer review the source code, and monitor project builds. After successful testing, you can deploy the project to Oracle Java Cloud Service - SaaS Extension, publicly available Oracle Java Cloud Service instances, Oracle Application Container Cloud Service instances, or to an on-premise production environment.</p>
+<p><img src="images/00.dcs.png" alt="" /></p>
+<p>The key features of Oracle Developer Cloud Service include:</p>
+<p>Project creation, configuration, and user management</p>
+<ul>
+<li>Version control and source code management with Git</li>
+<li>Storage of application dependencies and libraries with Maven</li>
+<li>Continuous build integration with Hudson</li>
+<li>Wiki for document collaboration</li>
+<li>Issue tracking system to track tasks, defects, and features</li>
+<li>Repository branch merge after code review</li>
+<li>Deployment to Oracle Java Cloud Service - SaaS Extension, Oracle Java Cloud Service, and Oracle Application Container Cloud Service</li>
+</ul>
+<p>Oracle Developer Cloud Service is available as a web interface accessible from a web browser and from Integrated Development Environments (IDEs) such as Oracle Enterprise Pack for Eclipse (OEPE), Oracle JDeveloper, and NetBeans IDE.</p>
+<p>This tutorial shows how to deploy Spring Boot sample application to Application Container Cloud Services using Oracle Developer Cloud Services.</p>
+<p>The Spring Boot sample application is a web application serving simple JSP pages.</p>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>configure build job for sample application</li>
+<li>configure Application Container Cloud Service deployment in Developer Cloud Service</li>
+<li>build and deploy sample application using Developer Cloud Service</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Oracle Public Cloud Service account including Developer Cloud Service</li>
+</ul>
+<hr />
+<h4 id="open-oracle-developer-cloud-service-project">Open Oracle Developer Cloud Service Project</h4>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. First select your datacenter then provide the identity domain and credentials. After a successful login you will see your Dashboard. Find the Developer services tile and click the hamburger icon. In the dropdown menu click <strong>Open Service Console</strong>.
+<img src="images/01.dashboard.png" alt="" /></p>
+<p>Select your Oracle Developer Cloud Service Project which was created using inital Git repository and contains Spring Boot sample application's sources.</p>
+<p><img src="images/20.open.devcs.project.png" alt="" /></p>
+<h3 id="configure-build-job-for-spring-boot-sample-application">Configure build job for Spring Boot sample application</h3>
+<p>Once the project provisioning is ready let's create the build job to compile and package the sample Spring Boot application to the desired format for Application Container Cloud Services.</p>
+<p>Select <strong>Build</strong> item on the left side menu and click the <strong>New Job</strong> button.</p>
+<p><img src="images/05.new.job.png" alt="alt text" title="Create new build job" /></p>
+<p>Enter a name for the new job. Select the <em>Create a free-style job</em> option and save.
+On the Main configuration page of the newly created job make sure <strong>JDK 8</strong> is the selected JDK.</p>
+<p><img src="images/06.job.main.png" alt="alt text" title="Configure job" /></p>
+<p>Change to the <strong>Source Control</strong> tab and select <strong>Git</strong>. In the git's properties section select the only one available Git repository which is provided in the list. Leave the advanced settings default.</p>
+<p><img src="images/07.job.scm.png" alt="alt text" title="Configure source control" /></p>
+<p>Click <strong>Triggers</strong> tab to configure <em>SCM polling</em>. Select <strong>Based on SCM polling schedule</strong>. This ensures if any files in the source code repository has changed then the build will be fired.</p>
+<p><img src="images/07.scm.trigger.png" alt="alt text" title="Configure source control" /></p>
+<p>Change to <strong>Build Steps</strong> tab and add <strong>Maven 3</strong> build step. Enter <strong>clean install</strong> as Goals and <strong>springboot-sample/pom.xml</strong> to POM File field. (In case if Build Steps tab just shows <strong>Loading…</strong> for a long time, save the Build configuration then re-open and continue.)</p>
+<p><img src="images/08.job.maven.png" alt="alt text" title="Add build step" /></p>
+<p>Finally change to Post Build tab and check in the <strong>Archive the artifacts</strong> option. Enter <strong>springboot-sample/target/*.zip</strong> into <strong>Files To Archive</strong> field.</p>
+<p><img src="images/09.job.post.png" alt="alt text" title="Post build" /></p>
+<p>Click on <strong>Save</strong> to update the new job configurations. To check the build job click on <strong>Build Now</strong> on the job's detail page. Once the job is done check the archived artifacts. It should be the following: <code>springbootdemo-0.0.1.zip</code></p>
+<p><img src="images/10.build.artifacts.png" alt="alt text" title="Build artifacts" /></p>
+<p>Please note the build job contains an extra build step which packs the default artifact <code>springbootdemo-0.0.1.war</code> and <code>manifest.json</code> (ACCS descriptor from the <em>springboot-sample/src/acc.resources</em> folder) into a zip archive. This archive is the desired format to deploy a Java application to ACCS.</p>
+<h3 id="configure-application-container-cloud-service-deployment">Configure Application Container Cloud service deployment</h3>
+<p>Now create deployment configuration which enable direct deployment to Application Container Cloud services after a successful build job.
+Change to <strong>Deploy</strong> page in DevCS and create <strong>New Configuration</strong> </p>
+<p><img src="images/11.new.deploy.png" alt="alt text" title="New deploy configuration" /></p>
+<p>Set the following properties.
+<img src="images/12.deploy.config.png" alt="alt text" title="Deployment Configuration" /></p>
+<ul>
+<li><strong>Configuration Name</strong>: any name to identify deployment configuration</li>
+<li><strong>Application Name</strong>: instance name in ACCS. This will determine the application's URL.</li>
+<li><strong>Deployment Target</strong>: click <strong>New</strong> and select Application Container Cloud… and define connection properties such as <strong>Data center</strong>, <strong>Identity Domain</strong> and <strong>credentials</strong>. 
+<img src="images/13.accs.config.png" alt="alt text" title="ACCS Configuration" /></li>
+<li><strong>Type</strong>: select <strong>Automatic</strong> which means auto deploy after a successful execution of the build job. Select your previously created job and its artifact to deploy.</li>
+</ul>
+<p>Click <strong>Save</strong>. </p>
+<h3 id="build-and-deploy-the-sample-application">Build and deploy the sample application</h3>
+<p>To initiate a deployment to Application Container Cloud Service now there are two options. You can Start deployment process using the newly created Deployment configuration. Click gear icon and select <strong>Start</strong>.</p>
+<p><img src="images/14.deploy.start.png" alt="alt text" title="Deployment Start" /></p>
+<p>Other option is to fire a new Build Job execution which will deploy artifact after a successfull build. Go back to <strong>Build</strong> page and click the wrench icon belongs to Spring Boot sample application build job.</p>
+<p><img src="images/15.build.now.png" alt="alt text" title="Build Now" /> </p>
+<p>Both way deploys Spring Boot sample application on Application Container Cloud Service. You can check the deployment result on the <strong>Deploy</strong> page. Once the deploy is ready (this may take a while) click the <strong>Deploy to ACCS</strong> link.</p>
+<p><img src="images/16.deploy.ready.png" alt="alt text" title="Deploy ready" /></p>
+<p>This opens the Application Container Cloud Services console. You should see your Spring Boot sample application in the list. Click the application's URL to test.</p>
+<p><img src="images/17.accs.console.png" alt="alt text" title="ACCS Console" /></p>
+<p>The Spring Boot sample application main page should look like this.</p>
+<p><img src="images/18.sample.app.png" alt="alt text" title="Sample Application" /></p>
+<p>There are many other option to trigger this deploy process. For example build can be triggered by source changes or can be scheduled to specific time of the day.</p>
+<h3 id="-optional-step-make-changes-in-the-application">+ Optional step: Make changes in the application</h3>
+<p>Prerequisites: Git client, Text editor</p>
+<p>Clone your newly created Git repository hosted on Developer Cloud Service to your local machine using basic or your favourite Git tool. Make small changes for example in the JSP file. Push changes to DevCS remote repository, execute Build again and check the changes on the redeployed application.</p>

@@ -1,0 +1,49 @@
+<h1 id="microsoft-word-conversion-to-markdown-using-pandoc">Microsoft Word Conversion to Markdown using Pandoc</h1>
+<p>This document steps through the process required to convert a <strong>Microsoft Word</strong> document to the <strong>Markdown</strong> format using the <strong>Pandoc</strong> utility.</p>
+<h2 id="documentation">Documentation</h2>
+<ul>
+<li><p>Pandoc Documentation:  <a href="http://pandoc.org/MANUAL.html">http://pandoc.org/MANUAL.html</a></p></li>
+<li><p>Markdown Documentation:  <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet</a></p></li>
+<li><p>Visual Studio Code:  <a href="https://code.visualstudio.com/download">https://code.visualstudio.com/download</a></p></li>
+</ul>
+<h2 id="word-to-markdown-conversion">Word to Markdown Conversion</h2>
+<h3 id="step-1-issue-the-pandoc-command"><strong>STEP 1</strong> Issue the Pandoc Command</h3>
+<ul>
+<li><p>Open a command prompt and issue the pandoc command</p>
+<pre><code>pandoc -s CloudWorkshop_DBCS_100_v2.5.docx --wrap=none --extract-media images/100 -t markdown -o CloudWorkshop_DBCS_100_v2.5.md&amp;nbsp;
+</code></pre>
+<p><img src="images/pandocsconversion/image1.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-review-the-pandoc-output"><strong>STEP 2</strong> Review the Pandoc Output</h3>
+<p>The above <strong>pandoc</strong> command produces the following output, an <strong>images</strong> directory and a <strong>Markdown Document</strong></p>
+<p><img src="images/pandocsconversion/image2.png" alt="" /></p>
+<h2 id="post-markdown-conversion">Post Markdown Conversion</h2>
+<p>The <strong>Markdown</strong> output file produced by <strong>Pandoc</strong> is not perfect and typically requires the following modifications. You can now use your <strong>Markdown</strong> editor of choice to clean-up the <strong>Markdown</strong> file. <strong>Notepad++</strong> works well for mass find and replace operations , however, there are more advanced <strong>Markdown</strong> editors such as <strong>Visual Studio Code</strong> available.</p>
+<h3 id="step-3--cleanup-images-directory"><strong>STEP 3</strong>  Cleanup images directory</h3>
+<p>The <strong>images</strong> directory contains an extra level, <strong>media</strong>, we do not use. Move all the image files under the desired directory, in this example, <strong>100</strong>, and then delete the <strong>media</strong> directory</p>
+<p><img src="images/pandocsconversion/image3.png" alt="" /></p>
+<h3 id="step-4-cleanup-markdown-document"><strong>STEP 4</strong> Cleanup Markdown Document</h3>
+<ul>
+<li><p>Update the image tags to remove the <strong>media</strong> folder name</p>
+<p>Original <strong>image</strong> tag</p>
+<p><img src="images/pandocsconversion/image10.png" alt="" /></p>
+<p>Updated <strong>image</strong> tag</p>
+<p><img src="images/pandocsconversion/image11.png" alt="" /></p></li>
+<li><p>Remove the <strong>width</strong> and <strong>height</strong> metadata from each image tag along with any <strong>section</strong> tags</p>
+<p><img src="images/pandocsconversion/image4.png" alt="" /></p></li>
+<li><p>Create and Cleanup the code blocks</p>
+<p><strong>Note</strong>:  <strong>Code blocks</strong> do NOT recognize <strong>bold</strong> or <strong>escape</strong> characters, they are treated as literals</p>
+<p>This is the initial <strong>Markdown</strong> output</p>
+<p><img src="images/pandocsconversion/image5.png" alt="" /></p>
+<p>This is the modified <strong>Markdown</strong> which includes the <strong>code block</strong> and <strong>bold</strong> and <strong>escape</strong> characters removed</p>
+<p><img src="images/pandocsconversion/image6.png" alt="" /></p>
+<p>This is how it will look in <strong>github</strong>.</p>
+<p><img src="images/pandocsconversion/image7.png" alt="" /></p></li>
+</ul>
+<h1 id="markdown-conversion-to-pdf-using-pandoc">Markdown Conversion to PDF using Pandoc</h1>
+<p>There may be a requirement to create a <strong>PDF</strong> from a <strong>Markdown</strong> document.</p>
+<pre><code>pandoc -s -o CloudWorkshop_DBCS_100_v2.5.pdf CloudWorkshop_DBCS_100_v2.5.md
+</code></pre>
+<p><img src="images/pandocsconversion/image8.png" alt="" /></p>
+<p><img src="images/pandocsconversion/image9.png" alt="" /></p>
+<p><strong>Note</strong>: You may need to install <strong>MiKTeX</strong> (Basic Installer) from <a href="https://miktex.org/download">https://miktex.org/download</a></p>

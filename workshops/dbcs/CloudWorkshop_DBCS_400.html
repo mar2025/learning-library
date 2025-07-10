@@ -1,0 +1,177 @@
+<p><img src="images/400/image1.png" alt="" /></p>
+<p>Update: March 28, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this Lab you will deploy an APEX application to the Alpha Clone PDB and adjust the firewall rules to support access to the application from the Internet using your browser, smart phone or tablet.</p>
+<p>Please direct comments to: Dennis Foley (dennis.foley@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Enable APEX in the Alpha Clone PDB.</p></li>
+<li><p>Create APEX REST services</p></li>
+<li><p>Deploy and access an Alpha Office APEX application.</p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li><p>The following labs assume that the steps outlined in lab guides 100
+and 200 have been completed.</p></li>
+<li><p>The SSH tunnels must be active in a terminal window.</p></li>
+</ul>
+<h1 id="alpha-office-and-apex">Alpha Office and APEX</h1>
+<h2 id="apex-workspace-administration">APEX Workspace Administration</h2>
+<p>The Alpha Clone database contains an unused APEX configuration. Just like enabling the container database\'s APEX like we did in Lab 100, we must finish the configuration of the cloned database APEX.</p>
+<p>Note: The standard install of APEX for a 12c database creates many objects shared in both the container and pluggable database, but user and password information is always local to the database we access. In other words, the APEX password we set in Lab 100 does not set the password in the cloned database.</p>
+<h3 id="step-1-access-apex-in-the-alpha-clone-database"><strong>STEP 1</strong>: Access APEX in the Alpha Clone database</h3>
+<ul>
+<li><p>In the <strong>Chrome</strong> browser, open up a new tab and test the updated rule by accessing the APEX instance in the container database from the Internet. Substitute your Public IP address from lab 100. (<strong>Make sure the protocol is HTTPS</strong>).</p>
+<pre><code>https://&lt;your-Alpha01A-DBCS-Public-IP&gt;/apex/PDB1/apex_admin
+</code></pre>
+<p><img src="images/400/image6.png" alt="" /></p></li>
+<li><p>After you've accepted the SSL certificate and see the APEX administration page, enter the following admin credentials and click the <strong>Login to Administration</strong> button:</p>
+<pre><code>Username:   admin
+Password:   Alpha2014_
+</code></pre>
+<p><img src="images/400/image7.png" alt="" /></p></li>
+<li><p>You <strong><em>may</em></strong> be prompted to change the ADMIN user password, if not, skip to the next step. These credentials apply to the APEX objects local to the pluggable database. For convenience, we will enter the same password as the container database. Enter the following values and click the <strong>Apply Changes</strong> button.</p>
+<pre><code>Enter Current Password: Alpha2014_
+Enter New Password:     Alpha2015!
+Confirm New Password:   Alpha2015!
+</code></pre>
+<p><img src="images/400/image8.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-create-the-alpha-office-workspace"><strong>STEP 2</strong>: Create the Alpha Office workspace</h3>
+<ul>
+<li><p>Click the <strong>Create Workspace</strong> button</p>
+<p><img src="images/400/image9.png" alt="" /></p></li>
+<li><p>At the <strong>Identify Workspace</strong> dialog, enter the following workspace name and click the <strong>Next</strong> button.</p>
+<pre><code>Workspace Name: AlphaDev
+</code></pre>
+<p><img src="images/400/image10.png" alt="" /></p></li>
+<li><p>At the <strong>Identify Schema</strong> dialog, select and enter the following values followed by the <strong>Next</strong> button.</p>
+<p><strong>Note:</strong> Use the search icon <img src="images/400/image11.png" alt="" /> to find the <strong>ALPHA</strong> schema.</p>
+<p><strong>Re-use existing schema?</strong>: <code>Yes</code></p>
+<p><strong>Schema Name</strong>:            <code>ALPHA</code></p>
+<p><img src="images/400/image12.png" alt="" /></p></li>
+<li><p>At the <strong>Identify Administrator</strong> dialog, enter the following values and click the <strong>Next</strong> button.</p>
+<p><strong>Administrator Username</strong>: <code>ADMIN</code></p>
+<p><strong>Administrator Password</strong>: <code>Alpha2014_</code> (we may be prompted to change)</p>
+<p><strong>Email</strong>:                  <code>dummy@localhost.localdomain</code></p>
+<p><img src="images/400/image13.png" alt="" /></p></li>
+<li><p>Review the selections on the Confirm Request page and then click the <strong>Create Workspace</strong> button.</p>
+<p><img src="images/400/image14.png" alt="" />     </p>
+<p><img src="images/400/image15.png" alt="" /></p></li>
+<li><p>APEX displays a success message; click the <strong>Done</strong> button.</p>
+<p><img src="images/400/image16.png" alt="" /></p></li>
+<li><p>Click the user dropdown in the upper right and select <strong>Signout</strong></p>
+<p><img src="images/400/image17.png" alt="" /></p></li>
+<li><p>Click the Return to Login Page to continue</p>
+<p><img src="images/400/image18.png" alt="" /></p></li>
+</ul>
+<h2 id="build-rest-services">Build REST services</h2>
+<h3 id="step-3-login-to-apex"><strong>STEP 3</strong>: Login to APEX</h3>
+<ul>
+<li><p>Login into to the new Alpha Office Development workspace using the following credentials:</p>
+<pre><code>Workspace:  AlphaDev
+Username:   ADMIN
+Password:   Alpha2014_
+</code></pre>
+<p><img src="images/400/image19.jpeg" alt="" /></p></li>
+<li><p>You <strong><em>may</em></strong> be prompted to change your password. Enter the following values and click the <strong>Apply Changes</strong> button.</p>
+<pre><code>Enter Current Password: Alpha2014_
+Enter New Password:     Alpah2015!
+Confirm New Password:   Alpha2015!
+</code></pre>
+<p><img src="images/400/image8.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4--create-a-simple-rest-services-module"><strong>STEP 4</strong>:  Create a Simple REST Services Module</h3>
+<ul>
+<li><p>Click the <strong>SQL Workshop</strong> button.</p>
+<p><img src="images/400/image20.png" alt="" /></p></li>
+<li><p>Click the <strong>RESTful Services</strong> button.</p>
+<p><img src="images/400/image21.png" alt="" /></p></li>
+<li><p>Click the <strong>Create ></strong> button</p>
+<p><img src="images/400/image22.png" alt="" /></p></li>
+<li><p>For each of the following three sections on the <strong>REST Services Module</strong> page, enter the listed values.</p>
+<p><img src="images/400/image23.png" alt="" /></p></li>
+<li><p>For section one, enter the following values:</p>
+<p><strong>Name</strong>:       <code>alpha.office</code></p>
+<p><strong>URI Prefix</strong>: <code>alphaofc/</code></p>
+<p><img src="images/400/image24.png" alt="" /></p></li>
+<li><p>For section two, enter the following value:</p>
+<p><strong>URI Template</strong>:   <code>products/</code></p>
+<p><img src="images/400/image25.png" alt="" /></p></li>
+<li><p>For section three, select the <strong>GET</strong> method and enter the following
+query:</p>
+<p><strong>Method</strong>: <code>GET</code></p>
+<p><strong>Source</strong>: <code>select * from products</code></p>
+<p><img src="images/400/image26.png" alt="" /></p></li>
+<li><p>Click <strong>Create Module</strong> to complete the REST service creation.</p>
+<p><img src="images/400/image27.png" alt="" /></p></li>
+<li><p>APEX shows the new service module with a confirmation message; click the <strong>GET</strong> handler for our template.</p>
+<p><img src="images/400/image28.png" alt="" /></p></li>
+<li><p>Review the definition. Since this operation has no parameters, we can easily test it by clicking the <strong>Test</strong> button.</p>
+<p><img src="images/400/image29.png" alt="" /></p></li>
+<li><p>Review the JSON produced by the service. Click the browser\'s <strong>back button</strong> to return to the APEX page.</p>
+<p><img src="images/400/image30.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5--create-a-parameterized-rest-service"><strong>STEP 5</strong>:  Create a Parameterized REST Service</h3>
+<ul>
+<li><p>Now we are going to create a REST service that takes a product number and returns only one database row as a JSON object. Click the <strong>Create Template</strong> link.</p>
+<p><img src="images/400/image31.png" alt="" /></p></li>
+<li><p>Enter the following URI Template. Note that the <strong>{id}</strong> syntax indicates the REST call accepts one parameter named "id" - this is automatically available in later for SQL queries. When the entry is complete, click the <strong>Create</strong> button.</p>
+<p><strong>URI Template</strong>:   <code>product/{id}</code></p>
+<p><img src="images/400/image32.png" alt="" /></p></li>
+<li><p>APEX displays a success message for the new template; click the <strong>Create Handler</strong> link under the <strong>product/{id}</strong> template.</p>
+<p><img src="images/400/image33.png" alt="" /></p></li>
+<li><p>Enter the following SQL statement. Notice the use of the "<strong>:id</strong>" bind variable, this value comes from the URI template {id} provided when the service is invoked. When all entries are complete, click the <strong>Create</strong> button.</p>
+<pre><code>Source:
+
+select * 
+    from products
+    where product_id = :id
+</code></pre>
+<p><img src="images/400/image34.png" alt="" /></p></li>
+<li><p>Notice the success message at the top. </p></li>
+<li><p>We will test this service just like before, but we must provide a product number to the call. <strong>Scroll</strong> the page down click the <strong>Set&nbsp;Bind Variable</strong> button.</p>
+<p><img src="images/400/image35.png" alt="" /></p></li>
+<li><p>Enter the following product number and click the <strong>Test</strong> button.</p>
+<p><strong>ID</strong>: <code>1020</code></p>
+<p><img src="images/400/image36.png" alt="" /></p></li>
+<li><p>In the new browser window, notice only the single product shows in the JSON object. <strong>Close</strong> this pop-up window.</p>
+<p><img src="images/400/image37.png" alt="" /></p></li>
+</ul>
+<h2 id="install-apex-mobile-application">Install APEX Mobile Application</h2>
+<h3 id="step-6--import-the-alpha-office-mobile-application"><strong>STEP 6</strong>:  Import the Alpha Office Mobile Application</h3>
+<ul>
+<li><p>Click the <strong>Application Builder</strong> menu item on the APEX page.</p>
+<p><img src="images/400/image38.png" alt="" /></p></li>
+<li><p>Click the <strong>Import</strong> button on the Application Builder page.</p>
+<p><img src="images/400/image39.png" alt="" /></p></li>
+<li><p>Click the <strong>Choose File</strong> button to locate the APEX application export file.</p>
+<p><img src="images/400/image40.png" alt="" /></p></li>
+<li><p>Locate and open the following file and click the Open button:</p>
+<pre><code>/u01/OPCWorkshop/lab/f101.sql
+</code></pre>
+<p><img src="images/400/image41.png" alt="" /></p></li>
+<li><p>Click the <strong>Next</strong> button to continue.</p>
+<p><img src="images/400/image42.png" alt="" /></p></li>
+<li><p>After a brief pause while the application file is processed, click the <strong>Next</strong> button to continue.</p>
+<p><img src="images/400/image43.png" alt="" /></p></li>
+<li><p>On the final page, select to <strong>Reuse Application ID 101 from Export File</strong> and then click <strong>Install Application</strong>.</p>
+<p><img src="images/400/image44.png" alt="" /></p></li>
+<li><p>APEX displays a success message for the import; click the <strong>Run Application button</strong>.</p>
+<p><img src="images/400/image45.png" alt="" /></p></li>
+<li><p>APEX renders the first page of the mobile application in the desktop Chrome - this doesn\'t look quite right since we are using a mobile template.  Also note the home button on this application is not functional.</p>
+<p><img src="images/400/image46.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7--access-the-alpha-office-mobile-application-on-your-smart-device"><strong>STEP 7</strong>:  Access the Alpha Office Mobile Application on your Smart Device</h3>
+<ul>
+<li><p>Using any Internet connected smart phone or tablet, we will access the mobile application using the port we opened earlier in the lab. This example is using an Apple iPhone 5s.</p>
+<p>Use the device's browser (Safari), navigate to the following URL:</p>
+<pre><code>https://{your Public IP Address}/ords/pdb1/f?p=101
+</code></pre>
+<p><img src="images/400/image47.png" alt="" /></p></li>
+<li><p>The browser should prompt you to accept the unknown certificate. Click to <strong>Continue</strong>.</p>
+<p><img src="images/400/image48.png" alt="" /></p></li>
+<li><p>Tap the screen to explore the application. On the device, tapping one of the pie slices highlights the slice; a second tap drills into that slice.</p>
+<p><img src="images/400/image49.png" alt="" /></p></li>
+<li><p>This Lab is completed.</p></li>
+</ul>

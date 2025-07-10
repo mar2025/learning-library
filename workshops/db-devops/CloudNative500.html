@@ -1,0 +1,100 @@
+<p><img src="images/lab500/500_00_01_Lab500TopImage.png" alt="" />  </p>
+<p>Update: April 30, 2017</p>
+<h1 id="introduction">Introduction</h1>
+<p>This is the fifth and final lab for the <strong>Oracle Public Cloud DevOps Cloud Native Microservices Workshop</strong>. This workshop walks you through the Software Development Lifecycle (SDLC) for a Cloud Native project that will create and use several microservices.</p>
+<p>In this brief final lab, you will assume the persona of Lisa Jones, the project manager. You will complete all the final processes necessary to publish the completed microservices application, and you will make all the final updates on the Agile board. Lastly you will review several administrative screens relevant to the project.</p>
+<p><strong>Please direct comments to: John Hennen (<a href="mailto:john.hennen@oracle.com">john.hennen@oracle.com</a>).</strong></p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Access the Oracle Developer Cloud Service</li>
+<li>Follow the Git methodology for source code control</li>
+<li>Follow the Agile methodology for project management</li>
+<li>Access additional administrative features of Oracle Developer Cloud Service</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account that will be supplied by your instructor. This lab will exclusively involve the Oracle Developer Cloud Service. </li>
+</ul>
+<h1 id="complete-all-technical-tasks-necessary-to-publish-the-project">Complete all Technical Tasks Necessary to Publish the Project</h1>
+<h2 id="merge-code-edits-for-the-ui-application">Merge Code Edits for the UI Application</h2>
+<h3 id="step-1-perform-the-merge-as-lisa-the-project-manager"><strong>STEP 1</strong>: Perform the Merge as Lisa the Project Manager</h3>
+<ul>
+<li><p>This Lab assumes that you completed Labs 100, 200, 300 and 400. It also assumes you and are still connected to the Oracle Cloud, that you're still in the Developer Cloud Service Dashboard, and that you're viewing the "Alphaoffice Marketing Project". If for some reason that is not the case, follow the first several steps of Lab 100 to once again view the Developer Cloud Service Console.</p>
+<p><img src="images/lab500/500_01_01_project_console.png" alt="" /></p></li>
+<li><p>In this lab you will assume the persona of <strong><em>Lisa Jones</em></strong>, the project manager.</p>
+<p><img src="images/lab500/500_01_02_lisa.png" alt="" /></p></li>
+<li><p>Click <strong>Merge Request</strong> on the navigation panel.</p>
+<p><img src="images/lab500/500_01_03_merge0.png" alt="" /></p></li>
+<li><p>Click the <strong>Assigned To Me</strong> button. Then click the merge request recently submitted by John Dunbar.</p>
+<p><img src="images/lab500/500_01_04_merge8.png" alt="" /></p></li>
+<li><p>Click on the <strong>Changed Files</strong> tab to review the changed code, and note how the changes reflect the edits John Dunbar made in the Brackets code editor on the client workstation. Because you are the project manager and have access privileges and responsibilities above those of developers such as Bala Gupta and John Dunbar, you are the one who must initiate the merge. Approve and process the merge by clicking the <strong>Merge</strong> button.</p>
+<p><img src="images/lab500/500_01_05_merge10.png" alt="" /></p></li>
+<li><p>On the popup uncheck <strong>Squash commits</strong> and click <strong>Merge</strong>.</p>
+<p><img src="images/lab500/500_01_06_merge11.png" alt="" /></p></li>
+<li><p>Click <strong>Build</strong> on the navigation panel. Processing the merge automatically initiates a rebuild process. Note how the <strong>BuildUI</strong> job has been placed in the queue.</p>
+<p><img src="images/lab500/500_01_07_merge12.png" alt="" /></p></li>
+<li><p>The rebuild begins.</p>
+<p><img src="images/lab500/500_01_08_merge13.png" alt="" /></p></li>
+<li><p>The rebuild has successfully completed.</p>
+<p><img src="images/lab500/500_01_09_merge14.png" alt="" /></p></li>
+<li><p>Click <strong>Deploy</strong> on the navigation panel. Once the rebuild is complete, a redeploy will also automatically start. The panel will first show the deployment in process, and then will show that the <strong>Last deployment succeeded</strong>.</p>
+<p><img src="images/lab500/500_01_10_merge15.png" alt="" /></p></li>
+<li><p>If the arrow is not green but is orange and pointed down <img src="images/lab500/500_01_11_merge16.png" alt="" />, this means the application has not been started.</p></li>
+<li><p>To manually start, stop or redeploy the application in Oracle Application Container Cloud Service, go to the gear dropdown icon for the application, and select the appropriate action.</p></li>
+<li><p><strong><em>If you must manually redeploy, make sure you deploy the latest build with the latest build number.</em></strong></p>
+<p><img src="images/lab500/500_01_12_merge17.png" alt="" /></p></li>
+</ul>
+<h2 id="test-the-edited-code-and-designate-the-edits-and-merge-have-been-completed">Test the Edited Code, and Designate the Edits and Merge Have Been Completed</h2>
+<h3 id="step-2-test-the-completed-code"><strong>STEP 2</strong>: Test the Completed Code</h3>
+<ul>
+<li><p>Click <strong>Deploy</strong> on the navigation panel.</p>
+<p><img src="images/lab500/500_02_01_deploymenuchoice.png" alt="" /> </p></li>
+<li><p>Right click on the application name <strong>AlphaofficeUI</strong>, and choose <strong>Copy link address</strong> in the dropdown. This is the URL for the application in the Application Container Cloud Service. It is the URL you would publish to users of the application.</p>
+<p><img src="images/lab500/500_02_02_getappurl.png" alt="" /></p></li>
+<li><p>Paste this URL into the address bar of any browser (such as on your personal workstation), and then press <strong>Enter</strong> to navigate to the UI application in the Oracle Application Container Cloud Service. Note that all data from the MySQL microservice is now displayed.</p>
+<p><img src="images/lab500/500_02_03_cloudtestbrowser.png" alt="" /></p></li>
+<li><p>The first page shows products from the MySQL database and the MySQLREST microservice. Click on the <strong>#FranklinCovey</strong> hashtag, and the application will display a second page with data from the Twitter feed and the TwitterREST microservice. The application is fully operational.</p>
+<p><img src="images/lab500/500_02_04_cloudtestbrowser2.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-designate-the-edits-are-complete"><strong>STEP 3</strong>: Designate the Edits are Complete</h3>
+<ul>
+<li><p>As Lisa the project manager, you are the one who must verify that the UI code has been completed. Click <strong>Agile</strong> on the navigation panel.</p>
+<p><img src="images/lab500/500_03_01_agilemenuchoice.png" alt="" /></p></li>
+<li><p>Drag the Feature 6 panel from <strong>In Progress</strong> to the <strong>Completed</strong> column.</p>
+<p><img src="images/lab500/500_03_02_sprint47.png" alt="" /></p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab500/500_03_03_sprint48.png" alt="" /></p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab500/500_03_04_sprint49.png" alt="" /></p></li>
+<li><p>The UI edits have been completed and merged, and you have made the final updates to the Agile board. </p>
+<p><img src="images/lab500/500_03_05_sprint50.png" alt="" /></p></li>
+</ul>
+<h2 id="designate-the-sprints-are-completed-and-review-final-sprint-reports">Designate the Sprints are Completed, and Review Final Sprint Reports</h2>
+<h3 id="step-4-complete-the-sprints-and-review-final-reports"><strong>STEP 4</strong>: Complete the Sprints and Review Final Reports</h3>
+<ul>
+<li><p>Since you have performed all updates to the Agile board for these sprints, it's time to move these sprints from active to completed. In the Agile Active Sprints screen, Click on <strong>Complete Sprint</strong>.</p>
+<p><img src="images/lab500/500_04_01_completesprint1.png" alt="" /></p></li>
+<li><p>Confirm by clicking <strong>Complete Sprint</strong>.</p>
+<p><img src="images/lab500/500_04_02_completesprint2.png" alt="" /></p></li>
+<li><p>Now Click on the <strong>Reports</strong> button and the <strong>Burndown Chart</strong> tab to review the Burndown Report by Story Points. Note: normally it would take several days to complete this project, and the report would provide information about the Burndown Rate per Day.</p>
+<p><img src="images/lab500/500_04_03_report1.png" alt="" /></p></li>
+<li><p>Click on the <strong>Sprint Report</strong> tab. In this lab, the results will be skewed because this sprint was completed in a single day. However, the dotted line shows the starting point, and the red line shows the current remaining points. Normally this would step down towards the end of the sprint.</p>
+<p><img src="images/lab500/500_04_04_report2.png" alt="" /></p></li>
+</ul>
+<h1 id="project-administrative-features">Project Administrative Features</h1>
+<h3 id="step-5-review-the-administration-screens"><strong>STEP 5</strong>: Review the Administration Screens</h3>
+<ul>
+<li><p>Click <strong>Administration</strong> on the navigation panel to view the available administrative options.</p>
+<p><img src="images/lab500/500_05_01_admin.png" alt="" /></p></li>
+<li><p>Expand the dropdown on the <strong>Administration</strong> menu item on the navigation panel. Then click <strong>Properties</strong>. Here you see a number of settings for the project. Note this is also where you would delete projects in Oracle Developer Cloud Service.</p>
+<p><img src="images/lab500/500_05_02_defaultproperties.png" alt="" /></p></li>
+<li><p>Click on <strong>Usage Metrics</strong> in the dropdown. This is where you would see storage space utilization and storage availability metrics.</p>
+<p><img src="images/lab500/500_05_03_usagemetrics.png" alt="" /></p></li>
+<li><p>Click on <strong>Issues Tracking</strong> in the dropdown. As you see here, this provides a subsystem to track and publish known issues within the various releases of your applications. It also provides functionality to list all components available within your applications.</p>
+<p><img src="images/lab500/500_05_04_issuestracking.png" alt="" /></p></li>
+<li><p>Click on <strong>Repositories</strong> in the dropdown. Here you have a listing of all repositories in use, including external repositories.</p>
+<p><img src="images/lab500/500_05_05_repositories.png" alt="" /></p></li>
+<li><p>Lastly, click on <strong>Branches</strong> in the dropdown. The <strong>Branches</strong> screen shows all branches for all repositories. It includes a listing by user.</p>
+<p><img src="images/lab500/500_05_06_branches.png" alt="" /></p></li>
+</ul>
+<p>With this you have completed Lab 500 and the workshop! </p>

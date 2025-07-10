@@ -1,0 +1,483 @@
+<h1 id="oracle-data-visualization-tutorial--">Oracle Data Visualization Tutorial  </h1>
+<p><img src="https://cdn.app.compendium.com/uploads/user/e7c690e8-6ff9-102a-ac6d-e4aebca50425/f4a5b21d-66fa-4885-92bf-c4e81c06d916/Image/55d948c4e07007e169299a02b4dfe6db/construction.png" alt="" /> -- This lab (Data Visualization Desktop) is under construction and a new version is in the works.  The instructions currently listed below may be <strong>inaccurate</strong> or <strong>incomplete</strong>.</p>
+<h1 id="before-you-begin">Before You Begin</h1>
+<h2 id="purpose">Purpose</h2>
+<p>In this tutorial you learn how to use Oracle Data Visualization to
+create visualizations to explore and analyze the data.</p>
+<p>There are four sections in this tutorial:-</p>
+<ol>
+<li><p><a href="#section-1-creating-a-data-visualization-with-sample-data">Creating a Data Visualization with Sample
+Data</a></p></li>
+<li><p><a href="#section-2-adding-data-sources-from-comma-separated-value-files">Adding Data Sources from Comma Separated Value
+Files</a></p></li>
+<li><p><a href="#section-3-creating-a-data-flow">Creating a Data Flow</a></p></li>
+<li><p><a href="#section-4-adding-a-data-source-from-oracle-database">Adding a Data Source from Oracle
+Database</a></p></li>
+</ol>
+<h2 id="time-to-complete">Time to Complete</h2>
+<p>40 minutes</p>
+<h2 id="background">Background</h2>
+<p>Oracle Data Visualization makes rich, powerful visual analytics
+accessible to every business user. People at all levels of an
+organization can blend and analyze data in just a few clicks,
+effectively sifting through data clutter to quickly uncover and share
+hidden patterns and actionable insights.</p>
+<p>You begin by creating a project in Oracle Data Visualization with sample
+data sources. Then you create visualization, modify the visualization by
+moving data elements into and out of the canvas, manually change the
+visualization type, and apply filters. You also learn how to navigate
+and adjust the canvas layout, and how to find, organize, and manage
+content.</p>
+<h2 id="what-do-you-need">What Do You Need?</h2>
+<p>Before starting this tutorial, you should:</p>
+<ul>
+<li><p>Download Oracle Data Visualization Desktop from
+<a href="http://www.oracle.com/technetwork/middleware/oracle-data-visualization/index.html">here</a>
+and install it on your computer. Select the Deploy Samples default
+option during the installation process. We use Oracle Data
+Visualization 12c 12.2.2.2.0 in this tutorial</p></li>
+<li><p>Download the sample data files,
+<a href="https://oracle.github.io/learning-library/workshops/journey1-self-service-bi/DVData/People.csv">People.csv</a>
+and
+<a href="https://oracle.github.io/learning-library/workshops/journey1-self-service-bi/DVData/Income.csv">Income.csv</a></p></li>
+</ul>
+<h1 id="section-1-creating-a-data-visualization-with-sample-data">Section 1: Creating a Data Visualization with Sample Data</h1>
+<ol>
+<li><p>Double click the Oracle Data Visualization Desktop 12c icon on your
+desktop to start the application.   </p>
+<p><img src="./images/400/Picture400-1.png" alt="" />  </p></li>
+<li><p>It takes a few seconds to initialize the application.  </p>
+<p><img src="./images/400/Picture400-2.png" alt="" />  </p></li>
+<li><p>The Home page gives you a look inside your folder which contains the
+visualization projects you created and a sample project created during
+the process of installation of Oracle Data Visualization.</p>
+<p>Before you can begin to explore data in a new project, you must select a
+data source for that information. Click <strong>Data Sources</strong> to display the
+existing data sources.  </p>
+<p><img src="./images/400/Picture400-3.png" alt="" />  </p></li>
+<li><p>You can select Oracle Applications, databases, or uploaded data files as
+your data sources. We use the sample data source provided to discover
+the capabilities of Oracle Data Visualization Desktop in this step. The
+sample data set is based on Sales Orders data and contains meaningful
+measures and attributes.</p>
+<p>Double click <strong>Sample Order Lines</strong>. It brings you into the Data
+Elements pane with all the data elements in the sample data available.  </p>
+<p><img src="./images/400/Picture400-4.png" alt="" />  </p></li>
+<li><p>After you select the data sources for your project, you can begin to add
+data elements such as measures and attributes to visualizations. You can
+see the list of data elements on the left.  </p>
+<p><img src="./images/400/Picture400-5.png" alt="" />  </p></li>
+<li><p>Select both <strong>Product Category</strong> and <strong># of Orders</strong> and then right
+click to show the right-click menu. Select <strong>Pick Visualization…</strong> on
+the pop-up menu.  </p>
+<p><img src="./images/400/Picture400-6.png" alt="" />  </p></li>
+<li><p>In the View Select dialog, select the <strong>Treemap</strong> visualization type.  </p>
+<p><img src="./images/400/Picture400-7.png" alt="" />  </p></li>
+<li><p>A tree map of # of Orders by Product Category is generated. You can see
+the largest one is Office Supplies with 3949 orders followed by
+Technology and then Furniture.  </p>
+<p><img src="./images/400/Picture400-8.png" alt="" />  </p></li>
+<li><p>You can work with color to make visualizations more attractive, dynamic,
+and informative. The Visualize canvas has a Color drop target where you
+can put a measure column, attribute column, or set of attributes
+columns.</p>
+<p>Select <strong>Product Category</strong> on the left, drag and drop it into the Color
+drop target.  </p>
+<p><img src="./images/400/Picture400-9.png" alt="" />  </p></li>
+<li><p>The blocks in the tree map are colored in different colors. It is easier
+to distinguish the differences among the product categories.  </p>
+<p><img src="./images/400/Picture400-10.png" alt="" /> </p></li>
+<li><p>You might want to add Product Sub Category information to the tree map
+as well. It might help you understand the sales better.</p>
+<p>Select <strong>Product Sub Category</strong> on the left, drag and drop it <strong>under</strong>
+the Product Category in the <strong>Category</strong> drop target.  </p>
+<p><img src="./images/400/Picture400-11.png" alt="" /> </p></li>
+<li><p>You can see there is a sub tree map in each product category block for
+you to drill down into each sub product category.  </p>
+<p><img src="./images/400/Picture400-12.png" alt="" />  </p></li>
+<li><p>Now let’s add a new visualization – a map of sales by states. Right click in the blank area of Data Elements pane on the left, select
+<strong>Add Data Source</strong> in the pop-up menu.  </p>
+<p><img src="./images/400/Picture400-13.png" alt="" />  </p></li>
+<li><p>Select <strong>Sample States</strong>, click <strong>Add to Project</strong> in the Add Data
+Source dialog.</p>
+<p><img src="./images/400/Picture400-14.png" alt="" />  </p></li>
+<li><p>You can see the elements in the Sample States data source are expended
+in the Data Elements pane. Right click in the blank area of Data Elements pane, select <strong>Source
+Diagram…</strong> in the pop-up menu.</p>
+<p><img src="./images/400/Picture400-15.png" alt="" />  </p></li>
+<li><p>You can see that the Sample Order Lines and the Sample States are
+connected by City, which is an element in common in both of the data
+sources.</p>
+<p><img src="./images/400/Picture400-16.png" alt="" />  </p></li>
+<li><p>Select both <strong>Sales</strong> in the Sample Order Line and <strong>State</strong> in the
+Sample States, right click and select <strong>Pick Visualization…</strong> on the
+pop-up menu.</p>
+<p><img src="./images/400/Picture400-17.png" alt="" />  </p></li>
+<li><p>In the View Select dialog, select the <strong>Map</strong> visualization type.</p>
+<p><img src="./images/400/Picture400-18.png" alt="" />  </p></li>
+<li><p>A map of sales by states is added to the right of tree map.</p>
+<p><img src="./images/400/Picture400-19.png" alt="" />  </p></li>
+<li><p>To make the map more interactive, we are going to do a couple of things.
+First, select <strong>Country</strong> in the Sample States on the left and drag and
+drop it to the filter bar area on the top.</p>
+<p><img src="./images/400/Picture400-20.png" alt="" />  </p></li>
+<li><p>In the pop-up country list, select <strong>United States</strong>.</p>
+<p><img src="./images/400/Picture400-21.png" alt="" />  </p></li>
+<li><p>The map is focused on United States area. Click the <strong>Maximize the
+View</strong> icon on the top-right corner of the map.</p>
+<p><img src="./images/400/Picture400-22.png" alt="" />  </p></li>
+<li><p>You can get a better view of sales by state in the United States. The
+revenue in the states range from 13K to 403K, colored from light green
+to deep green. Obviously California has the largest revenue. The grey
+color indicates where there is no revenue.</p>
+<p><img src="./images/400/Picture400-23.png" alt="" />  </p></li>
+<li><p>Select <strong># of Customers</strong> on the left and drag and drop it to the
+<strong>Color (Bubble)</strong> drop target and <strong>Size (Bubble)</strong> drop target
+respectively.</p>
+<p><img src="./images/400/Picture400-24.png" alt="" />  </p></li>
+<li><p>The more customers a state has, the deeper color and larger bubble it
+has. Click the <strong>Close Maximized Visualization</strong> icon in the top-right corner
+of the map.
+<img src="./images/400/Picture400-25.png" alt="" />  </p></li>
+<li><p>Select <strong>Sales</strong> in the Sample Order Line list on the left, right click
+it and select <strong>Pick Visualization…</strong> on the pop-up menu.</p>
+<p><img src="./images/400/Picture400-26.png" alt="" />  </p></li>
+<li><p>In the View Select dialog, select the <strong>Tile</strong> visualization type.</p>
+<p><img src="./images/400/Picture400-27.png" alt="" />  </p></li>
+<li><p>Drag and drop the Profit tile to the top after it is displayed at the
+bottom. Create the <strong>Sales</strong> tile and <strong>Quantity Ordered</strong> tile respectively in
+the same way. You can adjust the positions of the tiles by drag and drop.</p>
+<p><img src="./images/400/Picture400-28.png" alt="" />  </p></li>
+<li><p>Right click the <strong>Sales</strong> tile and select <strong>Properties</strong> on the pop-up
+menu.</p>
+<p><img src="./images/400/Picture400-29.png" alt="" />  </p></li>
+<li><p>Select <strong>#</strong> in the Properties dialog, and click <strong>Auto</strong> in the Number
+format line, and then select <strong>Currency</strong>. The property items changes
+accordingly after the Currency item is selected.</p>
+<p><img src="./images/400/Picture400-30.png" alt="" />  </p></li>
+<li><p>Click <strong>0.01</strong> at the right of Decimal, select <strong>None</strong> in the pop-up
+menu.</p>
+<p>Change the properties of <strong>Profit</strong> tile in the same way.</p>
+<p><img src="./images/400/Picture400-31.png" alt="" />  </p></li>
+<li><p>Now you get a nice visualization. You can save and share. You can see
+the tiles of Sales, Profits, and Quantity Ordered on the top. Down below
+you can see the tree map by product category and sub product category.
+You can also see the geographic distribution of sales and # of
+customers by states US.</p>
+<p><img src="./images/400/Picture400-32.png" alt="" />  </p></li>
+</ol>
+<h1 id="section-2-adding-data-sources-from-comma-separated-value-files">Section 2: Adding Data Sources from Comma Separated Value files</h1>
+<p>In this section you add two data sources from Comma Separated Value
+files with the .CSV extension to your project. You can also add
+Microsoft Excel spreadsheet file. Data source files from a Microsoft
+Excel spreadsheet file must have the XLSX extension (signifying a
+Microsoft Office Open XML Workbook file).</p>
+<ol>
+<li><p>Return to the Home page, and click <strong>Data Sources</strong> on the top and click
+<strong>Data Source</strong> on the left.</p>
+<p><img src="./images/400/Picture400-33.png" alt="" />  </p></li>
+<li><p>In the Create New Data Source dialog, click <strong>Add Connection</strong> to view
+different types of data sources Oracle Data Visualization supports.</p>
+<p><img src="./images/400/Picture400-34.png" alt="" />  </p></li>
+<li><p>Oracle Data Visualization can connect many types of data sources like
+Oracle Applications, databases, Salesforce, Spark.</p>
+<p>Because you will upload Comma Separated Value files as the data sources
+in this section, click the <strong>left arrow</strong> icon to go back to the Create New
+Data Source dialog.</p>
+<p><img src="./images/400/Picture400-35.png" alt="" />  </p></li>
+<li><p>In the Create New Data Source dialog, click <strong>File</strong>.</p>
+<p><img src="./images/400/Picture400-36.png" alt="" />  </p></li>
+<li><p>In the Select File dialog, select the <strong>People.csv</strong> file, which should
+be downloaded at the beginning of this tutorial.</p>
+<p><img src="./images/400/Picture400-37.png" alt="" />  </p></li>
+<li><p>The column names and data from People.csv are listed. Note, only part of
+the records in the data source is displayed.</p>
+<p><img src="./images/400/Picture400-38.png" alt="" />  </p></li>
+<li><p>You can modify the uploaded data to help you further curate (organize
+and integrate from various sources) data in projects. This is also
+sometimes referred to as data wrangling.</p>
+<p>Click the <strong>A</strong> icon on the column TotalPopEst2015, select the option
+<strong># Measure</strong>. The data type of TotalPopEst2015 is changed from
+attribute to measure.</p>
+<p>Do the same thing for <strong>TotalPopEst2014</strong> column.</p>
+<p>A data source can contain any of the following:</p>
+<p>• Match columns: These contain values that are found in the match column
+of another source, which relates this source to the other (for example,
+Customer ID or Product ID).</p>
+<p>• Attribute columns: These contain text, dates, or numbers that are
+required individually and aren’t aggregated (for example, Year, Category
+Country, Type, or Name).</p>
+<p>• Measure columns: These contain values that should be aggregated (for
+example, Revenue or Miles driven).</p>
+<p><img src="./images/400/Picture400-39.png" alt="" />  </p></li>
+<li><p>Click the <strong>gear icon</strong> alongside PopChangeRate1415, click <strong>Sum</strong> and
+select <strong>Average</strong> as the aggregation type instead in the pop-up menu.</p>
+<p>Do the same thing for <strong>PopChangeRate1015</strong> column.</p>
+<p>Click <strong>OK</strong>.</p>
+<p><img src="./images/400/Picture400-40.png" alt="" />  </p></li>
+<li><p>The People data source is created as shown above. Click <strong>People</strong> to
+view its elements.</p>
+<p><img src="./images/400/Picture400-41.png" alt="" />  </p></li>
+<li><p>Select all of the data elements in the People data source, right click
+them, and click <strong>Pick Visualization…</strong> in the pop-up menu.</p>
+<p><img src="./images/400/Picture400-42.png" alt="" />  </p></li>
+<li><p>In the View Select dialog, select the <strong>Table</strong> visualization type.</p>
+<p><img src="./images/400/Picture400-43.png" alt="" />  </p></li>
+<li><p>The columns and rows of data in the People data source are listed in
+table.</p>
+<p>Create the <strong>Income</strong> data source from the <strong>Income.csv</strong> file in the same
+way as we create the People data source in the previous steps.</p>
+<p><img src="./images/400/Picture400-44.png" alt="" />  </p></li>
+</ol>
+<h1 id="section-3-creating-a-data-flow">Section 3: Creating a Data Flow</h1>
+<p>In this section we create a data flow from the People and Income data
+sources created in the previous section. Data flows are a way to produce
+a curated data source that you can use to easily and efficiently create
+meaningful visualizations. You can create a data flow from one or more
+data sources.</p>
+<ol>
+<li><p>Return to the Home page, and click <strong>Data Sources</strong> on the top and click
+<strong>Data Flow</strong> on the left.</p>
+<p><img src="./images/400/Picture400-45.png" alt="" />  </p></li>
+<li><p>In the Add Data Source dialog, select the <strong>People</strong> data source that we
+want to base the data flow on. You can select only one data source in
+this dialog; if needed, you can add additional data sources later. Click
+<strong>Add</strong>.</p>
+<p><img src="./images/400/Picture400-46.png" alt="" />  </p></li>
+<li><p>The Data Flow editor is displayed and the columns from the selected data
+source are displayed in the Data Elements pane. The data source
+<strong>People</strong> is displayed as the first step in the workflow diagram pane.</p>
+<p><img src="./images/400/Picture400-47.png" alt="" />  </p></li>
+<li><p>In the Data Flow editor, go to the workflow diagram pane and right click
+the <strong>People</strong> icon. Select <strong>Add Step</strong>.</p>
+<p><img src="./images/400/Picture400-48.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Add Data</strong> to add the Income data
+source.</p>
+<p><img src="./images/400/Picture400-49.png" alt="" />  </p></li>
+<li><p>In the Add Data Source dialog, select <strong>Income</strong>. Click <strong>Add</strong>.</p>
+<p><img src="./images/400/Picture400-50.png" alt="" />  </p></li>
+<li><p>The Income data source is also added to the workflow diagram pane.</p>
+<p>Click the save data flow icon in the top left corner and select
+<strong>Save</strong>. Although you have not completed the data flow, it’s always a
+good habit of saving it in time.</p>
+<p><img src="./images/400/Picture400-51.png" alt="" />  </p></li>
+<li><p>In the Save Data Flow As dialog, input <strong>People and Income DF</strong> as the
+name of the data flow you are working on. Click <strong>OK</strong>.</p>
+<p><img src="./images/400/Picture400-52.png" alt="" />  </p></li>
+<li><p>You can see that the data flow is saved and named People and Income DF.</p>
+<p><img src="./images/400/Picture400-53.png" alt="" />  </p></li>
+<li><p>Let’s continue to create the data flow after saving it.</p>
+<p>In the workflow diagram pane, select both the <strong>People</strong> and the
+<strong>Income</strong> icons and right click them. Select <strong>Join</strong>.</p>
+<p><img src="./images/400/Picture400-54.png" alt="" />  </p></li>
+<li><p>In the Step Details pane, you can see the two data sources are joined by
+the match column FIPS.</p>
+<p>You can analyze a data source on its own, or you can analyze two or more
+data sources together, depending on what the data source contains. If
+you use multiple sources together, then at least one match column must
+exist in each source. The requirements for matching are:</p>
+<p>• The sources contain common values (for example, Customer ID or Product
+ID)</p>
+<p>• The match must be of the same data type (for example, number with
+number, date with date, or text with text)</p>
+<p><img src="./images/400/Picture400-55.png" alt="" />  </p></li>
+<li><p>Click <strong>Preview</strong>, you can preview the joint data. Notice that the
+columns of FIPS, State, and County exist in both People and Income data
+sources, so the duplicate columns are renamed as FIPS_1, State_1,
+County_1 automatically.</p>
+<p><img src="./images/400/Picture400-56.png" alt="" />  </p></li>
+<li><p>In the workflow diagram pane, right click the <strong>Join</strong> icon. Select
+<strong>Add step</strong>.</p>
+<p><img src="./images/400/Picture400-57.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Select Columns</strong>.</p>
+<p><img src="./images/400/Picture400-58.png" alt="" />  </p></li>
+<li><p>In the Step Details pane, select the duplicate columns of FIPS_1,
+State_1, and County_1. Click <strong>Remove selected</strong>.</p>
+<p><img src="./images/400/Picture400-59.png" alt="" />  </p></li>
+<li><p>The duplicate columns are removed to the left. Click <strong>Preview</strong>.</p>
+<p><img src="./images/400/Picture400-60.png" alt="" />  </p></li>
+<li><p>Now there is no duplicate column in the joint data set.</p>
+<p>However, if you look into the top five rows, you can find that:</p>
+<p>• In the first row, the United States should be a country rather than a
+county. The FIPS is 0.</p>
+<p>• In the second row, Alabama should be a state rather than a county in the
+United States. The FIPS is 1000.</p>
+<p>• Autauga, Baldwin, and Barbour and so on are counties in Alabama, the
+FIPS’ are 1001, 1003, and 1005 an so on respectively.</p>
+<p>• The country, state, and county level rows are mixed together in this
+data source. We need to remove the rows of the United States and the
+states from the table, and leave only the county rows in the table for
+further analysis and visualization.</p>
+<p>In the workflow diagram pane, right click the <strong>Select Column</strong> icon. Select <strong>Add step</strong>.</p>
+<p><img src="./images/400/Picture400-61.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Add Columns</strong>.</p>
+<p><img src="./images/400/Picture400-62.png" alt="" />  </p></li>
+<li><p>In the Step Details pane, click <strong>Math</strong> to expend the list of math
+functions.</p>
+<p><img src="./images/400/Picture400-63.png" alt="" />  </p></li>
+<li><p>Scroll down the list and double click the <strong>Mod</strong> function.</p>
+<p><img src="./images/400/Picture400-64.png" alt="" />  </p></li>
+<li><p>The MOD function is selected in the edit box. Input <strong>FIPS</strong> as the
+first parameter and <strong>1000</strong> as the second parameter for the MOD
+function. Input <strong>LOCATE_STATE</strong> as the new column name. Click
+<strong>Validate</strong> and <strong>Apply</strong>. Then click <strong>Preview</strong>.</p>
+<p><img src="./images/400/Picture400-65.png" alt="" />  </p></li>
+<li><p>You can see that a column named LOCATE_STATE is added on the right. The
+values of LOCATE_STATE of the country and state level rows are zero,
+and the values of the county level rows are non-zero.</p>
+<p>In the workflow diagram pane, right click the <strong>Add Columns</strong> icon. Select <strong>Add step</strong>.</p>
+<p><img src="./images/400/Picture400-66.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Filter</strong> to filter the country and
+state level rows out.</p>
+<p><img src="./images/400/Picture400-67.png" alt="" />  </p></li>
+<li><p>Select <strong>LOCATE_STATE</strong> in the data element list on the left, drag and
+drop it to the Expression edit box. Input <strong>&lt;&gt;0</strong>, click
+<strong>Validate</strong> and <strong>Apply</strong>. Click <strong>Preview</strong>.</p>
+<p><img src="./images/400/Picture400-68.png" alt="" />  </p></li>
+<li><p>You can see that only the rows with the non-zero values of LOCATE_STATE
+are kept in the table for further analysis.</p>
+<p>In the workflow diagram pane, right click the <strong>Filter</strong> icon. Select
+<strong>Add step</strong>.</p>
+<p><img src="./images/400/Picture400-69.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Rename Columns</strong>.</p>
+<p><img src="./images/400/Picture400-70.png" alt="" />  </p></li>
+<li><p>In the Step Details pane, rename the following columns.</p>
+<p>PopChangeRate1415 -&gt; Pop Change Rate 1415</p>
+<p>PopChangeRate1015 -&gt; Pop Change Rate 1015</p>
+<p>TotalPopEst2015 -&gt; Total Pop Est 2015</p>
+<p>TotalPopEst2014 -&gt; Total Pop Est 2014</p>
+<p>MedHHInc2014 -&gt; Med HH Inc 2014</p>
+<p>PerCapitaInc -&gt;Per Capita Inc 2014</p>
+<p>PovertyUnder18Pct2014 -&gt; % Poverty Under 18 2014</p>
+<p>PovertyAllAgesPct2014 -&gt; % Poverty All Ages 2014</p>
+<p>Click <strong>Review</strong>.</p>
+<p><img src="./images/400/Picture400-71.png" alt="" />  </p></li>
+<li><p>You can see the renamed columns in the table.</p>
+<p>In the workflow diagram pane, right click the <strong>Rename Columns</strong> icon. Select <strong>Add step</strong>.</p>
+<p><img src="./images/400/Picture400-72.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Aggregate</strong>.</p>
+<p><img src="./images/400/Picture400-73.png" alt="" />  </p></li>
+<li><p>The aggregate function for each data element should be shown as that in
+the screenshot. If not, change the functions to Average or Sum
+accordingly. The function is <strong>Sum</strong> for <strong>Total Pop Est 2015</strong> and
+<strong>Total Pop Est 2014</strong>, and <strong>Average</strong> for the rest of data elements.</p>
+<p>In the workflow diagram pane, right click the <strong>Aggregate</strong> icon. Select
+<strong>Add step</strong>.</p>
+<p><img src="./images/400/Picture400-74.png" alt="" />  </p></li>
+<li><p>From the Add Step window, click <strong>Save Data</strong>.</p>
+<p><img src="./images/400/Picture400-75.png" alt="" />  </p></li>
+<li><p>In the Step Details pane, input <strong>People and Income</strong> as the output data
+source name.</p>
+<p>Click the <strong>right arrow icon</strong> at the top right corner to execute the
+data flow.</p>
+<p><img src="./images/400/Picture400-76.png" alt="" />  </p></li>
+<li><p>Return to the Home page, and click <strong>Data Sources</strong> on the top and click
+the newly created <strong>People and Income</strong> data source.</p>
+<p><img src="./images/400/Picture400-77.png" alt="" />  </p></li>
+<li><p>In the date element list, select both <strong>State</strong> and <strong>Total Pop Est
+2014</strong>, right click them, and select <strong>Pick Visualization…</strong> on the
+pop-up menu.</p>
+<p><img src="./images/400/Picture400-78.png" alt="" />  </p></li>
+<li><p>In the View Select dialog, select the <strong>Map</strong> visualization type.</p>
+<p><img src="./images/400/Picture400-79.png" alt="" />  </p></li>
+<li><p>You can see that states are colored in blue. The darker the color is,
+the higher value of Total Pop Est 2014 is.</p>
+<p>Right click <strong>My Calculations</strong> on the left, select <strong>Add
+Calculations…</strong>.</p>
+<p><img src="./images/400/Picture400-80.png" alt="" />  </p></li>
+<li><p>Drag and drop <strong>Total Pop Est 2015</strong> and <strong>Total Pop Est 2014</strong> from the
+date element list to the edit box in the New Calculation dialog, add an
+minus ( <strong>-</strong> ) symbol between them. Name it as <strong>Pop Change 1415</strong>. Click <strong>Validation</strong>. Click <strong>Save</strong>.</p>
+<p><img src="./images/400/Picture400-81.png" alt="" />  </p></li>
+<li><p>The newly created Pop Change 1415 calculation is listed under the My
+Calculations folder on the left. Select both <strong>State</strong> and <strong>Pop Change
+1415</strong>, right click them, and select <strong>Create Best Visualization</strong> in
+the pop-up menu.</p>
+<p><img src="./images/400/Picture400-82.png" alt="" />  </p></li>
+<li><p>Oracle Visualization allows even nontechnical users to select a few data
+elements and generate what the software thinks is the best visualization
+for the relationships between those items. It helps business users
+uncover patterns and understand their data better. In this example, it
+creates a bar chart for the estimated population change between year
+2015 and year 2014. From the bar chart, we can easily see the states
+with big positive or negative changes.</p>
+<p>Click the <strong>Share Project icon</strong> in the top right corner, save the
+project as <strong>People and Income Viz</strong>.</p>
+<p><img src="./images/400/Picture400-83.png" alt="" />  </p></li>
+</ol>
+<h1 id="section-4-adding-a-data-source-from-oracle-database-">Section 4: Adding a Data Source from Oracle Database </h1>
+<ol>
+<li><p>In the <strong>Data Sources</strong> page, go to the <strong>Create pane</strong>, and click
+<strong>Connection</strong>.</p>
+<p><img src="./images/400/Picture400-84.png" alt="" />  </p></li>
+<li><p>In the Create New Connection dialog, click the <strong>Oracle Database</strong> icon.</p>
+<p><img src="./images/400/Picture400-85.png" alt="" />  </p></li>
+<li><p>In the Add a New Connection dialog, enter <strong>BDJOURNEY</strong> as the
+<strong>Connection Name</strong>, and then enter the required connection information,
+such as <strong>Host</strong>, <strong>Port</strong>, <strong>Password</strong>, and <strong>Service Name</strong>. Note
+that your connection information might be different from that shown in
+the screenshot.</p>
+<p>Click <strong>Save</strong>. You can now begin creating data sources from the
+connection.</p>
+<p><img src="./images/400/Picture400-86.png" alt="" />  </p></li>
+<li><p>In the Data Sources page, go to the Create pane, and click <strong>Data
+Source</strong>.</p>
+<p><img src="./images/400/Picture400-33.png" alt="" />  </p></li>
+<li><p>In the Create New Data Sources page, click <strong>BDJOURNEY</strong> connection
+created just now.</p>
+<p><img src="./images/400/Picture400-87.png" alt="" />  </p></li>
+<li><p>In the Create Source dialog, double click <strong>BDJOURNEY</strong>, the table list
+is displayed.</p>
+<p><img src="./images/400/Picture400-88.png" alt="" />  </p></li>
+<li><p>In the Create Source dialog, browse or search for and double-click the
+<strong>TWITTER_FINAL</strong> table where you store the twitter data generated from
+previous tutorials. Your table name might be different.</p>
+<p><img src="./images/400/Picture400-89.png" alt="" />  </p></li>
+<li><p>Select both <strong>RETWEET_COUNT</strong> and <strong>RETWEET_STATE</strong> from the column
+list. Click <strong>Add Selected</strong>.</p>
+<p>Click Enter SQL in the top right corner to display the SQL Statement
+field.</p>
+<p><img src="./images/400/Picture400-90.png" alt="" />  </p></li>
+<li><p>In the SQL Statement field, add aliases, <strong>Count</strong> and <strong>State,</strong> to
+make column names more readable.</p>
+<p>Click <strong>Refresh Data</strong> to view a snapshot of the data in the columns
+that you selected. Click <strong>OK</strong>.</p>
+<p><img src="./images/400/Picture400-91.png" alt="" />  </p></li>
+<li><p>The new data source named TWITTER_FINAL is created and is included in
+the Databases section of the Display pane. The data source contains a
+cached copy of the data, and you can refresh the data and metadata from
+that data source, as needed.</p>
+<p>Click the <strong>TWITTER_FINAL</strong> data source.</p>
+<p><img src="./images/400/Picture400-92.png" alt="" />  </p></li>
+<li><p>Click <strong>Data Elements</strong> icon at the top left corner to display the
+columns. Select both <strong>COUNT</strong> and <strong>STATE</strong>, right click, and select <strong>Pick
+Visualization…</strong> in the pop-up menu.</p>
+<p><img src="./images/400/Picture400-93.png" alt="" />  </p></li>
+<li><p>In the View Select dialog, select the <strong>Table</strong> visualization type.</p>
+<p><img src="./images/400/Picture400-94.png" alt="" />  </p></li>
+<li><p>Drag and drop <strong>STATE</strong> to the top of <strong>COUNT</strong> in the Rows drop target
+to adjust the display order of the columns in the table. There are 4,608
+tweets in Indiana and 301,824 tweets in New York. The blank ones are
+tweet counts outside of the US.</p>
+<p><img src="./images/400/Picture400-95.png" alt="" />  </p></li>
+<li><p>Go back to the Home page, Click the project <strong>People and Income Viz</strong>
+you saved in the previous section.</p>
+<p><img src="./images/400/Picture400-96.png" alt="" />  </p></li>
+<li><p>Right click in the blank area of Data Elements pane on the left, select
+<strong>Add Data Source</strong> in the pop-up menu.</p>
+<p><img src="./images/400/Picture400-97.png" alt="" />  </p></li>
+<li><p>Select <strong>TWITTER_FINAL</strong> in the Add Data Source window.</p>
+<p><img src="./images/400/Picture400-98.png" alt="" />  </p></li>
+<li><p>Drag and drop <strong>COUNT</strong> from the data element list on the left to the
+<strong>Size (Bubble)</strong> drop target. Two bubbles are displayed in the map.</p>
+<p><img src="./images/400/Picture400-99.png" alt="" />  </p></li>
+<li><p>The larger size bubble represents the tweet count in New York. Save the project.</p>
+<p><img src="./images/400/Picture400-100.png" alt="" /> </p></li>
+</ol>
+<h1 id="want-to-learn-more">Want to Learn More?</h1>
+<ul>
+<li><p><a href="https://cloud.oracle.com/en_US/data_visualization">Oracle Data Visualization Cloud Service - Overview and Pricing</a></p></li>
+<li><p><a href="http://docs.oracle.com/cloud/latest/data-visualization-cloud/index.html">Oracle Data Visualization Cloud Service - Help Center</a></p></li>
+<li><p><a href="https://cloud.oracle.com/whitepapers">Oracle Cloud White Papers</a></p></li>
+<li><p><a href="http://www.youtube.com/OracleEpmBiTutorials">Oracle EPM & BI Tutorials YouTube Channel</a></p></li>
+</ul>

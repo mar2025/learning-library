@@ -1,0 +1,422 @@
+<h1 id="provision-kubernetes-using-terraform">Provision Kubernetes Using Terraform</h1>
+<p><img src="images/200/header.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the second of several labs that are part of the <strong>Oracle Public Cloud Container Native Development workshop.</strong> This workshop will walk you through the process of moving an existing application into a containerized CI/CD pipeline and deploying it to a Kubernetes cluster in the Oracle Public Cloud.</p>
+<p>You will take on 2 personas during the workshop.&nbsp;The <strong>Lead Developer Persona</strong> will be responsible for configuring the parts of the automated build and deploy process that involve details about the application itself. The <strong>DevOps Engineer Persona</strong> will configure the parts of the automation involving the Kubernetes infrastructure.&nbsp;To containerize and automate the building and deploying of this application you will make use of Wercker Pipelines for CI/CD, Docker Hub for a container registry, and Terraform for provisioning a Kubernetes cluster on Oracle Cloud Infrastructure.</p>
+<p>During this lab, you will take on the <strong>DevOps Engineer Persona</strong>. You will provision a Kubernetes cluster and all of the infrastructure that it requires using Terraform. Terraform will provision the Virtual Cloud Network, Load Balancers, Kubernetes Master and Worker instances, and etcd instance required to support your cluster.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<p><strong>Automate Deployment to Kubernetes</strong></p>
+<ul>
+<li>Create and Deploy to a Kubernetes Cluster</li>
+<li>Set Up Oracle Cloud infrastructure</li>
+<li>Provision Kubernetes Using Terraform</li>
+<li>Configure and Run Wercker Deployment Pipelines</li>
+<li>Deploy and Test the Product Catalog Application</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires:</li>
+<li>an Oracle-provided VirtualBox or Cloud-hosted Client Image</li>
+<li>an Oracle Public Cloud account that will be supplied by your instructor, or a Trial</li>
+</ul>
+<h2 id="install-and-configure-virtual-box">Install and Configure Virtual Box</h2>
+<h3 id="install-virtual-box-software">Install Virtual Box Software</h3>
+<p>This version of the lab guides requires the use of an Oracle-provided VirtualBox or Cloud-hosted client image to use during the workshop.</p>
+<ul>
+<li>If you do not already have Virtual Box, use this <a href="https://www.virtualbox.org/">Virtual Box Software Link</a> to download <strong>Virtual Box</strong>.</li>
+</ul>
+<h3 id="download-virtual-box-image">Download Virtual Box Image</h3>
+<ul>
+<li>Use this link to download the <a href="https://objectstorage.us-ashburn-1.oraclecloud.com/p/9k4pHoiqplo6MuwLn9TTzCtQvdQFR_15xniJ6Cp5ol0/n/gse00014514/b/PublicBucket/o/OL74_ClientImagev1.01.ova">VirtualBox image "OVA" file</a> that you will import into <strong>Virtual Box</strong>.</li>
+</ul>
+<h3 id="import-the-virtual-box-image">Import the Virtual Box Image</h3>
+<ul>
+<li><p>After downloading and installing Virtual Box, and also after downloading the Virtual Box Image for this workshop as instructed at the beginning of this guide, <strong>start the Virtual Box Application</strong>.</p></li>
+<li><p>From Virtual Box, select <strong>File > Import Appliance</strong></p>
+<p><img src="images/studentguide/vbox01.png" alt="" /></p></li>
+<li><p>Located the <strong>Appliance to Import</strong> from your downloads directory, and click on the <strong>Import</strong> button. Note: The version number of the OVA file will changes as new release are provided.</p>
+<p><img src="images/studentguide/vbox02.png" alt="" /></p></li>
+<li><p>Once the import is complete, you'll see a summary of the Virtual Box image. <em>Make Note</em> of the <strong>password</strong> in the <strong>Description</strong> panel. The password is needed if the Linux Image goes into screen saver mode.</p>
+<p><img src="images/studentguide/vbox03.png" alt="" /></p></li>
+<li><p>Click on the <strong>Start</strong> icon to load your Linux Image.</p>
+<p><img src="images/studentguide/vbox04.png" alt="" /></p></li>
+<li><p>The image will load automatically. Wait for it to fully load before continuing.</p>
+<p><img src="images/studentguide/vbox05.png" alt="" /></p></li>
+<li><p><em>You will now perform the remainder of this workshop's steps from within the Virtual Box Image</em>.</p></li>
+</ul>
+<h1 id="provision-kubernetes-using-terraform-1">Provision Kubernetes Using Terraform</h1>
+<h2 id="set-up-oracle-cloud-infrastructure">Set Up Oracle Cloud infrastructure</h2>
+<h3 id="step-1-log-in-to-your-oci-dashboard"><strong>STEP 1</strong>: Log in to your OCI dashboard</h3>
+<ul>
+<li><p>If you are using a Trial Account, <strong>you must wait until you receive this email</strong> indicating that your Cloud Account has been provisioned. <em>Please note that this email may arrive in your spam or promotions folder pending your email settings.</em></p>
+<p><img src="images/oraclecode/code_9.png" alt="" /></p></li>
+<li><p>Once you receive the <strong>Get Started with Oracle Cloud</strong> Email, make note of your <strong>Username, Password and Cloud Account Name</strong>.</p>
+<p><img src="images/200/0.1.png" alt="" /></p></li>
+<li><p>From you you can also from any browser go to. :</p>
+<p><a href="https://cloud.oracle.com/en_US/sign-in">https://cloud.oracle.com/en_US/sign-in</a></p></li>
+<li><p>Enter your <strong>Cloud Account Name</strong> in the input field and click the <strong>My Services</strong> button. If you have a trial account, this can be found in your welcome email. Otherwise, this will be supplied by your workshop instructor.</p>
+<p><img src="images/200/1.png" alt="" /></p></li>
+<li><p>Enter your <strong>Username</strong> and <strong>Password</strong> in the input fields and click <strong>Sign In</strong>. If you have a trial account, these can be found in your welcome email. Otherwise, these will be supplied by your workshop instructor.</p>
+<p><img src="images/200/2.png" alt="" /></p></li>
+</ul>
+<p><strong>NOTE</strong>: If you have used your trial account already, you may have been prompted to change the temporary password listed in the welcome email. In that case, enter the new password in the password field.</p>
+<ul>
+<li><p>In the top left corner of the dashboard, click the <strong>hamburger menu</strong></p>
+<p><img src="images/200/3.png" alt="" /></p></li>
+<li><p>Click to expand the <strong>Services</strong> submenu, then click <strong>Compute</strong></p>
+<p><img src="images/200/4.png" alt="" /></p></li>
+<li><p>On the OCI Console sign in page, enter the same <strong>Username</strong> as you did on the previous sign in page. If you are using a trial account and this is your first time logging into the OCI Console, enter the <strong>temporary password</strong> from your trial account welcome email. If you have already visited the OCI Console and changed your password, enter your <strong>new password</strong>. Otherwise, this password will be supplied by your workshop instructor.</p>
+<p><img src="images/200/5.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-locate-or-create-a-compartment-for-your-kubernetes-nodes"><strong>STEP 2</strong>: Locate or Create a Compartment for your Kubernetes nodes</h3>
+<p>Compartments are used to isolate resources within your OCI tenant. User-based access policies can be applied to manage access to compute instances and other resources within a Compartment.</p>
+<ul>
+<li><p>Hover over the <strong>Identity</strong> menu in the top navigation bar and click <strong>Compartments</strong></p>
+<p><img src="images/200/6.png" alt="" /></p></li>
+<li><p>Look in the compartment list for a compartment called <strong>Demo</strong>. Next to the OCID of the Demo compartment, click <strong>Copy</strong>. <strong>Paste</strong> this OCID into a text file or elsewhere for safe keeping. We will use it to tell Terraform where to set up our cluster in a later step. Proceed to <strong>STEP 3</strong>.</p>
+<p><img src="images/200/65.png" alt="" /></p>
+<p><strong>IMPORTANT</strong>: <em><strong>Only if you do not have</strong></em> a compartment called <strong>Demo</strong>, follow these steps to create a new compartment.</p></li>
+<li><p>If you have a <strong>Demo</strong> compartment already, <em><strong>SKIP TO STEP 3</strong></em>. Otherwise, Click <strong>Create Compartment</strong></p>
+<p><img src="images/200/7.png" alt="" /></p></li>
+<li><p>In the <strong>Name</strong> field, enter <code>Demo</code>. Enter a description of your choice. Click <strong>Create Compartment</strong>.</p>
+<p><img src="images/200/8.png" alt="" /></p></li>
+<li><p>In a moment, your new Compartment will show up in the list. Locate it and click <strong>Copy</strong> in the OCID display. <strong>Paste</strong> this OCID into a text file or elsewhere for safe keeping. We will use it to tell Terraform where to set up our cluster in a later step.</p>
+<p><img src="images/200/9.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-create-and-upload-a-new-api-key"><strong>STEP 3</strong>: Create and upload a new API key</h3>
+<p>An API key is required for Terraform to authenticate to OCI in order to create compute instances for your Kubernetes master and worker nodes.</p>
+<ul>
+<li>Open a terminal window (by right clicking on the desktop and and selecting Open Terminal) and run each of the following commands, one at a time, pressing <strong>Enter</strong> between each one. These commands will create a new directory called <code>.oci</code>, generate a new PEM private key, generate the corresponding public key, and copy the public key to the clipboard.</li>
+</ul>
+<pre><code class="bash language-bash">  mkdir ~/.oci
+  openssl genrsa -out ~/.oci/oci_api_key.pem 2048
+  openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pem
+  cat ~/.oci/oci_api_key_public.pem | xclip -sel clip
+</code></pre>
+<ul>
+<li><p>In your browser window showing the OCI Console, click the <strong>Identity</strong> menu item. Find the user called <strong>api.user</strong>, or for a trial account, find <strong>your username</strong> in the list and hover over the <strong>three dots</strong> menu at the far right of the row, then click <strong>View User Details</strong>.</p>
+<p><img src="images/200/56.png" alt="" /></p>
+<p><strong>NOTE</strong>: You may not see any users in the list, or there may be only administrator users that you cannot modify. In that case, you can access your current logged-in user settings by hovering over your username in the top right of the page and clicking <strong>User Settings</strong>.</p>
+<p><img src="images/200/66.png" alt="" /></p></li>
+<li><p>Click <strong>Add Public Key</strong></p>
+<p><img src="images/200/12.png" alt="" /></p></li>
+<li><p><strong>Paste</strong> the public key from your clipboard into the text field and click <strong>Add</strong>. Note: The public key was copied to the clipboard when you ran the <code>cat</code> command from the terminal window, which copied the results to the clipboard using the <code>clip</code> command.</p>
+<p><img src="images/200/13.png" alt="" /></p></li>
+<li><p><strong>Leave this browser window open</strong>, as we will need to copy and paste some of this information into the Terraform configuration file.</p></li>
+</ul>
+<h2 id="provision-kubernetes-using-terraform-2">Provision Kubernetes Using Terraform</h2>
+<h3 id="step-4-configure-the-oci-terraform-kubernetes-installer"><strong>STEP 4</strong>: Configure the OCI Terraform Kubernetes Installer</h3>
+<ul>
+<li>The Oracle OCI Terraform Provider has already been installed for you, so the next step is to change to the Terraform Kubernetes Installer directory from the same <strong>terminal window</strong>:</li>
+</ul>
+<pre><code class="bash language-bash">  cd ~
+  cd terraform-kubernetes-installer
+</code></pre>
+<ul>
+<li>Download the latest updates by running the following command:</li>
+</ul>
+<pre><code class="bash language-bash">  git pull
+</code></pre>
+<ul>
+<li>Initialize this Terraform installer by running the following command:</li>
+</ul>
+<pre><code class="bash language-bash">  terraform init
+</code></pre>
+<ul>
+<li>Verify proper installation of both Terraform and the OCI provider by running the following command from your <strong>terminal window</strong>:</li>
+</ul>
+<pre><code class="bash language-bash">  terraform --version
+</code></pre>
+<p>You should see a version for <code>Terraform</code> as well as a version for the <code>provider.oci</code> plugin. It is OK if those versions differ from the screenshot below.</p>
+<p><img src="images/200/57.png" alt="" /></p>
+<ul>
+<li>Once you have Terraform and the OCI provider set up, you are ready to configure the Kubernetes installer with your OCI account information. Start by making a copy of the included TFVARS example file to edit. Run the following from your <strong>terminal window</strong>:</li>
+</ul>
+<pre><code class="bash language-bash">  cp terraform.example.tfvars terraform.tfvars
+</code></pre>
+<ul>
+<li>Open the <code>terraform.tfvars</code> file in your text editor of choice. On Linux you could run:</li>
+</ul>
+<pre><code class="bash language-bash">  gedit terraform.tfvars
+</code></pre>
+<ul>
+<li><p>You should still have a browser tab open to your <strong>User Details</strong> page in the OCI Console. You will first remove the <strong>#</strong> comment character and replace in the values  in the terraform.tfvars file on lines <strong>2, 4, 6, and 7</strong>. <strong>NOTE</strong>: The <strong>region</strong> parameter may not already be present in your tfvars file. If it is not there, add it on a new line after the user_ocid parameter on line 6.</p>
+<p><img src="images/200/57.1.png" alt="" /></p></li>
+<li><p>Setting these variables can be a little tricky the first time you attempt it. <a href="https://videohub.oracle.com/media/Lab+200A+Terraform+.tfvars+OCI+Configuration/0_vkxcw719">Checkout this video if you want to watch the steps performed. </a></p></li>
+<li><p>You will replace lines <strong>2, 4, 6, and 7</strong> with the values from the OCI Console, referring to the following screenshot for where to find them.</p>
+<p><img src="images/200/17.png" alt="" /></p></li>
+<li><p>As an example, Your terraform.tfvars file should now appear similar to the image shown below:</p>
+<p><img src="images/200/57.2.png" alt="" /></p></li>
+<li><p>Now follow the same process of removing the comment character <strong>#</strong>, and fill in the OCI Compartment ID on <strong>line 3</strong>. Paste the value that you saved to a text file after locating or creating the Demo <strong>compartment</strong> in the OCI Console. If you have lost it, you can retrieve it from the OCI Console compartment list (refer to <strong>STEP 2</strong>).</p></li>
+</ul>
+<pre><code>  compartment_ocid = "Compartment OCID"
+</code></pre>
+<ul>
+<li>The last piece of information we need to provide about your OCI tenant is the private key corresponding to the public API key you uploaded to the OCI console previously. Provide the path and the private key file on <strong>line 5</strong> using the path below:</li>
+</ul>
+<pre><code>  private_key_path = "/home/oracle/.oci/oci_api_key.pem"
+</code></pre>
+<ul>
+<li><p>The rest of the terraform.tfvars file controls the parameters used when creating your Kubernetes cluster. You can control how many OCPUs each node receives, whether nodes should be virtual machines or bare metal instances, how many availability domains to use, and more. We will modify five of the lines in the remainder of the file.</p></li>
+<li><p>First, we will specify shapes for our worker and master nodes base on our account limits/capacity. On <strong>lines 15 and 16</strong>, un-comment the <strong>k8sMasterShape</strong> and <strong>k8sWorkerShape</strong> parameters, and set the values to <strong>VM.Standard2.1</strong> and <strong>VM.Standard1.2</strong>:</p></li>
+</ul>
+<pre><code>  k8sMasterShape = "VM.Standard2.1"
+  k8sWorkerShape = "VM.Standard1.2"
+</code></pre>
+<ul>
+<li>Next, we will specify the type of load balancers we want for the master and etcd VMs. We will also select the following settings based on our Account's capacity. Alter <strong>lines 30 and 31</strong> to read:</li>
+</ul>
+<pre><code>  etcdLBShape = "400Mbps"
+  k8sMasterLBShape = "400Mbps"
+</code></pre>
+<ul>
+<li>The last change we will make is to open up the allowed Kubernetes master inbound IP address range, so that we can access our cluster from the internet. On <strong>line 38</strong>, remove the pound sign at the beginning of the line to uncomment it.</li>
+</ul>
+<pre><code>  master_https_ingress = "0.0.0.0/0"
+</code></pre>
+<p><strong>NOTE</strong>: The 0.0.0.0/0 value means that any IP address can access your cluster. A better security practice would be to determine your externally-facing IP address and restrict access to only that address. If you'd like, you can find out your IP address by running <code>curl ifconfig.co</code> in a terminal window, and place that address into the <code>master_https_ingress</code> parameter (e.g. <code>master_https_ingress = "11.12.13.14/32"</code>). Note that if you need remote assistance with the workshop, you may need to open this back up to 0.0.0.0/0 to allow access to your cluster.</p>
+<h3 id="step-5-provision-kubernetes-on-oci"><strong>STEP 5</strong>: Provision Kubernetes on OCI</h3>
+<ul>
+<li>Now we are ready to have Terraform provision our Kubernetes cluster. <strong>Save and close</strong> your terraform.tfvars file. In your open <strong>terminal window</strong>, run the following command to have Terraform evaluate the various network and compute infrastructure that we are asking to be provisioned.</li>
+</ul>
+<pre><code class="bash language-bash">  terraform plan
+</code></pre>
+<p><img src="images/200/60.png" alt="" /></p>
+<ul>
+<li>If the output of the plan step looks correct, you are ready to actually provision the infrastructure by running the following command in your <strong>terminal window</strong>. Note that Terraform will prompt you to type <code>yes</code> after it recomputes the required plan in order to begin provisioning.</li>
+</ul>
+<pre><code class="bash language-bash">  terraform apply
+</code></pre>
+<p><img src="images/200/61.png" alt="" /></p>
+<ul>
+<li><p>It will take several minutes to create the required Virtual Cloud Networks, load balancers, and compute instances that make up a Kubernetes cluster. If you'd like, you can observe the objects being created in the <strong>OCI Console</strong> -- click on <strong>Compute</strong> or <strong>Networking</strong> from the navigation menu and be sure to select the <strong>Demo compartment</strong> from the dropdown on the left side of the page.</p>
+<p><img src="images/200/62.png" alt="" /></p></li>
+<li><p>When provisioning is complete, Terraform will output the details of all created infrastructure to the terminal:</p>
+<p><img src="images/200/63.png" alt="" /></p></li>
+<li><p>During provisioning, Terraform generated a <code>kubeconfig</code> file that will authenticate you to the cluster. Let's configure and start a kubectl monitoring loop to find out when our cluster is accessible. Since you are using an Oracle-provided client image, <code>kubectl</code> -- the Kubernetes command line interface, has been <strong>pre-installed</strong> for you.</p></li>
+<li><p>You will need to set an environment variable to point <code>kubectl</code> to the location of your Terraform-generated <code>kubeconfig</code> file. Let's set the environment variable, then start up an infinite loop that will check to see if our Kubernetes installation is ready for use. Since you're using the Oracle-provided client image, we'll add the <code>KUBECONFIG</code> environment variable to your bash profile; that way it will be set for all new shells that you open. Enter the following command into your terminal window:</p></li>
+</ul>
+<pre><code class="bash language-bash">  cd ~/terraform-kubernetes-installer/
+  echo "export KUBECONFIG=`pwd`/generated/kubeconfig" &gt;&gt; ~/.bashrc
+  source ~/.bash_profile
+  cd ~/terraform-kubernetes-installer/
+  while true; do kubectl get nodes; sleep 10; done
+</code></pre>
+<ul>
+<li><p>For the first few minutes, it is normal to see connection errors and server errors returned while your infrastructure is starting up. When you see that both the master and worker nodes have a 'STATUS' of <strong>Ready</strong>, press <strong>Control-C</strong> to stop the monitoring loop.</p>
+<p><img src="images/200/68.png" alt="" /></p>
+<p><strong>TROUBLESHOOTING</strong>:</p></li>
+</ul>
+<blockquote>
+  <p>If more than 15 minutes have passed and you do not have both nodes 'Ready', there may be a problem with your infrastructure. Navigate to the OCI console in your browser to check.</p>
+  <p>First, select <strong>Networking-->Load Balancers</strong> to view the status of your load balancers. Look at the colored hexagons on the left side of the table. Both load balancers should have green hexagons and have a status of 'ACTIVE'. If either one has a red hexagon and a status of 'FAILED', you will need to reprovision your infrastructure. Note that this is NOT the 'Health' indicator on the right side of the table, which will fluctuate between states for the first 20-30 minutes after provisioning.</p>
+  <p>Second, click on <strong>Compute</strong>. You should see three compute instances with green 'RUNNING' status indicators. If any are in the red <strong>FAILED</strong> state or the yellow <strong>PROVISIONING</strong> state after 15 minutes, you will need to reprovision your infrastructure.</p>
+  <p><strong>To reprovision your infrastructure</strong>, first run <code>terraform destroy</code> from your terminal window, then run <code>terraform apply</code> again. You will need to type <code>yes</code> when prompted to confirm each command. After the provisioning, re-run the monitoring loop to see the status of your installation: <code>while true; do kubectl get nodes; sleep 10; done</code></p>
+</blockquote>
+<ul>
+<li>Now that the nodes are ready, you can start the Kubernetes proxy server, which will let you view the cluster dashboard at a localhost URL.</li>
+</ul>
+<pre><code class="bash language-bash">  kubectl proxy
+</code></pre>
+<p><strong>NOTE</strong>: Should you need to change the IP address of your cluster in the future, you can configure <code>kubectl</code> with the updated connection information by running the following command, which will pass the current address and authentication details to <strong>kubectl</strong>: <code>terraform output kubeconfig | tr '\n' '\0' | xargs -0 -n1 sh -c</code></p>
+<ul>
+<li><p>With the proxy server running, navigate to the <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/">Kubernetes Dashboard by Right Clicking on this link</a>, and choosing 'open in a new browser tab'.</p>
+<p><img src="images/200/64.png" alt="" /></p></li>
+<li><p>Great! We've got Kubernetes installed and accessible -- now we're ready to get our microservice deployed to the cluster. The next step is to tell Wercker how and where we would like to deploy our application. In your <strong>terminal window</strong>, press <strong>Control-C</strong> to terminate <strong>kubectl proxy</strong>. We will need the terminal window to gather some cluster info in another step. We'll start the proxy again later.</p></li>
+</ul>
+<h2 id="configure-and-run-wercker-deployment-pipelines">Configure and Run Wercker Deployment Pipelines</h2>
+<h3 id="step-6-define-kubernetes-deployment-specification"><strong>STEP 6</strong>: Define Kubernetes Deployment Specification</h3>
+<ul>
+<li><p>From a browser, navigate to your forked twitter-feed repository on GitHub. If you've closed the tab, you can get back by going to <a href="https://github.com/">GitHub</a>, scrolling down until you see the <strong>Your repositories</strong> box on the right side of the page, and clicking the <strong>twitter-feed</strong> link.</p>
+<p><img src="images/200/25.png" alt="" /></p></li>
+<li><p>Click <strong>Create new file</strong></p>
+<p><img src="images/200/27.png" alt="" /></p></li>
+<li><p>In the <strong>Name your file</strong> input field, enter <code>kubernetes.yml.template</code></p>
+<p><img src="images/200/28.png" alt="" /></p></li>
+<li><p><strong>Copy</strong> the YAML below and <strong>paste</strong> it into the file editor.</p></li>
+</ul>
+<blockquote>
+  <p>This configuration consists of two parts. The first section (up to line 28) defines a <strong>Deployment</strong>, which tells Kubernetes about the application we want to deploy. In this Deployment we instruct Kubernetes to create two Pods (<code>replicas: 2</code>) that will run our application. Within those pods, we specify that we want one Docker container to be run, and compose the link to the image for that container using environment variables specific to this workflow execution (<code>image: ${DOCKER_REPO}:${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}</code>).</p>
+  <p>The second part of the file defines a <strong>Service</strong>. A Service defines how Kubernetes should expose our application to traffic from outside the cluster. In this case, we are asking for a cluster-internal IP address to be assigned (<code>type: ClusterIP</code>). This means that our twitter feed will only be accessible from inside the cluster. This is ok, because the twitter feed will be consumed by the product catalog application that we will deploy later. We can still verify that our twitter feed is deployed properly -- we'll see how in a later step.</p>
+  <p>A <code>.yml</code> file is a common format for storing Kubernetes configuration data. The <code>.template</code> suffix in this file, however, is not a Kubernetes concept. We will use a Wercker step called <strong>bash-template</strong> to process any <code>.template</code> files in our project by substituting environment variables into the template wherever <code>${variables}</code> appear. You'll add that command to a new pipeline in the next step.</p>
+</blockquote>
+<pre><code class="yaml language-yaml">apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: twitter-feed-v1
+  labels:
+    commit: ${WERCKER_GIT_COMMIT}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: twitter-feed
+  template:
+    metadata:
+      labels:
+        app: twitter-feed
+        commit: ${WERCKER_GIT_COMMIT}
+    spec:
+      containers:
+      - name: twitter-feed
+        image: ${DOCKER_REPO}:${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}
+        imagePullPolicy: Always
+        ports:
+        - name: twitter-feed
+          containerPort: ${PORT}
+          protocol: TCP
+      imagePullSecrets:
+        - name: wercker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: twitter-feed
+  labels:
+    app: twitter-feed
+    commit: ${WERCKER_GIT_COMMIT}
+spec:
+  ports:
+  - port: 30000
+    targetPort: ${PORT}
+  selector:
+    app: twitter-feed
+  type: ClusterIP
+---
+</code></pre>
+<ul>
+<li><p>At the bottom of the page, click <strong>Commit new file</strong></p>
+<p><img src="images/200/29.png" alt="" /></p></li>
+<li><p>Since you've committed to the repository, Wercker will trigger another execution of your workflow. We haven't defined the deployment pipelines yet, so this will just result in a new entry in Wercker's Runs tab and a new image pushed to the container registry. You don't need to do anything with those; you can move on to the next step.</p></li>
+</ul>
+<h3 id="step-7-define-wercker-deployment-pipelines"><strong>STEP 7</strong>: Define Wercker Deployment Pipelines</h3>
+<ul>
+<li><p>Click the file <strong>wercker.yml</strong> and then click the <strong>pencil</strong> button to begin editing the file.</p>
+<p><img src="images/200/26.png" alt="" /></p></li>
+<li><p><strong>Copy</strong> the YAML below and <strong>paste</strong> it below the pipelines we defined earlier.</p></li>
+</ul>
+<blockquote>
+  <p>This will define a new <strong>Pipeline</strong> called deploy-to-cluster. The pipeline will make use of a new type of step: <strong>kubectl</strong>. If you have used Kubernetes before, you will be familiar with kubectl, the standard command line interface for managing Kubernetes. The kubectl Wercker step can be used to execute Kubernetes commands from within a Pipeline.</p>
+  <p>The <strong>deploy-to-cluster</strong> Pipeline will prepare our kubernetes.yml file by filling in some environment variables. It will then use kubectl to tell Kubernetes to apply that configuration to our cluster.</p>
+</blockquote>
+<pre><code class="yaml language-yaml">#Deploy our container from the Docker Hub to Kubernetes
+deploy-to-cluster:
+    box:
+        id: alpine
+        cmd: /bin/sh
+    steps:
+
+    - bash-template
+
+    - script:
+        name: "Visualise Kubernetes config"
+        code: cat kubernetes.yml
+
+    - kubectl:
+        name: deploy to kubernetes
+        server: $KUBERNETES_MASTER
+        #username: $KUBERNETES_USERNAME
+        token: $KUBERNETES_TOKEN
+        insecure-skip-tls-verify: true
+        command: apply -f kubernetes.yml
+</code></pre>
+<ul>
+<li><p>At the bottom of the page, click <strong>Commit new file</strong></p>
+<p><img src="images/200/29.png" alt="" /></p></li>
+<li><p>Since you've committed to the repository again, Wercker will once again trigger an execution of your workflow. We still haven't configured the deployment pipelines in Wercker yet, so we'll still end up with a new Run and a new image, but not a deployment to Kubernetes.</p></li>
+</ul>
+<h3 id="step-8-set-up-deployment-pipelines-in-wercker"><strong>STEP 8</strong>: Set up deployment pipelines in Wercker</h3>
+<ul>
+<li><p>Open <strong><a href="https://app.wercker.com">Wercker</a></strong> in a new tab or browser window, or switch to it if you already have it open. In the top navigation bar, click <strong>Pipelines</strong>, then click on your <strong>twitter-feed</strong> application.</p>
+<p><img src="images/200/30.png" alt="" /></p></li>
+<li><p>On the <strong>Runs</strong> tab you can see that Wercker has triggered another execution of our build and publish workflow, but it has not executed our new deploy-to-cluster pipeline. This is because we have not added the new pipeline to the workflow definition yet. Let's do that now -- click on the <strong>Workflows</strong> tab, then click the <strong>Add new pipeline</strong> button.</p>
+<p><img src="images/200/31.png" alt="" /></p></li>
+<li><p>Enter <code>deploy-to-cluster</code> into both the Name and YML Pipleine name fields. Click <strong>Create</strong>.</p>
+<p><img src="images/200/32.png" alt="" /></p></li>
+<li><p>Click the <strong>Workflows</strong> tab again to get back to the editor.</p></li>
+<li><p>Click the <strong>plus</strong> button to the right of the <strong>push-release</strong> pipeline to add to the workflow. In the <strong>Execute Pipeline</strong> drop down list, select <strong>deploy-to-cluster</strong> and click <strong>Add</strong></p>
+<p><img src="images/200/33.png" alt="" /></p></li>
+<li><p>Your overall Workflow should now have three Pipelines:</p>
+<p><img src="images/200/34.png" alt="" /></p></li>
+<li><p>Now we've got our workflow updated with our deployment pipelines, but there's one more thing we need to do before we can actually deploy. We need to set two environment variables that tell Wercker the address of our Kubernetes master and provide an authentication token for Wercker to issue commands to Kubernetes.</p></li>
+</ul>
+<h3 id="step-9-set-up-environment-variables-in-wercker"><strong>STEP 9</strong>: Set up environment variables in Wercker</h3>
+<ul>
+<li>Our first step is to set our cluster's authentication token as a Wercker environment variable. In your <strong>terminal window</strong>, change to the correct directory, and run the following command to copy the token to your clipboard. Note - If your kubernetes proxy server is still running, you can enter Control-C to close the proxy:</li>
+</ul>
+<pre><code class="bash language-bash">  cd ~/terraform-kubernetes-installer/
+  terraform output api_server_admin_token | xclip -sel clip
+</code></pre>
+<ul>
+<li><p>Back in your Wercker browser tab, click the <strong>Environment</strong> tab. In the key field of the empty row below the last environment variable, enter the key <strong>KUBERNETES_TOKEN</strong>. In the value field, <strong>paste</strong> the token we just copied. Check the <strong>Protected</strong> box and click <strong>Add</strong>. _NOTE:_ when you paste into the environment field, ensure that you <em>remove any Line Feed character</em> that might be included.</p>
+<p><img src="images/200/37.png" alt="" /></p></li>
+<li><p>The other environment variable we need to add is the address of the Kubernetes master we want to deploy to. We can get the URL from <code>kubectl</code>. Run the following command in your <strong>terminal window</strong> to copy the URL to your clipboard:</p></li>
+</ul>
+<pre><code class="bash language-bash">  echo $(kubectl config view | grep server | cut -f 2- -d ":" | tr -d " ") | xclip -sel clip
+</code></pre>
+<ul>
+<li><p>In your Wercker browser tab, add a new environment variable with the key <strong>KUBERNETES_MASTER</strong>. In the value field, <strong>paste</strong> the value you copied from <code>kubectl</code>. The value <strong>must start with https://</strong> for Wercker to communicate with the cluster. When finished, click <strong>Add</strong>.</p>
+<p><img src="images/200/55.png" alt="" /></p></li>
+<li><p>Now we're ready to try out our workflow from start to finish. We could do that by making another commit on GitHub, since Wercker is monitoring our source code. We can also trigger a workflow execution right from Wercker. We'll see how in the next step.</p></li>
+</ul>
+<h3 id="step-10-trigger-a-retry-of-the-pipeline"><strong>STEP 10</strong>: Trigger a retry of the pipeline</h3>
+<ul>
+<li><p>On your Wercker application page in your browser, click the <strong>Runs</strong> tab. Your most recent run should have successful build and push-release pipelines. Click the <strong>push-release</strong> pipeline.</p>
+<p><img src="images/200/39.png" alt="" /></p></li>
+<li><p>From the <strong>Actions</strong> menu, click <strong>deploy-to-cluster</strong>.</p>
+<p><img src="images/200/40.png" alt="" /></p></li>
+<li><p>In the dialog box that appears, click <strong>Execute pipeline</strong></p>
+<p><img src="images/200/41.png" alt="" /></p></li>
+<li><p>Click the <strong>Runs</strong> tab so you can monitor the execution of the pipeline. Within a minute or so, the deployment pipeline should complete successfully. Now we can use the Kubernetes dashboard to inspect and validate our deployment.</p>
+<p><img src="images/200/42.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11-validate-deployment"><strong>STEP 11</strong>: Validate deployment</h3>
+<ul>
+<li>In a terminal window, start the <strong>kubectl proxy</strong> using the following command. Your <code>KUBECONFIG</code> environment variable should still be set from a previous step. If not, reset it.</li>
+</ul>
+<pre><code class="bash language-bash">  kubectl proxy
+</code></pre>
+<ul>
+<li><p>In a browser tab, navigate to the <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/"><strong>Kubernetes dashboard</strong></a></p></li>
+<li><p>Click on the <strong>Overview</strong> menu option in the Kubernetes dashboard <strong>left-hand menu</strong>. In the pods section, you should see two twitter-feed pods running. Click the <strong>name of one of the pods</strong> to go to the detail page.</p>
+<p><img src="images/200/44.png" alt="" /></p></li>
+<li><p>On the pod detail page, in the top menu bar, click <strong>Exec</strong>. This will give us a remote shell on the pod where we can verify that our application is up and running.</p>
+<p><img src="images/200/45.png" alt="" /></p></li>
+<li><p>In the shell that is displayed, <strong>paste</strong> the following command and press <strong>Enter</strong>.</p>
+<p><strong>NOTE:</strong> You may need to use <strong>ctrl-shift-v</strong> to paste, but if running in a Virtual Box image, you will need to type the command.</p>
+<p><code>curl -s http://$HOSTNAME:8080/statictweets | head -c 100</code></p></li>
+<li><p>You should the first 100 characters of the JSON data being returned by our twitter feed service. Our microservice has been deployed successfully! But the twitter feed service is just one part of our product catalog application. Let's deploy the rest of the application so we can validate that everything works together as expected. Leave this browser tab open, as we will use it in a later step.</p>
+<p><img src="images/200/46.png" alt="" /></p></li>
+</ul>
+<p><strong>NOTE</strong>: You may be wondering why we had to use the Kubernetes remote terminal to test our application. Remember the kubernetes.yml file that we created earlier -- we specified a cluster-internal IP address for our twitter-feed service. This means that only other processes inside the cluster can reach our service. If we wanted to access our service from the internet, we could have used a load balancer instead.</p>
+<h2 id="deploy-and-test-the-product-catalog-application">Deploy and Test the Product Catalog Application</h2>
+<h3 id="step-12-download-the-product-catalog-kubernetes-yaml-file"><strong>STEP 12</strong>: Download the Product Catalog Kubernetes YAML file</h3>
+<ul>
+<li><p>From a browser, navigate to your forked twitter-feed repository on GitHub. If you've closed the tab, you can get back by going to <a href="https://github.com/">GitHub</a>, scrolling down until you see the <strong>Your repositories</strong> box on the right side of the page, and clicking the <strong>twitter-feed</strong> link.</p>
+<p><img src="images/200/25.png" alt="" /></p></li>
+<li><p>Click on the <strong>alpha-office-product-catalog.kubernetes.yml</strong> file.</p>
+<p><img src="images/200/47.png" alt="" /></p></li>
+<li><p><strong>Right click</strong> on the <strong>Raw</strong> button and choose <strong>Save Link As</strong>. In the save file dialog box that appears, note the location of the file and click <strong>Save</strong></p>
+<p><img src="images/200/48.png" alt="" /></p></li>
+</ul>
+<p><strong>NOTE</strong>: This YAML file contains the configuration for a Kubernetes deployment and service, much like the configuration for our twitter feed microservice. In a normal development environment, the product catalog application would be managed by Wercker as well, so that builds and deploys would be automated. In this workshop, however, you will perform a one-off deployment of a pre-built Docker image containing the product catalog application from within the Kubernetes dashboard.</p>
+<h3 id="step-13-deploy-and-test-the-product-catalog-using-the-kubernetes-dashboard"><strong>STEP 13</strong>: Deploy and test the Product Catalog using the Kubernetes dashboard</h3>
+<ul>
+<li><p>Switch back to your <strong>Kubernetes dashboard</strong> browser tab. If you have closed it, navigate to the Kubernetes dashboard at <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/"><strong>Kubernetes dashboard</strong></a></p></li>
+<li><p>In the upper right corner of the dashboard, click <strong>Create</strong>.</p>
+<p><img src="images/200/49.png" alt="" /></p></li>
+<li><p>Click the <strong>Upload a YAML or JSON file</strong> radio button, then click the <strong>three dots</strong> button to browse for your file. In the dialog, select the YAML file you just downloaded from GitHub and click <strong>Open</strong>, then click <strong>UPLOAD</strong>.</p>
+<p><img src="images/200/50.png" alt="" /></p></li>
+<li><p>In the left side navigation menu, click <strong>Overview</strong>. You should see two new product-catalog-app pods being created and soon change state to Running.</p>
+<p><img src="images/200/51.png" alt="" /></p></li>
+<li><p>Instead of a cluster-internal IP address, the product-catalog-service will be exposed to the internet via a load balancer. The load balancer will take a few minutes to be instantiated and configured. Let's check on its status--click <strong>Services</strong> from the left side menu, then click on the <strong>product-catalog-service</strong>.</p>
+<p><img src="images/200/52.png" alt="" /></p></li>
+<li><p>On the service detail page, you will see a field called <strong>External endpoints</strong>. Once the load balancer has finished provisioning, the External endpoints field will be populated with a link to the product catalog application. If the link is not shown yet, wait a few minutes, refresh your browser, and check again. Once the link is displayed, <strong>click it</strong> to launch the site in a new tab.</p>
+<p><img src="images/200/53.png" alt="" /></p></li>
+<li><p>You should see the product catalog site load successfully, validating that our new Kubernetes deployment and service were created correctly. Let's test the twitter feed functionality of the catalog. Click the first product, <strong>Crayola New Markers</strong>. The product's twitter feed should be displayed.</p>
+<p><img src="images/200/54.png" alt="" /></p>
+<p><strong>NOTE</strong>: You may have noticed that we did not need to alter the pre-built product catalog container with the URLs of the twitter feed pods or service. The product catalog app makes use of Kubernetes DNS to resolve the service name (twitter-feed) into its IP address. Kubernetes DNS assigns a DNS name to every service defined in your cluster, so any service can be looked up by doing a DNS query for the name of the service (prefixed by <em><code>namespace.</code></em> if the service is in a different namespace from the requester). The product catalog server uses the following JavaScript code to make an HTTP request to the twitter feed microservice:<code>request('http://twitter-feed:30000/statictweets/color', function (error, response, body) { ... });</code></p></li>
+<li><p>Some tweets are indeed displayed, but they aren't relevant to this product. It looks like there is a bug in our twitter feed microservice! Continue on to the next lab to explore how to make bug fixes and updates to our microservice.</p></li>
+</ul>
+<p><strong>You are now ready to move to the next lab.</strong></p>

@@ -1,0 +1,99 @@
+<h1 id="introduction">Introduction</h1>
+<p>This lab walks you through the steps to get started using the Oracle Autonomous Data Warehouse Cloud. You will provision a new ADWC database, connect to the database using Oracle SQL Developer, and create DW users.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Learn how to provision an ADWC service</p></li>
+<li><p>Learn how to connect to ADWC</p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li><p>The following lab requires an Oracle Public Cloud account. You may use your own cloud account, a cloud account that you obtained through a trial, or a training account whose details were given to you by an Oracle instructor.</p></li>
+<li><p>Oracle SQL Developer (see&nbsp;<a href="http://www.oracle.com/technetwork/developer-tools/sql-developer/overview/index.html">Oracle Technology Network download site</a>).
+We recommend that you download version 17.4 or later, because this version contains enhancements for key Autonomous DW Cloud features. SQL Developer 17.3.1 will also work with Autonomous DW Cloud; versions earlier than 17.3.1 will not.
+<strong>Note</strong>:
+If you are a Windows user on 64-bit platform, download the 'Windows 64-bit with JDK 8 included' distribution as it includes both Java 8 and the Java Cryptography Extension (JCE) files necessary to run SQL Developer and connect to your Autonomous DW Cloud.
+If you are a non-Windows user, download and install the appropriate&nbsp;<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">Java 8 JDK</a>&nbsp;for your Operating System. Download and extract the&nbsp;<a href="http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html">Java Cryptography Encryption Archive</a>&nbsp;to the directory as indicated in the README.txt.</p></li>
+</ul>
+<h2 id="provisioning-an-adwc-service">Provisioning an ADWC Service</h2>
+<h3 id="step-1-sign-in-to-oracle-cloud"><strong>STEP 1</strong>: Sign in to Oracle Cloud</h3>
+<p>Note: In this section you will be provisioning an ADWC database using the cloud console.</p>
+<ul>
+<li><p>Go to <a href="https://cloud.oracle.com">cloud.oracle.com</a>, click <strong>Sign In</strong> to sign in with your Oracle Cloud account.</p>
+<p><img src="./images/100/Picture100-2.png" alt="" /></p></li>
+<li><p>Enter your <strong>Cloud Account Name</strong> and click <strong>My Services</strong>.</p>
+<p><img src="./images/100/Picture100-3.png" alt="" /></p></li>
+<li><p>Enter your Cloud <strong>username</strong> and <strong>password</strong>, and click <strong>Sign In</strong>.</p>
+<p><img src="./images/100/Picture100-4.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-create-an-adwc-instance"><strong>STEP 2: Create an ADWC Instance</strong></h3>
+<ul>
+<li><p>By default, if you have not created an Autonomous Data Warehouse Cloud instance before you will not see it in the Dashboard. Click
+<strong>Create Instance</strong> to create new ADWC instance.</p>
+<p><img src="./images/100/Picture100-5.png" alt="" /></p></li>
+<li><p>From the list of your available services select <strong>Autonomous DW</strong> under Data Management and click <strong>Create</strong>.</p>
+<p><img src="./images/100/Picture100-6.png" alt="" /></p></li>
+<li><p>In the Welcome page click <strong>Go to Console</strong>.</p>
+<p><img src="./images/100/Picture100-7.png" alt="" /></p></li>
+<li><p>Click <strong>Create Service</strong> to start creating your ADWC instance.</p>
+<p><img src="./images/100/Picture100-8.png" alt="" /></p></li>
+<li><p>Enter the required information and click <strong>Next</strong>. For the purposes of this lab, use the information below.</p>
+<ul>
+<li><p><strong>Database Name:</strong> Enter any database name you choose</p></li>
+<li><p><strong>CPU Count:</strong> 2</p></li>
+<li><p><strong>Storage Capacity (TB):</strong> 1</p></li>
+<li><p><strong>Administrator Password:</strong> Enter any password you choose</p></li></ul>
+<p><img src="./images/100/Picture100-9.png" alt="" /></p></li>
+<li><p>Review your information in the confirmation page and click <strong>Create</strong>.</p>
+<p><img src="./images/100/Picture100-10.png" alt="" /></p></li>
+<li><p><strong>Refresh</strong> the Instances page after a while to see if your instance is created.</p>
+<p><img src="./images/100/Picture100-11.png" alt="" /></p></li>
+<li><p>Check if the <strong>Status</strong> for your instance is cleared indicating your instance is ready to use.</p>
+<p><img src="./images/100/Picture100-12.png" alt="" /></p></li>
+</ul>
+<p>You now have created your first Autonomous Data Warehouse Cloud instance.</p>
+<h2 id="connecting-to-adwc">Connecting to ADWC</h2>
+<h3 id="step-3-sign-in-to-the-service-console"><strong>STEP 3: Sign in to the Service Console</strong></h3>
+<p>Note: As ADWC only accepts secure connections to the database, you need to download a wallet file containing your credentials first. The wallet is downloaded from the ADWC service console.</p>
+<ul>
+<li><p>In the Instances page find your database and click <strong>Service Console</strong> in the actions menu.</p>
+<p><img src="./images/100/Picture100-13.png" alt="" /></p></li>
+<li><p>This will open a new browser tab for the service console. Sign in to the service console with the following information.</p>
+<ul>
+<li><p><strong>Username:</strong> admin</p></li>
+<li><p><strong>Password:</strong> The administrator password you specified during provisioning</p></li></ul>
+<p><img src="./images/100/Picture100-14.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-download-the-credentials-wallet"><strong>STEP 4: Download the credentials wallet</strong></h3>
+<ul>
+<li><p>Click the “<strong>Administration</strong>” tab and click “<strong>Download Client Credentials</strong>” to download the wallet.</p>
+<p><img src="./images/100/Picture100-15.png" alt="" /></p></li>
+<li><p>Specify a password of your choice for the wallet, you will need this password when connecting to the database later. Click <strong>Download</strong> to download the wallet file to your client machine.</p>
+<p><img src="./images/100/Picture100-16.png" alt="" /></p></li>
+</ul>
+<h2 id="connecting-to-the-database-using-sql-developer">Connecting to the database using SQL Developer</h2>
+<p>Start SQL Developer and create a connection for your database using the default administrator account, ADMIN, by following these steps.</p>
+<h3 id="step-5-connect-to-the-database-using-sql-developer-and-create-dw-user"><strong>STEP 5: Connect to the database using SQL Developer and create DW user</strong></h3>
+<ul>
+<li><p>Click the&nbsp;<strong>Create Connection</strong>&nbsp;icon in the Connections toolbox on the top left of the SQL Developer homepage.</p>
+<p><img src="./images/100/Picture100-17.png" alt="" /></p></li>
+<li><p>Fill in the connection details as below:</p>
+<ul>
+<li><p><strong>Connection Name:</strong> admin_high</p></li>
+<li><p><strong>Username:</strong> admin</p></li>
+<li><p><strong>Password:</strong> The password you specified during provisioning</p></li>
+<li><p><strong>Connection Type:</strong> Cloud PDB</p></li>
+<li><p><strong>Configuration File:</strong> Enter the full path for the wallet file you downloaded before, or click the <strong>Browse button</strong> to point to the location of the file.</p></li>
+<li><p><strong>Keystore Password:</strong> The password you specified when downloading the wallet from the ADWC service console</p></li>
+<li><p><strong>Service:</strong> There are 3 pre-configured database services for each database. Pick <strong>&lt;databasename&gt;<em>high</strong> for this lab. For
+example, if you created a database named testdw select testdw</em>high as the service.</p></li></ul>
+<p><img src="./images/100/Picture100-18.png" alt="" /></p></li>
+<li><p>Test your connection by clicking the <strong>Test</strong> button, if it succeeds save your connection information by clicking <strong>Save</strong>, then connect to your database by clicking the <strong>Connect</strong> button.&nbsp;</p></li>
+<li><p>Using your existing connection in SQL Developer, create a new user named <strong>dwuser</strong> using the following commands. For the next lab, you will use dwuser user to connect and work.</p></li>
+</ul>
+<pre><code>create user dwuser identified by "Welcome_123!";
+grant dwrole to dwuser;
+</code></pre>
+<ul>
+<li><p>Note that the database role DWROLE includes the privileges required by a typical DW developer. You can grant additional database privileges if needed.</p></li>
+<li><p>You are now ready to move to the next lab <a href="LabGuide200.md">LabGuide200.md</a>.</p></li>
+</ul>

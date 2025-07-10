@@ -1,0 +1,346 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-300---create-an-ics-integration-using-a-database-adapter">Lab 300 - Create an ICS Integration using a Database Adapter</h1>
+<hr />
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>ICS Development</strong> workshop. </p>
+<p>In this lab, you develop an integration in ICS using a database adapter to query an On-Premises Oracle database.</p>
+<p>In the previous lab, a REST connection was created.  In a similar manner we need to create the connections necessary for the integration in this lab which are for the inbound SOAP web service as well as the Oracle Database.</p>
+<p>The ICS integration that we'll be building is shown in the following picture:</p>
+<p><img src="images/300/image000.png" alt="" /></p>
+<p>Here is a description of what is happening with this integration:</p>
+<p>SoapUI will be used to test the exposed Web Service endpoint of the ICS integration called <em>UserXX Create EBS Order</em> (where XX will be 00 -&gt; 10).  This integration has 2 connections.  The incoming message is received by the incoming <em>UserXX SOAP</em> Soap Connection.  The <em>UserXX Create EBS Order</em> orchestration makes 1 query into the Oracle database using the <em>UserXX Oracle DB 12c</em> connection to get details needed to create an order in EBS.  After the database calls are made, the results from the query are returned to the calling web service.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to create ICS SOAP and Database Adapter Connections</li>
+<li>Learn how to create an ICS Orchestration using the ICS Adapters</li>
+<li>Learn how to test the ICS integration using SoapUI</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab and an Oracle Public Cloud account that will be supplied by your instructor.</li>
+<li>SoapUI will need to be installed for ICS integration testing - see "Prerequisites" section of the workshop for details</li>
+</ul>
+<h2 id="part-1-create-the-ics-connections">Part 1: Create the ICS Connections</h2>
+<h3 id="11-login-to-the-ics-service-console"><strong>1.1</strong>: Login to the ICS Service Console</h3>
+<hr />
+<p><strong>1.1.1</strong> From your browser (Firefox or Chrome recommended) login to the ICS Console using the following URL:
+<a href="https://ttcics-gse00011451.integration.us2.oraclecloud.com/ics/faces/global">https://ttcics-gse00011451.integration.us2.oraclecloud.com/ics/faces/global</a></p>
+<p><strong>1.1.2</strong> Enter your <code>User Name</code> and <code>Password</code> and click <strong>Sign In</strong></p>
+<p><strong><em>NOTE:</em></strong> the <strong>User Name and Password</strong> values will be given to you by your instructor.</p>
+<p><img src="images/300/image003.png" alt="" />  </p>
+<p><strong>1.1.3</strong> You may be presented with the tutorial overlay for the ICS Service Console - since we already went through ICS in Lab 100, dismiss the tutorial by clicking on <em>Got It!</em></p>
+<p><img src="images/300/image004d.png" alt="" /></p>
+<p><strong>1.1.4</strong> You will now be presented with the ICS Service Console from which you will be performing the rest of this workshop lab.</p>
+<p><img src="images/300/image004c.png" alt="" /></p>
+<h3 id="12-create-the-soap-connector"><strong>1.2</strong>: Create the SOAP Connector</h3>
+<hr />
+<p><strong>1.2.1</strong> Select the <code>Connections</code> graphic in the designer portal</p>
+<p><img src="images/300/image005.png" alt="" /> </p>
+<p><strong>1.2.2</strong> Click on <strong>Create</strong> in the upper-right</p>
+<p><img src="images/300/image006.png" alt="" /> </p>
+<p><strong>1.2.3</strong> Select the <strong>SOAP</strong> Connection, by either doing a search, or by scrolling down to the <strong>SOAP</strong> connection, then click on the <strong>Select</strong> button of the <strong>SOAP</strong> connection.</p>
+<p><img src="images/300/image007.png" alt="" /></p>
+<p><strong>1.2.4</strong> Fill in the information for the new connection </p>
+<ul>
+<li><strong>Name:</strong> Enter in the form of <em>UserXX SOAP</em> where XX is the number in your allocated user.</li>
+<li><strong>Role:</strong> Select <em>Trigger</em> since we going to use the connection as a trigger to start the integration</li>
+</ul>
+<p>Note that the <strong>Identifier</strong> will automatically be created based on the <strong>Name</strong> you entered.</p>
+<p><strong>1.2.5</strong> Click <strong>Create</strong></p>
+<p><img src="images/300/image008.png" alt="" /> </p>
+<p><strong>1.2.6</strong> Click the <strong>Configure Connectivity</strong> button</p>
+<p>NOTE: The "SOAP" header will show that the connection is both "Trigger and Invoke" even though it was setup to be a "Trigger" only. This is a known issue.</p>
+<p><img src="images/300/image009.png" alt="" /> </p>
+<p><strong>1.2.7</strong> For the <em>WSDL URL</em>, select the <em>Upload File</em> checkbox, then the <em>Upload</em> button.</p>
+<p><img src="images/300/image010.png" alt="" /> </p>
+<p><strong>1.2.8</strong> Select the <em>Browse</em> button and browse to the file <code>createOrder.wsdl</code> which can be found in github relative to this lab here: <a href="https://cloudaccelerate.github.io/TTC-iPaaSArtifacts/ics/createOrder.wsdl">https://cloudaccelerate.github.io/TTC-iPaaSArtifacts/ics/createOrder.wsdl</a> (Save that file to your local workstation so it can be uploaded)</p>
+<p><img src="images/300/image011.png" alt="" /> </p>
+<p><strong>1.2.9</strong> Select the "Upload" button</p>
+<p><img src="images/300/image012.png" alt="" /></p>
+<p><strong>1.2.10</strong> In the field *Suppress insertion of timestamp into the re…" field, select *No*, then select the *OK* button.  This selection will disable the need for the WS-Utility (WSU) Timestamp in the WS-Security header.  When we test inbound requests with Basic Auth security policy, no timestamps will be required.</p>
+<p><img src="images/300/image013.png" alt="" /></p>
+<p><strong>1.2.11</strong> Select the <em>Configure Security</em> button so we can change the default security configuration which is set to <strong>Username Token</strong>. </p>
+<p><img src="images/300/image014.png" alt="" /></p>
+<p><strong>1.2.12</strong> Select <em>No Authentication</em> from the picklist of <em>Security Policies</em> (because only ICS credentials will be needed for this SOAP API), then select the <em>OK</em> button.</p>
+<p><img src="images/300/image015.png" alt="" /></p>
+<p><strong>1.2.13</strong> At the top of the connection configuration screen, Click on the <strong>Test</strong> button to test the connection.</p>
+<p><img src="images/300/image016.png" alt="" /></p>
+<p><strong>1.2.14</strong> In the dialog that pops up, select the <strong>Validate and Test</strong> button because we want to both validate the WSDL and test the connection.</p>
+<p><img src="images/300/image016a.png" alt="" /></p>
+<p>Note how the progress indicator will go from 75% to 100% after the connection tests successfully.</p>
+<p><img src="images/300/image017.png" alt="" /> </p>
+<p><strong>1.2.15</strong> Click on the <strong>Save</strong> button in the upper right corner of the connection configuration screen.</p>
+<p><img src="images/300/image018.png" alt="" /> </p>
+<p><strong>1.2.16</strong> Click on the <strong>Close</strong> button in the upper right of the connection configuration screen.</p>
+<p><img src="images/300/image019.png" alt="" /></p>
+<p>Your new SOAP connection appears in the list of configured connections and is even marked as <strong>New</strong> !</p>
+<p><img src="images/300/image020.png" alt="" /> </p>
+<h3 id="13-create-the-database-connector"><strong>1.3</strong>: Create the Database Connector</h3>
+<hr />
+<p><strong>1.3.1</strong> Click on <strong>Create</strong> button again in the upper right</p>
+<p><img src="images/300/image021a.png" alt="" /> </p>
+<p><strong>1.3.2</strong> Select the <strong>Oracle Database</strong> Connection, by either doing a search, or by scrolling down to the <strong>Oracle Database</strong> connection, then click on the <strong>Select</strong> button of the <strong>Oracle Database</strong> connection.</p>
+<p>Note: If there is still a filter typed in for the SOAP adapter, you can clear it by selecting the <code>X</code> next to the search box.</p>
+<p><img src="images/300/image021.png" alt="" /></p>
+<p><strong>1.3.3</strong> Fill in the information for the new connection:</p>
+<ul>
+<li><strong>Name:</strong> Enter in the form of <em>UserXX Oracle DB 12c</em> where XX is the number in your allocated user.</li>
+<li><strong>Role:</strong> Select <em>Invoke</em> since we going to call the connection as an invocation from the integration</li>
+</ul>
+<p>Note that the <strong>Identifier</strong> will automatically be created based on the <strong>Name</strong> you entered.</p>
+<p><strong>1.3.4</strong> Click <strong>Create</strong></p>
+<p><img src="images/300/image022.png" alt="" /> </p>
+<p><strong>1.3.5</strong> Click the <strong>Configure Connectivity</strong> button</p>
+<p><em>NOTE:</em> The "Oracle Database" header will show that the connection is both "Trigger and Invoke" even though it was setup to be a "Invoke" only.  This is a known issue.</p>
+<p><img src="images/300/image023.png" alt="" /> </p>
+<p><strong>1.3.6</strong> Enter the values given to you by your workshop instructor for the <em>Connection Properties</em>, then select the <em>OK</em> button:</p>
+<ul>
+<li><strong>Host:</strong> - <code>129.152.144.104</code> - this is only an example of an EBS hostname and may not be the EBS instance used in your workshop</li>
+<li><strong>Port:</strong> - <code>1521</code> - this is the default database port for the EBS database</li>
+<li><strong>SID:</strong> - leave this blank, you need either a SID, or a Service Name which we gave, but not both</li>
+<li><strong>Service Name:</strong> - <code>pdborcl</code> - this is the Service Name for the sample database we will be using</li>
+</ul>
+<p><img src="images/300/image024.png" alt="" /> </p>
+<p><strong>1.3.7</strong> Next scroll down in the Connection Configuration page and select the <strong>Configure Security</strong> button.</p>
+<p><img src="images/300/image025.png" alt="" /> </p>
+<p><strong>1.3.8</strong> Enter the following Username and Password for the EBS adapter connection.</p>
+<p>The following values are example DB schema username/password and may not be the one used in your workshop.<br />
+Your workshop instructor will tell you if it needs to be changed.</p>
+<ul>
+<li><strong>Username:</strong> - <code>ttc_user</code> </li>
+<li><strong>Password:</strong> - <em>provided by your instructor</em> </li>
+</ul>
+<p><strong>1.3.9</strong> Click on the <strong>OK</strong> button to save the credentials.</p>
+<p><img src="images/300/image026.png" alt="" /></p>
+<p><strong>1.3.10</strong> Now, scroll down again in the Connection Configuration page and select the <strong>Configure Agents</strong> button.</p>
+<p><img src="images/300/image027.png" alt="" /></p>
+<p><strong>1.3.11</strong> Select the <em>ON<em>PREM</em>AGENT_GROUP</em> which should be the only entry in the agent list by clicking the name, then select the <strong>Use</strong> button.</p>
+<p><img src="images/300/image028.png" alt="" /></p>
+<p><strong>1.3.12</strong> At the top of the connection configuration screen, Click on the <strong>Test</strong> button to test the connection.</p>
+<p><img src="images/300/image029.png" alt="" /></p>
+<p>Note how the progress indicator will go from 85% to 100% after the connection tests successfully.</p>
+<p><img src="images/300/image029a.png" alt="" /> </p>
+<p><strong>1.3.13</strong> Click on the <strong>Save</strong> button in the upper right corner of the connection configuration screen.</p>
+<p><img src="images/300/image029b.png" alt="" /> </p>
+<p><strong>1.3.14</strong> Click on the <strong>Close</strong> button in the upper right of the connection configuration screen.</p>
+<p><img src="images/300/image030.png" alt="" /></p>
+<p>Your new Database connection appears in the list of configured connections and is even marked as <strong>New</strong> !</p>
+<p><strong>Note</strong> how the icon for the connection is different between the SOAP and Database connector.</p>
+<p><img src="images/300/image031.png" alt="" /> </p>
+<h2 id="part-2-create-the-ics-integration">Part 2: Create the ICS Integration</h2>
+<hr />
+<h3 id="21-create-orchestration-integration"><strong>2.1</strong>: Create Orchestration Integration</h3>
+<p><strong>2.1.1</strong> On the upper left-hand navigation of the Connections screen select the <em>Hamburger</em> menu, then the <em>Integrations</em> link</p>
+<p><img src="images/300/image032.png" alt="" /></p>
+<p><strong>2.1.2</strong> Click on the <em>Hamburger</em> menu icon again to dismiss the left-hand navigation.</p>
+<p><strong>2.1.3</strong> Select the <strong>Create</strong> button in the upper-right of the Integrations screen</p>
+<p><img src="images/300/image033.png" alt="" /></p>
+<p><strong>2.1.4</strong> In the <strong>Create Integration - Select a Style/Pattern</strong>, select the <strong>Orchestration</strong> style.  We want to use this because our integration will have one invocations to the Database and later another couple invocations to the EBS API to create an order - the <strong>Basic Map Data</strong> style only has a single target service invocation as well as additional invocations for data enrichment of the payload before the target invocation call is made.</p>
+<p><img src="images/300/image034.png" alt="" /></p>
+<p><strong>2.1.5</strong> Fill in the information for the new orchestration</p>
+<ul>
+<li><strong>What triggers this integration?:</strong> Select the radio button for <code>Application event or business object</code>.  Note that integrations can be scheduled to run at specific times if the <code>Schedule</code> trigger type is selected.</li>
+<li><strong>What do you want to call your integration?:</strong> Enter the name in the form of <em>UserXX Create EBS Order</em> where XX is the number in your allocated user.</li>
+<li><strong>Identifier:</strong> Accept the default - this value will be generated based on the name you enter.</li>
+<li><strong>Version:</strong> Accept the default - if you want to clone and create newer versions later, you can change to a higher version than <strong>01.00.0000</strong> which is the default.</li>
+</ul>
+<p>After you've filled in the information, select the <strong>Create</strong> button</p>
+<p><img src="images/300/image035.png" alt="" /></p>
+<p><strong>2.1.6</strong> Observe the design canvas for the new integration.  (The various features of the ICS designer were covered in lab 100 <strong>Exploring ICS</strong> earlier in this workshop)</p>
+<p><img src="images/300/image036.png" alt="" /></p>
+<p><strong>2.1.7</strong> Create the Trigger for the orchestration. This integration will have a SOAP WSDL endpoint as defined when we created the <strong>UserXX SOAP</strong> connector earlier.</p>
+<p>Expand the list of SOAP Triggers by clicking on the <strong>SOAP(X)</strong> link (where <code>X</code> will be the number of SOAP connections in the ICS instance - this will vary depending on how many others are running the workshop together).</p>
+<p>Click and drag your SOAP connection identified by your assigned user (ie: <code>UserXX SOAP</code>) over to the <strong>Start</strong> target.  </p>
+<p>(Note: After you click and start dragging your connection, the <code>Triggers</code> connection tray on the left hand side of the designer will become hidden)</p>
+<p><img src="images/300/image037.png" alt="" /></p>
+<p><strong>2.1.8</strong> Drop your connection onto the large <em>Plus Sign</em> inside the <em>Start</em> circle.</p>
+<p><img src="images/300/image038.png" alt="" /></p>
+<p><strong>2.1.9</strong> Give your trigger a name in the <em>Configure SOAP Endpoint -> Basic Info</em> dialog.</p>
+<ul>
+<li><strong>What do you want to call your endpoint?:</strong> Enter the name <code>createOrder</code> as the trigger name.</li>
+</ul>
+<p>After filling in the name, click on the <strong>Next ></strong> button</p>
+<p><img src="images/300/image039.png" alt="" /></p>
+<p><strong>2.1.10</strong> Observe the SOAP operations/ports/objects in the <em>Configure SOAP Endpoint -> Operations</em> dialog.  These settings were all pulled from the WSDL which was uploaded in the configuration of the SOAP Connecter earlier.</p>
+<p>After observing, click on the <strong>Next ></strong> button</p>
+<p><img src="images/300/image040.png" alt="" /></p>
+<p><strong>2.1.11</strong> In the Configure Headers screen, leave the radio button selection to <code>No</code> since we aren't setting header values.  Next, select the <strong>Next ></strong> button.</p>
+<p><img src="images/300/image040a.png" alt="" /></p>
+<p><strong>2.1.12</strong> Review the settings for your new Trigger in the <em>Configure SOAP Endpoint -> Summary</em> dialog.</p>
+<p>After reviewing, click on the <strong>Done</strong> button</p>
+<p><img src="images/300/image041.png" alt="" /></p>
+<p><strong>2.1.13</strong> Observe that the orchestration's design pallette is populated with the Trigger <em>createOrder</em> just created along with the mapping and return operations which will be used for the SOAP trigger's response payload.</p>
+<p><img src="images/300/image042.png" alt="" /></p>
+<p><strong>2.1.14</strong> Save the progress of your orchestration by clicking on the <strong>Save</strong> icon in the upper right of the design window</p>
+<p><img src="images/300/image043.png" alt="" /></p>
+<h3 id="22-create-an-invocation-using-the-database-connection"><strong>2.2</strong>: Create an Invocation using the Database Connection</h3>
+<p><strong>2.2.1</strong> Open the <strong>Invokes</strong> connection tray by clicking on the <code>Invokes</code> link in the very right of the orchestration design pallette so we can create the first call to the database.</p>
+<p><img src="images/300/image044.png" alt="" /></p>
+<p><strong>2.2.2</strong> Select your database connector by clicking on the <strong>Oracle Database(X)</strong> link. (where <code>X</code> will be the number of Database connections in the ICS instance - this will vary depending on how many others are running the workshop together).
+Click and drag your Database connection identified by your assigned user (ie: <code>UserXX Oracle DB 12c</code>) over to the target which will be just below the <code>createOrder</code> trigger.</p>
+<p>(Note: After you click and start dragging your connection, the <code>INVOKES</code> connection tray on the left hand side of the designer will become hidden)</p>
+<p><img src="images/300/image045.png" alt="" /></p>
+<p><strong>2.2.3</strong> Drop your connection onto the large <em>Plus Sign</em> just below the <code>createOrder</code> trigger.</p>
+<p><img src="images/300/image046.png" alt="" /></p>
+<p><strong>2.2.4</strong> Fill in the information for the new invoke in the <em>Oracle Adapter Endpoint Configuration Wizard</em> dialog.</p>
+<ul>
+<li><strong>What do you want to call your endpoint?:</strong> Enter the name <code>lookupAccountID</code> as the service invocation name.</li>
+<li><strong>What operation do you want to perform?:</strong> Select <code>Run a SQL Statement</code>.  The database adapter supports both calling database stored procedures as well as running ad-hoc SQL statements.</li>
+</ul>
+<p>After filling in the basic information, click on the <strong>Next ></strong> button</p>
+<p><img src="images/300/image047.png" alt="" /></p>
+<p><strong>2.2.5</strong> Copy the SQL statement provided inline here with a parameter for <code>AccountName</code> specified in the inbound SOAP Trigger to ICS:</p>
+<p><code>select DISTINCT LOOKUP_VALUE from TTC_LOOKUP where LOOKUP_KEY LIKE  '%'||#ACCOUNT_NAME||'%'</code></p>
+<p>Note 1: The SQL query has to be in one line and doesn't end with a semi-colon.</p>
+<p>Note 2: The double pipes in the query above are SQL concatenation operators for attaching the wildcard percent signs before and after the SQL parameter #ACCOUNT_NAME</p>
+<p>Click on the <strong>Validate SQL Query</strong> button so the query can be validated for proper SQL syntax.</p>
+<p><img src="images/300/image048.png" alt="" /> </p>
+<p><strong>2.2.6</strong> Verify that the SQL query was validated by the <code>Success!</code> message that will appear in the <strong>Status</strong> on the <em>Enter a SQL Query</em> dialog page.</p>
+<p>If the query won't validate, then ensure you didn't paste in any funny characters or extra lines for the query.</p>
+<p>Select the <strong>Next ></strong> button after you've validated the query has been successfully validated.</p>
+<p><img src="images/300/image049.png" alt="" /></p>
+<p><strong>2.2.7</strong> Review the settings for your new adapter configuration in the <em>Oracle Adapter Endpoint Configuration Summary</em> dialog.</p>
+<p>After reviewing, click on the <strong>Done</strong> button</p>
+<p><img src="images/300/image050.png" alt="" /></p>
+<p><strong>2.2.8</strong> Observe that the orchestration's design pallette is populated with the invoke <em>lookupAccountID</em> you just created along with the mapping needed to invoke this adapter.</p>
+<p>Click on the <strong>Zoom to Fit</strong> button in the upper right of the design pallette if you want to see the entire orchestration.</p>
+<p><img src="images/300/image051.png" alt="" /></p>
+<p><strong>2.2.9</strong> Click on the <em>mapping symbol</em> for the <em>lookupAccountID</em> mapping - this will bring up 3 icons for activities we can do to the mapping.  </p>
+<p>Click on the <code>pencil icon</code> to edit the mapping.</p>
+<p>Note: You can also view the mapping by clicking on the <code>eye</code> icon.  In the <code>hamburger</code> icon, you can either upload an external XSLT file for this mapping that you've created external to ICS, or you can delete the mapping.</p>
+<p><img src="images/300/image052.png" alt="" /></p>
+<p><strong>2.2.10</strong> Edit the mapping by clicking on the little circle to the right of the <code>AccountName</code> source variable and then drag it on top of the little circle just to the left of the <code>ACCOUNT_NAME</code> target variable.</p>
+<p>Note: As described in the lab 100 ICS overview, this map could be tested by selecting the <strong>Test</strong> button in the upper right.  We aren't going to test this mapping because it is so simple.</p>
+<p>After completing the mapping, save it by clicking on the <strong>Validate</strong> icon in the upper right of the design window</p>
+<p><img src="images/300/image053.png" alt="" /></p>
+<p><strong>2.2.11</strong> Exit the mapping editor by clicking on the <strong>Close</strong> button in the upper left.</p>
+<p><img src="images/300/image054.png" alt="" /></p>
+<p><strong>2.2.12</strong> Save the progress of your orchestration by clicking on the <strong>Save</strong> icon in the upper right of the design window</p>
+<p><img src="images/300/image055.png" alt="" /></p>
+<h3 id="23-create-the-return-payload-for-the-integration"><strong>2.3</strong>: Create the Return Payload for the Integration</h3>
+<p>Note that the return payload we are about to map is going to change in the next lab, lab 400, when we add a call to the EBS API to create an order.  The mapping of values in this lab will be done to verify the lookup values that were returned as a result from the query made into the database.</p>
+<p><strong>2.3.1</strong> Click on the <em>mapping symbol</em> for the <em>createOrder</em> return payload mapping.  </p>
+<p>Click on the <code>pencil icon</code> to edit the mapping.</p>
+<p><img src="images/300/image066.png" alt="" /></p>
+<p><strong>2.3.2</strong> First, map the lookup value <code>LOOKUP_VALUE</code></p>
+<ul>
+<li>In the Source variable section, click on the chevron to the left of the <code>lookupAccountIDOutput</code> variable to expand it.</li>
+<li>Click on the little circle to the right of the <code>LOOKUP_VALUE</code> source variable and then drag it on top of the little circle just to the left of the <code>OrderNumber</code> target variable.</li>
+</ul>
+<p><img src="images/300/image070.png" alt="" /></p>
+<p><strong>2.3.3</strong> We want to put an annotation in front of this variable in the return payload which says "Lookup Value = " so that it makes more sense with the <code>OrderNumber</code> target variable we are using for now.  In order do this, we will use the XSLT function <code>concat()</code>.</p>
+<p>To open the advanced mapping editor, left-click on the target variable name's link <code>OrderNumber</code>.</p>
+<p><img src="images/300/image071.png" alt="" /></p>
+<p><strong>2.3.4</strong> Scroll to bottom of the <strong>Source</strong> variables and then expand the <code>Mapping Components</code> section by clicking on the chevron just to the left of the label</p>
+<p><img src="images/300/image072.png" alt="" /></p>
+<p><strong>2.3.5</strong> Access the XSLT <code>String</code> functions</p>
+<ul>
+<li>First expand the XSLT Functions by clicking on the chevron to the left of the <code>Functions</code> label</li>
+<li>Now expand the list of <code>String</code> functions by clicking on the chevron to the left of the <code>String</code> label</li>
+</ul>
+<p><img src="images/300/image073.png" alt="" /></p>
+<p><strong>2.3.6</strong> Apply the <code>concat</code> function to the mapped variable.</p>
+<ul>
+<li>First click and drag the <code>concat</code> function in the list of XSLT String functions</li>
+<li>Drag and Drop the <code>concat</code> function on top of the mapped <code>LOOKUP_VALUE</code> variable in the <code>&lt;xsl:value-of select = ...</code> statement</li>
+</ul>
+<p><img src="images/300/image074.png" alt="" /></p>
+<p><strong>2.3.7</strong> The advanced editor wants to know if the <code>LOOKUP_VALUE</code> variable should be the first or second argument to the concat function.</p>
+<p>Click on the radio button for <code>string2</code>, then click on the <strong>OK</strong> button.</p>
+<p><img src="images/300/image075.png" alt="" /></p>
+<p><strong>2.3.8</strong> Now we want to add the annotation string "Lookup Value = " as the first string in the concat function.</p>
+<p>Click on <code>string 1</code> just beneath the concat function</p>
+<p><img src="images/300/image076.png" alt="" /></p>
+<p><strong>2.3.9</strong> Type in the string <code>"Lookup Value = "</code> (surrounding double quotes needed) in the editable textbox for the first argument for the concat function.</p>
+<ul>
+<li>After you have entered the string for the first concat argument, save this advanced mapping by selecting the <strong>Save</strong> button in the upper right.</li>
+<li>Finally, exit out of the advanced maping editor by clicking on the <strong>Close</strong> button in the lower right</li>
+</ul>
+<p><img src="images/300/image077.png" alt="" /></p>
+<p><strong>2.3.10</strong> The return payload mapping is now complete.</p>
+<ul>
+<li>Select the <strong>Validate</strong> button in the upper right of the mapping editor.</li>
+<li>After validating, select the <strong>Close</strong> button also in the upper right</li>
+</ul>
+<p><img src="images/300/image080.png" alt="" /></p>
+<p>The final step in creating this integration is to add tracking variables.</p>
+<h3 id="24-add-tracking-variables-for-the-integration"><strong>2.4</strong>: Add Tracking Variables for the Integration</h3>
+<p><strong>2.4.1:</strong>    Open the “Tracking” editor</p>
+<p>We want to add the <em>ItemID</em> we just mapped as a <code>Business Identifier</code>.  Business Identifiers enable runtime tracking on messages.  These identifiers will be saved in ICS’s monitoring tab for each instance of the integration that is run.</p>
+<p><strong>2.4.2</strong> Click on the <em>Hamburger</em> icon, the click on the <code>Tracking</code> menu item to bring up the business identifier editor.</p>
+<p><img src="images/300/image081.png" alt="" /></p>
+<p><strong>2.4.3:</strong>    The <code>Business Identifiers For Tracking</code> editor will be opened up</p>
+<p><strong>2.4.4</strong> Click on the <em>AccountName</em> variable in the Source variable section.  The editor will show the metadata for this variable such as type, path, etc.</p>
+<p><strong>2.4.5</strong> Next, click on the <code>Shuttle Icon</code> to move the <em>AccountName</em> variable over to be a new <code>Tracking Field</code>.</p>
+<p><strong>2.4.6</strong> Observe that the <em>AccountName</em> variable has now been added as a <code>Tracking Field</code>.  The source variable name is also added as the <code>Tracking Name</code> by default – since <em>AccountName</em> means something and is suitable for people to read in the monitoring tab we’ll keep it. If the comment variable was something random like <em>C2EF</em>, we would want to change it and give it a human-readable tracking name.</p>
+<p><strong>2.4.7</strong> Select the <code>Done</code> button now that the new <code>Business Identifier</code> has been added.</p>
+<p><img src="images/300/image082.png" alt="" /></p>
+<p><strong>2.4.8</strong> Once again, click on the <code>Save</code> button to save the tracking changes, then select the <code>Close</code> button</p>
+<p><img src="images/300/image083.png" alt="" /></p>
+<p>This integration is now complete.  We now need to activate (deploy) it so it can be used.</p>
+<h3 id="25-activate-the-integration"><strong>2.5</strong>: Activate the Integration</h3>
+<p><strong>2.5.1</strong> Click on the <em>Activate</em> switch/slider on the right of the <code>UserXX Create EBS Order</code> integration.</p>
+<p><img src="images/300/image084.png" alt="" /></p>
+<p><strong>2.5.2</strong> The <code>Activate Integration?</code> dialog will be displayed</p>
+<p><strong>2.5.3</strong> Select the <em>Enable tracing</em>, then <em>Include payload</em> checkboxes since this isn’t a production deployment.  These checkboxs will tell ICS that the payloads for each instance of the integration will be saved in the logfiles as explored in the first part of this lab earlier.</p>
+<p><strong>2.5.4</strong> Now select the <em>Activate</em> button to begin activation of the integration.</p>
+<p><img src="images/300/image085.png" alt="" /></p>
+<p><strong>2.5.5</strong> The progress bar of the integration activation will move across the <code>Activate Integration?</code> dialog box.</p>
+<p><strong>2.5.6</strong> Once the integration is activated you will see that the activation slider now is colored green with a checkmark in it.</p>
+<p><img src="images/300/image088.png" alt="" /></p>
+<h3 id="26----check-the-service-endpoint"><strong>2.6</strong>:    Check the Service Endpoint</h3>
+<p><strong>2.6.1</strong> A message will appear on the top of the ICS Designer Portal indicating that the integration activation was successful.  The WSDL for the service endpoint will also be displayed.</p>
+<p><strong>2.6.2</strong> Click on the WSDL link so we can ensure that this integration has an available service endpoint.</p>
+<p><img src="images/300/image086.png" alt="" /></p>
+<p><strong>2.6.3</strong> The WSDL for you new ICS integration will now be displayed in your browser.</p>
+<p><strong>2.6.4</strong> Copy the WSDL URL into your copy buffer so we can test it in the next lab section.</p>
+<p><img src="images/300/image087.png" alt="" /></p>
+<p><strong>2.6.5</strong> Now that we have built and activated an integration and copied it's service endpoint, we can test it with some sample data to make sure it works.</p>
+<h2 id="part-3-test-the-ics-integration">Part 3: Test the ICS Integration</h2>
+<hr />
+<h3 id="31-test-using-soapui"><strong>3.1</strong>: Test Using SoapUI</h3>
+<p><strong>3.1</strong> Open SoapUI.  If you don't already have this installed, follow the instructions provided in the <strong>Prerequisites</strong> section of this workshop.</p>
+<p><img src="images/200/image052.png" alt="" /></p>
+<p><strong>3.2</strong> Click on the <strong>SOAP</strong> button so we can create a new project for testing our new ICS SOAP Web Service</p>
+<p><img src="images/300/image089.png" alt="" /></p>
+<p><strong>3.3</strong> In the <strong>New SOAP Project</strong> dialog window, paste the WSDL URL into the <strong>Initial WSDL</strong> window and give a meaningful <strong>Project Name</strong> such as <em>User03 Create EBS Order</em>.  Keep the checkbox selected for <strong>create sample requests for all operations?</strong>.  Click on the <strong>OK</strong> button after you've initialized the settings for your new SoapUI SOAP project.</p>
+<p><img src="images/300/image090.png" alt="" /></p>
+<p><strong>3.4</strong> The new SOAP Project will appear in the left-hand navigation.</p>
+<p><strong>3.5</strong> Expand the <strong>createOrder</strong> operation by clicking on it, then open the auto-generated sample request <strong>Request 1</strong> by double-clicking on it.  An empty request payload will be generated.</p>
+<p><img src="images/300/image091.png" alt="" /></p>
+<p><strong>3.6</strong> In the request payload, replace the question marks with the following test values:</p>
+<ul>
+<li><strong>AccountName</strong>: <em>A. C. Networks</em></li>
+<li><strong>Comment</strong>: <em>Lab 300 request from SoapUI</em></li>
+<li><strong>ItemID</strong>: <em>2155</em></li>
+<li><strong>Qty</strong>: <em>1</em></li>
+<li><strong>Price</strong>: <em>3333</em></li>
+</ul>
+<p><img src="images/300/image092.png" alt="" /></p>
+<p><strong>3.7</strong> Next we need to add the authorization credentials so ICS will allow the request from SoapUI.  ICS uses basic username/password authentication.</p>
+<p><strong>3.8</strong> Click on the <strong>Auth</strong> button in the lower-left of the <strong>Request 1</strong> SoapUI window</p>
+<p><strong>3.9</strong> In the <strong>Authorization</strong> dropdown, select <em>Add New Authorization…</em></p>
+<p><img src="images/300/image093.png" alt="" /></p>
+<p><strong>3.10</strong> In the <strong>Add Authorization</strong> dialog pop-up window, select <strong>Type</strong> of <em>Basic</em> form the picklist, then select the <strong>OK</strong> button.</p>
+<p><img src="images/300/image094.png" alt="" /></p>
+<p><strong>3.11</strong> Fill in your assigned username and password in the <strong>Auth (Basic)</strong> window at the bottom of the SoapUI request window</p>
+<p><img src="images/300/image095.png" alt="" /></p>
+<p><strong>3.12</strong> ICS needs two headers in the request payload to satisfy the enforced Web Services Security (WSS) standards.  It needs both the <strong>WSS Username Token</strong> and the <strong>WS-Timestamp</strong>.</p>
+<p><strong>3.13</strong> Insert the <strong>WSS Username Token</strong> by right-clicking in the Request payload body and select <strong>Add WSS Username Token</strong> from the pull-down list</p>
+<p><img src="images/300/image096.png" alt="" /></p>
+<p><strong>3.14</strong> In the <strong>Specify Password Type</strong> dialog pop-up window, select <em>PasswordText</em> as the WSS Username Token type, then click on the <strong>OK</strong> button.</p>
+<p><img src="images/300/image097.png" alt="" /></p>
+<p><strong>3.15</strong> Insert the <strong>WS-Timestamp</strong> by right-clicking in the Request payload body and select <strong>Add WS-Timestamp</strong> from the pull-down list</p>
+<p><img src="images/300/image098.png" alt="" /></p>
+<p><strong>3.16</strong> In the <strong>Specify Time-To-Live value</strong> dialog pop-up window, set the value (in milliseconds) to <em>60000</em> (60 seconds), then click on the <strong>OK</strong> button.</p>
+<p><img src="images/300/image099.png" alt="" /></p>
+<p><strong>3.17</strong> Finally your request payload is ready to send to ICS.</p>
+<p><strong>3.18</strong> Click on the green <em>Submit Request</em> arrow in the upper left of the <strong>Request 1</strong> window.</p>
+<p><img src="images/300/image100.png" alt="" /></p>
+<p><strong>3.19</strong> The right side of the <strong>Request 1</strong> SoapUI window will display the results of the ICS integration call.</p>
+<p><strong>3.20</strong> The return payload of the ICS integration will show both the <em>Lookup Value = XX</em> value which was looked up in the Database call.</p>
+<p><img src="images/300/image109.png" alt="" /></p>
+<p><strong>3.21</strong> Change the value of the <strong>AccountName</strong> from <em>A.C. Networks</em> to <em>General Technologies</em> and see if you get a different lookup result?  What do you find?</p>
+<p>NOTE 1: Other valid Account Names to try are <em>Bigmart</em>, <em>Vision</em>, <em>CDS, Inc</em>, <em>Computer Service and Rentals</em>, <em>Federal Parts</em>, <em>Imaging Innovations, Inc.</em>, and <em>Hilman and Associates</em></p>
+<p>NOTE 2: We could have put logic in the orchestration to give a response like <code>No Value found for AccountName XXX</code> - that's left as an exercise to the participant.</p>
+<p>You have now completed Lab 300 of the ICS Developer Workshop.  In the next lab, we will modify the orchestration we just created by adding a call to an EBS API using the EBS Adapter.</p>

@@ -1,0 +1,549 @@
+<p><img src="images/100/image1.png" alt="" /></p>
+<p>Update: March 24th, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This workshop will walk you through building an automated Software Development Lifecycle (SDLC) pipeline using the Oracle cloud and third party tools</p>
+<p>This new pipeline will compile code, build environments in the cloud, and deploy the code into the new environment. You will assemble this pipeline leveraging Developer Cloud Service, Jenkins, Oracle Cloud Orchestrations, and Chef. You will take on 2 Personas during the workshop. The stack automation engineer will assemble the pipeline and make it available for developers. The developer will leverage the new SDLC stack and check in code leveraging the pipeline.</p>
+<p>At the end of the workshop you will have deployed a new application in the Oracle cloud as the developer persona leveraging the pipeline to complete all the tasks after the code is checked into source control.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/pcdavies/DevopsAutomationChefJenkins/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Create Jenkins Server</p></li>
+<li><p>Configure Chef Server</p></li>
+<li><p>Clone Application</p></li>
+<li><p>Build a new version of the application</p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li><p>The following lab requires an Oracle Public Cloud account that will be supplied by your instructor.</p></li>
+<li><p>You will need to install an object storage browser</p></li>
+<li><p>You will need a SSH client</p></li>
+</ul>
+<h1 id="install-object-storage-tools">Install Object Storage Tools</h1>
+<h3 id="step-1-install-cloudberry-explorer-for-openstack-desktop-client"><strong>STEP 1</strong>: Install CloudBerry Explorer for OpenStack desktop Client</h3>
+<p><strong>Note</strong>: If you prefer to use Cyberduck you can find instructions at <a href="https://trac.cyberduck.io/wiki/help/en/howto/oraclecloud">this URL</a> or follow the instructions out lined in <strong>MAC OSX Appendix</strong>. For MAC users you will need to use Cyberduck as CloudBerry only runs on Windows.</p>
+<ul>
+<li><p>From any browser, go to <a href="http://www.cloudberrylab.com/free-openstack-storage-explorer.aspx">this URL</a></p></li>
+<li><p>Click <strong>Download FREEWARE</strong>. After download completes run executable to install.</p>
+<p><img src="images/100/image2.png" alt="" /></p></li>
+<li><p>Open <strong>CloudBerry Explorer for OpenStack Storage</strong> desktop client.</p></li>
+<li><p>Click <strong>File</strong> and select <strong>New Oracle Cloud Account</strong> from the list of options.</p>
+<p><img src="images/100/image3.png" alt="" /></p></li>
+<li><p>Supply the necessary information:</p>
+<p><strong>Display name</strong>: <code>my_domain</code></p>
+<p><strong>Username</strong>: <code>Storage-&lt;Your Identity Domain&gt;:&lt;Your OPC Username&gt;</code></p>
+<p><strong>Password</strong>: <code>&lt;Your OPC Password&gt;</code></p>
+<p><strong>Account location</strong>: <code>Select the correct data center</code></p>
+<p><img src="images/100/image4.png" alt="" /></p></li>
+<li><p>Click <strong>Test Connection</strong>. If you get Connection success click <strong>Close</strong> and <strong>OK</strong> to complete the configuration.</p>
+<p><img src="images/100/image5.png" alt="" /></p></li>
+<li><p>From the <strong>Source</strong> dropdown, select the newly created <strong>my_domain</strong> account. You should see the pre-created containers.</p>
+<p><img src="images/100/image6.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-install-putty---ssh-client-tool"><strong>STEP 2</strong>: Install PuTTY - SSH Client Tool</h3>
+<ul>
+<li><p>From any browser, go to this <a href="http://www.putty.org/">URL</a></p>
+<p><img src="images/100/image7.png" alt="" /></p></li>
+<li><p>Click on the link to download PuTTY. From the PuTTY download page click on <strong>putty.exe</strong> to download.</p>
+<p><img src="images/100/image8.png" alt="" /></p></li>
+<li><p>Save <strong>putty.exe</strong>. Navigate to the location you downloaded the file and double click on <strong>putty.exe</strong> to run.</p>
+<p><img src="images/100/image9.png" alt="" /></p></li>
+<li><p>We will be using PuTTY later in the workshop to access the newly create Cloud Instance. You can minimize or exit PuTTY for now.</p></li>
+</ul>
+<h1 id="building-the-client-machine-stack-engineer-persona">Building the Client Machine (Stack Engineer Persona)</h1>
+<h2 id="building-the-instance">Building the Instance</h2>
+<p>In this section we are going to build Oracle Compute VM using a private disk image. This VM contains a fully configured Jenkins Server with all the jobs already created to support this workshop.</p>
+<h3 id="step-3-verify-image-file-has-been-uploaded"><strong>STEP 3</strong>: Verify Image file has been uploaded</h3>
+<ul>
+<li><p>From CloudBerry make sure that <strong>my_domain</strong> is selected on the right hand side. Double click on <strong>compute_images</strong> to navigate into the container. Due to the size of the disk image, we have already uploaded the <strong>Jenkins</strong> image file that will be used later in the lab.</p>
+<p><img src="images/100/image10.png" alt="" /></p></li>
+</ul>
+<h2 id="preparing-network-assets-in-the-instance">Preparing Network Assets in the Instance</h2>
+<h3 id="step-4-move-orchestration-from-storage-cloud"><strong>STEP 4</strong>: Move Orchestration from Storage Cloud</h3>
+<ul>
+<li><p>From CloudBerry make sure that <strong>my_domain</strong> is selected on the left hand side <strong>Source</strong> dropdown. Navigate to <strong>SDLC_Pipeline_wksp -> general -> orchestration_json</strong>. ON right hand side source select <strong>My Computer</strong>. Either create a new directory or navigate to a location on your local system that you want to store Workshop Files. In our example we are using <strong>D:\SDLCwithDevOpsWorkshop</strong>.</p>
+<p><img src="images/100/image11.png" alt="" /></p></li>
+<li><p>Drag and drop <strong>wkshpnetwork.json</strong> from <strong>my_domain</strong> to <strong>My Computer</strong>. When prompted <strong>Do you really want to copy</strong> click <strong>Yes</strong></p>
+<p><img src="images/100/image12.png" alt="" /></p></li>
+<li><p>Right click on <strong>wkshpnetwork.json</strong> and click <strong>Open</strong> to open the file in a text editor.</p>
+<p><img src="images/100/image13.png" alt="" /></p></li>
+<li><p>Search and replace Identity Domain <strong>gse00002056</strong> with you <strong>your Identity Domain</strong>. Save file and exit editor.</p>
+<p><img src="images/100/image14.png" alt="" /></p></li>
+<li><p>In my_domain, navigate to <strong>SDLC_Pipeline_wksp -> general -> SSH_KEY.</strong> Drag and drop the 3 SSH Key files from <strong>my_domain</strong> over to <strong>My Computer.</strong></p>
+<p><img src="images/100/image15.png" alt="" /></p></li>
+</ul>
+<h1 id="creating-the-instance-stack-engineer-persona">Creating the Instance (Stack Engineer Persona)</h1>
+<h2 id="create-the-network-configuration">Create the Network Configuration</h2>
+<h3 id="step-5-login-to-your-oracle-cloud-account"><strong>STEP 5</strong>: Login to your Oracle Cloud account</h3>
+<ul>
+<li>From any browser, go to the following URL:</li>
+</ul>
+<pre><code>https://cloud.oracle.com
+</code></pre>
+<ul>
+<li><p>Click <strong>Sign In</strong> in the upper right hand corner of the browser:</p>
+<p><img src="images/100/image16.png" alt="" /></p></li>
+<li><p><strong>IMPORTANT</strong> - Under My Services, ask your instructor which <strong>Region</strong> to select from the drop down list, and <strong>click</strong> on the <strong>My Services</strong> button.</p>
+<p><img src="images/100/image17.png" alt="" /></p></li>
+<li><p>Enter your identity domain and click <strong>Go</strong></p>
+<p><strong><em>NOTE</em></strong>: the <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you from your instructor.</p>
+<p><img src="images/100/image18.png" alt="" /></p></li>
+<li><p>Once your Identity Domain is set, enter your User Name and Password and click <strong>Sign In</strong></p>
+<p><img src="images/100/image19.png" alt="" /></p></li>
+<li><p>You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><img src="images/100/image20.png" alt="" /></p></li>
+<li><p>If all your services are not visible, <strong>click</strong> on the <strong>Customize Dashboard,</strong> you can add services to the dashboard by clicking <strong>Show</strong>. If you do not want to see a specific, service click <strong>Hide</strong>.</p>
+<p><img src="images/100/image21.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-compute-service-console"><strong>STEP 6</strong>: Compute Service Console</h3>
+<ul>
+<li><p>From the main Cloud Dashboard, click <strong>Compute</strong> to navigate to details page.</p>
+<p><img src="images/100/image22.png" alt="" /></p></li>
+<li><p>Compute Service Details page will give you an overview of your compute service. Make note of the default <strong>Site</strong> from the <strong>REST Endpoint</strong> (Z## - In our example Z16). Click <strong>Open Service Console</strong></p>
+<p><img src="images/100/image23.png" alt="" /></p></li>
+<li><p>The Compute Service Console will be used for the monitoring and creation of all compute VM’s. In the upper right hand corner click <strong>Site</strong> dropdown:</p>
+<p><img src="images/100/image24.png" alt="" /></p></li>
+<li><p>Verify that the default <strong>Site</strong> you select matches the default site you previously located within the REST endpoint. If it does not match, use the <strong>Site Selector</strong> to select the correct <strong>Site</strong>. In our example, we are changing from Z17 to Z16 to match the zone referenced in the REST endpoint.</p>
+<p><img src="images/100/image25.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-upload-orchestration"><strong>STEP 7</strong>: Upload Orchestration</h3>
+<ul>
+<li><p>Click on <strong>Orchestrations</strong> Tab. From the Orchestrations page click <strong>Upload Orchestration</strong></p>
+<p><img src="images/100/image26.png" alt="" /></p></li>
+<li><p>Click <strong>Select File</strong> and select the <strong>wkshpnetwork.json</strong> file on your workstation that you just edited. Click <strong>Upload</strong></p>
+<p><img src="images/100/image27.png" alt="" /></p></li>
+<li><p>You should now see the newly uploaded orchestration in your list. Click <img src="images/100/image28.png" alt="" /> and select <strong>Start</strong></p>
+<p><img src="images/100/image29.png" alt="" /></p></li>
+<li><p>Click <strong>Yes</strong> to start the Orchestration</p>
+<p><img src="images/100/image30.png" alt="" /></p></li>
+<li><p>The Orchestration status will change to <strong>Starting</strong>. After a short period, the status will change to <strong>Ready</strong></p>
+<p><img src="images/100/image31.png" alt="" /></p>
+<p><img src="images/100/image32.png" alt="" /></p></li>
+</ul>
+<h3 id="step-8-upload-ssh-key"><strong>STEP 8</strong>: Upload SSH Key</h3>
+<ul>
+<li><p>Click on the <strong>Network</strong> Tab then click <strong>SSH Pubic Keys</strong>. Click <strong>Add SSH Public Key</strong></p>
+<p><img src="images/100/image33.png" alt="" /></p></li>
+<li><p>Enter Name <strong>DevOpsDemoKey</strong>. This name is important to remember, because it will be referenced later when configuring Jenkins. Open file <strong>DevOpsDemo.pub</strong>, copied over earlier, in a text editor. Copy the key and paste into the <strong>Value</strong> field. Click <strong>Add</strong></p>
+<p><img src="images/100/image34.png" alt="" /></p>
+<p><img src="images/100/image35.png" alt="" /></p>
+<p><strong><em>Note</em></strong>: If you get an error that it is not a valid key make sure you do not have an extra carriage return at the end of the line.</p></li>
+</ul>
+<h2 id="build-instance-on-oracle-compute">Build Instance on Oracle Compute</h2>
+<h3 id="step-9-associate-image-to-upload-disk"><strong>STEP 9</strong>: Associate Image to upload disk</h3>
+<ul>
+<li><p>Navigate to the <strong>Images</strong> tab and click <strong>Associate Image</strong></p>
+<p><img src="images/100/image36.png" alt="" /></p></li>
+<li><p>In the Associate Image window enter the following then click <strong>Select File</strong>:</p>
+<p><strong>Name</strong>: <code>Jenkins_Server</code></p>
+<p><strong>Description</strong>: <code>Jenkins Server</code></p>
+<p><img src="images/100/image37.png" alt="" /></p></li>
+<li><p>Verify <strong>JenkinsImage.tar.gz</strong> is selected and click <strong>Ok</strong></p>
+<p><img src="images/100/image38.png" alt="" /></p></li>
+<li><p>Verify the information is correct and click <strong>Ok</strong></p>
+<p><img src="images/100/image39.png" alt="" /></p></li>
+<li><p>After a short amount of time, you should see your newly created Image.</p>
+<p><img src="images/100/image40.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10-create-instance"><strong>STEP 10</strong>: Create Instance</h3>
+<ul>
+<li><p>Now we will use the newly created image to create an Instance. Navigate to the <strong>Instances</strong> tab and click <strong>Create Instance</strong></p>
+<p><img src="images/100/image41.png" alt="" /></p></li>
+<li><p>Select <strong>Private Images</strong> on the left. Click <strong>Select</strong> to the right of the <strong>Jenkins_Server</strong></p>
+<p><img src="images/100/image42.png" alt="" /></p></li>
+<li><p>Click <strong>Shape</strong> and verify that <strong>oc3</strong> shape is selected.</p>
+<p><img src="images/100/image43.png" alt="" /></p></li>
+<li><p>Click <strong>Instance</strong>. We will leave the default Name.</p>
+<p><img src="images/100/image44.png" alt="" /></p></li>
+<li><p>Click in the <strong>SSH Keys</strong> field. Select <strong>DevOpsDemoKey</strong> that was added previously</p>
+<p><img src="images/100/image47.png" alt="" /></p></li>
+<li><p>Click <strong>Network</strong>. Click inside of the <strong>Security Lists</strong> field. Select <strong>ssh_access</strong>.</p>
+<p><img src="images/100/image45.png" alt="" /></p></li>
+<li><p>Also, select <strong>web_access</strong> from the Security Lists.</p>
+<p><img src="images/100/image46.png" alt="" /></p></li>
+<li><p>Click <strong>Storage</strong>. Click <img src="images/100/image28.png" alt="" /> next to the default storage, and select <strong>Remove</strong></p>
+<p><strong>Note</strong>: By removing the disk, the instance will build the disk as ephemeral, which is faster, and will allow for Snapshots.</p>
+<p><img src="images/100/image48.png" alt="" /></p></li>
+<li><p>Click <strong>Review</strong>. Once you have verified all the information is correct click <strong>Create</strong>.</p>
+<p><img src="images/100/image49.png" alt="" /></p></li>
+<li><p>From the Summary page, you can monitor the process of the Instance creation.</p>
+<p><strong>Note</strong>: It may take a couple of minutes for the instance to appear.</p>
+<p><img src="images/100/image50.png" alt="" /></p></li>
+<li><p>While the instance is creating you are able to view details as they are made available. Click <img src="images/100/image28.png" alt="" /> and select <strong>View</strong></p>
+<p><img src="images/100/image51.png" alt="" /></p></li>
+<li><p>On this screen, you can view all the details about the instance that is being created.</p>
+<p><img src="images/100/image52.png" alt="" /></p></li>
+<li><p>Click <strong>Logs</strong> to monitor the Console Log during creation. You might need to wait a few minutes before the console log will display.</p>
+<p><img src="images/100/image53.png" alt="" /></p></li>
+<li><p>Click <strong>Instances</strong> to navigate back to the summary page. After about 10 minutes the status of the instance should change to <strong>Running</strong></p>
+<p><img src="images/100/image54.png" alt="" /></p></li>
+</ul>
+<h2 id="log-into-instance">Log into Instance</h2>
+<h3 id="step-11-get-public-ip-of-instance"><strong>STEP 11</strong>: Get Public IP of Instance</h3>
+<ul>
+<li><p>From the Summary page copy down the <strong>Public IP</strong> for your newly created instance.</p>
+<p><img src="images/100/image55.png" alt="" /></p></li>
+</ul>
+<h3 id="step-12-configure-putty-to-connect-to-image"><strong>STEP 12</strong>: Configure PuTTY to connect to Image</h3>
+<ul>
+<li><p>If you closed out PuTTY start it again.</p></li>
+<li><p>On the <strong>Session</strong> Category paste in the Public IP for you instance.</p>
+<p><img src="images/100/image56.png" alt="" /></p></li>
+<li><p>Under category <strong>Connection</strong> click <strong>Data</strong>. Enter <strong>opc</strong> for Auto-login username.</p>
+<p><img src="images/100/image57.png" alt="" /></p></li>
+<li><p>Expand <strong>SSH</strong> and click <strong>Auth</strong>. Click <strong>Browse</strong> and select the <strong>DevOpsDemo.ppk</strong> file that you downloaded earlier in the lab.</p>
+<p><img src="images/100/image58.png" alt="" /></p></li>
+<li><p>Click back on <strong>Session</strong> category. Enter <strong>JenkinsServer</strong> in the Saved Sessions and click <strong>Save</strong>. Now click <strong>Open</strong> to connect to the instance</p>
+<p><img src="images/100/image59.png" alt="" /></p></li>
+<li><p>Click <strong>Yes</strong> on PuTTY Security Alert.</p>
+<p><img src="images/100/image60.png" alt="" /></p></li>
+<li><p>When prompted for a Passphrase enter <strong>Summer15#</strong>. You are now connected to your newly create Jenkins instance.</p>
+<p><img src="images/100/image61.png" alt="" /></p></li>
+</ul>
+<h3 id="step-13-test-jenkins"><strong>STEP 13</strong>: Test Jenkins</h3>
+<p><strong>Note:</strong> Jenkins is a continuous integration and continuous delivery application, used to automate parts of the SDLC. Jenkins can be leveraged to build and test software projects continuously     making it easier for developers to integrate changes to the project, and making it easier for users to obtain a fresh build. It also allows for continuous delivery of software by providing powerful ways to define build pipelines and integrating with many testing and deployment technologies.</p>
+<ul>
+<li><p>Open a browser and enter the <strong>Public IP</strong> for your newly create instance. The Jenkins login page should render as shown below.</p>
+<p><img src="images/100/image62.png" alt="" /></p></li>
+<li><p>Click <strong>log in</strong> and enter the following credentials:</p>
+<p><strong>User</strong>: <code>opcmasterchef</code></p>
+<p><strong>Password</strong>: <code>Summer15#</code></p>
+<p><img src="images/100/image63.png" alt="" /></p></li>
+</ul>
+<h2 id="configure-the-server-for-work">Configure the Server for work</h2>
+<h3 id="step-14-configure-chef-client-knife"><strong>STEP 14</strong>: Configure Chef client (Knife)</h3>
+<ul>
+<li><p>Switch back to your <strong>SSH</strong> session. Switch to the <strong>jenkins</strong> user and change to the home directory</p>
+<pre><code>sudo -s
+
+su jenkins
+
+cd /home/jenkins
+</code></pre>
+<p><img src="images/100/image64.png" alt="" /></p>
+<ul>
+<li>Run script <strong>downloadcheffiles.sh</strong> to load the needed chef configuration files. </li></ul>
+<p><strong><em>Note</em></strong>: The instructor will supply each group with an <strong>Organization Id</strong>. For our example, we will be using Org Id 1.</p>
+<p><code>./downloadcheffiles.sh &lt;Username&gt; &lt;Password&gt; &lt;ID Domain&gt; &lt;groupnumber&gt;</code></p>
+<p><img src="images/100/image65.png" alt="" /></p></li>
+<li><p>Notice that the <strong>.chef</strong> directory now contains 3 files:</p>
+<p><img src="images/100/image66.png" alt="" /></p></li>
+<li><p>Verify your connectivity to the Chef Server</p></li>
+</ul>
+<pre><code>knife environment list
+</code></pre>
+<p><img src="images/100/image67.png" alt="" /></p>
+<h3 id="step-15-download-weblogic-maven-dependencies"><strong>STEP 15</strong>: Download WebLogic Maven dependencies</h3>
+<ul>
+<li>Run the script <strong>downloadWLSMavenfiles.sh</strong> to install WebLogic Maven dependencies. Run to the following command:</li>
+</ul>
+<pre><code>./downloadWLSMavenfiles.sh &lt;Username&gt; &lt;Password&gt; &lt;ID Domain&gt; &lt;groupnumber&gt;
+</code></pre>
+<p><img src="images/100/image68.png" alt="" /></p>
+<p><img src="images/100/image69.png" alt="" /></p>
+<h3 id="step-16-load-cookbooks-to-chef"><strong>STEP 16</strong>: Load Cookbooks to Chef</h3>
+<ul>
+<li><strong>Clone</strong> the Git repository that contains the Cookbooks that will be used during the lab.</li>
+</ul>
+<pre><code>git clone https://github.com/pcdavies/Chef_Cookbooks.git
+</code></pre>
+<p><strong>Note:</strong></p>
+<ul>
+<li><p><strong>git</strong> is a source control tool used by developers and now with the emergence of DevOps, “DevOps Full Stack Engineers” are using git as well for the code that describes the infrastructure.</p>
+<ul>
+<li><p>A <strong>Cookbook</strong> is a term used by Chef. A cookbook is a set of recipes, attributes and other Chef files.</p>
+<ul>
+<li><p>A <strong>recipe</strong> is a set of instructions that run on the server that configure it.</p></li>
+<li><p>Attributes are set in cookbooks in the attributes folder</p></li></ul></li>
+<li><p>The cookbook we are going to use for this lab has already been written and versioned into git. As the full stack engineer, you are going to clone the cookbook from the repo, configure it for your cloud environment and upload it to the new Chef organization.</p></li></ul>
+<p><img src="images/100/image70.png" alt="" /></p></li>
+</ul>
+<h3 id="step-17-configuring-the-cookbook-for-your-cloud-environment"><strong>STEP 17</strong>: Configuring the Cookbook for your cloud environment</h3>
+<ul>
+<li>Change directories to the WebLogic cookbook:</li>
+</ul>
+<pre><code>cd /home/jenkins/Chef_Cookbooks/opcwls
+</code></pre>
+<p><img src="images/100/image71.png" alt="" /></p>
+<ul>
+<li>We will now update the <strong>cloud-environment.rb</strong> file with your Identity Domain and password. Edit file <strong>cloud-environment.rb</strong> in <strong>attributes</strong> directory:</li>
+</ul>
+<pre><code>vi attributes/cloud-environment.rb
+</code></pre>
+<p><img src="images/100/image72.png" alt="" /></p>
+<ul>
+<li><p>Update <strong>cloud_identity_domain</strong> and <strong>cloud_password</strong> with your credentials.</p>
+<p><img src="images/100/image73.png" alt="" /></p></li>
+<li><p>Install the WebLogic cookbook: <strong>Note</strong>: berks is a command that comes with a Chef Client installation, it is used to manage and upload cookbooks to a Chef server. The berks install command finds all dependencies defined in a cookbook and downloads them to the local machine.</p></li>
+</ul>
+<pre><code>berks install
+</code></pre>
+<p><img src="images/100/image74.png" alt="" /></p>
+<ul>
+<li>Upload Chef Cookbooks to Chef Server. <strong>Note</strong>: Nodes pull cookbooks from the Chef server; to make it available to Chef Nodes, we must first upload it to the Chef server.</li>
+</ul>
+<pre><code>berks upload --ssl-verify false
+</code></pre>
+<p><img src="images/100/image75.png" alt="" /></p>
+<ul>
+<li>Verify the cookbooks uploaded correctly</li>
+</ul>
+<pre><code>knife cookbook list
+</code></pre>
+<p><img src="images/100/image76.png" alt="" /></p>
+<h1 id="application-development-developer-persona">Application Development (Developer Persona)</h1>
+<h2 id="create-developer-cloud-service-project">Create Developer Cloud Service Project</h2>
+<h3 id="step-18-login-to-developer-cloud-service"><strong>STEP 18</strong>: Login to Developer Cloud Service</h3>
+<p>Oracle Developer Cloud Service provides a complete development platform that streamlines team development processes and automates software delivery. The integrated platform includes an issue tracking system, agile development dashboards, code versioning and review platform, continuous integration and delivery automation, as well as team collaboration features such as wikis and live activity stream. With a rich web based dashboard and integration with popular development tools, Oracle Developer Cloud Service helps deliver better applications faster.</p>
+<ul>
+<li><p>From Cloud UI dashboard click on the <strong>Developer</strong> service. In our example, the Developer Cloud Service is named <strong>developer71725</strong>.</p>
+<p><img src="images/100/image77.png" alt="" /></p></li>
+<li><p>The Service Details page gives you a quick glance of the service status overview.</p>
+<p><img src="images/100/image78.png" alt="" /></p></li>
+<li><p>Click <strong>Open Service Console</strong> for the Oracle Developer Cloud Service. The Service Console will list all projects for which you are currently a member.</p>
+<p><img src="images/100/image79.png" alt="" /></p></li>
+</ul>
+<h3 id="step-19-create-developer-cloud-service-project"><strong>STEP 19</strong>: Create Developer Cloud Service Project</h3>
+<ul>
+<li><p>Click <strong>New Project</strong> to start the project create wizard.</p></li>
+<li><p>On Details screen enter the following data and click <strong>Next</strong>.</p>
+<p><strong>Name</strong>: <code>Sample Application</code></p>
+<p><strong>Description</strong>: <code>A quick sample application</code></p>
+<p><img src="images/100/image80.png" alt="" /></p></li>
+<li><p>Select template <strong>Initial Repository</strong> and click <strong>Next</strong></p>
+<p><img src="images/100/image81.png" alt="" /></p></li>
+<li><p>Select your <strong>Wiki Markup</strong> preference to <strong>MARKDOWN.</strong></p></li>
+<li><p>Click <strong>Import existing repository</strong> and enter repository URL supplied by the instructor. Click <strong>Finish</strong>.</p></li>
+</ul>
+<pre><code>https://github.com/pcdavies/SampleMavenWLSApp.git
+</code></pre>
+<p><img src="images/100/image82.png" alt="" /></p>
+<ul>
+<li><p>Project creation will take about 1 minute.</p>
+<p><img src="images/100/image83.png" alt="" /></p></li>
+<li><p>You now have a new project; in which you can manage your software development.</p>
+<p><img src="images/100/image84.png" alt="" /></p></li>
+</ul>
+<h3 id="step-20-clone-repository"><strong>STEP 20</strong>: Clone Repository</h3>
+<p>Now that we have imported the Git repository into Developer Cloud Service, we will want to clone that into our Jenkins image.</p>
+<ul>
+<li><p>On the right-hand side, find URL for the newly create Git repository and copy into the clipboard. Select the URL and right click to select <strong>Copy</strong>. Save this URL, as it will be used several times
+throughout this workshop.</p>
+<p><img src="images/100/image85.png" alt="" /></p></li>
+<li><p>Back in the ssh session, confirm that you are in the <strong>/home/jenkins</strong> directory then enter the following command to clone the DevCS Git repository.</p></li>
+</ul>
+<pre><code>git clone &lt;copied URL&gt;
+</code></pre>
+<p><img src="images/100/image86.png" alt="" /></p>
+<ul>
+<li><p>When prompted enter your <strong>Oracle Cloud password</strong></p>
+<p><img src="images/100/image87.png" alt="" /></p></li>
+</ul>
+<h1 id="configure-jenkins-for-the-sample-application">Configure Jenkins for the Sample Application</h1>
+<h2 id="configure-jenkins">Configure Jenkins</h2>
+<h3 id="step-21-configure-jenkins"><strong>STEP 21</strong>: Configure Jenkins</h3>
+<ul>
+<li><p>Switch back to the browser tab where you are logged into Jenkins. If you need to login again following the instructions outlined earlier in this lab.</p></li>
+<li><p>Click <strong>Credentials</strong></p>
+<p><img src="images/100/image88.png" alt="" /></p></li>
+<li><p>We are going to update the credentials for <strong>DevCS</strong>. Click <strong>cloud.admin</strong> and select <strong>Update</strong></p>
+<p><img src="images/100/image90.png" alt="" /></p></li>
+<li><p>Enter the password used for the cloud.admin domain user and click <strong>Save</strong></p>
+<p><img src="images/100/image91.png" alt="" /></p></li>
+<li><p>Click on <strong>Jenkins</strong> to navigate back to the home page. Click <strong>Manage Jenkins</strong></p>
+<p><img src="images/100/image92.png" alt="" /></p></li>
+<li><p>On the Manage Jenkins page click <strong>Configure System</strong>.</p>
+<p><img src="images/100/image93.png" alt="" /></p></li>
+<li><p>Scroll down the configuration page and locate the <strong>Jenkins Location</strong> section. Check the IP of the <strong>Jenkins URL</strong> and enter the <strong>Public IP</strong> of your newly created <strong>Jenkins instance</strong>. Click <strong>Save</strong></p>
+<p><img src="images/100/image94.png" alt="" /></p></li>
+</ul>
+<h3 id="step-22-configure-jenkins-job-wkshp_build_pipeline"><strong>STEP 22</strong>: Configure Jenkins job <strong>wkshp_build_pipeline</strong></h3>
+<ul>
+<li><p>Click on the job <strong>wkshp_build_pipeline</strong></p>
+<p><img src="images/100/image95.png" alt="" /></p></li>
+<li><p>Click <strong>Configure</strong></p>
+<p><img src="images/100/image96.png" alt="" /></p></li>
+<li><p>On <strong>General</strong> tab, scroll down and update <strong>ID_DOMAIN</strong> <strong>Default Value</strong> with your OPC Identity Domain</p>
+<p><img src="images/100/image97.png" alt="" /></p></li>
+<li><p>Continue to scroll down and update <strong>Password Default Value</strong> parameter with your OPC Password.</p>
+<p><img src="images/100/image98.png" alt="" /></p></li>
+<li><p>Next we need to get the Compute URL that will be used by REST APIs. To get the correct URL, switch back to the OPC Services Dashboard browser Tab. Navigate back to the main <strong>Dashboard</strong>. Click the <strong>Compute</strong> navigation and select <strong>View Details</strong>.</p>
+<p><img src="images/100/image99.png" alt="" /></p></li>
+<li><p>Select the <strong>REST Endpoint</strong> and right click to <strong>Copy</strong>.</p>
+<p><img src="images/100/image100.png" alt="" /></p></li>
+<li><p>Back on the Jenkins administration tab, update the <strong>RESTAPI Default Value</strong> with correct <strong>REST endpoint</strong></p>
+<p><img src="images/100/image101.png" alt="" /></p></li>
+<li><p>Continue to scroll down and find <strong>SSHKEY</strong>. Update <strong>Default Value</strong> with your <strong>Identity Domain</strong> and the correct <strong>Name</strong> for the SSH Key created earlier in the lab guide.</p>
+<p><img src="images/100/image102.png" alt="" /></p></li>
+<li><p>Click on <strong>Source Code Management</strong> Tab. Enter the Developer Cloud Service repository URL that you captured earlier and click <strong>Apply</strong>. Then click on <strong>Save</strong></p>
+<p><img src="images/100/image103.png" alt="" /></p></li>
+</ul>
+<h3 id="step-23-configure-jenkins-job-build_and_deploy_weblogicapp"><strong>STEP 23</strong>: Configure Jenkins job Build_And_Deploy_WebLogicApp</h3>
+<ul>
+<li><p>Click on Jenkins to navigate back to main page.</p>
+<p><img src="images/100/image104.png" alt="" /></p></li>
+<li><p>Click on the job <strong>Build_And_Deploy_WebLogicApp</strong></p>
+<p><img src="images/100/image105.png" alt="" /></p></li>
+<li><p>Click <strong>Configure</strong></p>
+<p><img src="images/100/image96.png" alt="" /></p></li>
+<li><p>On <strong>Source Code Management</strong> tab, scroll down and update <strong>Git Repository</strong> with the value that you copied from Developer Cloud Service. Click <strong>Apply</strong>, then click on <strong>Save</strong></p>
+<p><img src="images/100/image106.png" alt="" /></p></li>
+</ul>
+<h2 id="configure-devcs--jenkins-build-server-integration">Configure DevCS &amp; Jenkins Build Server Integration</h2>
+<h3 id="step-24-configure-developer-cloud-service"><strong>STEP 24</strong>: Configure Developer Cloud Service</h3>
+<ul>
+<li><p>Switch back to the browser tab where you are logged into Developer Cloud Service. If you need to login again follow the instructions outlined earlier in this lab.</p></li>
+<li><p>On left hand navigation panel click <strong>Administration</strong> drop down and select <strong>Webhooks</strong></p>
+<p><img src="images/100/image107.png" alt="" /></p></li>
+</ul>
+<p>Developer Cloud Service provides out of the box integration with 3rd party systems via Webhooks. We will use the Hudson/Jenkins – Git Plugin webhook to notify our Jenkins build server of changes to our source code Git repository.</p>
+<ul>
+<li><p>Click <strong>New Webhook</strong> and enter the following information and click <strong>Done</strong></p>
+<p><strong>Type</strong>: <code>Hudson/Jenkins – Git Plugin</code></p>
+<p><strong>Name</strong>: <code>Jenkins Webhook</code></p>
+<p><strong>Active</strong>: <code>&lt;Leave checked&gt;</code></p>
+<p><strong>URL</strong>: <code>&lt;Jenkins Server IP&gt;/git/notifyCommit</code></p>
+<p><strong>Expand Notification Parameters</strong></p>
+<p><strong>URL</strong>: <code>HTTP Repository Address</code></p>
+<p><strong>Uncheck</strong> <code>sha1</code></p>
+<p><strong>Repository</strong>: <code>Select Git repo with your sample application</code></p>
+<p><strong>Branch</strong>: <code>master</code></p>
+<p><img src="images/100/image108.png" alt="" /></p></li>
+<li><p>Once the Webhook is created click <strong>Test</strong> to validate connectivity.</p>
+<p><img src="images/100/image109.png" alt="" /></p></li>
+<li><p>Click <strong>Logs</strong> to inspect the status of your connection. A green check in the log window will appear when you have connectivity.</p>
+<p><img src="images/100/image110.png" alt="" /></p></li>
+</ul>
+<h1 id="creating-a-new-version-of-the-application">Creating a new version of the Application</h1>
+<h2 id="creating-a-new-version-of-the-application-1">Creating a new version of the Application</h2>
+<h3 id="step-25-modify-application"><strong>STEP 25</strong>: Modify Application</h3>
+<ul>
+<li>Switch back to your <strong>ssh</strong> session. If your ssh session has closed follow instructions described earlier in the lab guide. As the <strong>jenkins</strong> user change to the project directory for the application that you cloned from Developer cloud service.</li>
+</ul>
+<pre><code>cd /home/jenkins/sample-application
+</code></pre>
+<p><img src="images/100/image111.png" alt="" /></p>
+<ul>
+<li>Edit the <strong>index.html</strong> file and change Basic to your name.</li>
+</ul>
+<pre><code>vi ./src/main/webapp/index.xhtml
+</code></pre>
+<ul>
+<li><p>On line 15 change: <strong>Basic Webapp</strong> to <strong>YOURNAME Webapp</strong></p>
+<p>Put your curser on the “<strong>B</strong>” of <strong>Basic</strong>,</p>
+<p><strong>type</strong>: <code>cw</code></p>
+<p><strong>Enter</strong>: <code>your name</code></p>
+<p>Hit the <strong>esc</strong> key</p>
+<p><strong>Type</strong>: <code>:wq</code> and press <strong>enter</strong></p>
+<p><img src="images/100/image112.png" alt="" /></p></li>
+<li><p>View all changes to Git repository: You should see that the <strong>index.xhtml</strong> file has been modified</p></li>
+</ul>
+<pre><code>git status
+</code></pre>
+<p><img src="images/100/image113.png" alt="" /></p>
+<ul>
+<li>Commit the changes to your local Git repository:</li>
+</ul>
+<pre><code>git commit -am “changed title to my name”
+</code></pre>
+<p><img src="images/100/image114.png" alt="" /></p>
+<ul>
+<li>Push changes to the Developer Cloud Service Git repository. When prompted enter your <strong>OPC password</strong>:</li>
+</ul>
+<pre><code>git push origin master
+</code></pre>
+<p><img src="images/100/image115.png" alt="" /></p>
+<h3 id="step-26-automatic-deployment-of-application"><strong>STEP 26</strong>: Automatic deployment of Application</h3>
+<ul>
+<li><p>Click <strong>Jenkins</strong> to navigate back to the home page. It may take a minute to begin, but you should see a job running as shown below.</p>
+<p><img src="images/100/image116.png" alt="" /></p></li>
+<li><p>From the main page jobs that are running will have the ball on the left blinking. It will take about 25 minutes for the job to complete.</p>
+<p><img src="images/100/image117.png" alt="" /></p></li>
+<li><p>While the job is running, we will explore both the Jenkins jobs and Chef Server.</p></li>
+</ul>
+<h2 id="exploring-the-jenkins-server">Exploring the Jenkins Server</h2>
+<h3 id="step-27-explore-jenkins-job-wkshp_build_pipeline"><strong>STEP 27</strong>: Explore Jenkins job wkshp_build_pipeline</h3>
+<p><strong>Description:</strong> Jenkins is a continuous integration and continuous delivery application, used to automate parts of the SDLC. Jenkins can be leveraged to build and test software projects continuously making it easier for developers to integrate changes to the project, and making it easier for users to obtain a fresh build. It also allows for continuous delivery of software by providing powerful ways to define build pipelines and integrating with many testing and deployment technologies.</p>
+<p>All the jobs you see listed on the home page are being used for this lab. The master job is called <strong>Wkshp_build_pipeline</strong>. Click on the link for that job.</p>
+<ul>
+<li><p>Click on the job <strong>wkshp_build_pipeline</strong></p>
+<p><img src="images/100/image118.png" alt="" /></p></li>
+<li><p>Click <strong>Configure</strong></p>
+<p><img src="images/100/image96.png" alt="" /></p></li>
+<li><p>Click on the flow tab</p>
+<p><img src="images/100/image119.png" alt="" /></p></li>
+</ul>
+<p>Here you can see the various jobs getting called to build the environment and deploy the application. This process is started by a developer checking in a new version of their code. Creating that communication between git and this job is something you will do in the workshop today.</p>
+<h2 id="explore-chef">Explore Chef</h2>
+<h3 id="step-28-log-into-chef-web-console"><strong>STEP 28</strong>: Log into Chef Web Console</h3>
+<p><strong>Description:</strong> Chef is configuration management tool written in Ruby and Erlang. It uses a pure-Ruby, domain-specific language (DSL) for writing system configuration "recipes". Chef is used to streamline the task of configuring and maintaining a company's servers, and can integrate with cloud-based platforms</p>
+<ul>
+<li><p>Open a browser and enter <strong>140.86.12.215</strong>. The Chef Login page should render. Enter Username and Password and click <strong>Sign In</strong></p>
+<p><strong>Username</strong>: <code>sdlcwkshpgroup&lt;Organization Id&gt;</code></p>
+<p><strong>Password</strong>: <code>Summer15#</code></p>
+<p><img src="images/100/image120.png" alt="" /></p>
+<p><img src="images/100/image121.png" alt="" /></p></li>
+</ul>
+<p>Notice the Nodes are empty; the last lab of the workshop will create nodes as part of the Jenkins build process; be sure to check this screen again at the end of the workshop</p>
+<ul>
+<li><p>As the new server is being built by Jenkins it is being automatically registered to the Chef Server and assigned a role</p>
+<ul>
+<li><p>Once the new server is registered with Chef it is downloading all of the required cookbooks(a collections of recipes) to configure the server correctly</p>
+<p><img src="images/100/image122.png" alt="" /></p>
+<p>Earlier when you ran the Berks command, you uploaded all the cookbooks required for this workshop.</p></li></ul></li>
+<li><p>To see the cookbooks you uploaded earlier, click on the “Policy” tab on the top of the page.</p>
+<ul>
+<li><p>Select Cookbooks on the left side menu</p></li>
+<li><p>Highlight any cookbook to see details about that cookbook</p>
+<p><img src="images/100/image123.png" alt="" /></p></li></ul></li>
+</ul>
+<h2 id="verify-application-deployment">Verify Application Deployment</h2>
+<h3 id="step-29-verify-application-deployment"><strong>STEP 29</strong>: Verify Application Deployment</h3>
+<ul>
+<li><p>Click <strong>Jenkins</strong> to navigate back to the home page.</p>
+<p><img src="images/100/image124.png" alt="" /></p></li>
+<li><p>After about 25 minutes you will see success. You new WebLogic environment and application is now running.</p>
+<p><img src="images/100/image125.png" alt="" /></p></li>
+<li><p>Switch back to Oracle Public Cloud. If not already on main dashboard click <strong>dashboard</strong></p></li>
+<li><p>Click <strong>Compute</strong> navigation icon and select <strong>Open Service Console</strong></p>
+<p><img src="images/100/image126.png" alt="" /></p></li>
+<li><p>Notice that a new compute instance <strong>MT_Server-1</strong> has been created. Copy <strong>Public IP</strong> of newly created instance.</p>
+<p><img src="images/100/image127.png" alt="" /></p></li>
+<li><p>Along with the provisioning of a new compute instance, WebLogic was installed and your sample application has been deployed. Access application using the URL and the Public IP of your new <strong>MT_Server-1</strong></p>
+<p><code>&lt;IP&gt;:7001/basicWebapp</code></p>
+<p><img src="images/100/image128.png" alt="" /></p></li>
+<li><p>You have completed the lab.</p></li>
+</ul>
+<h1 id="appendix">Appendix</h1>
+<h2 id="mac-osc---cyberduck">MAC OSC - Cyberduck</h2>
+<h3 id="step-30-download-cyberduck-app"><strong>STEP 30</strong>: Download Cyberduck App</h3>
+<ul>
+<li><p>Download the MAC version of Cyberduck from the following URL:
+<a href="http://cyberduck.io">http://cyberduck.io</a></p></li>
+<li><p>Unzip the downloaded zip file, and copy the <strong>Cyberduck.app</strong> file to the desired directory – e.g. the Application directory</p></li>
+<li><p>Double Click on Cyberduck.app and successfully open the application.</p></li>
+<li><p>Once successfully opened, you will need to fully close the application by right clicking on the toolbar icon and selecting Quit</p>
+<p><img src="images/100/image129.png" alt="" /></p></li>
+<li><p>From the directory where the file was copied, <strong>right click</strong> on the <strong>Cyberduck.app</strong> file, and select <strong>Show Package Contents</strong></p>
+<p><img src="images/100/image130.png" alt="" /></p></li>
+<li><p>In the Explorer window, navigate to the <strong>Contents > Resources > Profiles</strong> directory. Leave this window open for the next step.</p>
+<p><img src="images/100/image131.png" alt="" /></p></li>
+</ul>
+<h3 id="step-31-download-oracle-profiles"><strong>STEP 31</strong>: Download Oracle Profiles</h3>
+<ul>
+<li><p>Go to the following URL: <a href="https://trac.cyberduck.io/wiki/help/en/howto/oraclecloud">https://trac.cyberduck.io/wiki/help/en/howto/oraclecloud</a></p></li>
+<li><p>Select the link to download all Cyberduck profiles</p>
+<p><img src="images/100/image132.png" alt="" /></p></li>
+<li><p>Using another Explorer window, <strong>Unzip</strong> the downloaded file. Then copy the *.cyberductprofile files from the unzip directory into the <strong>Contents > Resources > Profiles</strong> directory of the Cyberduck.app</p>
+<p><img src="images/100/image133.png" alt="" /></p></li>
+</ul>
+<h3 id="step-32-create-cyberduck-connection-to-oracle-storage-container"><strong>STEP 32</strong>: Create Cyberduck connection to Oracle Storage Container</h3>
+<ul>
+<li><p>Open the Cyberduck app, and click on the “+” sign at the bottom of the window to create a new connection</p>
+<p><img src="images/100/image134.png" alt="" /></p></li>
+<li><p>Enter the appropriate information to configure your Storage Container Connection. </p>
+<p><strong>Select the Oracle Connection type:</strong> <code>Oracle Storage Cloud Container XX</code> </p>
+<p><strong>ServiceName-Identifier</strong>: <code>Storage-&lt;domain&gt;:&lt;user Name&gt;</code></p>
+<p><img src="images/100/image135.png" alt="" /></p></li>
+<li><p>Close the dialog to save the connection profile.</p></li>
+<li><p>Double click on the bookmark to connect. You will be prompted for your domain’s password.</p></li>
+</ul>

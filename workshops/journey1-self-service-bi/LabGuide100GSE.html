@@ -1,0 +1,93 @@
+<p><img src="images/100GSE/100GSE.JPG" alt="" /> </p>
+<p>Updated: June 5, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>Oracle offers a set of Big Data Journeys to help users get started using Oracle Cloud services with a purpose.  These journeys are available to everyone at <code>http://www.oracle.com/bigdatajourney</code></p>
+<p>Oracle Solution Engineers may use these journeys to build hands-on technical skills with Oracle Big Data Cloud Services.  Additionally, Solution Engineers may use the journeys to work collaboratively with customers.
+Demo Central – powered by Oracle Global Solution Engineering (GSE) - offers a MetCS (Metered Cloud Service) Stack of preconfigured cloud services in the Oracle Public Cloud for Solutions Engineers to use for workshops, demonstrations and proof of concepts.
+As of the date of this publication, a GSE engineer must manually configure a demo environment that has all cloud services necessary to run Big Data Journeys</p>
+<p>This guide is intended to help Oracle Solution Engineers set up an Oracle Big Data Cloud Service – Compute Edition environment in Demo Central so they may run through the Big Data Journeys available for clients and prospects</p>
+<h1 id="steps">Steps</h1>
+<ul>
+<li>Register a Demo with Demo Central</li>
+<li>Launch the Demo Environment</li>
+<li>Customize Your Dashboard to Display Additional Services</li>
+<li>Verify the Storage Cloud Service and Storage Container are Created</li>
+<li>Verify the Big Data Cloud Service – Compute Edition Service is Created</li>
+<li>Begin Your Big Data Journey</li>
+</ul>
+<h2 id="register-a-demo-with-demo-central">Register a Demo with Demo Central</h2>
+<p>1)    Visit Demo Central at <code>http://demo.oracle.com</code>
+2)    Click “Demos” tab
+3)    Click “Register a Demo” button
+4)    Search for “Big Data Cloud Service Compute Edition (BDCS CE) with Zeppelin”
+5)    Complete the Demo Registration form using the following values:</p>
+<ul>
+<li>Demo Purpose: “Personal Learning”</li>
+<li>Description/Comments: “Walk through Big Data Journeys”</li>
+<li>Demo Resource Request Type: “A new Deal Server Environment” </li>
+<li>Activity Start Date:  <your start date></li>
+<li>Activity End Date:  <your end date></li>
+<li>Demo Date(s):  <your demo date></li>
+</ul>
+<p><img src="images/100GSE/picture-01.png" alt="" />  </p>
+<p>6)    Click “Next” button
+7)    Select “Horizontal (NOT Industry-Specific)”
+8)    Check the “Big Data - Compute Edition” checkbox</p>
+<p><img src="images/100GSE/picture-02.png" alt="" />  </p>
+<p>9)    Click “Next” button
+10)    Click “Submit” button
+11)    You will automatically receive an email notification like the one below:</p>
+<p><img src="images/100GSE/picture-03.png" alt="" />  </p>
+<p><strong>Please note:  Your demo instance is NOT automatically provisioned at this point!!</strong>!  You will be notified when your environment is ready – typically 2-4 hours after your demo registration - when you receive an email like the following:
+<img src="images/100GSE/picture-04.png" alt="" />  </p>
+<h2 id="launch-the-demo-environment">Launch the Demo Environment</h2>
+<p>1)    Visit Demo Central at <code>http://demo.oracle.com</code>
+2)    Click “Demos” tab
+3)    Click “Launch Demo” link next to the registration that id that was provisioned for you.  (Note: your environment name will be unique to your demo registration)
+<img src="images/100GSE/picture-05.png" alt="" />  </p>
+<p>4)    Note the usernames and passwords assigned to your environment
+<img src="images/100GSE/picture-06.png" alt="" />  </p>
+<p>5)    Click “Login in to Cloud Service Dashboard” link
+6)    Login using the following credentials:</p>
+<ul>
+<li>User: cloud.admin</li>
+<li>Password: <your cloud.admin user password></li>
+</ul>
+<h2 id="customize-your-dashboard-to-display-additional-services">Customize Your Dashboard to Display Additional Services</h2>
+<p>The “Big Data – Compute Edition” and “Event Hub – Dedicated Cloud Services” are NOT displayed by default on your Services Dashboard.  Follow these steps to display these services on your dashboard
+<img src="images/100GSE/picture-07.png" alt="" />  </p>
+<p>Scroll down and click “Show” for both “Event Hub – Dedicated” and “Big Data – Compute Edition” Services
+<img src="images/100GSE/picture-08.png" alt="" /> </p>
+<h2 id="verify-the-storage-cloud-service-and-storage-container-are-created">Verify the Storage Cloud Service and Storage Container are Created</h2>
+<p>After logging in, you are directed to the My Services Dashboard.  </p>
+<p>Click the “Storage” link to get to the Service Details for Oracle Storage Cloud Service
+<img src="images/100GSE/picture-09.png" alt="" /> </p>
+<p>Note your Identity Domain</p>
+<p>Click on the “Open Service Console” button
+<img src="images/100GSE/picture-10.png" alt="" /> </p>
+<p>Note that the “BDCSCE” container has already been created for you. </p>
+<p>Also note in the upper left it says something like “Storage-gse0002004”.  You will use info this when you provision BDCS-CE.
+<img src="images/100GSE/picture-11.png" alt="" /></p>
+<p>Click “My Services” to go back to your Cloud Services Dashboard</p>
+<h2 id="verify-the-big-data-cloud-service-–-compute-edition-service-is-created">Verify the Big Data Cloud Service – Compute Edition Service is Created</h2>
+<p>Click the “Big Data – Compute Edition” link to get to the Service Details for Oracle Big Data Cloud Service – Compute Edition
+<img src="images/100GSE/picture-12.png" alt="" /></p>
+<p>Note your Identity Domain</p>
+<p>Click on the “Open Service Console”
+<img src="images/100GSE/picture-13.png" alt="" /></p>
+<p>Note that the “myBDCSCE” service has already been created for you
+<img src="images/100GSE/picture-14.png" alt="" /></p>
+<p>Click on the <img src="images/100GSE/picture-15.png" alt="" />  icon next the myBDCSCE service, followed by Big Data Cluster Console</p>
+<p><img src="images/100GSE/picture-16.png" alt="" /></p>
+<p>Log in using the following credentials</p>
+<ul>
+<li>User: bdcsce_admin</li>
+<li>Password: Welcome321
+<img src="images/100GSE/picture-17.png" alt="" /></li>
+</ul>
+<h2 id="begin-your-big-data-journey">Begin Your Big Data Journey</h2>
+<p>Visit <code>http://www.oracle.com/bigdatajourney</code> and register with your email address</p>
+<p>Click the <img src="images/100GSE/picture-18.png" alt="" />  button</p>
+<p>At this point, you can use the pre-created “myBDCSCE” instance and start with <a href="LabGuide300.md">LabGuide300.md</a></p>
+<p>OR</p>
+<p>You can optionally follow the instructions in <a href="LabGuide200.md">LabGuide200.md</a> and create a new BDCSCE instance on your own. </p>

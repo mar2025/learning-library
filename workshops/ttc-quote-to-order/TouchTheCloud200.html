@@ -1,0 +1,571 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-200---process-cloud-service">Lab 200 - Process cloud Service</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This is the second of several labs that are part of the <strong>iPaaS - Build a Quote to Order Process Workshop</strong> </p>
+<p>We are going to look at the process approval workflow process that had being kicked off from Lab 100's Mobile Application. </p>
+<blockquote>
+  <p>If Lab 200 is your starting point, then you can have a look at the appendix at the end of this lab, to create a couple of tasks to work on.</p>
+</blockquote>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>User Experience with Process Cloud</li>
+<li>Process Modeling and Configuration</li>
+</ul>
+<h1 id="-"> </h1>
+<h2 id="process-cloud-user-experience">Process Cloud User Experience</h2>
+<p>In this section we are going to experience the interaction possible from an end user of the PCS interface.</p>
+<h3 id="1-login-to-oracle-cloud"><strong>1</strong>: Login to Oracle Cloud</h3>
+<hr />
+<p><strong>Role: Lisa Jones, Field Sales (lisa.jones)</strong></p>
+<p><img src="images/personas/julie_jones_sales_operations.png" alt="" /></p>
+<p>Since it is Lisa's first time signing into Oracle Cloud, she has to figure out how to access Oracle Process Cloud Services.</p>
+<hr />
+<p>Now we can login as Lisa Jones. From any browser, <strong>go to the following URL</strong>:
+<a href="https://cloud.oracle.com">https://cloud.oracle.com</a></p>
+<p><strong>1.1</strong> Click <strong>Sign In</strong> in the upper right hand corner of the browser.</p>
+<p><img src="images/200/Picture2.png" alt="" />  </p>
+<p><strong>1.2</strong> <strong>IMPORTANT</strong> - Under My Services, ask <strong><em>your instructor</em></strong> which <strong>Region</strong> to select from the drop down list, and <strong>click</strong> on the <strong>My Services</strong> button.</p>
+<p><img src="images/200/Picture3.png" alt="" />  </p>
+<p><strong>1.3</strong> Enter your identity domain and click <strong>Go</strong></p>
+<p><strong><em>NOTE</em></strong>: the <strong>Identity Domain, lisa.jones</strong> and <strong>Password</strong> values will be given to you from your instructor.</p>
+<p><img src="images/200/Picture4.png" alt="" />  </p>
+<p><strong>1.4</strong> Once your Identity Domain is set, enter your <strong>User Name</strong> and <strong>Password</strong> and click <strong>Sign In</strong></p>
+<p><img src="images/200/Picture5.png" alt="" />  </p>
+<p><strong>1.5</strong> Once connected, you will be presented with a Dashboard displaying the various cloud services available to this account. </p>
+<p><img src="images/200/Picture6.png" alt="" />  </p>
+<p><strong>1.6</strong> Click on the <strong>Oracle Process Cloud Service</strong></p>
+<p><img src="images/200/Picture7.png" alt="" /></p>
+<p><strong>1.7</strong> Click on the <strong>Service Instance URL</strong>  Service Instance URL link. This will open Process Cloud Service Console page.</p>
+<h3 id="2-process-cloud-service-console-overview"><strong>2</strong>: Process Cloud Service Console Overview</h3>
+<hr />
+<p><strong>Role: Lisa Jones, Field Sales (lisa.jones)</strong></p>
+<p><img src="images/personas/julie_jones_sales_operations.png" alt="" /></p>
+<hr />
+<p>Oracle Process Cloud Service is divided as three separate functionalities, and depending on you role, you would be able to access these functionalities. The functionalities is divided in Administrator Tasks, End-User Tasks and Developer Tasks. </p>
+<ul>
+<li>The  PCS Landing page gives you a quick glance of the functionality available to you (or in this case Lisa Jones).</li>
+</ul>
+<p><strong>2.1</strong> From Cloud UI dashboard click on the <strong>Service Instance URL</strong> link.</p>
+<p>Lisa will see the task relevant to her, for example, <strong>Work on Tasks</strong> and <strong>Track Instances</strong>.</p>
+<p><img src="images/200/Picture8.png" alt="" />  </p>
+<h3 id="3-working-on-tasks"><strong>3</strong>: Working on Tasks</h3>
+<hr />
+<p><strong>Role: Lisa Jones, Field Sales (lisa.jones)</strong></p>
+<p><img src="images/personas/julie_jones_sales_operations.png" alt="" /></p>
+<p>Lisa wants to look at her outstanding tasks, and approve the incoming Quote requests.</p>
+<hr />
+<p><strong>3.1</strong> Click <strong>Work on Tasks</strong> to access the Task List</p>
+<p><img src="images/200/Picture9.png" alt="" />  </p>
+<p>In the list we can see the outstanding tasks allocated to Lisa. You also have the capability to sort, do filtering and peek at task related to 'me'.</p>
+<p><strong>3.2</strong> Select a task by hovering over the task with mouse and clicking on it. The task you select should be one of the tasks you created in Lab 100, with a <strong>XX:</strong> in fornt of it, (where XX is the postfix of your user id, it should be 01 thru 10).</p>
+<p><img src="images/200/Picture10.png" alt="" /> </p>
+<blockquote>
+  <p>Breakdown of a typical task form: </p>
+  <ol>
+  <li>Action Items - In this instance we have two actions defined, Approve and Reject. The Save functionality allows you to make some changes, save the state of the task and at a later stage come back to the task to complete. </li>
+  <li>Close Form / Maximize</li>
+  <li>Documents Panel Expand, might also include Discussions, if enabled for process</li>
+  <li>Form, or also called the payload for the task. This information is the task specific information required to decide on on an action. Depending on the configuration, information can be updated.</li>
+  <li>Comments</li>
+  <li>Task Information, History and Task Metadata</li>
+  </ol>
+</blockquote>
+<p><strong>3.2</strong> Lets follow the happy path, and click on the action <strong><em>Approve</em></strong></p>
+<ul>
+<li>The page will revert to the task list and you will notice that the task disappeared from your inbox. In fact, you might also get a green confirmation message that your action was accepted.</li>
+</ul>
+<h3 id="4-tracking-instances"><strong>4</strong>: Tracking Instances</h3>
+<hr />
+<p><strong>Role: Roland Dubois, Process Owner (roland.dubois)</strong></p>
+<p><img src="images/personas/roger_frezia_sales_director.png" alt="" /></p>
+<p>Roland Dubois, sales director and process owner wants to see what happened to our process we have approved in the previous step. </p>
+<p>Since a process can be configured to follow different paths depending on rules and the way the process was modeled, it might be sometimes required for a process owner to look at a process instance to see what happened. </p>
+<p>This audit information can also be exported and use for debugging or as input for on-premise systems.</p>
+<hr />
+<p><strong>4.1</strong> Logout as Lisa Jones, and log into the Process Workspace as Roland Dubois (roland.dubois).</p>
+<p><strong>4.2</strong> Click <strong>Track Instances</strong> to access the List of Instances</p>
+<p><img src="images/200/Picture13.png" alt="" />  </p>
+<p><img src="images/200/Picture14.png" alt="" /></p>
+<p>This List displays the active instances. To display completed instances as well, you have to select the <strong>Completed</strong> check box.</p>
+<p><img src="images/200/Picture15.png" alt="" /></p>
+<p><strong>4.3</strong> Click on any process in the list</p>
+<p><img src="images/200/Picture16.png" alt="" /></p>
+<p><strong>4.4</strong> To make it easier, you can expand the task to fill the browser page, by click on the expand task icon in the top left hand corner</p>
+<p><img src="images/200/Picture18.png" alt="" /></p>
+<p><strong>4.5</strong> Expand the History heading</p>
+<p><img src="images/200/Picture17.png" alt="" /></p>
+<p>You have the option to view the history as a list, a tree view or diagram, depending on your needs. </p>
+<p><img src="images/200/Picture19.png" alt="" /></p>
+<ul>
+<li>Graphical View : See the process as a diagram to quickly see what happened</li>
+<li>List: Trace through the steps the process followed</li>
+<li>Tree: Expose the capability to drill into specific step to see what happened in a step</li>
+</ul>
+<p>To determine the next step in the process, you can view the diagram and determine what the next step in the process would be. </p>
+<p><img src="images/200/Picture20.png" alt="" /></p>
+<p><em>Sample flow where the amount was low and did not require further approval.</em></p>
+<h2 id="process-modeling-and-configuration">Process Modeling and Configuration</h2>
+<p>In this section we are going to experience the power of designing and implementing your own processes. Oracle PCS is based on the well documented BPMN specifications and lots of training, information and books exist around BPMN. A good starting point would be to look at <em>Object Management Group
+Business Process Model and Notation</em> <a href="http://www.bpmn.org/#tabs-quickguide">Quick start Guide</a> </p>
+<p>Don't be alarmed by the notation, it might seem overwhelming at first glance, PCS makes it easy to model and is intuitive in helping you to create a business process. </p>
+<hr />
+<h3 id="1-pcs-composer"><strong>1</strong>: PCS Composer</h3>
+<hr />
+<p><strong>Role: YOU, Process Owner (user01-10)</strong></p>
+<p><img src="images/personas/roger_frezia_sales_director.png" alt="" /></p>
+<p>You, as sales director and process owner wants to change the process to add a comment to the Quote to Order process, to be able to distinguish an order placed in EBS by PCS. We want to change the amount of the implemented rule to determine if sales operations should approve a quote. If the amount is high risk and the amount is bigger than $ 10000, it should be approved by sales director. Else if high risk and the amount is under $10000, then the sales manager should approve the quote. </p>
+<p>We are going through the steps on how to implement these changes in the process.</p>
+<hr />
+<p><strong>1.1</strong> Follow the steps in the previous section <strong>1: Login to Process Cloud Service</strong> to sign into PCS, but this time using <strong><em>(demo.user01-10)</em></strong> sign on details.</p>
+<p><strong>1.2</strong> On the welcome page, click on Develop Processes</p>
+<p><img src="images/200/Picture21.png" alt="" /></p>
+<ul>
+<li><p>You will be presented with the PCS Composer home page</p></li>
+<li><p>From this page you will be able to create a new Space, or even use a template to create a new process.</p></li>
+</ul>
+<blockquote>
+  <p>An interesting exercise after the workshop, is to come back to the Create functionality and have a look at the QuickStart Apps available. You can also create a process and expose that as a QuickStart App template.</p>
+</blockquote>
+<p><img src="images/200/Picture22.png" alt="" /></p>
+<h3 id="2-spaces"><strong>2</strong>: Spaces</h3>
+<hr />
+<p>A space groups processes together, and also allows you to share a space with other users. As a space owner it allows you to give specific roles: viewer, owner and editor roles.</p>
+<hr />
+<p><strong>2.1</strong> Click on the Touch The Cloud Space</p>
+<p><img src="images/200/Picture23.png" alt="" /></p>
+<h3 id="3-working-with-applications"><strong>3</strong>: Working with Applications</h3>
+<hr />
+<p>An Application contains all the defined artifacts, for example rules, integrations and processes to support this application.</p>
+<hr />
+<p>In the next couple of steps we are going to extend the Quote to Order. To be safe, we are going to make a copy and use that to implement our changes.</p>
+<p><strong>3.1</strong> Click on the Quote to Order Application hamburger menu and select Clone</p>
+<p><img src="images/200/Picture25.png" alt="" /></p>
+<p><strong>3.2</strong> Give your clone a new name, by appending your user name <strong><em>(User01..User10)</em></strong>, and click Create, and leave the <strong><em>Open immediately</em></strong> option on. Make sure you select <strong><em>Touch the Cloud</em></strong> space to clone to.</p>
+<p><img src="images/200/Picture26.png" alt="" /></p>
+<ul>
+<li>Now we have our clone ready to be changed, so let us proceed and implement our changes.</li>
+</ul>
+<p><img src="images/200/Picture27.png" alt="" /></p>
+<h3 id="4-editing-rules"><strong>4</strong>: Editing Rules</h3>
+<p><strong>4.1</strong> Since we are going to edit this process, ensure that it is in <strong>Edit</strong> mode by selecting the <code>pencil icon</code> in the blue header at the top of the page</p>
+<p><img src="images/200/Picture27a.png" alt="" /></p>
+<p><strong>4.2</strong> Click on the process to open up the process model</p>
+<p><img src="images/200/Picture28.png" alt="" /></p>
+<p><strong>4.3</strong> Back on the process model, click on the Approval Decision and select Open Decision</p>
+<p><img src="images/200/Picture33.png" alt="" /></p>
+<p><strong>4.4</strong> Select the row ApprovalRule.in.limit, by clicking in the cell - the cursor will change to a right pointing arrow.</p>
+<p><img src="images/200/Picture34.png" alt="" /></p>
+<p><strong>4.5</strong> Click on the Pencil Icon above table, then click on the Local Range Value Set    Pencil on the Add/Modify Page</p>
+<p><img src="images/200/Picture68.png" alt="" /></p>
+<p><img src="images/200/Picture35.png" alt="" /></p>
+<p><strong>4.6</strong> Let's change the value to a lower limit, 5000 and also add human understandable aliases for the rule. To edit a cell, click in the cell and apply the changes as indicated.</p>
+<p><img src="images/200/Picture36.png" alt="" /></p>
+<p><strong>4.7</strong> Click on Done</p>
+<ul>
+<li>You will see the rules now display a more readable rules set</li>
+</ul>
+<p><img src="images/200/Picture37.png" alt="" /> </p>
+<h3 id="5-process-model"><strong>5</strong>: Process Model</h3>
+<p><strong>5.1</strong> Next step is to add the comment. Go back to the <strong>Quote to Order Process</strong> process by selecting the tab next to the <strong>ApprovalRule</strong> that you just worked on.</p>
+<p><img src="images/200/Picture37a.png" alt="" /></p>
+<p><strong>5.2</strong> Now, click on the process to open up the process model, if not already open.</p>
+<p><img src="images/200/Picture28.png" alt="" /></p>
+<p><strong>5.3</strong> Click on the Capture Order - the blue activity at the bottom right of the model. If nerequired, you can drag the model by clicking on any open space and drag the model to the left, to see the activity.</p>
+<p><img src="images/200/Picture29.png" alt="" /></p>
+<p><strong>5.4</strong> Click on hamburger icon and select <strong><em>Open Data Association</em></strong></p>
+<p><img src="images/200/Picture30.png" alt="" /> </p>
+<p><img src="images/200/Picture31.png" alt="" /></p>
+<p><strong>5.5</strong> Now that we are in the Data Association page, we can assign the comment </p>
+<p>On the source side of the mapping, expand the <strong><em>Process Data</em></strong> element.  On the target side, expand the <strong><em>CreateOrderRequest</em></strong> and also the <strong><em>header</em></strong>,  elements. 
+Drag <strong><em>mcs<em>id</em></strong> in the first open slot in the left hand side, and drag <strong><em>comment</em></strong> next to <strong><em>mcs</em>id</em></strong> to complete the assignment  </p>
+<p><img src="images/200/Picture32.png" alt="" /></p>
+<p>For clarity :</p>
+<p><img src="images/200/Picture73.png" alt="" /></p>
+<p><strong>5.6</strong> Click <strong>Apply</strong> in the upper right of the Data Association window.</p>
+<p><img src="images/200/Picture73a.png" alt="" /></p>
+<h3 id="6-adding-approvals"><strong>6</strong>: Adding Approvals</h3>
+<p><strong>6.1</strong> A swimlane indicates the role which will execute the action defined within the lane. Click on the white plus sign at the bottom of model.</p>
+<p><img src="images/200/Picture38.png" alt="" /></p>
+<p><strong>6.2</strong> Click on the newly created swimlane and select the pencil icon to edit the properties</p>
+<p><img src="images/200/Picture39.png" alt="" /></p>
+<p><img src="images/200/Picture40.png" alt="" /></p>
+<p><strong>6.3</strong> Click on the plus sign next to Role to add <code>Sales Director</code></p>
+<p><img src="images/200/Picture41.png" alt="" /></p>
+<p><strong>6.4</strong> Next drag an Approve from the BPM Palette to the newly created <strong>Sales Director</strong> swimlane</p>
+<p><img src="images/200/Picture42.png" alt="" /></p>
+<p><strong>6.5</strong> Create a new connection from <strong>Approval</strong> to the <strong>User Task</strong>.  Create a new condition from the Approval gateway and drag it on top of the new <strong>User task</strong></p>
+<p><img src="images/200/Picture42a.png" alt="" /></p>
+<p><strong>6.6</strong> With the new connection highlighted, edit the properties by clicking on the little pencil icon</p>
+<p><img src="images/200/Picture42b.png" alt="" /></p>
+<p><strong>6.7</strong> Enter the condition <code>approvalRequired and quoteTotal &gt; 10000</code> then select the <strong>Validate</strong> button to ensure it was copied correctly.</p>
+<p><strong>6.8</strong> After validating the condition, select the <code>OK</code> button to save the condition</p>
+<p><img src="images/200/Picture42c.png" alt="" /></p>
+<p><strong>6.9</strong> When the quote total is between $5000 and $10000 we still want the Sales Manager to approve the order.  In order to implement this behavior, we only have to make a slight adjustment to the conditional branch to the Sales Manager's approval <strong>Approve Order</strong>.  Click on the line between <strong>Approval</strong> and <strong>Approve Order</strong> then select the pencil icon so we can modify the condition.</p>
+<p><img src="images/200/Picture42d.png" alt="" /></p>
+<p><strong>6.10</strong> Modify the condition so that it is <code>approvalRequired and quoteTotal &lt;= 10000</code> then select the <strong>Validate</strong> button to ensure it was copied correctly.</p>
+<p><strong>6.11</strong> After validating the condition, select the <code>OK</code> button to save the condition</p>
+<p><img src="images/200/Picture42e.png" alt="" /></p>
+<p><strong>6.12</strong> Next, select the new activity in the <strong>Sales Manager</strong> swim lane and change the name by double clicking on the text <strong>User Task</strong></p>
+<p><img src="images/200/Picture44.png" alt="" /></p>
+<p><strong>6.13</strong> Now we have to supply the properties for the <strong>Sales Director Approval</strong> task, as supplied in the screenshot below</p>
+<p><img src="images/200/Picture45.png" alt="" /></p>
+<p><strong>6.14</strong> Fill in <code>Form</code>, <code>Presentation</code>, and <code>Action</code> as shown in the picture below.</p>
+<p>In order to set the <code>Form</code>, select the magnifying glass icon, then select the already existing <em>WebForm</em></p>
+<p>Note that the <code>Presentation</code> will probably already be set to <em>Main</em> and that the <code>Action</code> will probably already be set to <em>APPROVE,REJECT</em></p>
+<p><strong>6.15</strong> For the <code>Title</code> property, select the pulldown just to the right of the textbox and select <code>Expression Editor</code></p>
+<p><img src="images/200/Picture46.png" alt="" /></p>
+<p><strong>6.16</strong> In the textarea for the expression, enter <code>WebForm.mcs_id + " - Sales Director Approval"</code></p>
+<p><strong>6.17</strong> After entering the expression, select the <strong>Validate</strong> button to ensure it was copied correctly.</p>
+<p><strong>6.18</strong> After validating the condition, select the <code>OK</code> button to save the condition</p>
+<p><img src="images/200/Picture46a.png" alt="" /></p>
+<p><strong>6.19</strong> Next, drag an exclusive gateway into the model just after the <strong>Sales Director Approval</strong>, connect the human task <strong>Sales Director Approval</strong> with the gateway, then the gateway to the <strong>Capture Order</strong>, using the connector icon to create the connections</p>
+<p><img src="images/200/Picture47.png" alt="" /></p>
+<p><img src="images/200/Picture48.png" alt="" /></p>
+<p><strong>6.20</strong> Connect the gateway to the <strong>Not Approved end</strong> activity. Feel free to move the activities around to make it more readable</p>
+<p><img src="images/200/Picture49.png" alt="" /></p>
+<p><strong>6.21</strong> With Connection highlighted, edit the properties and supply the following information, to test if the approval was rejected, by setting the condition to be <strong>TaskOutcomeDataObject == "REJECT"</strong>.</p>
+<p><img src="images/200/Picture50.png" alt="" /></p>
+<h3 id="7-validating-changes"><strong>7</strong>: Validating Changes</h3>
+<p><strong>7.1</strong> Before we can go ahead and deploy the newly created application, we first have to validate if it is correct. Click on the <strong>Check mark</strong> in the right hand side of the screen.</p>
+<p><img src="images/200/Picture51.png" alt="" /></p>
+<p><img src="images/200/Picture52.png" alt="" /></p>
+<p><strong>7.2</strong> You should see the following message, if not, look at the error codes and fix them.</p>
+<p><img src="images/200/Picture53.png" alt="" /></p>
+<h3 id="8-deployment"><strong>8</strong>: Deployment</h3>
+<p><strong>8.1</strong> To deploy we need to create a snapshot</p>
+<p><img src="images/200/Picture54.png" alt="" /></p>
+<p><strong>8.2</strong> Provide <strong><em>Comment</em></strong> and <strong><em>Name</em></strong> for snapshot. Other Options - check <strong><em>Make Snapshot</em></strong></p>
+<p><strong>8.3</strong> After filling in the comments and a name for the snapshot, click on <strong><em>Publish</em></strong></p>
+<p><img src="images/200/Picture55.png" alt="" /></p>
+<p><strong>8.4</strong> Click on Management at top right hand of page</p>
+<p><img src="images/200/Picture56.png" alt="" /></p>
+<p><strong>8.5</strong> If this is the first time you've published in this browser session, you may be prompted to login with your username/password for publishing.  If this is the case, enter your assigned username/password (ie: <code>demo.userXX</code>)</p>
+<p><img src="images/200/Picture55a.png" alt="" /></p>
+<p><strong>8.6</strong> From the <strong>Manage Deployed Applications</strong> screen, click on the hamburger icon next to My Server, and select deploy</p>
+<p><img src="images/200/Picture57.png" alt="" /></p>
+<p><strong>8.7</strong> Follow the <strong>Deployment Application to My Server</strong> wizard</p>
+<p>In Space <strong><em>Touch the Cloud</em></strong>, select your <strong><em>Quote to Order - USER(1-10)</em></strong> Application, with the same <strong><em>New Approval</em></strong> snapshot, we have create earlier, to deploy:</p>
+<p><img src="images/200/Picture58.png" alt="" /></p>
+<p>Select the <strong><em>ICSKEY</em></strong> as <strong>Keystore Credential</strong> and confirm that <strong>Security Option</strong> is set to <strong><em>APP Id - Username Token</em></strong>. <em>Username and password will be filled in automatically after <strong><em>ICSKEY</em></strong> was selected.</em> </p>
+<p><img src="images/200/Picture59.png" alt="" /></p>
+<p><img src="images/200/Picture60.png" alt="" /></p>
+<p><img src="images/200/Picture61.png" alt="" /> </p>
+<p><img src="images/200/Picture62.png" alt="" /></p>
+<p><img src="images/200/Picture63.png" alt="" /></p>
+<p><strong>8.8</strong> Click on <strong>Finish</strong></p>
+<h3 id="9-role-assignment"><strong>9</strong>: Role Assignment</h3>
+<p>Now we have to assign physical users to the new <strong>Sales Director</strong> Role we have created.</p>
+<p><strong>9.1</strong> Click the PCS Home icon at top of page</p>
+<p><img src="images/200/Picture64.png" alt="" /></p>
+<p><strong>9.2</strong> On the Workspace home page, click on <strong>Configure</strong></p>
+<p><img src="images/200/Picture65.png" alt="" /></p>
+<p><strong>9.3</strong> In left hand side, click on <strong>Manage Roles</strong></p>
+<p><img src="images/200/Picture66.png" alt="" /></p>
+<p><strong>9.4</strong> Add <strong><em>Roland Dubois</em></strong> to the <strong>Sales Director</strong> role </p>
+<p>Find and select your app specific Sales Director (in the example user03, yours will be User01..10)</p>
+<p><img src="images/200/Picture74.png" alt="" /></p>
+<p>Then click on Add Member button</p>
+<p><img src="images/200/Picture75.png" alt="" /></p>
+<p>Search for the user 'roland' and add by selecting and clicking on OK</p>
+<p><img src="images/200/Picture76.png" alt="" /></p>
+<p>Click on Save to update the user assignment.</p>
+<p><img src="images/200/Picture77.png" alt="" /></p>
+<p><strong>9.5</strong> Repeat the process for each of the roles in your application.</p>
+<p>Here a list of users and allocated roles:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">Person</th>
+<th style="text-align:center;">Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">Bala Gupta, YOU (demo.User01-10)</td>
+<td style="text-align:center;">Sales Person</td>
+</tr>
+<tr>
+<td style="text-align:left;">John Dunbar, YOU (demo.User01-10)</td>
+<td style="text-align:center;">Sales Manager</td>
+</tr>
+<tr>
+<td style="text-align:left;">Lisa Jones, YOU (demo.User01-10)</td>
+<td style="text-align:center;">Sales Operations</td>
+</tr>
+<tr>
+<td style="text-align:left;">Roland Dubois, YOU (demo.User01-10)</td>
+<td style="text-align:center;">Sales Director</td>
+</tr>
+</tbody>
+</table>
+<h2 id="testing-new-process-flow-using-mobile-application">Testing new Process flow using Mobile Application</h2>
+<p>In this section we are going to hook up our new process to the mobile application we have created in Lab 100.</p>
+<hr />
+<h3 id="pcs">PCS</h3>
+<h4 id="capture-wsdl-end-point">Capture WSDL End point</h4>
+<p><strong>1</strong> From the PCS Composer Home Page, Click on Management at top right hand of page</p>
+<p><img src="images/200/Picture56.png" alt="" /></p>
+<p><img src="images/200/Picture69.png" alt="" /></p>
+<p><strong>2</strong> Click on the <strong><em>hamburger menu</em></strong> next to your deployed application and select <strong><em>Web Services</em></strong></p>
+<p><img src="images/200/Picture70.png" alt="" /></p>
+<p><strong>3</strong> Click on the <strong><em>link</em></strong> to open <strong><em>URL</em></strong> in new browser window</p>
+<p><img src="images/200/Picture71.png" alt="" /></p>
+<p><strong>4</strong> Copy the <strong>URL</strong></p>
+<p><strong>5</strong> Change the URL as follows, to ensure we are working with a verrsion, and not a specific deployed instance. The deployed instance might change if you redeploy the process, but the version will be the same :</p>
+<p>Original URL -  https://touchthecloudpcs.process.us2.oraclecloud.com/soa-infra/services/default/Quote<em>To</em>Order<em>-</em>demo.user03!1.0*soa_aaf80f85-d04b-4ad5-8655-31622cb766ec/QuoteToOrderProcess.service?WSDL</p>
+<p>Changed URL - https://touchthecloudpcs.process.us2.oraclecloud.com/soa-infra/services/default/Quote<em>To</em>Order<em>-</em>demo.user03!1.0/QuoteToOrderProcess.service?WSDL</p>
+<p>To summarize, drop everything after the <strong><em>!1.0</em></strong> and before <strong><em>/QuoteToOrder</em></strong></p>
+<p>Keep this URL handy to use in the MCS configuration.</p>
+<h3 id="mcs">MCS</h3>
+<h4 id="setup-mcs-to-use-your-new-deployed-pcs-process">Setup MCS to use your new deployed PCS process</h4>
+<p><strong>1</strong> Delete your <strong>*PTC_TTC_XX</strong> Connector</p>
+<p><img src="images/200/Picture72.png" alt="" /></p>
+<p><strong>2</strong> Recreate your connector in MCS, using the WSDL URL obtained in PCS by following Lab 100 - 3.1 through 3.11. Replace the <strong>WSDL URL:</strong> referenced in 3.3 with the <strong>WSDL</strong> captured in previous PCS step.</p>
+<p><strong>3</strong> No need to change the API, as it reference the new Connector, which has the same name as the original</p>
+<h3 id="testing">Testing</h3>
+<p>You are now ready to trigger your own process using the already deployed Mobile Application, as only backend configuration changed.</p>
+<p>From the Mobile Application created in Lab 100, create a new Quote.</p>
+<p>Since YOU (User01-10), have all the roles assigned, you can use your user to step through the different approvals in the PCS task list.</p>
+<p>After the Director Approval, then you can have a look at the full flow of the quote to order process, using the tracking screen, with the completed filter applied to the instances list.</p>
+<p><img src="images/200/Picture78.png" alt="" /></p>
+<hr />
+<h2 id="end-of-lab-200"><em>End of Lab 200</em></h2>
+<hr />
+<h1 id="appendix">Appendix</h1>
+<hr />
+<h3 id="create-a-quote-if-you-have-not-completed-lab-100">Create a Quote, if you have not completed Lab 100</h3>
+<hr />
+<p><strong>Role: Bala Gupta, Field Sales (bala.gupta)</strong>
+<img src="images/personas/john_lee_field_sales.png" alt="" /></p>
+<p>In this step we are going to create some tasks to work on, if you have completed Lab 100, there should be a couple of task already available.</p>
+<p>Login into the PCS Workspace as <strong><em>Bala</em></strong> (bala.gupta).</p>
+<p><strong>1</strong> On the PCS Workspace home page, click on the application <strong>Submit Quote(1.0)</strong></p>
+<p><img src="images/200/Picture11.png" alt="" /></p>
+<p><strong>2</strong> Fill in the information requested information on the form</p>
+<p><img src="images/200/Picture12.png" alt="" /></p>
+<p>For the fields use the following values:</p>
+<p>Quote Number: 4325</p>
+<p>Select a customer from the following table:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">CustomerNumber</th>
+<th>CustomerName</th>
+<th>AddressLine1</th>
+<th>AddressLine2</th>
+<th>Phone</th>
+<th>FirstName</th>
+<th>LastName</th>
+<th>City</th>
+<th>Country</th>
+<th>Zip</th>
+<th>Email</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">1</td>
+<td>ABC Telecommunications</td>
+<td>1021 Fifth Avenue</td>
+<td>New York, NY 10022</td>
+<td>917-123-2345</td>
+<td>Vincent</td>
+<td>DiNatale</td>
+<td>New York</td>
+<td>USA</td>
+<td>10022</td>
+<td>v.dinatale@abctelecomms.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">2</td>
+<td>MedChoice - IDN</td>
+<td>333 Lexington Ave</td>
+<td>New York, NY 10000</td>
+<td>917-123-2346</td>
+<td>Louis</td>
+<td>Wohl</td>
+<td>New York</td>
+<td>USA</td>
+<td>10000</td>
+<td>louis.wohl@medchoice.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">3</td>
+<td>Bronco Drilling Machinery</td>
+<td>150 East 50th Street</td>
+<td>New York, NY 10023</td>
+<td>917-123-2347</td>
+<td>Jack</td>
+<td>Thomas</td>
+<td>New York</td>
+<td>USA</td>
+<td>10022</td>
+<td>jack.thomas@broncodrilling.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">4</td>
+<td>BHB Technologies</td>
+<td>522 West 38th Street</td>
+<td>New York, NY 10018</td>
+<td>917-123-2348</td>
+<td>Robbie</td>
+<td>Hun</td>
+<td>New York</td>
+<td>USA</td>
+<td>10018</td>
+<td>robbie.hun@bhbtech.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">5</td>
+<td>CIC Management Inc.</td>
+<td>68 Church Street</td>
+<td>New York, NY 10000</td>
+<td>917-123-2349</td>
+<td>Lucy</td>
+<td>Leu</td>
+<td>New York</td>
+<td>USA</td>
+<td>10000</td>
+<td>lucy.leu@cicmgt.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">6</td>
+<td>ABC Application Software</td>
+<td>536 Madison Avenue DE</td>
+<td>New York, NY 10012</td>
+<td>917-123-2350</td>
+<td>Lenore</td>
+<td>Soifer</td>
+<td>New York</td>
+<td>USA</td>
+<td>10012</td>
+<td>lenore.soifer@abcsoftware.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">7</td>
+<td>Capital Investments Group</td>
+<td>400 Madison Avenue</td>
+<td>New York, NY 10024</td>
+<td>917-123-2351</td>
+<td>James</td>
+<td>Roman</td>
+<td>New York</td>
+<td>USA</td>
+<td>10024</td>
+<td>james.roman@capitalinvest.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">8</td>
+<td>Carbon Chemical Corporation</td>
+<td>502 East 81st Street</td>
+<td>New York, NY 10028</td>
+<td>917-123-2352</td>
+<td>Loren</td>
+<td>Gab</td>
+<td>New York</td>
+<td>USA</td>
+<td>10028</td>
+<td>loren.gab@carbon_chem.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">9</td>
+<td>Capp Worldwide Services Inc.</td>
+<td>32 Ave of the Americas</td>
+<td>New York, NY 10013</td>
+<td>917-123-2353</td>
+<td>Paul</td>
+<td>Pub</td>
+<td>New York</td>
+<td>USA</td>
+<td>10013</td>
+<td>paul.pub@cappww.com</td>
+</tr>
+<tr>
+<td style="text-align:left;">10</td>
+<td>Astro-Energy Systems</td>
+<td>35 East 76th Street</td>
+<td>New York, NY 10021</td>
+<td>917-123-2354</td>
+<td>Jenny</td>
+<td>Roy</td>
+<td>New York</td>
+<td>USA</td>
+<td>10021</td>
+<td>jenny.roy@astro_energy.com</td>
+</tr>
+</tbody>
+</table>
+<p>For the items, use some of these inventory items, using UOM (unit of measure) as 'each':</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">ItemNumber</th>
+<th><em>Inventory Item ID</em></th>
+<th>Description</th>
+<th style="text-align:right;">List Price Per Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">1</td>
+<td>155</td>
+<td>Sentinel Deluxe Desktop</td>
+<td style="text-align:right;">1969.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">2</td>
+<td>249</td>
+<td>Hard Drive - 250GB SSD</td>
+<td style="text-align:right;">899.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">3</td>
+<td>436</td>
+<td>Lightning Inkjet Printer</td>
+<td style="text-align:right;">300.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">4</td>
+<td>2848</td>
+<td>Vision Pad DX - Mobile Computer</td>
+<td style="text-align:right;">249.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">5</td>
+<td>190878</td>
+<td>Vision Pad X100 - Mobile Computer</td>
+<td style="text-align:right;">249.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">6</td>
+<td>2155</td>
+<td>Sentinel Standard Desktop - Rugged</td>
+<td style="text-align:right;">1900.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">7</td>
+<td>174762</td>
+<td>205 Digital Camera</td>
+<td style="text-align:right;">215.00</td>
+</tr>
+<tr>
+<td style="text-align:left;">8</td>
+<td>12023</td>
+<td>Digital Camera, Professional</td>
+<td style="text-align:right;">487.80</td>
+</tr>
+<tr>
+<td style="text-align:left;">9</td>
+<td>12031</td>
+<td>Television 102"</td>
+<td style="text-align:right;">3749.99</td>
+</tr>
+<tr>
+<td style="text-align:left;">10</td>
+<td>12029</td>
+<td>Television 96"</td>
+<td style="text-align:right;">2608.69</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3</strong> Click on the Submit button to start the Quote to Order process.</p>

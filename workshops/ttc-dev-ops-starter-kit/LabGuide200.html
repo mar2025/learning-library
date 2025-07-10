@@ -1,0 +1,196 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-200">Lab 200</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In Lab 200 we will be building and deploying our first microservice, this microservice will provide a RESTful interface for our catalog database. The microservice is built using Java and leverages lightweight libraries JAX-WS and Grizzly IO to create RESTful endpoints. In Lab 300 we will be wiring up a MySQL Database to the microservice.</p>
+<p><strong>To log issues</strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Import microservice from GitHub</li>
+<li>Setup automated build to create application artifacts</li>
+<li>Setup an automated deployment to provision and deploy your application into the Oracle Cloud</li>
+<li>Bind your microservice to the UI</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>We will be leveraging a prepared application found on <a href="https://github.com/CloudAccelerate/TTC-MySQLMicroservice.git">GitHub: https://github.com/CloudAccelerate/TTC-MySQLMicroservice.git</a></li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Expected that lab 100 has been completed already</li>
+<li>Expected that your storage policy has been set as described in the <strong>prerequisite guide</strong></li>
+</ul>
+<h2 id="technologies-involved">Technologies Involved</h2>
+<ul>
+<li>Oracle Cloud Services:<ul>
+<li>Developer Cloud Service</li>
+<li>Application Container Cloud Service</li></ul></li>
+<li>Application Technologies<ul>
+<li>Written in Java</li>
+<li>Leverages JAX-WS and Grizzly IO to provide a RESTful interface</li>
+<li>Uses MySQL drivers for DB interface</li>
+<li>Uses Maven for build scripting and library management</li></ul></li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>You will be building out the first component of your Microservices Application</p>
+<p><img src="images/200/targeted-architecture.png" alt="" /></p>
+<h1 id="create-build-and-deploy-a-mysql-microservice">Create, Build and Deploy a MySQL Microservice</h1>
+<h2 id="add-to-your-developer-cloud-service-project">Add to your Developer Cloud Service Project</h2>
+<h3 id="step-1-login-to-developer-cloud-service"><strong>STEP 1</strong>: Login to Developer Cloud Service</h3>
+<p>Oracle Developer Cloud Service provides a complete development platform that streamlines team development processes and automates software delivery. The integrated platform includes an issue tracking system, agile development dashboards, code versioning and review platform, continuous integration and delivery automation, as well as team collaboration features such as wikis and live activity stream. With a rich web-based dashboard and integration with popular development tools, Oracle Developer Cloud Service helps deliver better applications faster.</p>
+<ul>
+<li>Return to the main Cloud UI Dashboard</li>
+</ul>
+<p><img src="images/100/step01.png" alt="" /></p>
+<ul>
+<li>From the Cloud UI dashboard click on the <strong>Developer</strong> service. In our example, the Developer Cloud Service is named <strong>developer99019</strong>.   </li>
+</ul>
+<p><img src="images/100/Picture100-6.png" alt="" /></p>
+<ul>
+<li><p>The Service Details page gives you a quick glance of the service status overview.</p>
+<p><img src="images/100/Picture100-7.png" alt="" /></p></li>
+<li><p>Click <strong>Open Service Console</strong> for the Oracle Developer Cloud Service. The Service Console will then list all projects for which you are currently a member.</p>
+<p><img src="images/100/Picture100-7.5.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-add-mysql-microservice-to-your-project"><strong>STEP 2</strong>: Add MySQL Microservice to your Project</h3>
+<ul>
+<li>From the home screen select your Touch the Cloud project.</li>
+</ul>
+<p><img src="images/200/step01.png" alt="" /></p>
+<ul>
+<li>On the Home screen you should see a list of current repositories in the project.</li>
+</ul>
+<p><img src="images/200/step02.png" alt="" /></p>
+<ul>
+<li>Click the <strong>New Repository</strong> button Fill out the form and hit <strong>create</strong></li>
+</ul>
+<pre><code>Name: MySQLMicroservice
+Select Import from Existing Repository:
+https://github.com/CloudAccelerate/TTC-MySQLMicroservice.git
+</code></pre>
+<p><img src="images/200/step03-1.png" alt="" /></p>
+<ul>
+<li>Your code is now imported into a new Git repository in Developer Cloud Service under your project</li>
+</ul>
+<p><img src="images/200/step04.png" alt="" /></p>
+<h3 id="step-3-create-deployment-artifacts-through-an-automated-build"><strong>STEP 3</strong>: Create Deployment Artifacts through an Automated Build</h3>
+<ul>
+<li>Click <strong>Build</strong> on the left menu</li>
+</ul>
+<p><img src="images/200/step05.png" alt="" /></p>
+<ul>
+<li>Create a <strong>New Job</strong>. Fill out the form and click <strong>Save</strong></li>
+</ul>
+<blockquote>
+  <p>Name: MySQLMicroserviceBuild</p>
+</blockquote>
+<p><img src="images/200/step06.png" alt="" /></p>
+<ul>
+<li>You will now be able to configure your build. From the Main tab, ensure you select <strong>JDK 8</strong></li>
+</ul>
+<p><img src="images/200/step07.png" alt="" /></p>
+<ul>
+<li>Select the <strong>Source Control</strong> tab and select <strong>Git</strong>, followed by the <strong>MySQLMicroservice</strong> repository. Add the <strong>Master branch</strong>.</li>
+</ul>
+<p><img src="images/200/step08.png" alt="" /></p>
+<ul>
+<li>Select the <strong>Build Step</strong> Add a <strong>Maven 3</strong> build step</li>
+</ul>
+<p><img src="images/200/step09.png" alt="" /></p>
+<ul>
+<li>Accept the default settings</li>
+</ul>
+<p><img src="images/200/step10.png" alt="" /></p>
+<ul>
+<li>Select the <strong>Post Build</strong> tab</li>
+</ul>
+<pre><code>Archive the artifacts: **/target/*
+Publish JUnit test result report: **/target/surefire-reports/*.xml
+</code></pre>
+<p><img src="images/200/step11.png" alt="" /></p>
+<ul>
+<li><strong>Save</strong> and <strong>Build Now</strong></li>
+</ul>
+<p><img src="images/200/step13.png" alt="" /></p>
+<h3 id="step-4-create-an-application-deployment-for-the-build"><strong>STEP 4</strong>: Create an Application Deployment for the Build</h3>
+<ul>
+<li>Click <strong>Deploy</strong> from the left menu</li>
+</ul>
+<p><img src="images/200/step14.png" alt="" /></p>
+<ul>
+<li>Select Create <strong>New Configuration</strong> and fill out the form and select Application Container from the Deployment Target</li>
+</ul>
+<pre><code>ConfigurationName: MySQLMicroserviceDeploy
+</code></pre>
+<p><img src="images/200/step15.png" alt="" /></p>
+<ul>
+<li>Select your existing application container connection and enter in your domain credentials then Test the Connection. Once successfully tested, select connection.</li>
+</ul>
+<p><img src="images/200/step16.png" alt="" /></p>
+<ul>
+<li>Select the following options:</li>
+</ul>
+<pre><code>Runtime: Java
+Billing: Hourly
+Type: Automatic
+Deploy Stable Builds Only
+Job: MySQLMicroserviceBuild
+Artifact: target/catalog-microservice-dist.zip
+</code></pre>
+<p><img src="images/200/step17.png" alt="" /></p>
+<ul>
+<li>Save and Start the Deployment</li>
+</ul>
+<p><img src="images/200/step19.png" alt="" /></p>
+<ul>
+<li>The deployment should execute successfully</li>
+</ul>
+<p><img src="images/200/step20.png" alt="" /></p>
+<h3 id="step-5-verify-deployment"><strong>STEP 5</strong>: Verify Deployment</h3>
+<ul>
+<li>Click the Deploy to ACCS link on the MySQLMicroserviceDeploy Deployment to navigate to the Application Container Cloud Service Console</li>
+</ul>
+<p><img src="images/200/step20a.png" alt="" /></p>
+<ul>
+<li>You will now see the Deployed MySQL Microservice Application Running</li>
+</ul>
+<p><img src="images/200/step21.png" alt="" /></p>
+<ul>
+<li>Open the link provided to view the Deployed Application and append "/catalog/v1/" to the end of the URL.</li>
+</ul>
+<pre><code>ex: https://mysqlmicroservicedeploy-a458023.apaas.us6.oraclecloud.com/catalog/v1/
+</code></pre>
+<blockquote>
+  <p>Note that until the Database is connected we are expecting a 500 (internal server error) to occur
+  Take record of the full URL create as it will be used later in the lab</p>
+</blockquote>
+<p><img src="images/200/step22.png" alt="" /></p>
+<h3 id="step-6-bind-your-microservice-to-the-ui-application"><strong>STEP 6</strong>: Bind your Microservice to the UI Application</h3>
+<ul>
+<li>Return to the main screen for Application Container Cloud Service</li>
+</ul>
+<p><img src="images/200/step21.png" alt="" /></p>
+<ul>
+<li>Select CatalogUIDeploy</li>
+</ul>
+<p><img src="images/200/step23.png" alt="" /></p>
+<ul>
+<li>Select the Deployments tab on the left</li>
+</ul>
+<p><img src="images/200/step24.png" alt="" /></p>
+<ul>
+<li>Select <strong>Add</strong> Under Environment Variables and fill out the form</li>
+</ul>
+<pre><code>Name: CATALOG_MICROSERVICE_URL
+Value: &lt;URL from Microservice&gt;
+ex: https://mysqlmicroservicedeploy-a458023.apaas.us6.oraclecloud.com/catalog/v1
+</code></pre>
+<p><img src="images/200/step25.png" alt="" /></p>
+<ul>
+<li>Press the Apply Edits button and wait for the container to be re-created with the new variable</li>
+</ul>
+<p><img src="images/200/step26.png" alt="" /></p>
+<ul>
+<li>Once restarted, select the application url and you should see an updated UI with the Lab 2 achievement unlocked</li>
+</ul>
+<p><img src="images/200/step29.png" alt="" /></p>
+<p><strong>You have now completed lab 200</strong></p>

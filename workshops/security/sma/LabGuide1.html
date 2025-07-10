@@ -1,0 +1,209 @@
+<h1 id="detect-and-investigate-threats">Detect and Investigate Threats</h1>
+<p><img src="images/1/header.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the first of several labs that are part of the <strong>Oracle Security Monitoring and Analytics Cloud Service Workshop.</strong> </p>
+<p>The purpose of this workshop is to give the participant hands on experience of Security Monitoring and Analytics Cloud Service and how they can leverage this service to enable rapid detection and investigation of security threats. </p>
+<p>In this lab, you will upload sample data and evaluate threats.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/SecurityCloudDay/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<p>In this lab, we will cover –</p>
+<ul>
+<li>How to access your SMA environment</li>
+<li>Enabling SMA service</li>
+<li>Reviewing pre-configured correlation rules</li>
+<li>Creating alert rules</li>
+<li>Uploading sample data</li>
+<li>How to evaluate threats</li>
+</ul>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<p>The following are minimum requirements for this lab</p>
+<ul>
+<li><p>Oracle Cloud Trial account with OMC instance provisioned.</p></li>
+<li><p>Sample data: download <a href="resources/sma-sample.zip">here</a></p></li>
+<li><p>A linux host with internet connection - must have <strong>cURL</strong> and <strong>unzip</strong> installed</p></li>
+</ul>
+<h2 id="accessing-your-environment--initial-configuration">Accessing your Environment &amp; Initial Configuration</h2>
+<h3 id="step-1-accessing-your-omc-instance"><strong>STEP 1</strong>: Accessing your OMC Instance</h3>
+<ul>
+<li><p>Navigate to one of the URLs in your Service Activation email to access the service. You will be prompted to change the password on first login.</p>
+<p><img src="images/1/300-001.png" alt="" /></p></li>
+<li><p>Create a new password and provide challenge Q&amp;A for resetting should you ever need to.</p>
+<p><img src="images/1/300-002.png" alt="" /></p></li>
+<li><p>You’re are now ready to start using any of the services shown below. Our focus with be narrowed to <strong>Security Monitoring and Analytics</strong></p>
+<p><img src="images/1/300-003.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-instance-configuration"><strong>STEP 2</strong>: Instance Configuration</h3>
+<p>Prior to using the new service the following minimum configuration:</p>
+<ul>
+<li>Enable Security Monitoring &amp; Analytics</li>
+<li>SMA alert rules</li>
+</ul>
+<h3 id="step-3-enabling-security-monitoring-analytics"><strong>STEP 3</strong>: Enabling Security Monitoring Analytics</h3>
+<ul>
+<li><p>Navigate to <code>Menu Icon</code> -&gt; <code>Home</code> -&gt; <code>Administration</code> -&gt; <code>Entities Configuration</code> -&gt; <code>Licensing</code></p>
+<p><img src="images/1/300-004a.png" alt="" /></p></li>
+<li><p>Click on “DISABLED” under “SMA Enrichment”</p>
+<p><img src="images/1/300-005.png" alt="" /></p></li>
+<li><p>Push selector for “Enable Security Monitoring and Analytics” to the right and click “Apply” to enable</p>
+<p><img src="images/1/300-006.png" alt="" /></p></li>
+<li><p>Enable New License Auto-Assignment by Clicking on "None"</p>
+<p><img src="images/1/300-007.png" alt="" /></p></li>
+<li><p>Toggle selector as shown below and click “Apply”    </p>
+<p><img src="images/1/300-008.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-create-security-monitoring--analytics-based-alerts"><strong>STEP 4</strong>: Create Security Monitoring &amp; Analytics-based Alert(s)</h3>
+<ul>
+<li><p>Navigate <code>Menu Icon</code> -&gt; <code>Home</code> -&gt; <code>Administration</code> -&gt; <code>Alert Rules</code> and Select “Security Analytics” from the Drop-Down Menu</p>
+<p><img src="images/1/300-009a.png" alt="" /></p></li>
+<li><p>Click on “Create Alert Rule”</p>
+<p><img src="images/1/300-010.png" alt="" /></p></li>
+<li><p>Follow the steps provided below to create the “Warning” alert rule. Fill in the form as shown below and click “+ Email Channel” </p>
+<p><img src="images/1/300-011a.png" alt="" /></p></li>
+<li><p>Fill in the form as shown below, click “Create” to add your first “Email Channel”, then click “Save” to create the “Warning” alert rule</p>
+<p><img src="images/1/300-011d.png" alt="" /></p></li>
+<li><p>Optionally repeat step above and create the “critical” rule by switching from warning to critical</p>
+<p><img src="images/1/300-012.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-review-correlation-rules-for-evaluating-threats"><strong>STEP 5</strong>: Review Correlation Rules for Evaluating Threats</h3>
+<ul>
+<li><p>Login to your OMC instance and select the SMA service</p>
+<p><img src="images/1/300-013.png" alt="" /></p></li>
+<li><p>Click the ‘Menu Icon’ to the left of Oracle logo in the top left of your window to access the menu</p></li>
+<li><p>Click on Security Admin</p>
+<p><img src="images/1/300-014.png" alt="" /></p></li>
+<li><p>Click on Correlation Rules</p>
+<p><img src="images/1/300-015.png" alt="" /></p></li>
+<li><p>On the Correlation Rules screen, take a moment to explore some of the built-in correlation rules available within SMA for the purposes of threat detection. In today’s lab we will exercise three threats under the Host category</p></li>
+<li><p>Host <code>&lt;-- Targeted Account Attack</code></p></li>
+<li><p>Host <code>&lt;-- Multiple Failed Logins</code></p></li>
+<li><p>Host <code>&lt;-- Brute Force Attack</code></p></li>
+<li><p>Click on each one in turn and review the Definition as well as the Parameters available </p>
+<p><img src="images/1/300-016.png" alt="" /></p></li>
+<li><p>Access the sidebar menu again, and click on the back arrow in the sidebar menu, then select Log Explorer</p></li>
+<li><p>Access the sidebar menu, select Log Admin -&gt; Uploads</p>
+<p><img src="images/1/300-017.png" alt="" /></p></li>
+<li><p>For the moment, this page should be empty. In the next section, we will upload all relevant files and then return to this screen to review our uploads and check associated log data and then Activity in SMA</p></li>
+</ul>
+<h2 id="on-demand-security-logs-data-upload">On-Demand Security Logs Data Upload</h2>
+<p>There are multiple methods for getting data into your environment, the most common methods are installing Cloud Agents directly on the source machines in question or using the ODU method. For this lab, we will be using the ODU method. </p>
+<h3 id="step-1-connecting-to-the-linux-host-to-upload-test-data"><strong>STEP 1</strong>: Connecting to the Linux Host to Upload Test Data</h3>
+<p>On your linux host, copy the sample data and upload scripts for the lab under /u01/stage. </p>
+<ul>
+<li><p>Create the directory <code>/u01/stage</code> on your linux host</p></li>
+<li><p>Copy the <a href="resources/sma-sample.zip">zip</a> file to <code>/u01/stage</code></p></li>
+<li><p>Unzip the file</p></li>
+</ul>
+<h3 id="step-2-adding-user-context-to-omc"><strong>STEP 2</strong>: Adding User Context to OMC</h3>
+<p>In addition to log data, sample user context data will be added to OMC as well to provide a richer experience by mapping users identified in security logs to detailed corporate directory sourced from the company’s Identity Service. In real production setting, this data will come from an Identity Service such as IDCS and by means of integration.</p>
+<ul>
+<li><p>In your linux host session, navigate to /u01/stage </p></li>
+<li><p>From <a href="https://myservices.us2.oraclecloud.com/mycloud/cloudportal/dashboard">My Cloud Services Dashboard</a>, toggle "Identity Domain" selector to your "Traditional" domain, then click on <code>Management Cloud</code> as shown below</p>
+<p><img src="images/1/300-017a.png" alt="" /></p></li>
+<li><p>Get the Tenant ID, OMC Service Instance Name, and OMC Username as shown below</p>
+<p><img src="images/1/300-017b.png" alt="" /></p></li>
+<li><p>Using the items gathered above, update environment variables accordingly as shown in this example</p></li>
+</ul>
+<pre><code>export tenantID=acmeinc            #Tenant ID
+export instanceName=ops            #OMC Service Instance Name
+export username=John.Doe@gmail.com    #OMC Username
+</code></pre>
+<ul>
+<li>Execute the Unix shell script <code>omc_upload_usr_context.sh</code> and type in your OMC account password when prompted to upload User context file</li>
+</ul>
+<pre><code>[cdsma@myhost]$ ./omc_upload_usr_context.sh
+</code></pre>
+<h3 id="step-3-uploading-linux-secure-logs-to-omc"><strong>STEP 3</strong>: Uploading Linux Secure Logs to OMC</h3>
+<p>For the benefit of this lab, you will be uploading sample Linux Secure logs files to OMC covering the following 3 security threats types:</p>
+<ul>
+<li><code>Target Account Attack</code></li>
+<li><code>Multiple Failed Login</code></li>
+<li><code>Brute Force Attack</code></li>
+</ul>
+<p>In real production setting, this data will be continuously streamed to OMC by OMC cloud agents and API integration. SMA supports uploading user data available in SCIM or LDIF format. The former will be used.</p>
+<ul>
+<li>From the same Linux host as indicated earlier and still with the environment variables set, run the Unix shell script <code>omc_upload_security_events.sh</code> to upload Linux secure logs. </li>
+</ul>
+<pre><code>[cdsma@myhost]$ ./omc_upload_security_events.sh
+</code></pre>
+<h2 id="visualization---review-log-data-and-threat-activities">Visualization - Review Log Data and Threat Activities</h2>
+<p>Once you have successfully uploaded the three log files, navigate back to the Uploads page. Refresh the page to see your uploaded log files.</p>
+<p><img src="images/1/300-018.png" alt="" /></p>
+<h3 id="step-1-review-log-data-and-threat-activities-in-omc"><strong>STEP 1</strong>: Review Log Data and Threat Activities in OMC</h3>
+<p>The data uploaded provides insights into key steps that make up what is known as a <code>Kill Chain</code>: <code>Anomaly Detection</code> ==&gt; <code>Reconnaissance</code> ==&gt; <code>Infiltration</code> ==&gt; <code>Lateral Movement</code>.</p>
+<h3 id="step-2-assess-linux-targeted-account-attack-data"><strong>STEP 2</strong>: Assess Linux Targeted Account Attack Data</h3>
+<p>You may recall that the definition of a Targeted Account Attack is <em>5 or more failed login events associated with the same user account are detected within an interval of 60 seconds across single or multiple endpoints</em> from the Correlation Rules page we review earlier.</p>
+<ul>
+<li><p>Switch to your SSH session and open the linux<em>ta</em>attack.log file</p></li>
+<li><p><code>[gsartor@lux sample-logs]$ less linux_ta_attack.log</code></p></li>
+<li><p>Note the hostnames for <code>hr1</code> and <code>finance1</code> as well as the value for <code>rhost</code> and <code>user</code></p></li>
+<li><p>Note how many records are in this file (12)</p>
+<p><img src="images/1/300-019.png" alt="" /></p></li>
+<li><p>Switch back to your browser and to the Uploads page. Click the ‘Menu Icon’ in the csd<em>target</em>attack row and select View in Log Explorer</p>
+<p><img src="images/1/300-020.png" alt="" /></p></li>
+<li><p>You are now viewing the log data in OMC Log Analytics. Security relevant data flowing to SMA goes through LA where it is enriched with security relevant tags. Note the filter being applied in the page as well as the number of relevant events (12).</p>
+<p><img src="images/1/300-021.png" alt="" /></p></li>
+<li><p>In the sidebar menu, click the back button in the top left-hand corner and select Security Analytics from the service list.</p></li>
+<li><p>Toggle the timeframe selector in the upper righ-hand corner, set it to "12/18/2017 - 12/20/2017", then return to the sidebar menu and click on <code>Activity</code> to get a high-level overview of relevant security activities detected in your environment during that timeframe</p>
+<p><img src="images/1/300-022.png" alt="" /></p></li>
+<li><p>Scroll further down the same page to view a list of the activities</p>
+<p><img src="images/1/300-023.png" alt="" /></p></li>
+<li><p>Click Threats in the sidebar menu, then click the number under All in the Threats section</p>
+<p><img src="images/1/300-024.png" alt="" /></p></li>
+<li><p>Scroll down to the bottom of the page and review the threat details. Note the Correlation Rule value as well as the Category type of ‘infiltration’ and the accounts being targeted.</p>
+<p><img src="images/1/300-025.png" alt="" /></p></li>
+<li><p>Now let’s repeat this process for the Multiple Failed Login and Brute Force Attack log files</p></li>
+</ul>
+<h3 id="step-3-assess-multiple-failed-logins-data"><strong>STEP 3</strong>: Assess Multiple Failed Logins Data</h3>
+<p>Before reviewing the files, lets remind ourselves of the definition for Multiple Failed Login Correlation Rule, <em>5 or more failed login events are detected on multiple accounts on the same endpoint, within a time interval of 60 seconds</em></p>
+<ul>
+<li><p>Switch to your SSH session and open the linux<em>mfl</em>attack.log file</p></li>
+<li><p><code>[gsartor@lux sample-logs]$ less linux_mfl_attack.log</code></p></li>
+<li><p>On this occasion, each failed login is for a different username. This is different from the Targeted User Attack we covered in the previous section.</p></li>
+<li><p>Note how many records are in this file (8)</p>
+<p><img src="images/1/300-026.png" alt="" /></p></li>
+<li><p>Switch back to your browser and to the Uploads page. Click the ‘Menu Icon’ in the csd<em>multi</em>failed_login row and select View in Log Explorer</p>
+<p><img src="images/1/300-027.png" alt="" /></p></li>
+<li><p>We are now back in Log Analytics and again take note of the filter being applied to the data we are viewing as well as the number of records being displayed. This matches the number of logs in our source file</p>
+<p><img src="images/1/300-028.png" alt="" /></p></li>
+<li><p>This time lets go straight to the Threats page in SMA. Once you are at the Threats page, click on the number below All in the Threats section.</p>
+<p><img src="images/1/300-029.png" alt="" /></p></li>
+<li><p>In the Threat Details section, locate the MultipleFailedLogin and click the ID</p>
+<p><img src="images/1/300-030.png" alt="" /></p></li>
+<li><p>On the new Threat Details page, you now have access to a lot of detailed information for this specific threat. You can see the Category, Start and End time of this activity, the account being used for the attack as well as which Department that account belongs to, in this case Marketing. This departmental information came from our User Context Upload. Lastly, note the various usernames in the Resource column; the same as the ones in the upload file.</p>
+<p><img src="images/1/300-031.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-assess-brute-force-attack-data"><strong>STEP 4</strong>: Assess Brute Force Attack Data</h3>
+<p>Finally, in this last section, we will assess the activity for a Brute Force Attack. Described as <em>5 or more failed login events are followed by a successful login on the same endpoint, associated with the same user account, within an interval of 60 seconds</em>.</p>
+<ul>
+<li><p>Let’s return for the last time the SSH session and review the upload file for the Brute Force Attack. Switch to your SSH session and open the linux<em>bfa</em>attack.log file</p></li>
+<li><p><code>[gsartor@lux sample-logs]$ less linux_bfa_attack.log</code></p></li>
+<li><p>Note the timing of the events, note that only one user is being targeted and lastly, note that we have a successful login on the last line</p></li>
+<li><p>Note how many records are in this file (7)</p>
+<p><img src="images/1/300-032.png" alt="" /></p></li>
+<li><p>Switch back to your browser and to the Uploads page. Click the ‘Menu Icon’ in the csd<em>brute</em>force_attack row and select View in Log Explorer</p>
+<p><img src="images/1/300-033.png" alt="" /></p></li>
+<li><p>Back in Log Analytics and again take note of the filter being applied to the data we are viewing as well as the number of records being displayed. This matches the number of logs in our source file</p>
+<p><img src="images/1/300-034.png" alt="" /></p></li>
+<li><p>Once again, we’ll go straight to the Threats page in SMA. Once you are at the Threats page, click on the number below All in the Threats section.</p>
+<p><img src="images/1/300-035.png" alt="" /></p></li>
+<li><p>In the Threat Details section, locate the BruteForceAttack and click the ID</p>
+<p><img src="images/1/300-036.png" alt="" /></p></li>
+<li><p>Take a few moments to review the details on the page, noting most importantly that we have many failed logins followed by a successful login.</p>
+<p><img src="images/1/300-037.png" alt="" /></p></li>
+</ul>
+<p>This concludes the threat assessment portion of this lab.</p>
+<h3 id="step-5-review-alert-emails"><strong>STEP 5</strong>: Review alert emails</h3>
+<p>In case you haven’t already noticed, you should have received some alert emails based on the activity we have been generating over the course of this lab.</p>
+<p><img src="images/1/300-038.png" alt="" /></p>
+<h2 id="summary">Summary</h2>
+<p>In this lab, we:</p>
+<ul>
+<li>Setup alerts</li>
+<li>Reviewed Correlation Rules in SMA</li>
+<li>Uploaded data to your environment</li>
+<li>Assessed the threats associated with the data uploads</li>
+<li>Navigated through the user interface of both the Log Analytics Cloud Service as well as the Security Monitoring &amp; Analytics Cloud Service</li>
+<li>We saw how SMA categorizes threats and how we can enrich the log data with user context</li>
+<li>Understood what comprises a kill chain and why that is important</li>
+<li>Reviewed alert emails</li>
+</ul>

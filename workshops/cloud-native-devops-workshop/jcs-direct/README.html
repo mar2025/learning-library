@@ -1,0 +1,167 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="direct-access-and-management-of-oracle-java-cloud-service">Direct access and management of Oracle Java Cloud Service</h2>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>You can access the services and resources that a service instance's VM provides by logging into the VM through SSH.
+This tutorial demonstrates how to:</p>
+<ul>
+<li>connect to Java Cloud Service's VM using ssh,</li>
+<li>stop Managed server using Admin console (user interface)</li>
+<li>change startup properties</li>
+<li>start Managed server using WLST</li>
+<li>search pattern in the WebLogic server log(s)</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="../jcs-deploy/README.md">Deployed sample application on Java Cloud Service</a></li>
+<li>Before you use the ssh utility to connect to a compute node, you need the following:</li>
+<li>The IP address of a compute node associated with a WebLogic deployment. The IP address is listed on Java Cloud Service Overview page.</li>
+<li>The SSH private key file that matches the public key associated with the deployment.</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<p>Navigate to the Oracle Java Cloud Service Console.<a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. On the dashboard open the Java Cloud Service Console.</p>
+<p><img src="images/00.png" alt="" /></p>
+<p>Click the service instance hosts sample application.</p>
+<p><img src="images/01.png" alt="" /></p>
+<p>Note the public IP address of the compute node hosting Java Cloud Service instance.</p>
+<p><img src="images/02.png" alt="" /></p>
+<h4 id="connect-to-java-cloud-services-vm-using-ssh">Connect to Java CLoud Service's VM using ssh</h4>
+<p>Open a terminal and change to folder <code>/GIT_REPO_LOCAL_CLONE/cloud-utils</code> where your <code>privateKey</code> is located. </p>
+<pre><code>$ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/cloud-utils
+</code></pre>
+<p>Use <code>ssh</code> to connect remote VM. First parameter is the private key file location and the second is the remote user (default: <strong>opc</strong>) and remote system's address (the public IP address of instance). It should be the following if your private key's name is <strong>privateKey</strong> and can be found in the same folder where you execute <code>ssh</code>. Dont forget to replace the IP address according to your environment property:</p>
+<pre><code>$ [oracle@localhost cloud-utils]$ ssh -i privateKey opc@140.86.6.145
+[opc@techco-wls-1 ~]$
+</code></pre>
+<p>Once the ssh connection established you need to switch user to oracle. It is necessary because opc has no access to instance related files.</p>
+<pre><code>[opc@techco-wls-1 ~]$ sudo su - oracle
+-bash-4.1$
+</code></pre>
+<p>Now the connection is established and the propmt is ready to manage your instance. Leave this terminal open for further usage.</p>
+<h4 id="stop-managed-server-using-admin-console">Stop Managed Server using Admin Console</h4>
+<p>Change back to browser where Java Cloud Service console is opened. Click on hamburger icon next to the instance name and select Open WebLogic Server Console.</p>
+<p><img src="images/03.png" alt="" /></p>
+<p>In the navigation tree under the domain name click the Environment node to expand it and then click Servers. The workspace area presents the list of servers that are part of the domain. Click the Control tab. Select a managed server by clicking on its selection checkbox. Click Shutdown -&gt; Force Shutdown Now, to send an immediate shutdown order.</p>
+<p><img src="images/04.png" alt="" /></p>
+<p>Confirm your order by selecting Yes and wait until it completes.</p>
+<p><img src="images/05.png" alt="" /></p>
+<p><img src="images/06.png" alt="" /></p>
+<h4 id="modify-startup-script-for-managed-server">Modify startup script for Managed Server</h4>
+<p>Change to the terminal window where ssh connection is already established. To check what is the startup script for managed server check nodemanager.properties:</p>
+<pre><code>-bash-4.1$ less $DOMAIN_HOME/nodemanager/nodemanager.properties
+#Node manager properties
+#Fri Aug 26 19:25:37 UTC 2016
+DomainsFile=/u01/data/domains/techco_domain/nodemanager/nodemanager.domains
+LogLimit=0
+PropertiesVersion=12.2.1
+AuthenticationEnabled=true
+NodeManagerHome=/u01/data/domains/techco_domain/nodemanager
+JavaHome=/u01/jdk
+LogLevel=FINE
+DomainsFileEnabled=true
+StartScriptName=startJCSServer.sh
+ListenAddress=techco-wls-1
+NativeVersionEnabled=true
+ListenPort=5556
+LogToStderr=true
+SecureListener=true
+LogCount=1
+StopScriptEnabled=false
+QuitEnabled=true
+LogAppend=true
+StateCheckInterval=500
+CrashRecoveryEnabled=true
+StartScriptEnabled=true
+LogFile=/u01/data/domains/techco_domain/nodemanager/nodemanager.log
+LogFormatter=weblogic.nodemanager.server.LogFormatter
+ListenBacklog=50
+UseKSSForDemo=false
+../nodemanager/nodemanager.properties (END) 
+</code></pre>
+<p>The <code>StartScriptName</code> property shows the startup script for managed server which is <code>startJCSServer.sh</code>. Press q to quit. Open to edit this script. Use vi:</p>
+<pre><code>-bash-4.1$ vi /u01/data/domains/techco_domain/bin/startJCSServer.sh
+</code></pre>
+<p>Press 'i' to edit file. Insert <code>echo="CUSTOM PROPERTY SETTING"</code> before <code>/u01/data/domains/techco_domain/bin/startWebLogic.sh "$@"</code>. The goal is to demonstrate how you can set e.g. custom property which is necessary for your application. The <code>startJCSServer.sh</code> should look similar:</p>
+<pre><code>#!/bin/bash
+# Copyright (c) 2014 Oracle and/or its affiliates. All rights reserved.
+
+# script to set the USER_MEM_ARGS before starting Server
+
+managedServerName=techco__server_1
+patternToBeMatched=`echo $managedServerName | cut -d _ -f 1,2`
+if [ "${SERVER_NAME}" = "techco__adminserver" ]
+then
+   USER_MEM_ARGS="-Djava.security.egd=file:/dev/./urandom"
+   JAVA_OPTIONS="$JAVA_OPTIONS -Dweblogic.rjvm.enableprotocolswitch=true -Djava.net.preferIPv4Stack=true"
+   export JAVA_OPTIONS
+   export USER_MEM_ARGS
+elif [[ $SERVER_NAME =~ $patternToBeMatched ]]
+then
+   # in case of ManagedServer java args are coming from the startup.properties file so no need to set it explicitly. Setting USER_MEM_ARGS to " " so that default values of MEM_ARGS does not come into picture at all
+    USER_MEM_ARGS=" "
+    export USER_MEM_ARGS
+fi
+
+echo "CUSTOM PROPERTY SETTING"
+
+/u01/data/domains/techco_domain/bin/startWebLogic.sh "$@"
+~                                                                                                                                             
+~                                                                                                                                             
+~                                                                                                                                             
+~                                                                                                                                             
+~                                                                                                                                             
+-- INSERT -- 
+</code></pre>
+<p>Before starting the managed server check that there is no such entry in log files belong to the managed server:</p>
+<pre><code>-bash-4.1$ grep -C 4 'CUSTOM PROPERTY' /u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.*
+-bash-4.1$ 
+</code></pre>
+<p>As you can see there is no such line in the log files. Now start the Managed Server.</p>
+<h4 id="using-wlst-commands-to-start-managed-server">Using WLST Commands to Start Managed Server</h4>
+<p>Change directory <code>/u01/app/oracle/middleware/oracle_common/common/bin/</code> and run wlst.sh to enter the WLST Command Line Interface.</p>
+<pre><code>-bash-4.1$ cd /u01/app/oracle/middleware/oracle_common/common/bin/
+-bash-4.1$ ./wlst.sh 
+
+Initializing WebLogic Scripting Tool (WLST) ...
+
+Welcome to WebLogic Server Administration Scripting Shell
+
+Type help() for help on available commands
+
+wls:/offline&gt;
+</code></pre>
+<p>As a first step you need to connect to the NodeManager that manages the target server. Execute nmConnect(<username>,<password>,<nodemanager-host>,<nodemanager-port>,<domain-name>,<domain-folder>,<nodemanager-type>) to connect node manager.</p>
+<pre><code>wls:/offline&gt; nmConnect('weblogic', '&lt;password&gt;', 'techco-wls-1', '5556', 'techco_domain', '/u01/data/domains/techco_domain', 'SSL')
+Connecting to Node Manager ...
+Successfully Connected to Node Manager.
+wls:/nm/techco_domain&gt; 
+</code></pre>
+<p>Node manager accepted the connections use nmStart(<servername>) to start managed server.</p>
+<pre><code>wls:/nm/techco_domain&gt; nmStart('techco__server_1')
+Starting server techco__server_1 ...
+Successfully started server techco__server_1 ...
+wls:/nm/techco_domain&gt; exit()
+</code></pre>
+<h4 id="search-pattern-in-the-weblogic-server-logs">Search pattern in the WebLogic server log(s)</h4>
+<p>When the managed server has been started check the log files again for the result. The <code>-C 5</code> argument ensures that <code>grep</code> displays 5 lines more before and after the pattern have been found:</p>
+<pre><code>-bash-4.1$ grep -C 5 'CUSTOM PROPERTY' $DOMAIN_HOME/servers/techco__server_1/logs/techco__server_1.*
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-&lt;Aug 28, 2016 5:11:12 PM UTC&gt; &lt;FINEST&gt; &lt;NodeManager&gt; &lt;Environment: QTLIB=/usr/lib64/qt-3.3/lib&gt;
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-&lt;Aug 28, 2016 5:11:12 PM UTC&gt; &lt;FINEST&gt; &lt;NodeManager&gt; &lt;Environment: HOME=/u01/app/oracle/tools/paas/state/homes/oracle&gt;
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-&lt;Aug 28, 2016 5:11:12 PM UTC&gt; &lt;FINEST&gt; &lt;NodeManager&gt; &lt;Environment: UTILS_MEM_ARGS=-Xms32m -Xmx1024m&gt;
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-&lt;Aug 28, 2016 5:11:12 PM UTC&gt; &lt;INFO&gt; &lt;NodeManager&gt; &lt;Working directory is '/u01/data/domains/techco_domain'&gt;
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-&lt;Aug 28, 2016 5:11:12 PM UTC&gt; &lt;INFO&gt; &lt;NodeManager&gt; &lt;Server output log file is '/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out'&gt;
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out:CUSTOM PROPERTY SETTING
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-.
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-.
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-JAVA Memory arguments:  
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-.
+/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out-CLASSPATH=/u01/app/oracle/middleware/oracle_common/modules/features/com.oracle.db.jdbc7-dms.jar:/u01/jdk/lib/tools.jar:/u01/app/oracle/middleware/wlserver/server/lib/weblogic.jar:/u01/app/oracle/middleware/wlserver/../oracle_common/modules/net.sf.antcontrib_1.1.0.0_1-0b3/lib/ant-contrib.jar:/u01/app/oracle/middleware/wlserver/modules/features/oracle.wls.common.nodemanager.jar:/u01/app/oracle/middleware/oracle_common/modules/oracle.jps/jps-manifest.jar:/u01/app/oracle/middleware/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wls.classpath.jar::/u01/app/oracle/middleware/wlserver/common/derby/lib/derbynet.jar:/u01/app/oracle/middleware/wlserver/common/derby/lib/derbyclient.jar:/u01/app/oracle/middleware/wlserver/common/derby/lib/derby.jar:/u01/jdk/lib/tools.jar:/u01/app/oracle/middleware/oracle_common/modules/oracle.jps/jps-manifest.jar
+-bash-4.1$ 
+</code></pre>
+<p>The "property" can be found in <code>/u01/data/domains/techco_domain/servers/techco__server_1/logs/techco__server_1.out</code>. Use exit command to log out from the ssh connection.</p>
+<p>Note this is one way to check log file(s) related to Java Cloud Service. There are many other way to have the log content. You can use:</p>
+<ul>
+<li><a href="http://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-6EBA48D9-F5FB-4AE1-9573-937ABE9EBD0C.htm#JSCUG3386">WebLogic Administration Console</a></li>
+<li>Oracle Management Cloud - <a href="https://docs.oracle.com/cloud/latest/em_home/em_log_admin_tasks.htm">Log Analytics</a></li>
+<li>More about Monitoring and Tuning of Java Cloud Service see the <a href="http://docs.oracle.com/cloud/latest/jcs_gs/jcs_monitortune_12.1.3.htm">documentation</a>.</li>
+</ul>

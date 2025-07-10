@@ -1,0 +1,376 @@
+<h1 id="unit-15-creating-and-using-dynamic-actions-and-plug-ins">Unit 15: Creating and Using Dynamic Actions and Plug-ins</h1>
+<p>This exercise includes five hands-on-labs and uses the Demo Projects application.</p>
+<p><strong>HOL 15-1 Creating and Using a Dynamic Action on the Maintain Project Page</strong>: In this lab, you add a dynamic action on the Maintain Project page to show or hide the Completed Date based on the value of Status.</p>
+<p><strong>HOL 15-2 Creating and Using a Dynamic Action on the Maintain Task Page:</strong> In this lab, you add a dynamic action on the Maintain Task page to populate the Due Date whenever the Milestone is changed.</p>
+<p><strong>HOL 15-3 Creating and Using Dynamic Actions on the Project Tree Page</strong>: This lab covers creating two buttons that you use to expand and contract the project tree nodes. You create a dynamic action on each of these buttons. Then, for each of the button, you set the action as defined by the dynamic action.</p>
+<p><strong>HOL 15-4 Creating and Using a Plug-in</strong>: In this hands-on lab you create a copy of the Badge List Plug-in from the Sample Charts packaged app. Then, on the application home page, you create a badge list region. On this region, you display three different badges: Open Projects, Upcoming Milestones, and Open Tasks.</p>
+<p><strong>HOL 15-5 Updating the Home Page</strong>: In this hands-on lab you create a dashboard by adding new components to the Home page of the application. You replace the Project Tasks chart with the Recent Projects classic report region. Then, you adjust the Recent Projects and My Outstanding Tasks regions so that they are placed horizontally next to each other. Finally, you modify the Summary region (Badge) attributes to enable the colorful display of the badges.</p>
+<h2 id="hol-15-1-creating-and-using-a-dynamic-action-on-the-maintain-project-page">HOL 15-1: Creating and Using a Dynamic Action on the Maintain Project Page</h2>
+<p>On the Maintain Project page, the Completed Date field is displayed irrespective of the value of Status. In this lab, you add a dynamic action on the page to show or hide the Completed Date based on the value of Status.</p>
+<ol>
+<li><p>In the Demo Projects application home page, click <strong>Shared Components</strong>.</p></li>
+<li><p>You want to create a dynamic LOV for Status. Under Other Component, click <strong>List of Values</strong>.</p></li>
+<li><p>Click <strong>Create</strong>.
+Accept the default for Source and click <strong>Next</strong>.</p></li>
+<li><p>For Name, enter <strong>STATUS</strong>, select <strong>Dynamic</strong> for Type and click <strong>Next</strong>.</p></li>
+<li><p>For Query, copy and paste the following SQL:</p>
+<pre><code>  select description d, cd r
+
+  from demo_proj_status
+
+  order by display_order
+</code></pre></li>
+<li><p>Click <strong>Create List of Values</strong>.</p></li>
+<li><p>In the Application Express toolbar, click <strong>Run Page 1</strong>.</p>
+<p>In the Demo Projects application runtime environment, click <strong>Projects</strong> in the navigation menu.
+Then, in the interactive grid, select a project name with status as IN-PROGRESS or ASSIGNED.</p>
+<p>In the dialog page, for Status Cd, select each of the values Assigned, Completed, and In-Progress. Notice that the Completed Date field is displayed irrespective of the status.</p>
+<p>You want to create a dynamic action that will allow the display of the Completed Date field only if the status is <em>Completed</em>.</p>
+<p>In the Developer toolbar, click <strong>Edit Page 5</strong>.
+<img src="images/hol15/image3.png" alt="DA1" /></p></li>
+<li><p>In the page designer, expand Regions &gt; Edit Demo_Projects &gt; Items.
+Right-click the <strong>P5_STATUS_CD</strong> item and select <strong>Create Dynamic Action</strong>.
+<img src="images/hol15/image4.png" alt="1b" /></p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Name: Enter <strong>Show Completed Date</strong></p></li>
+<li><p>Client-side Condition &gt; Type: Select <strong>Item = Value</strong></p></li>
+<li><p>Client-side Condition &gt; Item: Select <strong>P5_STATUS_CD</strong></p></li>
+<li><p>Client-side Condition &gt; Value: Enter <strong>COMPLETED</strong></p>
+<p><strong>Note</strong>: The capitalization and spelling of the value must match the data entry value exactly in order for the dynamic action to fire. </br>
+<img src="images/hol15/image5.png" alt="1b1" /></p></li></ul></li>
+<li><p>In the Rendering tree, under the Show Completed Date dynamic action, expand the <strong>True</strong> node and select <strong>Show</strong>.
+In the Property Editor, for Item(s) select <strong>P5_COMPLETED_DATE</strong>.
+<img src="images/hol15/image6.png" alt="1c" /></p></li>
+<li><p>Right-click <strong>Show</strong> and select <strong>Create Opposite Action</strong>.
+<img src="images/hol15/image7.png" alt="1d" /></p></li>
+<li><p>Notice that the opposite action is created now. The Completed Date field will be hidden if the Status includes a value other than COMPLETED.
+Click <strong>Save</strong>.
+<img src="images/hol15/image8.png" alt="1e" /></p></li>
+<li><p>Now, you can verify to see if the dynamic action works as expected.
+Navigate to the Demo Projects application runtime environment. If the Maintain Project dialog is open, click <strong>Cancel</strong>.
+In the navigation menu, click <strong>Projects</strong> and then in the report, click any project name with the Status as COMPLETED.
+Notice that the Completed Date field is displayed.<br />
+<img src="images/hol15/image9.png" alt="DA2" /></p></li>
+<li><p>In the Maintain Project dialog, for Status Cd, select either Assigned or In-Progress.
+Notice that this time, the Completed Date field is hidden.
+Click the <strong>Cancel</strong> button.<br />
+<img src="images/hol15/image10.png" alt="DA3" /></p></li>
+</ol>
+<h2 id="hol-15-2-creating-and-using-a-dynamic-action-on-the-maintain-task-page">HOL 15-2: Creating and Using a Dynamic Action on the Maintain Task Page</h2>
+<p>In this hands-on lab, first, you rename the breadcrumb entry for Page 9 as Maintain Task. Then, you add a dynamic action on this page to populate the Due Date whenever the Milestone is changed.</p>
+<ol>
+<li><p>In the Demo Projects application runtime environment, click Tasks in the navigation menu.
+In the interactive grid, click the Edit icon for a task name.
+Notice that the breadcrumb entry still shows Demo Proj Tasks.
+In the Developer Toolbar, click <strong>Edit Page 9</strong>.</p></li>
+<li><p>In the page designer, click <strong>Page Shared Components</strong>.
+Expand Breadcrumbs and select <strong>Breadcrumb</strong>.
+In the property editor, click <strong>Edit Component</strong>.
+<img src="images/hol15/image11.png" alt="2a" /></p></li>
+<li><p>Click <strong>Demo Proj Tasks</strong>.
+<img src="images/hol15/image12.png" alt="2b" /></p></li>
+<li><p>Under Entry, for Short Name, enter <strong>Maintain Task</strong>.
+Click <strong>Apply Changes</strong>.
+<img src="images/hol15/image13.png" alt="2c" /></p></li>
+<li><p>In the Application Express toolbar, click <strong>Edit Page 9</strong>.
+On this page, you want to populate the Due Date whenever the Milestone is changed. In order to achieve this you will use a Dynamic Action with an action of Set Value, which can execute an AJAX call to retrieve data from the database.</p></li>
+<li><p>Under Rendering &gt; Regions &gt; Edit Demo_Proj_Tasks, expand items.
+Right-click <strong>P9_MILESTONE_ID</strong> and select <strong>Create Dynamic Action</strong>. </br>
+<img src="images/hol15/image14.png" alt="2d" /></p></li>
+<li><p>For the new Dynamic Action, in the Property Editor, for Name enter <strong>Get Due Date</strong>.
+<img src="images/hol15/image15.png" alt="2e" /></p></li>
+<li><p>In the Rendering tree, under the P9_MILESTONE_ID item, select the <strong>Action</strong> under the True node (currenly labeled X Show).</p>
+<p>In the Property Editor:</p>
+<ul>
+<li><p>Identification: Action - select <strong>Set Value</strong></p></li>
+<li><p>Settings: Set Type - select <strong>SQL Statement</strong></p></li>
+<li><p>Settings: SQL Statement - copy and paste the following code:</p>
+<pre><code>   select due_date
+
+   from demo_milestones
+
+   where id = :P9_MILESTONE_ID
+</code></pre></li>
+<li><p>Settings: Page Items to Submit - select <strong>P9_MILESTONE_ID</strong></p></li>
+<li><p>Affected Elements: Item(s) - select <strong>P9_MILESTONE_DUE_DATE</strong></p></li></ul>
+<p>Click <strong>Save</strong>.</p>
+<p><img src="images/hol15/image16.png" alt="2f" /></p></li>
+<li><p>Navigate to Demo Projects application runtime environment.
+In the navigation menu, click Tasks.</p>
+<p>In the interactive grid, click the Edit icon for a task with milestones. </br>
+<img src="images/hol15/image17.png" alt="2g" /></p></li>
+<li><p>Try selecting different values for <strong>Milestone</strong> to see how the Due Date is updated based on the selection.
+<img src="images/hol15/image18.png" alt="2h" /></p></li>
+</ol>
+<h2 id="hol-15-3-creating-and-using-dynamic-actions-on-the-project-tree-page">HOL 15-3: Creating and Using Dynamic Actions on the Project Tree Page</h2>
+<p>In this lab, you update the Project Tree page that you created in HOL 14-5. You add two buttons: Collapse All and Expand All. You use them to expand and contract the project tree nodes. You create a dynamic action on each of these buttons. Then, for each of the button, you set the action as defined by the dynamic action.</p>
+<ol>
+<li><p>Navigate to Demo Projects application runtime environment. In the navigation menu, under Reports, click <strong>Project Tree</strong>.
+In the Developer Toolbar, click <strong>Edit Page 18</strong>.</p></li>
+<li><p>Now, to expand and collapse the project tree nodes, you want to create Expand All and Collapse All buttons on the Project Tree button. These buttons’ actions are defined by dynamic actions.
+Under Rendering, expand Regions &gt; Breadcrumb.
+Right-click <strong>Breadcrumb</strong> and select <strong>Create Button</strong>.</br>
+<img src="images/hol15/image19.png" alt="3a" /></p></li>
+<li><p>In the Property Editor:</p>
+<ul>
+<li><p>Identification &gt; Button Name: Enter <strong>CONTRACT_ALL</strong></p></li>
+<li><p>Identification &gt; Label: Enter <strong>Collapse All</strong></p></li>
+<li><p>Layout &gt; Button Position: Select <strong>Edit</strong></p></li>
+<li><p>Behavior &gt; Action: Select <strong>Defined by Dynamic Action</strong></p></li></ul>
+<p>Under Appearance, click <strong>Template Options</strong> button. Deselect the <strong>Use Template Defaults</strong> check box and click <strong>OK</strong>.</p>
+<p><img src="images/hol15/image20.png" alt="3b" /></p></li>
+<li><p>Now, right-click the <strong>CONTRACT_ALL</strong> button and select <strong>Duplicate</strong>.</p></li>
+<li><p>In the Property Editor:</p>
+<ul>
+<li><p>Identification &gt; Button Name: Enter <strong>EXPAND_ALL</strong></p></li>
+<li><p>Identification &gt; Label: Enter <strong>Expand All</strong></p></li>
+<li><p>Layout &gt; Button Position: Select <strong>Edit</strong></p></li>
+<li><p>Behavior &gt; Action: Select <strong>Defined by Dynamic Action</strong></p></li></ul>
+<p>Under Appearance, click <strong>Template Options</strong> button. Deselect the <strong>Use Template Defaults</strong> check box and click <strong>OK</strong>.</p>
+<p><img src="images/hol15/image21.png" alt="3d" /></p></li>
+<li><p>Now you want to create a dynamic action for each of these two buttons.
+Under Rendering, expand Regions &gt; Breadcrumb &gt; Region Buttons.
+Right-click the <strong>CONTRACT_ALL</strong> button and select <strong>Create Dynamic Action</strong>.</p></li>
+<li><p>In the property editor, for Identification &gt; Name, enter <strong>CONTRACT_ALL</strong>.
+<img src="images/hol15/image22.png" alt="3e" /></p></li>
+<li><p>Under Rendering, navigate to the CONTRACT_ALL region button and expand Dynamic Actions. Select <strong>Show</strong>.
+In the property editor, for Identification &gt; Action, select <strong>Collapse Tree</strong>.
+For Affected Elements &gt; Selection Type, select <strong>Region</strong>.
+For Affected Elements &gt; Region, select <strong>Project Tree</strong>.
+<img src="images/hol15/image23.png" alt="3f" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Breadcrumb &gt; Region Buttons.
+Right-click the <strong>EXPAND_ALL</strong> button and select <strong>Create Dynamic Action</strong>.</p></li>
+<li><p>In the property editor, for Identification &gt; Name, enter <strong>EXPAND_ALL</strong>.
+<img src="images/hol15/image24.png" alt="3i" /></p></li>
+<li><p>Under Rendering, navigate to the EXPAND_ALL region button and expand Dynamic Actions. Select <strong>Show</strong>.
+In the property editor, for Identification &gt; Action, select <strong>Expand Tree</strong>.
+For Affected Elements &gt; Selection Type, select <strong>Region</strong>.
+For Affected Elements &gt; Region, select <strong>Project Tree</strong>.
+Click <strong>Save and Run Page</strong>.
+<img src="images/hol15/image25.png" alt="3j" /></p></li>
+<li><p>The project tree is now displayed in collapsed mode. Click the <strong>Expand All</strong> button.
+<img src="images/hol15/image26.png" alt="3k" /></p></li>
+<li><p>The project tree is expanded now.
+<img src="images/hol15/image27.png" alt="3l" /></p></li>
+<li><p>In the Developer Toolbar, click Application&lt;<em>n</em>&gt;.</p></li>
+</ol>
+<h2 id="hol-15-4-creating-and-using-a-plug-in">HOL 15-4: Creating and Using a Plug-in</h2>
+<p>In this hands-on lab, you create the Badge List Plug-in as a copy of the plug-in from the Sample Charts application. On the application home page, you create a badge list region. On this region, you display three different badges: Open Projects, Upcoming Milestones, and Open Tasks.</p>
+<ol>
+<li><p>Install the Sample Charts application so that you can subscribe to the badge list plug-in.
+In the main toolbar, click <strong>Packaged Apps</strong> and select <strong>Sample Apps</strong>.
+<img src="images/hol15/image28.png" alt="4a" /></p></li>
+<li><p>Click <strong>Sample Charts</strong>. </br>
+<img src="images/hol15/image29.png" alt="4b" /></p></li>
+<li><p>Click <strong>Install Packaged App</strong>.
+<img src="images/hol15/image30.png" alt="4c" /></p></li>
+<li><p>Accept the default authentication and click <strong>Next</strong>.
+<img src="images/hol15/image31.png" alt="4d" /></p></li>
+<li><p>Click <strong>Install Packaged App</strong>.
+<img src="images/hol15/image32.png" alt="4e" /></p></li>
+<li><p>The Sample Charts application is application.
+Click <strong>App Builder</strong>.
+<img src="images/hol15/image33.png" alt="4f" /></p></li>
+<li><p>In the report, select Demo Projects application.
+<img src="images/hol15/image34.png" alt="4g" /></p></li>
+<li><p>In the application home page, click <strong>Shared Components</strong>.</p></li>
+<li><p>Under Other Components, click <strong>Plug-ins</strong>. </br>
+<img src="images/hol15/image35.png" alt="4i" /></p></li>
+<li><p>In the Plug-ins page, click <strong>Create</strong>.
+<img src="images/hol15/image36.png" alt="4j" /></p></li>
+<li><p>For Create Plug-in, select <strong>As a Copy of an Existing Plug-in</strong> and click <strong>Next</strong>.
+<img src="images/hol15/image37.png" alt="4k" /></p></li>
+<li><p>For Copy From Application, select &lt;xxx&gt;<strong>Sample Charts</strong> and click <strong>Next</strong>.
+<img src="images/hol15/image38.png" alt="4l" /></p></li>
+<li><p>At the bottom of the page, click the <strong>Deselect All</strong> button.
+<img src="images/hol15/image39.png" alt="4m" /></p></li>
+<li><p>Now, for Badge List, select <strong>Copy and Subscribe</strong>.
+Then, click <strong>Copy Plug-ins</strong>.
+<img src="images/hol15/image40.png" alt="4n" /></p></li>
+<li><p>In the Application Express toolbar, click <strong>Edit Page 1</strong>.
+<img src="images/hol15/image41.png" alt="4o" /></p></li>
+<li><p>Use Page Designer's drag-and-drop functionality to quickly add a Badge List from the Gallery to the Layout.
+In Page Designer, within the Gallery (directly below the Layout), click <strong>Regions</strong>, and locate <strong>Badge List</strong>.</p>
+<p>Click and hold <strong>Badge List [Plug-In]</strong> and drag it into <strong>Content Body</strong>, to a position directly above the Project Tasks region. It should appear as a darkened tile before you drop it into place.</p>
+<p><strong>Note</strong>: When you drag the region up, and hover over the small yellow section, below Content Body, the yellow section will expand. A darker yellow section, with a black box around it, will indicate where the region will be placed.
+<img src="images/hol15/image42.png" alt="5b" /></p></li>
+<li><p>In the Property Editor:</p>
+<ul>
+<li><p>Identification: Title - enter <strong>Summary</strong></p></li>
+<li><p>Source: SQL Query - copy and paste the following:</p>
+<pre><code>  select 'Open Projects' label
+
+  , count(*) value
+
+  , 'f?p='||:APP_ID||':4:'||:APP_SESSION||':::::' link
+
+  from demo_projects
+
+  where status_cd != 'Completed'
+
+  UNION ALL
+
+  select 'Upcoming Milestones' label
+
+  , count(*) value
+
+  , 'f?p='||:APP_ID||':4:'||:APP_SESSION||':::::' link
+
+  from demo_proj_milestones
+
+  where due_date &gt; sysdate
+
+  UNION ALL
+
+  select 'Open Tasks' label
+
+  , count(*) value
+
+  , 'f?p='||:APP_ID||':4:'||:APP_SESSION||':::::' link
+
+  from demo_proj_tasks
+
+  where is_complete_yn = 'N'
+</code></pre>
+<p><strong>Note</strong>: This query has three sub-queries, separated by UNION ALL that will be displayed as three separate badges within the region.</p></li></ul>
+<p><img src="images/hol15/image43.png" alt="5c" /></p></li>
+<li><p>In the property editor, navigate to Appearance and click <strong>Template Options</strong>. </br><br />
+<img src="images/hol15/image44.png" alt="5d" /></p></li>
+<li><p>In the Template Options dialog, select the <strong>Remove Body Padding</strong> check box.
+For Header, select <strong>Hidden but accessible</strong>.
+Click <strong>OK</strong>.
+<img src="images/hol15/image45.png" alt="5e" /></p></li>
+<li><p>In the Rendering tree, under the Summary region, click Attributes.</p>
+<p>In the Property Editor:</p>
+<ul>
+<li><p>Settings: Top Label - select <strong>LABEL</strong></p></li>
+<li><p>Settings: Value - select <strong>VALUE</strong> </br>
+For Link Target, click <strong>No Link Defined</strong>. </br>
+<img src="images/hol15/image46.png" alt="5f" /></p></li></ul></li>
+<li><p>In the Link Builder – Link Target dialog, select URL for Type. For URL, enter <strong>&LINK.</strong>.
+Click <strong>OK</strong>.
+Note: When you enter <strong>&LINK.</strong> ensure you include the period. </br>
+<img src="images/hol15/image47.png" alt="5g" /></p></li>
+<li><p>Click <strong>Save and Run Page</strong>.</p></li>
+</ol>
+<h2 id="hol-15-5-updating-the-home-page">HOL 15-5: Updating the Home Page</h2>
+<p>In this lab, you create a dashboard by adding new components to the Home page of the Demo Projects application. You already created a badge list region in HOL 15-4. This lab covers adding the Recent Projects classic report region and modifying the Summary region attributes.</p>
+<ol>
+<li><p>You already have the Project Tasks chart added as a page under Reports. Therefore, you do not need the same chart on the Home page anymore. Instead, you add a new classic report region here.
+View Page 1 in page designer.
+Under Rendering, navigate to Regions. Right-click <strong>Project Tasks</strong> region and select <strong>Delete</strong>. </br>
+<img src="images/hol15/image48.png" alt="new1" /></p></li>
+<li><p>Now, in the Layout, navigate to Gallery and click <strong>Regions</strong>.
+Click and hold <strong>Classic Report</strong> and drag it into <strong>Content Body</strong>, to a position directly between the Summary and the My Outstanding Tasks regions.
+<img src="images/hol15/image49.png" alt="6a" /></p></li>
+<li><p>In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Title: Enter <strong>Recent Projects</strong></p></li>
+<li><p>Identification &gt; Source &gt; SQL Query: Copy and paste the following code:</p>
+<pre><code>  select p.id project_id
+
+  , t.id
+
+  , null event_modifiers
+
+  , null event_attributes
+
+  , null user_color
+
+  , dbms_lob.getlength('PHOTO_BLOB') user_avatar
+
+  , t.full_name user_name
+
+  , nvl(p.completed_date, p.updated) event_date
+
+  , (case p.status_cd
+
+  when 'ASSIGNED' then 'is-removed'
+
+  when 'IN-PROGRESS' then 'is-updated'
+
+  when 'COMPLETED' then 'is-new'
+
+  end) event_status
+
+  , (select s.description
+
+  from demo_proj_status s
+
+  where s.cd = p.status_cd
+
+  ) event_type
+
+  , (case p.status_cd
+
+  when 'ASSIGNED' then 'fa fa-clock-o'
+
+  when 'IN-PROGRESS' then 'fa fa-refresh'
+
+  when 'COMPLETED' then 'fa fa-check'
+
+  end) event_icon
+
+  , p.name event_title
+
+  , p.description event_desc
+
+  from demo_projects p
+
+  , demo_proj_team_members t
+
+  where p.project_lead = t.id
+
+  order by p.updated desc
+</code></pre>
+<p><img src="images/hol15/image50.png" alt="6b" /></p></li></ul></li>
+<li><p>In the property editor, locate Appearance and click <strong>Template Options</strong>. </br>
+<img src="images/hol15/image51.png" alt="6c" /></p></li>
+<li><p>In the Template Options dialog:</p>
+<ul>
+<li><p>For General, select the Remove Body Padding check box.</p></li>
+<li><p>For Body Height, select <strong>480px</strong>.</p></li></ul>
+<p>Click <strong>OK</strong>. </br>
+<img src="images/hol15/image52.png" alt="6d" /></p></li>
+<li><p>In the property editor, under Advanced, select <strong>No</strong> for Region Display Selector. </br>
+<img src="images/hol15/image53.png" alt="6e" /></p></li>
+<li><p>Under Rendering, expand Regions &gt; Recent Projects and select <strong>Attributes</strong>.
+In the property editor:</p>
+<ul>
+<li><p>Layout &gt; Number of Rows: Enter <strong>5</strong></p></li>
+<li><p>Appearance &gt; Template: Select <strong>Timeline</strong></p></li>
+<li><p>Pagination &gt; Type: Select <strong>No Pagination (Show All Rows)</strong></p></li></ul>
+<p>Under Appearance, click <strong>Template Options</strong>.
+<img src="images/hol15/image54.png" alt="6f" /></p></li>
+<li><p>In the Template Options dialog, select <strong>Compact</strong> for Style.
+Click <strong>OK</strong>.
+<img src="images/hol15/image55.png" alt="6g" /></p></li>
+<li><p>In the Layout, click and hold the <strong>My Outstanding Tasks</strong> region and drag it into the position next to the Recent Projects region. Both the Recent Projects and My Outstanding Tasks regions should now appear on the same line horizontally.
+<img src="images/hol15/image56.png" alt="6h" /></p></li>
+<li><p>Under Rendering, expand <strong>Regions &gt; Recent Projects &gt; Columns</strong>.
+Click <strong>USER_AVATAR</strong>.
+In the property editor:</p>
+<ul>
+<li><p>Identification &gt; Type: Select <strong>Display Image</strong></p></li>
+<li><p>BLOB Attributes &gt; Table Name: Select <strong>DEMO_PROJ_TEAM_MEMBERS</strong></p></li>
+<li><p>BLOB Attributes &gt; BLOB Column: Select <strong>PHOTO_BLOB</strong></p></li>
+<li><p>Primary Key Column 1: Select <strong>ID</strong></p></li>
+<li><p>BLOB Attributes &gt; Mime Type Column: Select <strong>PHOTO_MIMETYPE</strong></p></li>
+<li><p>BLOB Attributes &gt; Filename Column: Select <strong>PHOTO_FILENAME</strong></p></li>
+<li><p>BLOB Attributes &gt; LAST_UPDATED Column: Select <strong>PHOTO_LAST_UPDATED</strong></p></li></ul>
+<p>Click <strong>Save and Run Page</strong>.
+<img src="images/hol15/image57.png" alt="6i" />
+<img src="images/hol15/image58.png" alt="6j" />
+The Home page is displayed now.
+<img src="images/hol15/image59.png" alt="6k" /></p></li>
+<li><p>You can set color for the badges.
+Navigate to page designer and under Rendering, expand Regions &gt; Summary. Then, select <strong>Attributes</strong>.
+In the property editor, under Settings, for Color, select <strong>Yes</strong>.
+Click <strong>Save and Run Page</strong>.
+<img src="images/hol15/image60.png" alt="6l" /></p></li>
+<li><p>The Home page now is displayed with the colored badges.
+ <img src="images/hol15/image61.png" alt="6n" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol15/image62.png" alt="Snap3" /></p>

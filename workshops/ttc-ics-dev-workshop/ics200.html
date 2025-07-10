@@ -1,0 +1,578 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-200---integration-cloud-service">Lab 200 - Integration Cloud Service</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This is the second of several labs that are part of the <strong>ICS Development Workshop</strong>. </p>
+<p>In this lab, you will learn how to create a basic 'hello world' echo service, using a basic orchestration. </p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Create your first integration to echo an input to the output </li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab and an Oracle Public Cloud account that will be supplied by your instructor.</li>
+</ul>
+<h2 id="login-to-your-oracle-cloud-account">Login to your Oracle Cloud account</h2>
+<h3 id="login-to-ics-home-page">Login to ICS Home Page</h3>
+<blockquote>
+  <p><strong><em>NOTE:</em></strong> the <strong>User Name</strong> and <strong>Password</strong> values will be given to you by your instructor. See <em>Lab 100 <strong>1.1.1</strong>: Login to your Oracle Cloud Account</em> for more information on how to sign into the ICS home page</p>
+</blockquote>
+<p><img src="images/200/image001.png" alt="" />  </p>
+<h2 id="creating-simple-orchestration-integration">Creating Simple Orchestration Integration</h2>
+<h3 id="create-a-rest-connection">Create a REST Connection</h3>
+<p>In this first part of the lab, we will create a connection :</p>
+<p>Let’s start by logging into the Oracle Cloud account using your allocated user (demo.user1..10)  </p>
+<blockquote>
+  <p><strong>NOTE:</strong> All the screenshots use the <em>demo.user10</em> account. Replace the <em>demo.user10</em> with your assigned account to validate the steps illustrated in the screenshots. </p>
+</blockquote>
+<hr />
+<p><strong>2.1</strong> Click on the <strong>Connection</strong> section</p>
+<p><img src="images/200/image002.png" alt="" /> </p>
+<p><strong>2.2</strong> Click on <strong>Create</strong> in the upper right of the screen</p>
+<p><img src="images/200/image003.png" alt="" /> </p>
+<p><strong>2.3</strong> Select the <strong>REST</strong> Connection, by either doing a search, or by scrolling down to the <strong>REST</strong> connection, by clicking on the <strong>Select</strong> button of the <strong>REST</strong> connection.</p>
+<p><img src="images/200/image004.png" alt="" /></p>
+<p><strong>2.4</strong> Fill in the information for the new connection </p>
+<ul>
+<li><strong>Name</strong> in the form of <em>UserXX REST</em> where XX is the number in your allocated user.</li>
+<li><strong>Role</strong> <em>Trigger</em> since we going to use the connection as a trigger to start the integration</li>
+</ul>
+<p><img src="images/200/image005.png" alt="" /> </p>
+<p><strong>2.7</strong> click <strong>Create</strong></p>
+<p><img src="images/200/image006.png" alt="" /> </p>
+<blockquote>
+  <p><strong><em>Note</em></strong> The default security configuration is set to <strong>Basic Authentication</strong>, which by the way, is the only option available for REST trigger connections. When invoking the trigger, we will use our ICS username/password. </p>
+</blockquote>
+<p><strong>2.6</strong> Click on <strong>Test</strong> </p>
+<p><img src="images/200/image007.png" alt="" /></p>
+<p><strong>2.7</strong> Click <strong>Save</strong> </p>
+<p><img src="images/200/image008.png" alt="" /> </p>
+<p><strong>2.8</strong> Click on the <strong>Close</strong> link in the upper right</p>
+<p>Your first connection appears in the list of configured connections and is even marked as <strong>New</strong> !</p>
+<p><img src="images/200/image009.png" alt="" /> </p>
+<p><strong>2.9</strong> Click on the **Oracle Integration Cloud" link in the upper left to get back to the Home page</p>
+<p><img src="images/200/image010.png" alt="" /> </p>
+<h3 id="creating-an-integration">Creating an Integration</h3>
+<p><strong>1.1</strong> Click on the <strong>Integrations</strong> section on the ICS home page</p>
+<p><img src="images/200/image011.png" alt="" /> </p>
+<p><strong>1.2</strong> Click on the <strong>Create</strong> button in the upper right</p>
+<p><img src="images/200/image012.png" alt="" /> </p>
+<p><strong>1.3</strong> In the <strong>Create Integration - Select a Style/Pattern</strong> popup, select the <strong>Orchestration</strong></p>
+<p><img src="images/200/image013.png" alt="" /></p>
+<p><strong>1.4</strong> Fill in the form with the following information</p>
+<ul>
+<li><em>What triggers this integration?</em> <strong>Application event or business object</strong></li>
+<li><em>Name</em> <strong>UserXX Hello World</strong></li>
+</ul>
+<p><img src="images/200/image014.png" alt="" /> </p>
+<p><strong>1.5</strong> Click on <strong>Create</strong></p>
+<p><img src="images/200/image015.png" alt="" /></p>
+<p><strong>1.6</strong> In the <strong>Triggers</strong> panel, expand the <strong>REST(nn)</strong> heading, and find your connection, under <strong>REST</strong></p>
+<p>Drag and drop your connection <strong>UserXX REST</strong> in to the circle with plus sign, you will see the plus sign twirling when ready to drop </p>
+<p><img src="images/200/image016.png" alt="" /></p>
+<p><img src="images/200/image017.png" alt="" /></p>
+<p><strong>1.7</strong> Fill in the required values on <strong>Basic Info</strong> page, and click <strong>Next ></strong></p>
+<ul>
+<li><strong>What do you want to call your endpoint?</strong> <em>echo</em></li>
+<li><strong>What is the endpoint's relative resource URI</strong> <em>/echo</em></li>
+<li><strong>What action does the endpoint perform?</strong> <em>POST</em></li>
+<li><strong>Configure a request payload for this endpoint</strong> <em>Checked</em></li>
+<li><strong>Configure for this endpoint to receive a response</strong> <em>Checked</em></li>
+<li><strong>Configure CORS (Cross Origin Resource Sharing)</strong> <em>Checked</em></li>
+</ul>
+<p><img src="images/200/image018.png" alt="" /></p>
+<p><strong>1.8</strong> Select <strong>JSON Sample</strong>, select <strong>JSON</strong> in <em>type of payload</em> and click on <strong><<< inline >>></strong> to enter sample JSON</p>
+<p><img src="images/200/image019.png" alt="" /></p>
+<p><strong>1.9</strong> Enter the following JSON into the <strong>Enter Sample JSON</strong>, click <strong>Ok</strong>, then <strong>Next ></strong></p>
+<pre><code class="javascript language-javascript">{
+    "echo": "String to echo"
+}
+</code></pre>
+<p><img src="images/200/image020.png" alt="" /></p>
+<p><strong>1.10</strong> Enable <strong>CORS</strong> for all domains, by entering <strong>*</strong> in <strong>Allowed Origins</strong></p>
+<p><img src="images/200/image065.png" alt="" /></p>
+<p><strong>1.11</strong> Click on <strong>Next ></strong> to move on to the <em>Response</em></p>
+<p><strong>1.12</strong> Select <strong>JSON Sample</strong>, select <strong>JSON</strong> in <strong>type of payload</strong> and click on <strong><<< inline >>></strong> to enter sample JSON</p>
+<p><img src="images/200/image021.png" alt="" /></p>
+<p><strong>1.13</strong> Enter the following JSON into the <strong>Enter Sample JSON</strong>, then click <strong>Ok</strong></p>
+<pre><code class="javascript language-javascript">{
+    "return": "String to echo"
+}
+</code></pre>
+<p><img src="images/200/image022.png" alt="" /></p>
+<p><strong>1.14</strong> Back on the Response Page,  click <strong>Next ></strong> to get to the Summary page</p>
+<p><img src="images/200/image023.png" alt="" /></p>
+<p><strong>1.15</strong> Click <strong>Done</strong>. The full flow will now be presented:</p>
+<p><img src="images/200/image024.png" alt="" /></p>
+<p><strong>1.16</strong> Click on the <strong>Map to echo</strong> icon, and then on <em>pencil</em> icon</p>
+<p><img src="images/200/image025.png" alt="" /></p>
+<p><img src="images/200/image026.png" alt="" /></p>
+<p>The <em>Mapper</em> page will appear</p>
+<p><img src="images/200/image027.png" alt="" /></p>
+<p><strong>1.17</strong> Drag the <strong><>echo</strong> and drop on to <strong><>return</strong> </p>
+<p><img src="images/200/image028.png" alt="" /></p>
+<p><strong>1.18</strong> Click on <strong>Validate</strong> </p>
+<p><img src="images/200/image040.png" alt="" /></p>
+<p><strong>1.19</strong> Click on <strong>Close</strong> in the upper right</p>
+<p>You will notice that the <strong>Map to echo</strong> icon is filled in <em>all blue</em> now indicating that it has been completely configured.</p>
+<p><img src="images/200/image041.png" alt="" /></p>
+<p><strong>1.20</strong> Click on the <em>Hamburger</em> icon in the upper right, then select <strong>Tracking</strong></p>
+<p><img src="images/200/image042.png" alt="" /></p>
+<p><strong>1.21</strong> Drag <strong>*echo</strong> across to the right hand side, under <strong>Tracking Field</strong></p>
+<p><img src="images/200/image043.png" alt="" /></p>
+<p><strong>1.22</strong> Click on <strong>Done</strong></p>
+<p><strong>1.23</strong> Click on <strong>Save</strong> and then <strong>Close</strong> to exit the integration design canvas</p>
+<p><img src="images/200/image045.png" alt="" /></p>
+<p>You should see your <em>New</em> integration in list of <em>Integrations</em></p>
+<p><img src="images/200/image046.png" alt="" /></p>
+<h3 id="activating-integration">Activating Integration</h3>
+<p><strong>1.1</strong> Click on the switch next to your integration to activate</p>
+<p><img src="images/200/image047.png" alt="" /></p>
+<p><strong>1.2</strong> On the <strong>Activate Integration ?</strong> popup window, select <strong>Enable Tracing</strong>, then <strong>Include payload</strong>, then click on <strong>Activate</strong></p>
+<p><img src="images/200/image048.png" alt="" /></p>
+<p><img src="images/200/image050.png" alt="" /></p>
+<p><strong>1.3</strong> Capture the link displayed after activation</p>
+<p><img src="images/200/image049.png" alt="" /></p>
+<p>If you need the URL again, you can always get back to it by clicking on the <strong>i</strong> icon of your active integration</p>
+<p><img src="images/200/image051.png" alt="" /></p>
+<hr />
+<h2 id="testing-integration">Testing Integration</h2>
+<p>Testing the activated integration can be done using multiple tools and depends on your preference. See each relevant product's website on how to install the tool, if required.</p>
+<hr />
+<h3 id="soapui"><strong>SOAPUI</strong></h3>
+<hr />
+<p><strong>1.1</strong> Open SOAPUI</p>
+<p><img src="images/200/image052.png" alt="" /></p>
+<p><strong>1.2</strong> Right click on <strong>Projects</strong> and select <strong>Create Empty Project</strong></p>
+<p><img src="images/200/image053.png" alt="" /></p>
+<p><strong>1.3</strong> Right click on the new <strong>Project1</strong> and select <strong>Import Swagger</strong></p>
+<p><img src="images/200/image054.png" alt="" /></p>
+<p><strong>1.4</strong> Fill in the <strong>Swagger Definition:</strong> using the URL we have captured in <strong>Activating Integration</strong>, step <strong>1.3</strong>. Append <strong><em>/swagger</em></strong> 
+Click on <strong>OK</strong> to import Swagger from ICS</p>
+<p><img src="images/200/image055.png" alt="" /></p>
+<p><strong>1.5</strong> When asked for credentials, enter your ICS user credentials</p>
+<p><img src="images/200/image062.png" alt="" /></p>
+<p><strong>1.6</strong> Expand <strong>Project 1</strong> to show the <strong>Request 1</strong>. Double Click the <strong>Request 1</strong> to open the Request Window</p>
+<p><img src="images/200/image056.png" alt="" /></p>
+<p><img src="images/200/image057.png" alt="" /></p>
+<p><strong>1.6</strong> Click on the Auth tab on the left hand bottom of the <strong>Request 1</strong> Window and select <strong>Add New Authorization</strong></p>
+<p><img src="images/200/image058.png" alt="" /></p>
+<p><strong>1.7</strong> Select <strong>Basic</strong> in the popup window</p>
+<p><img src="images/200/image063.png" alt="" /></p>
+<p><strong>1.8</strong> Fill your username and password</p>
+<p><img src="images/200/image059.png" alt="" /></p>
+<p><strong>1.9</strong> Fill in the request body with following JSON:</p>
+<pre><code class="javascript language-javascript">{ "echo": "Hello World!" }
+</code></pre>
+<p><img src="images/200/image064.png" alt="" /></p>
+<p><strong>1.10</strong> Click on the green <strong>Run</strong> triangle at top <strong>Request 1</strong> Window</p>
+<p><strong>1.11</strong> Last step is to switch to JSON Format in the output panel</p>
+<p><img src="images/200/image060.png" alt="" /></p>
+<p>And you should be able to see an <strong>echo</strong> of your input in the output panel </p>
+<p><img src="images/200/image061.png" alt="" /></p>
+<hr />
+<h3 id="postman"><strong>POSTMAN</strong></h3>
+<hr />
+<p><strong>1.1</strong> Got to URL <strong>chrome:/apps</strong> in <em>Chrome</em> and open POSTMAN</p>
+<p><img src="images/200/image066.png" alt="" /></p>
+<p><strong>1.2</strong> Click on the <strong>Import</strong> on the main title bar</p>
+<p><img src="images/200/image067.png" alt="" /></p>
+<p><strong>1.3</strong> Back in a browser window, open the URL we have captured in <strong>Activating Integration</strong>, step <strong>1.3</strong>. Append <strong><em>/swagger</em></strong> - supply your username and password if asked gor it.</p>
+<p><img src="images/200/image068.png" alt="" /></p>
+<p><strong>1.4</strong> Copy the Swagger text displayed in the browser window, it should look similar to the following. </p>
+<pre><code class="javascript language-javascript">{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Description of the service [Title is not available at Runtime unless we store it in JCA. Need to check for Description]",
+    "version" : "1.0",
+    "title" : "Title of the Service [Reference Binding Name]"
+  },
+  "host" : "ttcics-gse00003021.integration.us2.oraclecloud.com:443",
+  "basePath" : "/integration/flowapi/rest/USERXX_HELLO_WORLD/v01",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/echo" : {
+      "post" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "request-wrapper",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/echo"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "A sample description of the Response",
+            "schema" : {
+              "$ref" : "#/definitions/return"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "echo" : {
+      "type" : "string"
+    },
+    "return" : {
+      "type" : "string"
+    }
+  }
+}
+</code></pre>
+<p><strong>1.5</strong> Back in POSTMAN, select <strong>Paste Raw Text</strong>, and paste the text into the text box </p>
+<p><img src="images/200/image069.png" alt="" /></p>
+<p><strong>1.6</strong> Click on <strong>Import</strong> to import in POSTMAN</p>
+<p><img src="images/200/image070.png" alt="" /></p>
+<p><strong>1.7</strong> Click on the <strong>Authorization</strong> tab</p>
+<p><img src="images/200/image071.png" alt="" /></p>
+<p><strong>1.8</strong> Change the Authorization settings as follow:</p>
+<ul>
+<li><p><strong>Type</strong>     <em>Basic Auth</em></p></li>
+<li><p><strong>Username</strong> <em>demo.userXX</em></p></li>
+<li><p><strong>Password</strong> <em>YOURPASSWORD FOR ICS</em></p></li>
+</ul>
+<p><img src="images/200/image072.png" alt="" /></p>
+<p><strong>1.9</strong> Click <strong>Update Request</strong></p>
+<p><strong>1.10</strong> Click on the <strong>Body</strong> tab, make sure <strong>raw</strong> and <strong>JSON(application/json)</strong> is selected. Enter the following text in to the body text box</p>
+<pre><code class="javascript language-javascript">{
+    "echo":"Hello World!"
+}
+</code></pre>
+<p><img src="images/200/image073.png" alt="" /></p>
+<p><strong>1.11</strong> Click on the blue <strong>Send</strong>. Look at the bottom to see the output, the Body should contain the following value, and the Status should indicate a <strong>200 OK</strong> </p>
+<pre><code class="javascript language-javascript">{
+    "return":"Hello World!"
+}
+</code></pre>
+<p><img src="images/200/image074.png" alt="" /></p>
+<hr />
+<h3 id="swagger-editor"><strong>Swagger Editor</strong></h3>
+<hr />
+<p><strong>1.1</strong> Back in a browser window, open the URL we have captured in <strong>Activating Integration</strong>, step <strong>1.3</strong>. Append <strong><em>/swagger</em></strong> - supply your username and password if asked for it.</p>
+<p><img src="images/200/image068.png" alt="" /></p>
+<p><strong>1.2</strong> Copy the Swagger text displayed in the browser window, it should look similar to the following. </p>
+<pre><code class="javascript language-javascript">{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Description of the service [Title is not available at Runtime unless we store it in JCA. Need to check for Description]",
+    "version" : "1.0",
+    "title" : "Title of the Service [Reference Binding Name]"
+  },
+  "host" : "ttcics-gse00003021.integration.us2.oraclecloud.com:443",
+  "basePath" : "/integration/flowapi/rest/USERXX_HELLO_WORLD/v01",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/echo" : {
+      "post" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "request-wrapper",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/echo"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "A sample description of the Response",
+            "schema" : {
+              "$ref" : "#/definitions/return"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "echo" : {
+      "type" : "string"
+    },
+    "return" : {
+      "type" : "string"
+    }
+  }
+}
+</code></pre>
+<p><strong>1.3</strong> Open http://editor.swagger.io </p>
+<p><strong>1.4</strong> Open File -&gt; Paste JSON…</p>
+<p><img src="images/200/image075.png" alt="" /></p>
+<p><strong>1.5</strong> Paste the Swagger JSON in the text box, and click on <strong>Import</strong></p>
+<p><img src="images/200/image076.png" alt="" /></p>
+<p><strong>1.6</strong> In the editor you will see Swagger YAML. Change this text to add the security definition</p>
+<p><img src="images/200/image077.png" alt="" /></p>
+<ul>
+<li>Change the code to the following, changes <strong>marked <--</strong></li>
+</ul>
+<pre><code>swagger: '2.0'
+info:
+  description: &gt;-
+    Description of the service [Title is not available at Runtime unless we
+    store it in JCA. Need to check for Description]
+  version: '1.0'
+  title: 'Title of the Service [Reference Binding Name]'
+host: 'ttcics-gse00003021.integration.us2.oraclecloud.com:443'
+basePath: /integration/flowapi/rest/USER10_HELLO_WORLD/v01
+schemes:
+  - https 
+</code></pre>
+<p>&lt;-- Insert the following </p>
+<pre><code>securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic Authentication. 
+</code></pre>
+<p>&lt;-- Up to here</p>
+<pre><code>paths:
+  /echo:
+    post:
+</code></pre>
+<p>&lt;-- Insert the following</p>
+<pre><code>      security:
+       - basicAuth: []
+</code></pre>
+<p>&lt;-- Up to here </p>
+<pre><code>      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: request-wrapper
+          required: true
+          schema:
+            $ref: '#/definitions/echo'
+      responses:
+        default:
+          description: A sample description of the Response
+          schema:
+            $ref: '#/definitions/return'
+definitions:
+  echo:
+    type: string
+  return:
+    type: string
+</code></pre>
+<p><strong>1.7</strong> Next we have change the input/out parameters</p>
+<p>In the parameters and reponses, we have to change the definitions:</p>
+<pre><code class="javascript language-javascript">parameters:
+        - in: body
+          name: body
+          description: Updated user object
+          required: true
+          schema:
+            $ref: '#/definitions/echoBody'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/return'
+        default:
+          description: Error occured
+</code></pre>
+<p>And then define the schemas under definitions</p>
+<pre><code class="javascript language-javascript">definitions:
+  echoBody:
+    type: object
+    properties:
+      echo:
+          type: string 
+  return:
+    type: object
+    properties: 
+      return:
+        type: string
+</code></pre>
+<p>The result should be similar to the following </p>
+<pre><code class="javascript language-javascript">swagger: '2.0'
+info:
+  description: &gt;-
+    Description of the service [Title is not available at Runtime unless we
+    store it in JCA. Need to check for Description]
+  version: '1.0'
+  title: 'Title of the Service [Reference Binding Name]'
+host: 'ttcics-gse00003021.integration.us2.oraclecloud.com:443'
+basePath: /integration/flowapi/rest/USER10_HELLO_WORLD/v01
+schemes:
+  - https
+securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic Authentication. 
+paths:
+  /echo:
+    post:
+      security:
+       - basicAuth: []
+      operationId: HelloWorld
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Updated user object
+          required: true
+          schema:
+            $ref: '#/definitions/echoBody'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/return'
+        default:
+          description: Error occured
+definitions:
+  echoBody:
+    type: object
+    properties:
+      echo:
+          type: string 
+  return:
+    type: object
+    properties: 
+      return:
+        type: string
+</code></pre>
+<p><strong>1.8</strong> Do the authentication call</p>
+<p><img src="images/200/image081.png" alt="" /></p>
+<p><strong>1.9</strong> Fill in your username and password for ICS, and click <strong>Authenticate</strong></p>
+<p><img src="images/200/image082.png" alt="" /></p>
+<p><strong>1.10</strong> Click <strong>Try this operation</strong></p>
+<p><img src="images/200/image083.png" alt="" /></p>
+<p><strong>1.11</strong> Fill in our <strong>echo</strong> value. Notice the change in the body underneath, click on <strong>Send Request</strong></p>
+<p><img src="images/200/image084.png" alt="" /></p>
+<p><strong>1.12</strong> Result</p>
+<p><img src="images/200/image085.png" alt="" /></p>
+<hr />
+<h2 id="documenting-apis">Documenting APIs</h2>
+<p>Documenting the API for the activated integration can be done using Apiary among other available tools.  The use of Apiary for documenting your new API follows.</p>
+<hr />
+<h3 id="apiary-swagger----_work-in-progress_"><strong>APIARY</strong> Swagger    <em>WORK IN PROGRESS</em></h3>
+<hr />
+<p>Apiary does not support Swagger (JSON) format at the moment, so we first have to convert the Swagger JSON into Swagger.</p>
+<p><strong>1.1</strong> Back in a browser window, open the URL we have captured in <strong>Activating Integration</strong>, step <strong>1.3</strong>. Append <strong><em>/swagger</em></strong> - supply your username and password if asked for it.</p>
+<p><img src="images/200/image068.png" alt="" /></p>
+<p><strong>1.2</strong> Copy the Swagger text displayed in the browser window, it should look similar to the following. </p>
+<pre><code class="javascript language-javascript">{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Description of the service [Title is not available at Runtime unless we store it in JCA. Need to check for Description]",
+    "version" : "1.0",
+    "title" : "Title of the Service [Reference Binding Name]"
+  },
+  "host" : "ttcics-gse00011451.integration.us2.oraclecloud.com:443",
+  "basePath" : "/integration/flowapi/rest/USERXX_HELLO_WORLD/v01",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/echo" : {
+      "post" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "request-wrapper",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/echo"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "A sample description of the Response",
+            "schema" : {
+              "$ref" : "#/definitions/return"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "echo" : {
+      "type" : "string"
+    },
+    "return" : {
+      "type" : "string"
+    }
+  }
+}
+</code></pre>
+<p><strong>1.3</strong> Open http://editor.swagger.io </p>
+<p><strong>1.4</strong> Open File -&gt; Paste JSON…</p>
+<p><img src="images/200/image075.png" alt="" /></p>
+<p><strong>1.5</strong> Paste the Swagger Editor in the text box, and click on <strong>OK</strong> to convert JSON into YAML</p>
+<p><img src="images/200/image075b.png" alt="" /></p>
+<p><strong>1.6</strong> In the editor you will see Swagger YAML. Copy this text.</p>
+<p><img src="images/200/image077.png" alt="" /></p>
+<p><strong>1.7</strong> Log into APIARY </p>
+<blockquote>
+  <p><strong>Note:</strong> Follow instructions on the APIARY website to create an account.</p>
+</blockquote>
+<p><strong>1.8</strong> Create new API, making sure to <strong>Start your API in</strong> <em>Swagger</em></p>
+<p><img src="images/200/image078.png" alt="" /></p>
+<p><img src="images/200/image079.png" alt="" /></p>
+<p><strong>1.9</strong> Copy your selected text (from 1.6) into the editor in the left side</p>
+<p><img src="images/200/image080.png" alt="" /></p>
+<p><strong>1.10</strong> Now, we have to add security definitions. </p>
+<ul>
+<li>Change the code to the following, changes <strong>marked <--</strong></li>
+</ul>
+<pre><code>swagger: '2.0'
+info:
+  description: &gt;-
+    Description of the service [Title is not available at Runtime unless we
+    store it in JCA. Need to check for Description]
+  version: '1.0'
+  title: 'Title of the Service [Reference Binding Name]'
+host: 'ttcics-gse00003021.integration.us2.oraclecloud.com:443'
+basePath: /integration/flowapi/rest/USER10_HELLO_WORLD/v01
+schemes:
+  - https 
+</code></pre>
+<p>&lt;-- Insert the following </p>
+<pre><code>securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic Authentication. 
+</code></pre>
+<p>&lt;-- Up to here</p>
+<pre><code>paths:
+  /echo:
+    post:
+</code></pre>
+<p>&lt;-- Insert the following</p>
+<pre><code>      security:
+       - basicAuth: []
+</code></pre>
+<p>&lt;-- Up to here </p>
+<pre><code>      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: request-wrapper
+          required: true
+          schema:
+            $ref: '#/definitions/echo'
+      responses:
+        default:
+          description: A sample description of the Response
+          schema:
+            $ref: '#/definitions/return'
+definitions:
+  echo:
+    type: string
+  return:
+    type: string
+</code></pre>
+<ul>
+<li>This Lab is now completed.</li>
+</ul>

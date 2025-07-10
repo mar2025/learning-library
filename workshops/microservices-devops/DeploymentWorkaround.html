@@ -1,0 +1,37 @@
+<h1 id="manual-deployment-to-accs-from-devcs-workaround">Manual Deployment to ACCS from DevCS Workaround</h1>
+<p><img src="images/deploymentworkaround/Picture-Title.png" alt="" /></p>
+<p>Update: January 30, 2018</p>
+<h2 id="twitter-feed-deployment-error">Twitter Feed Deployment Error</h2>
+<h3 id="step-1-deployment-error"><strong>Step 1:</strong> Deployment Error</h3>
+<ul>
+<li><p>If you get the following error on deployment: <strong>Error creating Storage Cloud Service object or communicating with server</strong>, follow these steps to do a manual deployment to Application Container Cloud Server (ACCS)</p>
+<p><img src="images/deploymentworkaround/Picture1.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-download-build-artifact"><strong>Step 2:</strong> Download Build Artifact</h3>
+<ul>
+<li><p>On the left side navigation panel, click <strong>Build</strong> to access the build page.</p>
+<p><img src="images/deploymentworkaround/Picture2.png" alt="" /></p></li>
+<li><p>Click Twitter Feed Build to view build job details</p>
+<p><img src="images/deploymentworkaround/Picture3.png" alt="" /></p></li>
+<li><p>Expand <strong>targets</strong> to expose the build artifacts.</p>
+<p><img src="images/deploymentworkaround/Picture4.png" alt="" /></p></li>
+<li><p>Click on <strong>twitter-microserver-example-dist.zip</strong> to download the build artifact.</p></li>
+</ul>
+<h3 id="step-3-deploy-from-accs-service-console"><strong>Step 3:</strong> Deploy from ACCS Service Console</h3>
+<ul>
+<li><p>Return to the tab where your <strong>Main Cloud Dashboard</strong> window is loaded. If your dashboard Window is not available, simply open a tab and go to cloud.oracle.com, and re-login as previously instructed. <strong>Note:</strong> for those using a Trial account, this is will be your Standard Identity Cloud Service based account/dashboard.</p></li>
+<li><p>Click on the <img src="images/200/PictureHamburger.png" alt="" /> menu at the bottom right hand side of the <strong>Application Container</strong> Dashboard option, and select <strong>Open Service Console</strong>. If the Application Conatiner is not displayed on the Dashboard, use <strong>Customize Dashboard</strong> to add it to the display.</p>
+<p><img src="images/deploymentworkaround/Picture5.png" alt="" /></p></li>
+<li><p>On the Application Container Cloud Service (ACCS) Service Console you can view all the deployed applications. Click <strong>Create Application</strong></p>
+<p><img src="images/deploymentworkaround/Picture6.png" alt="" /></p></li>
+<li><p>For application platform click <strong>Java SE</strong>.</p>
+<p><img src="images/deploymentworkaround/Picture7.png" alt="" /></p></li>
+<li><p>Enter <code>JavaTwitterMicroservice</code> for Name and click <strong>Choose File</strong></p>
+<p><img src="images/deploymentworkaround/Picture8.png" alt="" /></p></li>
+<li><p>Click <strong>Downloads</strong>. Verify that the <strong>twitter-microservice-example-dist.zip</strong> is selected and click <strong>Open</strong></p>
+<p><img src="images/deploymentworkaround/Picture9.png" alt="" /></p></li>
+<li><p>Change <strong>Instances</strong> and <strong>Memory</strong> to <code>1</code> and click <strong>Create</strong></p>
+<p><img src="images/deploymentworkaround/Picture10.png" alt="" /></p></li>
+<li><p>You should see the <strong>JavaTwitterMicroservice</strong> being created.  Once created, return to lab 200 and continue.</p>
+<p><img src="images/deploymentworkaround/Picture11.png" alt="" /></p></li>
+</ul>

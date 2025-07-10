@@ -1,0 +1,112 @@
+<h1 id="user-on-boarding---api">User On-boarding - API</h1>
+<p>The Oracle Identity Cloud Service REST APIs support SCIM 2.0 compliant endpoints with standard SCIM 2.0 core schemas and Oracle schema extensions to programmatically manage users, groups, applications, and identity functions, such as password management and administrative tasks. </p>
+<p>To make REST API calls to your Oracle Identity Cloud Service environment, you need an OAuth2 access token to use for authorization. The access token provides a session (with scope and expiration), that your client application can use to perform tasks in Oracle Identity Cloud Service.</p>
+<p>This demonstration runs on Jupyter notebook. This page is the static snapshot of the notebook file.</p>
+<p>Click <a href="UO-API.ipynb">here</a> to actually run the API's described here</p>
+<pre><code class="python language-python">import requests, json
+from ipywidgets import widgets, Layout
+from IPython.display import display
+from IPython.display import HTML
+</code></pre>
+<h2 id="1---discovery">1 - Discovery</h2>
+<p>First let's gather information about your IDCS Tenant</p>
+<p>Run the following cell after providing the following information</p>
+<ul>
+<li>Tenant</li>
+<li>Domain</li>
+<li>Port</li>
+</ul>
+<p>Then you will discover the IDCS End Points automatically.</p>
+<p>Explore by expanding the Discovered <strong><code>IDCS Configuration</code></strong></p>
+<pre><code class="python language-python">tenant = ""
+domain = "identity.oraclecloud.com"
+port = "443"
+
+baseurl = 'https://' + tenant + '.' + domain + ':' + port
+configurl =  baseurl + '/.well-known/idcs-configuration'
+response = requests.get(configurl).text
+config = json.loads(response)
+
+configD = widgets.Accordion(children=[widgets.Textarea(value=json.dumps(config, indent=4, sort_keys=True), 
+                                                             layout=Layout(width='100%', height='800px'))])
+configD.set_title(0, 'IDCS Configuration')
+configD.selected_index = None
+display(configD)
+</code></pre>
+<p>The Discovery End-Point was public and so didn't require any Access Token or other form of authentication</p>
+<hr />
+<h2 id="2---access-token-2-legged-oauth">2 - Access Token (2-legged OAuth)</h2>
+<p>Next We will get an OAuth Access Token  using 2-legged OAuth2 Authorization flow.</p>
+<p>Check out the following diagram of 2-legged flow -</p>
+<p><img src="resources/oauth2legged.jpg" alt="OAuth2 2-Legged Diagram" /></p>
+<p>Some minimal setup in IDCS is needed for the flow. </p>
+<ul>
+<li>Login to your [IDCS Admin Console]() using Administrator credentials</li>
+<li>Create an <strong>App</strong> that grants access to IDCS protected REST API's. </li>
+<li>Record the <code>Client ID</code> and <code>Client Secret</code> from the App Configuration</li>
+</ul>
+<p>Follow the video below to create your App in IDCS.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A2LiNJRRINk?rel=0&amp;controls=1&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://docs.oracle.com/en/cloud/paas/identity-cloud/17.4.2/rest-api/OATOAuthClientWebApp.html#GUID-51E5C29A-6B7E-487A-8832-5D709410C16A__RegisterAnOAuthClientWebApplication-29DDFF36" frameborder="0" allowfullscreen></iframe>
+<p>Now it's time to store the recorded <code>Client ID</code> and <code>Client Secret</code>. They will be used duing API call.</p>
+<pre><code class="python language-python">from getpass import getpass 
+#Lets get the App's Client ID and Client secret. They will be needed for proceted API calls
+clientId = ""
+clientSecret = ""
+</code></pre>
+<p>Having collected all the necessary data, you can now generate <strong>Access Token</strong> from IDCS.</p>
+<p>The steps are -</p>
+<ul>
+<li>Find the Token End-Point URL from IDCS Discovery Configuation</li>
+<li>Specify the grant type as <code>password</code></li>
+<li>Pass the <code>Client ID</code> and <code>Client Secret</code> in base-64 encoded format as <strong>HTTP Basic Authentication</strong> header.<br />
+&gt; The format of the data is -
+<strong><font color="blue">b64encode(Client ID:Client Secret)</font></strong></li>
+<li>Make an <strong>HTTP POST</strong> call to the Token End-Point URL<ul>
+<li>Include the <code>Authentication</code> Header</li>
+<li>POST data should contain - <code>Grant Type</code>, <code>User ID</code>, <code>User Password</code> and <code>Scope</code></li></ul></li>
+<li>The POST response will contain the issued <strong>Access Token</strong></li>
+</ul>
+<p>View the <strong>AT</strong> from displayed Output   </p>
+<pre><code class="python language-python">import base64, urllib.parse
+
+#Find the OAuth2 Token Endpoint from Discovery Config
+tokenurl = config["openid-configuration"]["token_endpoint"]
+
+grant_type = "client_credentials"
+scope = "urn:opc:idm:__myscopes__"
+
+#Token Endpoint needs the App Creds in base64 encoded Header
+basicauthHeader = base64.b64encode(bytes(clientId + ":" + clientSecret, 'utf-8')) 
+#reqdata = {'grant_type': grant_type, 'scope' : scope}
+reqheaders = {'Authorization': 'Basic ' + basicauthHeader.decode("utf-8"), 'content-type': 'application/x-www-form-urlencoded'}
+
+response = requests.post(tokenurl, data = reqdata, headers = reqheaders)
+accesstoken = response.json()["access_token"]
+accesstokenD = widgets.Accordion(children=[widgets.Textarea(value=accesstoken, layout=Layout(width='100%', height='400px'))])
+accesstokenD.set_title(0, 'Access Token')
+accesstokenD.selected_index = None
+display(accesstokenD)
+</code></pre>
+<hr />
+<h2 id="3---user-management">3 - User Management</h2>
+<p>Armed with Access Token having <strong>Scopes</strong> that grant access to <strong>User Administrator</strong> level Admin API's, let's now get all the users currently in <strong>IDCS</strong>.</p>
+<p>Run the following cell to display IDCS Users with their <strong>Email Address</strong> and internal <strong>ID</strong> values</p>
+<blockquote>
+  <p>Notice that the User REST API call contains an <strong>Authorization</strong> Header where the <strong>AT</strong> is passed as a <strong>Bearer Token</strong></p>
+</blockquote>
+<pre><code class="python language-python">userurl = baseurl + "/admin/v1/Users"
+
+uheaders = {'Authorization': 'Bearer ' + accesstoken, 'content-type': 'application/json'}
+userlist = requests.get(userurl, headers = uheaders).json()["Resources"]
+userDF = pd.DataFrame(userlist)
+userDispList = [userDF["userName"], 
+                userDF.emails.apply(lambda x: x[0]["value"] if x[0]["primary"] == True else x[1]["value"]), 
+                userDF["id"]]
+userDispDF = pd.concat(userDispList, axis=1)
+
+HTML(userDispDF.to_html())
+</code></pre>
+<h4 id="additional-resources">Additional Resources:</h4>
+<p><a href="https://docs.oracle.com/en/cloud/paas/identity-cloud/idcsa/index.html">IDCS REST API</a></p>
+<p><a href="http://www.ateam-oracle.com/what-is-scim/">What is SCIM</a></p>

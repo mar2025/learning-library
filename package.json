@@ -4,9 +4,11 @@
   "private": true,
   "description": "Build pipeline for bundling and tree-shaking workshop assets",
   "scripts": {
+    "render:md": "node build/render-markdown.js",
     "build:js": "esbuild build/entry.js --bundle --minify --format=iife --target=es2018 --outfile=workshops/common-content/js/workshop.bundle.js --log-level=info",
     "build:css": "mkdir -p build && cat workshops/common-content/css/*.css > build/tmp.css && postcss build/tmp.css --config build/postcss.config.js -o workshops/common-content/css/site.min.css && rm build/tmp.css",
-    "build": "npm run build:js && npm run build:css"
+    "build": "npm run render:md && npm run build:js && npm run build:css",
+    "optimize:images": "node build/optimize-images.js"
   },
   "dependencies": {
     "angular": "^1.8.2",
@@ -23,6 +25,8 @@
     "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
     "cssnano": "^6.0.1",
-    "@fullhuman/postcss-purgecss": "^5.0.0"
+    "@fullhuman/postcss-purgecss": "^5.0.0",
+    "glob": "^10.3.10",
+    "sharp": "^0.33.4"
   }
 }

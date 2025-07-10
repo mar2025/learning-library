@@ -1,0 +1,61 @@
+<h1 id="make-a-bug-fix-to-your-java-microservice">Make a Bug Fix to Your Java Microservice</h1>
+<p><img src="images/300/header.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>Oracle Public Cloud Container Native Development workshop.</strong> This workshop will walk you through the process of moving an existing application into a containerized CI/CD pipeline and deploying it to a Kubernetes cluster in the Oracle Public Cloud.</p>
+<p>You will take on 2 personas during the workshop.&nbsp;The <strong>Lead Developer Persona</strong> will be responsible for configuring the parts of the automated build and deploy process that involve details about the application itself. The <strong>DevOps Engineer Persona</strong> will configure the parts of the automation involving the Kubernetes infrastructure.&nbsp;To containerize and automate the building and deploying of this application you will make use of Wercker Pipelines for CI/CD, Docker Hub for a container registry, and Terraform for provisioning a Kubernetes cluster on Oracle Cloud Infrastructure.</p>
+<p>During this lab, you will take on the <strong>Lead Developer Persona</strong> and work on fixing a bug found in Java microservice that you deployed to Kubernetes in the previous lab. You will make a code change that fixes the bug, commit the code to GitHub, and observe the execution of the build and deploy workflow that is managing your application. Then you'll test the application to verify that the bug fix was successful.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<p><strong>Make a Bug Fix to Your Java Microservice</strong></p>
+<ul>
+<li>Modify Java Code and Commit to GitHub</li>
+<li>Verify Execution of Wercker Workflow</li>
+<li>Verify Deployment to Kubernetes</li>
+<li>Test the Product Catalog Application</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires:</li>
+<li>an Oracle Public Cloud account that will be supplied by your instructor, or a Trial Account</li>
+<li>a <a href="https://github.com/join">GitHub account</a></li>
+</ul>
+<h1 id="make-a-bug-fix-to-your-java-microservice-1">Make a Bug Fix to Your Java Microservice</h1>
+<h2 id="fix-java-microservice">Fix Java Microservice</h2>
+<h3 id="step-1-modify-java-code-and-commit-to-github"><strong>STEP 1</strong>: Modify Java code and commit to GitHub</h3>
+<ul>
+<li><p>Open <strong><a href="https://app.wercker.com">Wercker</a></strong> in a new tab or browser window, or switch to it if you already have it open. In the top navigation bar, click <strong>Pipelines</strong>, then click on your <strong>twitter-feed</strong> application.</p>
+<p><img src="images/300/0.png" alt="" /></p></li>
+<li><p>In a new browser tab, navigate to your forked twitter-feed repository on GitHub. If you've closed the tab, you can get back by going to <a href="https://github.com/">GitHub</a>, scrolling down until you see the <strong>Your repositories</strong> box on the right side of the page, and clicking the <strong>twitter-feed</strong> link.</p>
+<p><img src="images/300/1.png" alt="" /></p></li>
+<li><p>Click the <strong>Find file</strong> button.</p>
+<p><img src="images/300/2.png" alt="" /></p></li>
+<li><p>Type <strong>statictweets</strong> in the search bar, then click on <strong>StaticTweets.java</strong> to open the file.</p>
+<p><img src="images/300/3.png" alt="" /></p></li>
+<li><p>Click the <strong>pencil button</strong> to begin editing the file.</p>
+<p><img src="images/300/4.png" alt="" /></p></li>
+<li><p>Scroll down to approximately <strong>line 57</strong>. This is the REST endpoint that should return only tweets that match a given search term, but it's not working. Delete <strong>line 57</strong> to fix the bug that is breaking this feature.</p>
+<p><img src="images/300/5.png" alt="" /></p></li>
+<li><p>Scroll to the bottom of the page and click <strong>Commit changes</strong>.</p>
+<p><img src="images/300/6.png" alt="" /></p></li>
+<li><p>Take note of the <strong>Git commit hash</strong> displayed in the latest commit banner above the source code. We will use it to verify the version of code running in our Kubernetes cluster.</p>
+<p><img src="images/300/9.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-verify-execution-of-wercker-workflow"><strong>STEP 2</strong>: Verify Execution of Wercker Workflow</h3>
+<ul>
+<li><p>Switch to your <strong>Wercker</strong> browser tab. You will see that the workflow execution is already in progress, having been triggered by a webhook when you committed your code change. Wait for the <strong>deploy-to-cluster</strong> pipeline to begin executing.</p>
+<p><img src="images/300/7.png" alt="" /></p></li>
+<li><p>In a new browser tab, navigate to the <strong>Kubernetes dashboard</strong> at <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/"><strong>Kubernetes dashboard</strong></a>. Click on <strong>Overview</strong> in the left side navigation menu. You should see two new twitter-feed pods with a very small <code>Age</code> (a few seconds to a few minutes, depending on how much time has elapsed between the end of the Workflow execution and now). If you get to the dashboard very quickly after the Workflow finishes, you may see the two old pods from the previous lab being terminated, as in the screenshot below. <strong>The old pods will be removed</strong> from the UI within a minute of the new pods being started.</p>
+<p><img src="images/300/8.png" alt="" /></p></li>
+<li><p>We have seen that Kubernetes has started up some new pods, but we still want to verify exactly which code version is running in those pods. That's where the Git commit hash comes in. We are naming our Docker image with the Git branch name and commit hash, so we can trace the running application back to the commit that triggered its deployment. Click on either of the two new running <strong>twitter-feed pods</strong> to view the detail page.</p>
+<p><img src="images/300/10.png" alt="" /></p></li>
+<li><p>In the <strong>Containers</strong> section, note the Git branch (master) and commit hash at the end of the <strong>image</strong> field. Compare the commit hash to the one displayed by GitHub that you noted in the previous step. They should match, confirming that the latest code version is currently running in Kubernetes.</p>
+<p><img src="images/300/11.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-validate-product-catalog-application-functionality"><strong>STEP 3</strong>: Validate Product Catalog application functionality</h3>
+<ul>
+<li><p>Still in the Kubernetes dashboard, click <strong>Services</strong> from the left side navigation menu. Then click the <strong>External endpoint URL</strong> for the <strong>product-catalog-service</strong>.</p>
+<p><img src="images/300/12.png" alt="" /></p></li>
+<li><p>The Alpha Office Product Catalog site will load in a new tab. Click on <strong>any of the products</strong> to load its twitter feed. Now the feed displays only tweets with hashtags relevant to this specific product. We've gone from making a code change to having our new version built, tested, and deployed to Kubernetes in just a couple of minutes!</p>
+<p><img src="images/300/13.png" alt="" /></p></li>
+</ul>
+<p><strong>You are now ready to move to the next lab.</strong></p>

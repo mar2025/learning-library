@@ -1,0 +1,165 @@
+<p><img src="images/400/lab400.png" alt="" /></p>
+<p>Update May 2, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the fourth of five GoldenGate Cloud Service labs, and will review GGCS monitoring.</p>
+<p>To log issues and view the lab guide source, go to the <a href="https://github.com/pcdavies/GoldenGateCloudService/issues">github oracle</a> repository.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Configure GGCS for monitoring.</li>
+<li>Start monitoring services and review activity.</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Access to your Oracle Cloud account, and GGCS and the Compute image.</li>
+</ul>
+<h3 id="step-1-configure-on-premise"><strong>STEP 1</strong>: Configure On-premise</h3>
+<ul>
+<li>Log into VNC on the Compute instance and open Firefox WEB browser and go to <code>&lt;ip addresss of on prem vm&gt;:7809/groups</code> (field <strong><em>OG1</em></strong>).  All processes should be up and running.  This is necessary to ensure the monitoring agent will start the first time.</li>
+</ul>
+<p><img src="images/400/i1.1.png" alt="" /></p>
+<ul>
+<li>Next open a file browser in the Compute instance.<ul>
+<li><strong>Open the following file and review key parameters:</strong> <code>/u01/app/oracle/product/ggcc_instance/conf/agent.properties</code></li></ul></li>
+</ul>
+<p><img src="images/400/i1.png" alt="" /></p>
+<ul>
+<li>Review the following fields at the bottom of the file.  <strong>Note we have updated the IP addresses for you:</strong><ul>
+<li><strong>ggInstanceHost=</strong> <code>&lt;ip address of on prem vm&gt;</code> Field <strong><em>OG1</em></strong></li>
+<li><strong>ggccServiceHost=</strong> <code>&lt;ip address of ggcs vm&gt;</code> Field <strong><em>GG1</em></strong></li>
+<li><strong>proxy-127.0.0.1=</strong> <code>&lt;ip address of ggcs vm&gt;</code> Field <strong><em>GG1</em></strong></li></ul></li>
+</ul>
+<p><img src="images/400/i2.png" alt="" /></p>
+<ul>
+<li>Start GoldenGate Cloud Service agent:<ul>
+<li><strong>Open the workshop folder on the desktop.</strong></li>
+<li><strong>Double click on the following file:</strong> <code>start_ggccagent.sh</code></li>
+<li><strong>Select Run in Terminal.  LEAVE THIS WINDOW OPEN</strong></li></ul></li>
+</ul>
+<p><img src="images/400/i3.png" alt="" /></p>
+<p><img src="images/400/i3.1.png" alt="" /></p>
+<ul>
+<li>Open a new terminal window:<ul>
+<li><strong>Enter the following:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start ggsci:</strong> <code>./ggsci</code></li>
+<li><strong>Start jagent:</strong> <code>start jagent</code></li></ul></li>
+</ul>
+<p><img src="images/400/i4.png" alt="" /></p>
+<h3 id="step-2-configure-ggcs"><strong>STEP 2</strong>: Configure GGCS</h3>
+<ul>
+<li><p>Double click on the <code>GGCS_SSH</code> shortcut on your desktop to open a SSH terminal window into GGCS:</p>
+<p><img src="images/400/i4.1.png" alt="" /></p></li>
+<li><p>Execute the following commands:</p>
+<ul>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></li>
+<li><strong>Enter the following:</strong> <code>more /u02/data/ggcc/agent/conf/agent.properties</code></li>
+<li><strong>Review the key parameters highlighted below.  Note these have been updated for you.</strong></li></ul></li>
+</ul>
+<p><img src="images/400/i5.png" alt="" /></p>
+<ul>
+<li>Open a ggsci command shell and enter the following.  Note the data store may already exist, if so ignore messages that relate to this.<ul>
+<li><strong>Enter:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start ggsci:</strong> <code>./ggsci</code></li>
+<li><strong>Create datastore:</strong> <code>create datastore</code> (it may already exist, if so ignore messages about this)</li>
+<li><strong>Review processes:</strong> <code>info all</code></li>
+<li><strong>Stop Manager:</strong> <code>stop mgr</code></li>
+<li><strong>Start Manager:</strong> <code>start mgr</code></li>
+<li><strong>Start DW Processes:</strong> <code>start *</code></li></ul></li>
+</ul>
+<p><img src="images/400/i6.png" alt="" /></p>
+<ul>
+<li>Add weblogic credentials by executing the following: (**Note - screen shot below shows creds have already been created at the point of screen capture for this lab doc)<ul>
+<li><strong>Exit ggsci:</strong> <code>exit</code></li>
+<li><strong>Enter:</strong> <code>/u01/app/oracle/middleware/ggccagent/bin/ggccAgent.sh /u02/data/ggcc/agent/conf/agent.properties createServerCred</code></li>
+<li><strong>You will be prompted separately for weblogic username (enter twice) and password (enter twice):</strong><ul>
+<li><strong>Userid:</strong>: Field <strong><em>GG2</em></strong></li>
+<li><strong>Confirm Userid:</strong> Field <strong><em>GG2</em></strong></li>
+<li><strong>Password:</strong> Field <strong><em>GG3</em></strong></li>
+<li><strong>Confirm Password:</strong> Field <strong><em>GG3</em></strong></li></ul></li></ul></li>
+</ul>
+<p><img src="images/400/i7.png" alt="" /></p>
+<ul>
+<li>Start the agent by running the following.  <strong>BE SURE TO LEAVE THIS WINDOW OPEN, DO NOT CLOSE IT!</strong><ul>
+<li><strong>Run the following:</strong> <code>/u01/app/oracle/middleware/ggccagent/bin/ggccAgent.sh /u02/data/ggcc/agent/conf/agent.properties start</code></li></ul></li>
+</ul>
+<p><img src="images/400/i8.png" alt="" /></p>
+<p><img src="images/400/i8.1.png" alt="" /></p>
+<ul>
+<li>Open a new terminal window and SSH into ggcs.  Run a process that Integrates the agent with the GoldenGate instance. Then log into ggsci and start jagent.<ul>
+<li><strong>Double click on GGCS_SSH shortcut on Desktop</strong></li>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></li>
+<li><strong>Run the following:</strong>  <code>/u01/app/oracle/middleware/ggccagent/bin/ggccAgent.sh /u02/data/ggcc/agent/conf/agent.properties intgGGSCI $GGHOME</code></li>
+<li><strong>Enter:</strong> <code>ggsci</code></li>
+<li><strong>Enter:</strong> <code>info all</code></li>
+<li><strong>Enter:</strong>  <code>start jagent</code></li>
+<li><strong>Confirm the agent is runnning:</strong> <code>info all</code></li></ul></li>
+</ul>
+<p><img src="images/400/i9.png" alt="" /></p>
+<h3 id="step-3-review-monitoring-services"><strong>STEP 3</strong>: Review Monitoring Services</h3>
+<ul>
+<li>Return to your web browser and log into Oracle Cloud and open GoldenGate Control Console from GoldenGate Cloud Service Console (hamburger menu to right of service name)<ul>
+<li><strong>Log into Oracle cloud:</strong> Fields <strong><em>CS1</em></strong>, <strong><em>CS2</em></strong>, <strong><em>CS3</em></strong>, and <strong><em>CS4</em></strong></li></ul></li>
+</ul>
+<p><img src="images/400/i10.png" alt="" /></p>
+<ul>
+<li>Access the console using the hamburger menu on the right and log into the Console:<ul>
+<li><strong>Username:</strong>  Field <strong><em>GG2</em></strong></li>
+<li><strong>Password:</strong>  Field <strong><em>GG3</em></strong></li></ul></li>
+</ul>
+<p><img src="images/400/i11.png" alt="" /></p>
+<p><img src="images/400/i12.png" alt="" /></p>
+<ul>
+<li>Review the following (note your screen shot/numbers may look slightly different).<ul>
+<li><strong>Catalog/Instances</strong></li>
+<li><strong>Catalog Tasks</strong></li>
+<li><strong>Policies</strong></li></ul></li>
+</ul>
+<p><img src="images/400/i13.png" alt="" /></p>
+<ul>
+<li>Review Dashboard Hot Tables.  Click on the largest bar graph.</li>
+</ul>
+<p><img src="images/400/i14.png" alt="" /></p>
+<ul>
+<li>Note the replication detail.</li>
+</ul>
+<p><img src="images/400/i14.1.png" alt="" /></p>
+<ul>
+<li>Navigate to instances.  To help clarify which is the on-premise instance and which is the GGCS instance click on the name and rename it.  Provide the names GGCS and On-Prem.  This particular screenshot uses IP addresses from a different instance and will not be consistent with others used throughout these labs.  Use the i.p. addresses from your handout to determine which instance is on-prem (<strong><em>OG1</em></strong>) and which is GGCS (<strong><em>GG1</em></strong>).</li>
+</ul>
+<p><img src="images/400/i14.5.png" alt="" /></p>
+<p><img src="images/400/i14.4.png" alt="" /></p>
+<ul>
+<li>Note the status of the two instances (up and available).</li>
+</ul>
+<p><img src="images/400/i14.2.png" alt="" /></p>
+<ul>
+<li>Navigate to tasks.  Review activity.</li>
+</ul>
+<p><img src="images/400/i14.6.png" alt="" /></p>
+<ul>
+<li>Return to ggsci and stop EXTDW process.  You may need to open a new terminal window (if you closed it previously):</li>
+<li><strong>Double click on GGCS_SSH shortcut on Desktop</strong></li>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code><ul>
+<li><strong>Run the following:</strong>  <code>/u01/app/oracle/middleware/ggccagent/bin/ggccAgent.sh /u02/data/ggcc/agent/conf/agent.properties intgGGSCI $GGHOME</code></li>
+<li><strong>Enter:</strong> <code>ggsci</code></li>
+<li><strong>Enter:</strong> <code>info all</code></li>
+<li><strong>Enter:</strong>  <code>stop EXTDW</code></li>
+<li><strong>Confirm the agent is stopped:</strong> <code>info all</code></li></ul></li>
+</ul>
+<p><img src="images/400/i14.3.png" alt="" /></p>
+<ul>
+<li>Return to the Console and review Changes in status in instances, tasks.  </li>
+</ul>
+<p><img src="images/400/i15.1.png" alt="" /></p>
+<ul>
+<li>Review Notifications.  Note the service is down.</li>
+</ul>
+<p><img src="images/400/i16.png" alt="" /></p>
+<ul>
+<li>Go back to ggsci and start EXTDW process.<ul>
+<li><strong>Enter the following:</strong> <code>start EXTDW</code></li></ul></li>
+</ul>
+<p><img src="images/400/i17.png" alt="" /></p>
+<ul>
+<li>Return to the Console and review changes in status in instances, tasks. Note service is back up.  Note that when starting and stopping EXTDW a refresh should not be necessary.</li>
+</ul>
+<p><img src="images/400/i18.png" alt="" /></p>

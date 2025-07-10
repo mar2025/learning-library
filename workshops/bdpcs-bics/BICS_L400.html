@@ -1,0 +1,142 @@
+<p><img src="images/L400/BDPCS-BICS_L400_Title.png" alt="" /></p>
+<p>Updated: February 1, 2017</p>
+<h1 id="introduction">Introduction</h1>
+<p>This is the fourth lab that is part of the Oracle Public Cloud Big Data Preparation and Business Intelligence workshop. These labs will give you a basic understanding of the Oracle Big Data Preparation and BI Cloud Services, and how those in a non-technical line of business role can quickly access, cleanse, validate, explore, and analyze their business information without needing IT support.</p>
+<p>This lab will walk you through creating how to create dashboards and analytic workbooks on your curated data after you have first prepared in Lab one and two. You will first create an ‘Analysis’ workbook for publishing into a dashboard, and then you will create a new dashboard and dashboard prompt, and then add your workbook to the dashboard.</p>
+<p>The following shows the self service flow of information, as business users take prepared data, explore it, and create dashboards off the curated data.</p>
+<p><img src="images/L400/p1.png" alt="" /></p>
+<p>** Please direct comments to: derrick.cameron@oracle.com **</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Understand how to create analytics workbooks and various types of interactive visualizations.</li>
+<li>Understand how to create dashboards and dashboard prompts.</li>
+<li>How to publish content into dashboards and share with others.</li>
+</ul>
+<h1 id="answers">Answers</h1>
+<p>While Visual Analyzer is used to explore your data and discover patterns and analmalies, Answers and Dashboards provide an environment for building richly visual reports and dashboards for curated data.  You first create one or more analysis (Answers workbooks) and dashboard prompts, and then assemble them on interactive dashboards.</p>
+<p>Note:  There are several views that are part of this workbook – save frequently to avoid losing work.</p>
+<h3 id="step-1-create-new-analysis"><strong>Step 1:</strong> Create new analysis</h3>
+<ul>
+<li><p>Select Analysis from the main BICS page.</p>
+<p><img src="images/L400/p2.png" alt="" /></p>
+<p><img src="images/L400/p3.png" alt="" /></p>
+<p><img src="images/L400/p4.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-expand-and-drag-the-following-items-to-the-‘selected-columns’-area--use-the-ctrl-key-to-multi-select-items-folder-by-folder"><strong>Step 2:</strong> Expand and drag the following items to the ‘Selected Columns’ area.  Use the &lt;CTRL> key to multi-select items, folder by folder.</h3>
+<ul>
+<li><p>Select and drag and drop items to selected columns region from left to right.</p>
+<p><img src="images/L400/p5.png" alt="" /></p></li>
+<li><p>Include only the past four quarters.</p>
+<p><img src="images/L400/p6.png" alt="" /></p>
+<p><img src="images/L400/p7.png" alt="" /></p></li>
+<li><p>Calculate sales returns as a percentage of sales (rather than dollar value amount).  Enter this calculation:  "Measures"."Sales Returns"/"Measures"."Sales"</p>
+<p><img src="images/L400/p8.png" alt="" /></p>
+<p><img src="images/L400/p9.png" alt="" /></p></li>
+<li><p>Highlight return percentages that are high.</p>
+<p><img src="images/L400/p10.png" alt="" /></p>
+<p><img src="images/L400/p11.png" alt="" /></p>
+<p><img src="images/L400/p12.png" alt="" /></p>
+<p><img src="images/L400/p13.png" alt="" /></p></li>
+<li><p>Next format the Sales Return Pcnt value.  Select Data Format.</p>
+<p><img src="images/L400/p14.png" alt="" /></p>
+<p><img src="images/L400/p15.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-create-a-pivot-table"><strong>Step 3:</strong> Create a Pivot Table</h3>
+<ul>
+<li><p>Click on the Results tab and then (lower left) create new View and select Pivot Table.</p>
+<p><img src="images/L400/p16.png" alt="" /></p></li>
+<li><p>Drag year and quarter to the Columns Region.</p>
+<p><img src="images/L400/p17.png" alt="" /></p></li>
+<li><p>We’ll add a total.</p>
+<p><img src="images/L400/p18.png" alt="" /></p></li>
+<li><p>We’ll also have this view communicate context for other views in the workbook.  Select Sales Returns Pcnt column properties.</p>
+<p><img src="images/L400/p19.png" alt="" /></p></li>
+<li><p>Select Interaction tab and create ‘channel’ C1.  Click OK when finished.</p>
+<p><img src="images/L400/p20.png" alt="" /></p></li>
+<li><p>Now graph the results to enhance the visual information.</p>
+<p><img src="images/L400/p22.png" alt="" /></p>
+<p><img src="images/L400/p23.png" alt="" /></p>
+<p><img src="images/L400/p24.png" alt="" /></p></li>
+<li><p>Then ‘done’</p>
+<p><img src="images/L400/p25.png" alt="" /></p></li>
+<li><p>Drag and drop the Pivot Table between the Title and the Table views.</p>
+<p><img src="images/L400/p26.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-complete-table-view"><strong>Step 4:</strong> Complete Table View</h3>
+<ul>
+<li><p>Edit the table view.</p>
+<p><img src="images/L400/p27.png" alt="" /></p></li>
+<li><p>Drag and drop the following items to the table view.  Be sure to place items between existing columns.</p>
+<p><img src="images/L400/p28.png" alt="" /></p>
+<p><img src="images/L400/p29.png" alt="" /></p></li>
+<li><p>Edit Table View to format results.</p>
+<p><img src="images/L400/p30.png" alt="" /></p></li>
+<li><p>Drag and drop year, quarter, and brand category to the Table Prompts region.</p>
+<p><img src="images/L400/p31.png" alt="" /></p>
+<p><img src="images/L400/p32.png" alt="" /></p></li>
+<li><p>One last thing – edit properties and specify channel C1 whereby the table view will respond to Pivot Table selections.</p>
+<p><img src="images/L400/p33.png" alt="" /></p>
+<p><img src="images/L400/p34.png" alt="" /></p></li>
+<li><p>Now when you highlight/select an item in the Pivot Table other views listening on channel C1 will respond.  Select the highlighted item below to observe the behavior.</p>
+<p><img src="images/L400/p35.png" alt="" /></p></li>
+<li><p>Select the <code>Save Analysis</code> icon upper left.  Enter <code>Customer Analysis</code></p>
+<p><img src="images/L400/p36.png" alt="" /></p>
+<p><img src="images/L400/p36.1.png" alt="" /></p></li>
+</ul>
+<h1 id="dashboards">Dashboards</h1>
+<h3 id="step-1--create-dashboard-prompts"><strong>Step 1:</strong>  Create Dashboard prompts</h3>
+<ul>
+<li><p>Return to the main Cloud Service tab and select <code>Catalog</code>.</p>
+<p><img src="images/L400/p37.png" alt="" /></p></li>
+<li><p>On the left select ‘new’ icon and select Dashboard Prompt.</p>
+<p><img src="images/L400/p38.png" alt="" /></p></li>
+<li><p>Select Customer Activity Subject Area.</p>
+<p><img src="images/L400/p39.png" alt="" /></p></li>
+<li><p>Select create new column prompt.</p>
+<p><img src="images/L400/p40.png" alt="" /></p></li>
+<li><p>Choose year.</p>
+<p><img src="images/L400/p41.png" alt="" /></p></li>
+<li><p>Accept defaults.</p>
+<p><img src="images/L400/p42.png" alt="" /></p></li>
+<li><p>Add a second column prompt for quarter.  Set defaults to 2015 Q3 and Q4, and 2016 Q1 and Q2.  Note these can be dynamic and relative to the current month (or any other variable).</p>
+<p><img src="images/L400/p43.png" alt="" /></p>
+<p><img src="images/L400/p44.png" alt="" /></p>
+<p><img src="images/L400/p45.png" alt="" /></p>
+<p><img src="images/L400/p46.png" alt="" /></p></li>
+<li><p>Save Prompt.</p>
+<p><img src="images/L400/p47.png" alt="" /></p></li>
+<li><p>Call it <code>Time Prompt</code>.</p>
+<p><img src="images/L400/p48.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2--create-dashboard"><strong>Step 2:</strong>  Create Dashboard</h3>
+<ul>
+<li><p>Go back to Catalog and select new Dashboard.</p>
+<p><img src="images/L400/p49.png" alt="" /></p>
+<p><img src="images/L400/p50.png" alt="" /></p>
+<p><img src="images/L400/p50.1.png" alt="" /></p></li>
+<li><p>Ignore this error.</p>
+<p><img src="images/L400/p50.2.png" alt="" /></p></li>
+<li><p>Expand the catalog and drag the Time Prompt and the Customer Activity Dashboard on to the Dashboard Page at the top.  Then drag your saved analysis workbook on to the dashboard just below the dashboard prompt.</p>
+<p><img src="images/L400/p52.png" alt="" /></p></li>
+<li><p>After saving, run the Dashboard.</p>
+<p><img src="images/L400/p53.png" alt="" /></p>
+<p><img src="images/L400/p54.png" alt="" /></p></li>
+</ul>
+<h1 id="optional---analytics-for-mobile-devices">Optional - Analytics for Mobile Devices</h1>
+<p>Any and all content created in BICS is automatically available on your smart phone or tablet.  The content you created in this lab can be accessed as follows:</p>
+<h3 id="step-1--install-the-oracle-bi-mobile-application-from-the-play-store"><strong>Step 1:</strong>  Install the Oracle BI Mobile Application from the play store</h3>
+<ul>
+<li><p>Go to the Play Store and search for Oracle.  Install App.</p></li>
+<li><p>Start the Oracle BI Mobile Application and select Connections.  Enter the following:</p></li>
+<li><p>Host:  <strong>businessintelltrial1147-gse00001082.analytics.us2.oraclecloud.com</strong> (see below for where to get this URL)</p></li>
+<li><p>Port:  <strong>443</strong></p></li>
+<li><p>SSL/TLS:  <strong>on</strong></p></li>
+<li><p>Userid / Password:  Use the userid/pw you have been using in this lab.  In this case the user is lisa.jones.</p>
+<p><img src="images/L400/p55.png" alt="" /></p></li>
+</ul>
+<h1 id="optional---review-sampleapp-content">Optional - Review SampleApp content</h1>
+<ul>
+<li><p>Go back to the Catalog and select SampleApp.</p>
+<p><img src="images/L400/p56.png" alt="" /></p>
+<p><img src="images/L400/p57.png" alt="" /></p></li>
+</ul>

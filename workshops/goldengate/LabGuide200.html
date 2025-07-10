@@ -1,0 +1,262 @@
+<p><img src="images/200/lab200.png" alt="" /></p>
+<p>Update May 2, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the second of five GoldenGate Cloud Service labs, and covers the first use case - zero downtime migration and replication of data from a 11g Database on-premise to DBCS 12c Pluggable Database.  </p>
+<p><img src="images/100/i2.png" alt="" /></p>
+<p>This workshop will walk you through a zero downtime use case that shows how you can use Oracle Datapump and Oracle GoldenGate to maintain an on-premise database that remains available while data is migrated and replicated to a remote instance with transactional consistency.</p>
+<p>To log issues and view the lab guide source, go to the <a href="https://github.com/pcdavies/GoldenGateCloudService/issues">github oracle</a> repository.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Introduce you to an on-premise 11g Database environment that will be replicated to a DBCS 12c environment.  Note: this is set up as an image running in Oracle IAAS/compute, but process and configuration steps are the same as though the image was running outside the cloud.</li>
+<li>Configure SQLDeveloper to access the source and target databases.</li>
+<li>Use Oracle Datapump to migrate data from 11g on-premise to DBCS 12c.</li>
+<li>Configure an on-premise GoldenGate to extract data from a 11g Database.</li>
+<li>Configure GoldenGate Cloud Service to replicate data to a DBCS 12c Pluggable Database.</li>
+<li>Generate transactions to showcase real time data replication, while tracking data consistency between environments.</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires a <a href="https://www.realvnc.com/download/viewer/">VNC Viewer</a> to connect to an Image running on Oracle's IaaS Compute Service.  If you do not have a VNC Viewer you can download and install from the <a href="https://www.realvnc.com/download/viewer/">VNC Viewer Website</a>.</li>
+<li>Access to your Oracle Cloud account (used in Lab 100) and services DBCS, GGCS, and Compute.</li>
+</ul>
+<h3 id="step-1-review-compute-image-on-premise-ogg"><strong>STEP 1</strong>: Review Compute Image (On-premise OGG)</h3>
+<p>For the GoldenGate Cloud Service Workshop we will be using a compute Image that will represent your on-premises environment. In this image we have installed a 11g database that we will be migrating to our Oracle Public Cloud Database instance. The image also contains SQL Developer 4.1 that will be used to connect to both your local and cloud database.  </p>
+<ul>
+<li><p>Start your vnc viewer and enter the IP address of the Compute image noted above.  <strong><em>You will be specifying port 10 (eg: 129.156.124.185:<strong>10</strong>)</em></strong>.</p>
+<ul>
+<li><strong>VNC IP:</strong> <strong><em>OG1</em></strong> in your handout</li>
+<li><strong>VNC Password:</strong> <strong><em>OG2</em></strong> in your handout</li></ul>
+<p><img src="images/100/i24.png" alt="" /></p></li>
+<li><p>This is the 'On-premise' environment desktop.  All the lab material is in the <code>GGCS_Workshop_Material</code> folder on the desktop.  We have created a <code>cheat_sheet</code> folder and some shortcuts to simplify your navigation through the labs.</p>
+<p><img src="images/100/i24.1.png" alt="" /></p></li>
+<li><p>Double click on the <code>GGCS_Workshop_Material</code> folder and review the contents.  Note:</p>
+<ul>
+<li>This folder has scripts to start the SSH proxy and to start and stop the GoldenGate Cloud Control Agent.</li>
+<li>The keys folder contains the private key (already downloaded for you) to access the GGCS and DBCS instances.</li>
+<li>The SQL Files folder:  These scripts are used in SQLDeveloper to generate transactional data, do row counts, and re-set your data if necessary for the DW.</li></ul>
+<p><img src="images/100/i25.png" alt="" /></p></li>
+<li><p>Select the File Browser off the desktop and navigate to /u01/app/oracle/product.  This location is where GoldenGate On-premise product is installed and configured.  We will review this in the next lab.  Note that Oracle Database 11g which is used in the following labs is installed in /opt/oracle.</p>
+<p><img src="images/100/i27.png" alt="" /></p></li>
+<li><p>There are many directories under the GoldenGate product homes.  One particularly important directory is dirprm.  The dirprm directory will contain all of the parameter (OGG process configuration) and obey (ggsci scripts) that will be used for the workshop. There is also a cleanup directory that contain obey files to clean up the processes if a lab needs to be restarted.</p>
+<p><img src="images/100/i27.1.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-configure-database-connections-in-sql-developer"><strong>STEP 2</strong>: Configure Database Connections in SQL Developer</h3>
+<ul>
+<li><p>Go to the On-Premise Compute image desktop (VNC) and double click on SQLDeveloper on the desktop.</p>
+<p><img src="images/200/i2.png" alt="" /></p></li>
+<li><p>Go to the top view menu and select SSH.  We need to update the IP address of the SSH tunnel that we use to connect to DBCS.  This tunnel encrypts database traffic and passes it through port 22.  Here we map local port 1521 through 22 to remote port 1521.</p>
+<p><img src="images/200/i3.png" alt="" /></p></li>
+<li><p>The next step requires you to right click on your mouse or touch pad.  On a MAC computer this is done as follows:</p>
+<p><img src="images/200/i3.1.png" alt="" /></p></li>
+<li><p>In the lower left region right click on the DBCSWS tunnel and update the IP address (field <strong><em>DB1</em></strong>).  Note that in a new environment you would need to create a new tunnel yourself.</p>
+<p><img src="images/200/i4.png" alt="" /></p></li>
+<li><p>Update the IP address.</p>
+<p><img src="images/200/i5.png" alt="" /></p></li>
+<li><p>Then right click on the tunnel and select test.</p>
+<p><img src="images/200/i5.1.png" alt="" /></p>
+<p><img src="images/200/i5.2.png" alt="" /></p></li>
+<li><p>Next right click on the top connection <code>DBCS-Amer</code> and select Properties.  We need to set that to your assigned DBCS instance.  Set the Service Name.</p>
+<p><img src="images/200/i6.png" alt="" /></p></li>
+<li><p>Update the Service Name and enter the connection string you wrote down at the end of lab 100, and then select <code>Test</code> to test the connection.</p>
+<p><img src="images/200/i6.1.png" alt="" /></p></li>
+<li><p>Then save your connection update.</p>
+<p><img src="images/200/i6.2.png" alt="" /></p></li>
+<li><p>Do the same thing for the next <code>DBCS-DW</code> connection.  Right click on the <code>DBCS-DW</code> connection, select properties, and edit the Service Name, and then select <code>Test</code> to test the connection.</p>
+<p><img src="images/200/i7.png" alt="" /></p></li>
+<li><p>Then save your connection update.</p>
+<p><img src="images/200/i7.1.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-review-source-data-in-11g-source-database-on-premisecompute-image-and-the-dbcs-12c-target-database"><strong>STEP 3</strong>: Review Source Data in 11g Source Database (On-Premise/Compute image) and the DBCS 12c Target Database.</h3>
+<ul>
+<li><p>In SQLDevelper select (expand) the On-Premise-EURO connection, and then expand the tables.  Select the ORDERS table, and then the data tab.  At this point we are just reviewing data in EURO on 11g Database that will be replicated to DBCS 12c.</p>
+<p><img src="images/200/i8.png" alt="" /></p></li>
+<li><p>To avoid confusion close the Orders tab that is showing EURO data.</p>
+<p><img src="images/200/i8.2.png" alt="" /></p></li>
+<li><p>Next close the SSH region (lower left) since we don't need that anymore.  </p>
+<p><img src="images/200/i8.1.png" alt="" /></p></li>
+<li><p>Then select (expand) the <code>DBCS-Amer</code> connection and then expand the tables. There are no tables in the target Schema at this point.</p>
+<p><img src="images/200/i9.png" alt="" /></p></li>
+<li><p>Lastly select (expand) the <code>DBCS-DW</code> connection and then expand the tables.  These are transformed (and empty) tables ready for populating in Lab 400.</p>
+<p><img src="images/200/i9.1.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-review-ggcs"><strong>STEP 4</strong>: Review GGCS</h3>
+<ul>
+<li><p>We will use ssh on the OGG Compute image and log into GGCS from there. Double click on the <code>GGCS_SSH</code> shortcut on the desktop.  This is just a simple SSH command to connect to your GGCS instance.</p>
+<p><img src="images/200/i9.2.png" alt="" /></p></li>
+<li><p>The first time you connect to GGCS via SSH (and later to DBCS with SSH) you will be prompted for authenticity of the host - respond yes to connect.</p>
+<p><img src="images/200/i9.3.png" alt="" /></p></li>
+<li><p>Enter the following commands and then review the output:</p>
+<ul>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></li>
+<li><strong>Display the oracle home directory:</strong> <code>pwd</code></li>
+<li><strong>Switch to the GG Home directory:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Display the GG home directory:</strong> <code>pwd</code> (/u01/app/oracle/gghome)</li>
+<li><strong>Display the GG configuration directories:</strong> <code>ls dir*</code></li>
+<li><strong>Log into ggsci (GoldenGate command shell):</strong> <code>ggsci</code></li>
+<li><strong>Display status of services:</strong> <code>info all</code></li>
+<li><strong>Delete the datastore:</strong> <code>delete datastore</code> (the data store may or may not exist.  confirm y to delete if it does exist, otherwise ignore errors)</li>
+<li><strong>Start the GGCS manager:</strong> <strong><em>Start Mgr</em></strong></li>
+<li><strong>Confirm manager is started:</strong> <code>info all</code></li>
+<li><strong>Exit the command shell:</strong> <code>exit</code></li>
+<li><strong>Switch to the network admin directory where connectivity to dbcs12c is configured:</strong> <code>cd /u02/data/oci/network/admin</code></li>
+<li><strong>Review the tnsnames.ora file which has the connection to dbcs:</strong> <code>cat tnsnames.ora</code></li></ul>
+<p><img src="images/200/i9.4.png" alt="" /></p></li>
+<li><p>Update the tnsnames file.  Enter the following:</p>
+<ul>
+<li><code>sed -i 's/&lt;your assigned domain name&gt;/&lt;the database connection string&gt;/g' tnsnames.ora</code></li></ul></li>
+<li><p>Display the tnsnames.ora file.  Enter the following:</p>
+<ul>
+<li><code>cat tnsnames.ora</code> (<strong><em>Note</em></strong> this is where you configure GGCS sources and targets.  This has been done for you)</li></ul>
+<p><img src="images/200/i9.5.png" alt="" /></p></li>
+<li><p>Close the connection. Enter <code>exit</code> and then <code>exit</code> again</p></li>
+</ul>
+<h3 id="step-5-configure-ogg-on-premisesource"><strong>STEP 5</strong>: Configure OGG (On-premise/Source)</h3>
+<ul>
+<li><p>Note this is:</p>
+<ul>
+<li>Using our On-premise/Compute image through VNC</li>
+<li>Our source data configuration for 11g Database (schema euro)</li>
+<li>Uses OGG (not GGCS) with Classic Extract</li></ul></li>
+<li><p>We are going to open a SOCKS5 Proxy Tunnel, which will encrypt data and send it through an SSH Tunnel.  First open the <code>GGCS_Workshop_Material</code> folder on the desktop.  Note that you get an authentication error if you did NOT first do step 4 above.  The first time you SSH into GGCS (or any Linux server) a file called <code>known_hosts</code> is created in the /home/oracle/.ssh directory and the GGCS key is put in that file.  For this proxy step the file and entry must first exist (created from step 4 above).  Right click on the <code>start_proxy.sh</code> and select <code>open</code>, and then <code>display</code>.</p>
+<p><img src="images/200/i10.png" alt="" /></p>
+<p><img src="images/200/i10.1.png" alt="" /></p></li>
+<li><p>Review the configuration.  A SOCKS 5 tunnel is a type of SSH tunnel in which specific applications (GoldenGate) forward their local traffic (on port 1080 in this case) down the tunnel to the server, and then on the server end, the proxy forwards the traffic out to the general Internet.  The traffic is encrypted, and uses open port 22 (SSH port) on GGCS to transport the data.  We will reference this port in OGG configuration in the following steps.</p>
+<p><img src="images/200/i12.png" alt="" /></p></li>
+<li><p>Close the edit window, and right click inside the folder to open a terminal window.</p>
+<p><img src="images/200/i12.1.png" alt="" /></p></li>
+<li><p>Execute the <code>start_proxy.sh</code> script.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>./start_proxy.sh</code>   <strong>LEAVE THIS WINDOW OPEN - DO NOT CLOSE IT.  YOU CAN MINIMIZE IT</strong>.</li></ul>
+<p><img src="images/200/i13.png" alt="" /></p></li>
+<li><p>Review OGG parameters.  Start a GoldenGate command session, open a new terminal window (double click on the Local Terminal icon on the desktop),</p>
+<ul>
+<li><strong>Switch to the GG home directory:</strong> <code>cd $GGHOME</code></li>
+<li><strong>Start a gg command session:</strong> <code>./ggsci</code></li>
+<li><strong>Start the manager:</strong> <code>start mgr</code> (not shown in screenshot)</li></ul>
+<p><img src="images/200/i15.png" alt="" /></p></li>
+<li><p>View the parameter CREDENTIALSTORE.oby.  The command view param is a shortcut way to view gg parameter files without having to navigate to the directory.  You could also go to the directory and open the file with a text editor such as gedit.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/CREDENTIALSTORE.oby</code></li></ul>
+<p><img src="images/200/i17.png" alt="" /></p></li>
+<li><p>In the screen above note that the this credential allow us to connect to the local 11g database with an alias without having to specify an OCI connection.  You will see reference to alias ogguser in other gg configuration files.</p></li>
+<li><p>Run this set of gg commands using oby files.  </p>
+<ul>
+<li><strong>Enter the following:</strong> <code>obey dirprm/CREDENTIALSTORE.oby</code></li></ul>
+<p><img src="images/200/i18.png" alt="" /></p></li>
+<li><p>View Extract EEURO.prm using ggsci:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/EEURO.prm</code> (Note you do NOT need to enter the commands highlighted in the screenshots - it is just showing you what you will see)</li></ul>
+<p><img src="images/200/i17.3.png" alt="" /></p></li>
+<li><p>Review extract configuration.  Note: if you go back and review the overview architecture diagram at the beginning if this lab you can identify these components (Extract, pump, trail file, etc.).  </p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param ./dirprm/ADD_EURO_EXTRACT.oby</code></li></ul>
+<p><img src="images/200/i19.png" alt="" /></p></li>
+<li><p>Execute commands to create a datastore and add the EURO extract:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>create datastore</code> (not included in the screenshot below)</li>
+<li><strong>Enter the following:</strong> <code>obey dirprm/ADD_EURO_EXTRACT.oby</code></li></ul>
+<p><img src="images/200/i20.png" alt="" /></p></li>
+<li><p>Scroll through the terminal window to view the results.</p></li>
+<li><p>Edit parameter PEURO and set the IP Address.  This uses the 'VI' editor.  Note you can also edit this with gedit (see following step).</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>edit param PEURO</code></li>
+<li><strong>Use the arrows on your keyboard to navigate to the IP address</strong></li>
+<li><strong>Use the <code>i</code> character to enter insert mode and the <code>[ESC]</code> key to exit insert mode</strong></li>
+<li><strong>Enter your GGCS IP address (field <strong><em>GG1</em></strong>):</strong> see highlighted text below</li>
+<li><strong>Use the <code>x</code> key to delete characters</strong></li>
+<li><strong>To save enter <code>:</code> character and then <code>x</code> character</strong></li>
+<li><strong>Optional - review the file to ensure you entered the changes correctly:</strong> <code>view param PEURO</code> (not in screenshot)</li></ul>
+<p><img src="images/200/i21.png" alt="" /></p></li>
+<li><p>Review processes that you have added:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>info all</code></li></ul>
+<p><img src="images/200/i23.png" alt="" /></p></li>
+<li><p>Start new processes:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>start *</code></li>
+<li><strong>Wait a few seconds for the processes to start, and then enter:</strong> <code>info all</code>.  </li></ul>
+<p><img src="images/200/i24.png" alt="" /></p></li>
+<li><p>Note : If you find that PEURO fails (see image below) then follow the steps below :</p>
+<p><img src="images/200/i44.png" alt="" /></p>
+<ul>
+<li><strong>Ensure that Manager is "Running" on GGCS :</strong> <code>See commands above near the end of step 4</code></li>
+<li><strong>Restart PEURO by typing :</strong> <code>start PEURO</code>
+<strong><em>Note : Does not auto start, need to manually restart PEURO</em></strong>
+<img src="images/200/i46.png" alt="" /></li></ul></li>
+</ul>
+<h3 id="step-6-migrate-baseline-data-with-datapump"><strong>STEP 6</strong>: Migrate Baseline Data with Datapump</h3>
+<ul>
+<li><p>Export the 11g EURO schema data.  You can copy the command from the <code>cheat_sheet</code> folder on your on-premise desktop or enter it as follows below.  See field <strong><em>OG3</em></strong> from your handout for the password:</p>
+<ul>
+<li><strong>Enter the following in a terminal window (or copy from the <code>cheat_sheet</code> folder):</strong> <code>expdp euro/&lt;password&gt; schemas=euro dumpfile=export.dmp reuse_dumpfiles=yes directory=oracle</code></li></ul>
+<p><img src="images/200/i25.png" alt="" /></p></li>
+<li><p>Copy the export.dmp file to DBCS 12c.  You can copy the command from the <code>cheat_sheet</code> folder on your on-premise desktop or enter it as follows below.  Use field <strong><em>DB1</em></strong> for your DBCS IP address.</p>
+<ul>
+<li><p><strong>Enter the following in a terminal window (or copy from the <code>cheat_sheet</code> folder):</strong> <code>scp -i /home/oracle/Desktop/GGCS_Workshop_Material/keys/ggcs_key /home/oracle/export.dmp oracle@&lt;your DBCS IP address&gt;:.</code></p>
+<p><img src="images/200/i26.png" alt="" /></p></li></ul></li>
+<li><p>Double click on the <code>DBCS_SSH</code> shortcut on the desktop and open a DBCS SSH terminal window:</p>
+<p><img src="images/200/i26.1.png" alt="" /></p></li>
+<li><p>Import the data.  You can copy the command from the <code>cheat_sheet</code> folder on your on-premise desktop or enter it as follows below.</p>
+<ul>
+<li><strong>Import the data:</strong> <code>impdp amer/&lt;password&gt;@pdb1 SCHEMAS=euro REMAP_SCHEMA=euro:amer DIRECTORY=dmpdir DUMPFILE=export.dmp</code> field <strong><em>DB2</em></strong> for password</li></ul>
+<p><img src="images/200/i27.png" alt="" /></p></li>
+<li><p>Compare row counts.  Open SQL Developer and then open file <code>get_count.sql</code> (upper left).</p>
+<p><img src="images/200/i28.png" alt="" /></p></li>
+<li><p>Disconnect from the EURO connection to avoid a potential read consistency error.</p>
+<p><img src="images/200/i30.png" alt="" /></p></li>
+<li><p>Select the EURO Connection:</p>
+<p><img src="images/200/i29.png" alt="" /></p></li>
+<li><p>Run the script.  Note the data is identical.  Your totals may differ from the screenshot, but the source and target should be the same.</p>
+<p><img src="images/200/i31.png" alt="" /></p></li>
+<li><p>Run simulated transactions.</p>
+<ul>
+<li><strong>Open the gentrans.sql file</strong>:</li></ul>
+<p><img src="images/200/i32.png" alt="" /></p></li>
+<li><p>Be sure to select the <strong><em>EURO</em></strong> connection and then execute it.  </p>
+<p><img src="images/200/i33.png" alt="" /></p></li>
+<li><p>Enter 500 as the number of transactions to generate.</p>
+<p><img src="images/200/i34.png" alt="" /></p>
+<p><img src="images/200/i35.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-configure-ggcs-cloudtarget"><strong>STEP 7</strong>: Configure GGCS (Cloud/Target)</h3>
+<p>Note this is:</p>
+<ul>
+<li><p>Using our GGCS Service (which also runs on Compute) paired with a DBCS for both GGCS metadata and target data</p></li>
+<li><p>Our target data configuration for 12c Pluggable Database (schema amer)</p></li>
+<li><p>Uses GGCS (not on-premise OGG) with Integrated Replicat</p></li>
+<li><p>Double click on the <code>GGCS_SSH</code> shortcut on your dekstop and open a terminal window on the OGG Compute image and ssh to GGCS.</p>
+<ul>
+<li><strong>Switch to user oracle:</strong> <code>sudo su - oracle</code></li>
+<li><strong>Change to GGHOME:</strong> <code>cd $GGHOME</code> (not shown below)</li>
+<li><strong>Start a gg command shell:</strong> <code>ggsci</code></li></ul>
+<p><img src="images/200/i36.png" alt="" /></p></li>
+<li><p>View parameter CREDENTIALSTORE.oby</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/CREDENTIALSTORE.oby</code> (note the addition of user and passwords for the admin schema and the amer and dw data schemas)</li></ul>
+<p><img src="images/200/i37.png" alt="" /></p></li>
+<li><p>Add CREDENTIALSTORE</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>obey dirprm/CREDENTIALSTORE.oby</code></li></ul>
+<p><img src="images/200/i38.png" alt="" /></p></li>
+<li><p>View Replicat    RAMER</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/RAMER.prm</code></li></ul>
+<p><img src="images/200/i38.1.png" alt="" /></p></li>
+<li><p>View add Replicat    configuration.</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>view param dirprm/ADD_AMER_REPLICAT.oby</code></li></ul>
+<p><img src="images/200/i39.png" alt="" /></p></li>
+<li><p>Add Replicat:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>obey dirprm/ADD_AMER_REPLICAT.oby</code></li></ul>
+<p><img src="images/200/i40.png" alt="" /></p></li>
+<li><p>start Replicat:</p>
+<ul>
+<li><strong>Enter the following:</strong> <code>info all</code></li>
+<li><strong>Start replicat:</strong> <code>start RAMER</code></li>
+<li><strong>Review processes:</strong> <code>info all</code></li></ul>
+<p><img src="images/200/i41.png" alt="" /></p></li>
+<li><p>Compare data (remember that after we used datapump to migrate the base tables we generated an additional 500 transactions).  Go back to SQLDeveloper and open the <code>get_count.sql</code> script, select the EURO Connection, and then run the script:</p>
+<p><img src="images/200/i42.png" alt="" /></p>
+<p><img src="images/200/i43.png" alt="" /></p></li>
+</ul>

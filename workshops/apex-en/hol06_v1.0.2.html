@@ -1,0 +1,289 @@
+<h1 id="unit-6-managing-and-customizing-interactive-reports">Unit 6: Managing and Customizing Interactive Reports</h1>
+<p>This exercise includes two hands-on-labs.</p>
+<p><strong>HOL 6-1: Using an Interactive Report</strong>: In this lab, you customize and use an interactive report as an end user.</p>
+<p><strong>HOL 6-2: Customizing an Interactive Report as a Developer</strong>: In this lab, as a developer, you customize an interactive report for your end users.</p>
+<p>Both these hands-on-labs utilize the Hardware application that you created in HOL 5-2.</p>
+<h2 id="hol-6-1-using-an-interactive-report">HOL 6-1: Using an Interactive Report</h2>
+<ol>
+<li><p>First, you run the Hardware application. To do this, navigate to <strong>Application Builder</strong>. In the report, click the <strong>Run</strong> button for <strong>Hardware</strong>.
+<img src="images/hol06/image3.png" alt="1a" /></p></li>
+<li><p>In the navigation menu, click <strong>Hardware Interactive Report</strong>.</p></li>
+<li><p>You do not want to display the Id and Form Factor columns in the report. Also, you want the Purchase Date column to display just before the Purchase Price column. Perform the following steps:</p>
+<p>a)  Click <strong>Actions</strong> and select <strong>Columns</strong>.
+<img src="images/hol06/image4.png" alt="1b" /></p>
+<p>b)  The Select Columns dialog appears. The columns on the right are displayed, and the columns on the left are hidden. Select <strong>Id</strong> and <strong>Form Factor</strong> in Display in Report group, and click the <strong>Remove</strong> icon.</br>
+<img src="images/hol06/image5.png" alt="1c" /></p>
+<p>c)  You can reorder the displayed columns using the arrows on the far right. Select <strong>Purchase Date</strong> in the Display in Report group, and click the <strong>Down</strong> arrow twice. Then, click <strong>Apply</strong>.</br>
+<img src="images/hol06/image6.png" alt="1d" /></p>
+<p>d)  The changes you made to the interactive report display are reflected now.</br>
+<img src="images/hol06/image7.png" alt="1e" /></p></li>
+<li><p>You want to create filters on the report. First, you want to filter the report to display rows which meet the criteria Purchase Price &gt;= 5330. Within these filtered results, you then create another filter to display rows with Cpu Type is Pentium III. Perform the following steps:</p>
+<p>a)  Click <strong>Actions</strong> and select <strong>Filter</strong>. </br>
+<img src="images/hol06/image8.png" alt="2a" /></p>
+<p>b)  For Filter Type, select <strong>Column</strong>.
+For Column, select <strong>Purchase Price</strong>, for Operator, select <strong>&gt;=</strong> and select <strong>5330</strong> from the Expression list.
+Notice that this list of values for Expression is determined automatically, based on all the values in the Purchase Price column.
+Then, click <strong>Apply</strong>.
+<img src="images/hol06/image9.png" alt="2b" /></p>
+<p>c)  The filter is applied now. You can have more than one filter on a report. If you decide that you want to disable a particular filter, you can click the check box to disable the filter.
+In this lab, you want to add another filter on the Cpu Type column.
+Click the <strong>Actions</strong> menu, and select <strong>Filter</strong>.
+<img src="images/hol06/image10.png" alt="2c" /></p>
+<p>d)  Select <strong>Cpu Type</strong> for Column, select <strong>=</strong> for Operator and select <strong>Pentium III</strong> from the Expression list.
+Click <strong>Apply</strong>.
+<img src="images/hol06/image11.png" alt="2d" /></p>
+<p>e)  Notice that two filters are applied now. The rows displayed are fewer now because they are only the rows that meet both the filter criteria. You can remove each filter by clicking the Remove Filter icon, next to the filter you want to remove.
+Click the <strong>Remove Filter</strong> icon next to both the filters.
+<img src="images/hol06/image12.png" alt="2e" /></p></li>
+<li><p>Both the filters are now removed, and you see that all the rows are displayed. You can also create a row filter.</p>
+<p>a)  Click <strong>Actions</strong>, and select <strong>Filter</strong>.
+    <img src="images/hol06/image13.png" alt="3a" /></p>
+<p>b)  You want to create a filter which selects a row when both the following conditions are true:
+    <em>Cpu Type = 'Pentium III'
+    Purchase Price &gt;= 5330</em>
+    Select <strong>Row</strong> for Filter Type.
+    Click <strong>Cpu Type</strong> under Columns and then click <strong>=</strong> from Functions / Operators. Enter <strong>'Pentium III'</strong>.
+    Click <strong>AND</strong> under Functions / Operators. Click <strong>Purchase Price</strong> under Columns and then click <strong>&gt;=</strong> under Functions / Operators. Enter <strong>5330</strong>.
+    Click <strong>Apply</strong>.
+    <img src="images/hol06/image14.png" alt="3b" /></p>
+<p>c)  The row filter is applied now. Click the Remove Filter icon to remove the filter.
+    <img src="images/hol06/image15.png" alt="3c" /></p></li>
+<li><p>You want to sort the report on the Purchase Price column.</p>
+<p>a)  Select <strong>Actions &gt; Data &gt; Sort</strong>. </br>
+    <img src="images/hol06/image16.png" alt="4a" /></p>
+<p>b)  Select <strong>Purchase Price</strong> for Column and click <strong>Apply</strong>. </br>
+    <img src="images/hol06/image17.png" alt="4b" /></p>
+<p>c)  The report is now sorted in the ascending order of Purchase Price.
+    <strong>Note</strong>: The sort indicator is located next to the columns that are sorted.
+    The arrow indicates whether it is in ascending or descending order. To change the sort to descending order, you can click on the sort ascending icon in the header for Purchase Price and it will change to sort descending. </br>
+    <img src="images/hol06/image18.png" alt="4c" /></p></li>
+<li><p>Create an aggregation against the Purchase Price column. You want to display the sum of the purchase price.</p>
+<p>a)  Select <strong>Actions &gt; Data &gt; Aggregate</strong>. </br>
+    <img src="images/hol06/image19.png" alt="5a" /></p>
+<p>b)  In the Aggregate dialog, select <strong>Sum</strong> for Function, <strong>Purchase Price</strong> for Column. Click <strong>Apply</strong>.</br>
+    <img src="images/hol06/image20.png" alt="5b" /></p>
+<p>c)  The aggregate function is applied on the column. Notice that the sum of purchase price is displayed at the end of the report under the column.
+    <img src="images/hol06/image21.png" alt="5c" /></p></li>
+
+<li><p>In the report, you want to include purchase price calculated with tax. The computation you want to make is Purchase Price * 1.05. You create a computed column in the interactive report.</p>
+<p>a)  Select <strong>Actions &gt; Data &gt; Compute</strong>. </br>
+    <img src="images/hol06/image22.png" alt="6a" /></p>
+<p>b)  The Compute dialog appears.
+    For Column Heading, enter <strong>Price with Tax</strong> and select <strong>\$5,234.10</strong> for Format Mask.
+    For Computation Expression, click <strong>Purchase Price</strong> under Columns. Click <strong>*1.05</strong> under Keypad.
+    Click <strong>Apply</strong>.
+    <img src="images/hol06/image23.png" alt="6b" /></p>
+<p>c)  The new computed column Price with Tax now appears in the report.
+    <img src="images/hol06/image24.png" alt="6c" /></p></li>
+<li><p>Create a Control Break on the Cpu Type column.</p>
+<p>a)  Select <strong>Actions &gt; Format &gt; Control Break</strong>. </br>
+    <img src="images/hol06/image25.png" alt="7a" /></p>
+<p>b)  In the Control Break dialog, select <strong>Cpu Type</strong> for Column, and click <strong>Apply</strong>. </br>
+    <img src="images/hol06/image26.png" alt="7b" /></p>
+<p>c)  The control break is applied now. Notice that the aggregation that you created in a previous step appears at the end of each control break.
+    <img src="images/hol06/image27.png" alt="7c" /></p></li>
+
+<li><p>You want to highlight those rows with Price with Tax values less than \$2300. You add the highlighting to rows while continuing with the control break that you created in the previous step.</p></li>
+</ol>
+<p>a)  Select <strong>Actions &gt; Format &gt; Highlight</strong>. </br>
+    <img src="images/hol06/image28.png" alt="8a" /></p>
+<p>b)  In the Highlight dialog, enter <strong>Price with Tax less than \$2400</strong> for Name.
+    Select <strong>yellow</strong> for Background Color and <strong>red</strong> for Text Color.
+    For Highlight Condition: Select <strong>**Price with Tax</strong> column, and <strong>&lt;</strong> Operator. Enter <strong>2400</strong> for Expression.
+    Click Apply.
+    <img src="images/hol06/image29.png" alt="8b" /></p>
+<p>c)  Notice that the rows that meet the condition are highlighted now.
+    <img src="images/hol06/image30.png" alt="8c" /></p>
+<ol start="11">
+<li>In your interactive report, you want to include a Chart to display the total Price with Tax for each Cpu Type. Your interactive report should include both the Report and Chart views to toggle.</li>
+</ol>
+<p>a)  Select <strong>Actions &gt; Chart</strong>. </br>
+    <img src="images/hol06/image31.png" alt="9a" /></p>
+<p>b)  In the Chart dialog, select / enter the following:</p>
+<ul>
+<li><p>Chart Type: <strong>Horizontal Column</strong></p></li>
+<li><p>Label: <strong>Cpu Type</strong></p></li>
+<li><p>Value: <strong>**Price with Tax</strong></p></li>
+<li><p>Function: <strong>Sum</strong></p></li>
+<li><p>Axis Title for Label: <strong>Cpu Type</strong></p></li>
+<li><p>Axis Title for Value: <strong>Price with Tax</strong></p>
+<p>Click <strong>Apply</strong>.
+<img src="images/hol06/image32.png" alt="9b" /></p></li>
+</ul>
+<p>c)  The chart is created. Toggle between the View Chart and View Report.
+    <img src="images/hol06/image33.png" alt="9c" /></p>
+<p>d)  You want to remove the control break and the highlighting. Click the X icon for both the filters.
+    <img src="images/hol06/image34.png" alt="9d" /></p>
+<ol start="12">
+<li>Create a Group By report to display each Cpu Type with the total purchase price.</li>
+</ol>
+<p>a)  Select <strong>Actions &gt; Group By</strong>.</br>
+    <img src="images/hol06/image35.png" alt="10a" /></p>
+<p>b)  In the Group By dialog enter / select:</p>
+<ul>
+<li><p>Group By Column: <strong>Cpu Type</strong></p></li>
+<li><p>Function: <strong>Sum</strong></p></li>
+<li><p>Column: <strong>Purchase Price</strong></p></li>
+<li><p>Label: <strong>Total Price</strong></p></li>
+<li><p>Format Mask: <strong>\$5,234.10</strong></p>
+<p>Select the <strong>Sum</strong> check box and click <strong>Apply</strong>.
+<img src="images/hol06/image36.png" alt="10b" /></p></li>
+</ul>
+<p>c)  The Group By report is created. You also see the sum of the purchase price. Notice that the icon for View Group By is also added.
+    <img src="images/hol06/image37.png" alt="10c" /></p>
+<p>d)  Click the <strong>X</strong> to the right of Edit Group By to remove the filter.</p>
+<ol start="13">
+<li>You want to display the count of each Cpu Type that are available with each department. The results should be in a crosstab format. Create a Pivot Report.</li>
+</ol>
+<p>a)  Click <strong>Actions &gt; Pivot</strong>.</br>
+    <img src="images/hol06/image38.png" alt="11a" /></p>
+<p>b)  In the Pivot dialog enter / select:</p>
+<ul>
+<li><p>Pivot Column: <strong>Cpu Type</strong></p></li>
+<li><p>Row Column: <strong>Department Id</strong></p></li>
+<li><p>Functions: <strong>Count</strong></p></li>
+<li><p>Column: <strong>Cpu Type</strong></p>
+<p>Click <strong>Apply</strong>.</p>
+<p><img src="images/hol06/image39.png" alt="11b" /></p></li>
+</ul>
+<p>c)  The Pivot report is displayed and a View Pivot icon is created.
+    <img src="images/hol06/image40.png" alt="11c" /></p>
+<ol start="14">
+<li>You want to save the report with all the customization.</li>
+</ol>
+<p>a)  Select <strong>Actions &gt; Report &gt; Save Report</strong>.</br>
+    <img src="images/hol06/image41.png" alt="12a" /></p>
+<p>b)  Enter <strong>My Report</strong> for Name and click <strong>Apply</strong>.</p>
+<ol start="15">
+<li>A drop down list automatically appears with the report you just created being selected. You can view the default primary report.
+You want to reset the Primary Report back to the default settings and remove any customizations that you have made so far.</li>
+</ol>
+<p>a)  Select <strong>Primary Report</strong> from the Reports drop down list. The primary report is now displayed. You can make any changes to this report and it will not be reflected in the 'My Report' private report you just created. </br></p>
+<p>b)  Select <strong>Actions &gt; Reset</strong>.</br>
+    <img src="images/hol06/image42.png" alt="13a" /></p>
+<p>c)  In the Reset dialog, click <strong>Apply</strong>.</br>
+    <img src="images/hol06/image43.png" alt="13b" /></p>
+<p>d)  From the Reports drop down list, select <strong>My Report</strong>.
+    <img src="images/hol06/image44.png" alt="13c" /></p>
+<ol start="16">
+<li>You want to download the customized report as a CSV.</li>
+</ol>
+<p>a)  Select <strong>Actions &gt; Download</strong>. </br>
+    <img src="images/hol06/image45.png" alt="14a" /></p>
+<p>b)  In the Download dialog, select <strong>CSV</strong>.</br>
+    <img src="images/hol06/image46.png" alt="14b" /></p>
+<p>c)  The report is now downloaded as a CSV. </br>
+    <img src="images/hol06/image47.png" alt="14c" /></p>
+<ol start="17">
+<li><p>You want to make some more customization to your interactive report. From the Reports drop down list, select <strong>Primary Report</strong>.
+ <img src="images/hol06/image48.png" alt="16a" /></p></li>
+<li><p>To customize the report, you now use the column heading menu instead of using the Actions menu. The report is currently sorted in ascending order of Purchase Price. You want to the report to be sorted in the descending order of Department Id.</p></li>
+</ol>
+<p>a)  Click the <strong>Department Id</strong> header and select <strong>Sort Descending</strong>.
+    <img src="images/hol06/image49.png" alt="17a" /></p>
+<p>b)  The report is now sorted in the descending order of Department Id.
+    <img src="images/hol06/image50.png" alt="17b" /></p>
+<ol start="19">
+<li>You do not want the Id and Form Factor columns in the report.</li>
+</ol>
+<p>a)  Click the <strong>Id</strong> header and select <strong>Hide Column</strong>.</br>
+    <img src="images/hol06/image51.png" alt="18a" /></p>
+<p>b)  Click the <strong>Form Factor</strong> header and select <strong>Hide Column</strong>.</br>
+    <img src="images/hol06/image52.png" alt="18b" /></p>
+<p>c)  Your report now looks like:
+    <img src="images/hol06/image53.png" alt="18c" /></p>
+<ol start="20">
+<li>Create a control break on the Department Id.</li>
+</ol>
+<p>a)  Click the <strong>Department Id</strong> header and select <strong>Control Break</strong>.</br>
+    <img src="images/hol06/image54.png" alt="19a" /></p>
+<p>b)  The control break is now applied.
+    <img src="images/hol06/image55.png" alt="19b" /></p>
+<ol start="21">
+<li>You want to save the customizations made from step 18 through 20. You save the report as a Named Report.</li>
+</ol>
+<p>a)  Select <strong>Actions &gt; Report &gt; Save Report</strong>.</p>
+<p>b)  The Save Report dialog appears. For Save, select <strong>As Named Report</strong> and enter <strong>Departments Hardware Report</strong> for Name. Click <strong>Apply</strong>.
+    <img src="images/hol06/image56.png" alt="20a" /></p>
+<p>c)  The report is saved and is now available in the Reports drop down list.
+    <img src="images/hol06/image57.png" alt="20b" /></p>
+<ol start="22">
+<li>You want to reset the primary report to default settings now.</li>
+</ol>
+<p>a)  From the Reports down list, select <strong>Primary Report</strong>.</p>
+<p>b)  Select <strong>Actions &gt; Report &gt; Reset</strong>.</p>
+<p>c)  In the Reset dialog, click <strong>Apply</strong>.</p>
+<p>d)  The primary report is now restored to default settings. The customizations you made to your private reports are available.
+    <img src="images/hol06/image58.png" alt="21" /></p>
+<h2 id="hol-6-2-customizing-an-interactive-report-as-a-developer">HOL 6-2: Customizing an Interactive Report as a Developer</h2>
+<p>In this lab, you edit an interactive report in page designer and customize it for end users.</p>
+<ol>
+<li><p>First, view the interactive report in page designer. In the Developer Toolbar, click <strong>Edit Page 2</strong>.
+<img src="images/hol06/image59.png" alt="22a" /></p></li>
+<li><p>You do not want the Id and Form Factor columns to be displayed in the interactive report for end users. Modify the report source query.</p>
+<p>a)  In the page designer, under <strong>Rendering &gt; Regions</strong>, select <strong>Hardware Interactive Report</strong>. In the property editor, locate <strong>Source &gt; SQL Query</strong>.
+    <img src="images/hol06/image60.png" alt="22b" /></p>
+<p>b)  Copy and paste the following SQL in to SQL Query.</p>
+<pre><code>  select SERIAL,
+
+  CPU_TYPE,
+
+  CPU_SPEED,
+
+  PURCHASE_DATE,
+
+  BRAND,
+
+  MODEL,
+
+  PURCHASE_PRICE,
+
+  DEPARTMENT_ID
+
+  from HARDWARE
+</code></pre>
+<p>c)  Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p>
+<p>d)  Your interactive report now looks like:
+    <img src="images/hol06/image61.png" alt="22c" /></p></li>
+
+<li><p>When the end users click an edit icon for a specified row, they should be directed to a page which shows the column values for that row. The interactive report currently does not have a link column. Modify your interactive report to have a link to single row view.</p>
+<p>a)  Under Rendering, navigate to <strong>Hardware Interactive Report</strong> and select <strong>Attributes</strong>. </br>
+    <img src="images/hol06/image62.png" alt="23a" /></p>
+<p>b)  The attributes are now listed in the property editor. Under Link, for Link Column, select <strong>Link to Single Row View</strong>. Click <strong>Save</strong>. Then, click <strong>Save and Run Page.</strong> </br>
+    <img src="images/hol06/image63.png" alt="23b" /></p>
+<p>c)  In the report, click the edit icon (pencil) for any row.
+    <img src="images/hol06/image64.png" alt="23c" /></p>
+<p>d)  The single row view is displayed. Click <strong>Report View</strong> button to return to the report.
+    <img src="images/hol06/image65.png" alt="23d" /></p></li>
+
+<li><p>The current pagination type of the interactive report is Row Ranges X to Y. You want this to be changed for the end users’ display of the report.
+Under Rendering, navigate to <strong>Hardware Interactive Report</strong> and select <strong>Attributes</strong>.
+In the property editor, locate <strong>Pagination</strong>. 
+For Type, select <strong>Row Ranges X to Y of Z</strong>. </br>
+<img src="images/hol06/image66.png" alt="24" /></p></li>
+<li><p>You want to customize the display of Search Bar. End users should be able to select the display of desired number of rows per page.</p>
+<p>In the property editor, locate Search Bar. For Rows Per Page Selector, select <strong>Yes</strong>.
+Enter <strong>10</strong> for Maximum Rows Per Page. </br>
+<img src="images/hol06/image67.png" alt="24a" /></p></li>
+<li><p>Currently your interactive report allows end users to save the report as private. However, you also want to make sure that they can save a report as public. Enable this option in the Actions menu.
+In the property editor, locate <strong>Actions Menu</strong>. For Save Public Report, select <strong>Yes</strong>. </br>
+<img src="images/hol06/image68.png" alt="24b" /></p></li>
+<li><p>You want to disable the Email and RTF formats in the Download option of the Actions menu.
+In the property editor, navigate to <strong>Download</strong>. Deselect <strong>Email</strong> and <strong>RTF</strong> download formats. </br>
+<img src="images/hol06/image69.png" alt="24c" /></p></li>
+<li><p>Now that you finished the customization for end users, click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p></li>
+<li><p>Notice that the row selector and the new pagination type are available on the report.
+<img src="images/hol06/image70.png" alt="24d" /></p></li>
+<li><p>Select <strong>Actions &gt; Report &gt; Save Report</strong>.</p></li>
+<li><p>The Save Report dialog displays. Notice that the Public check box is now available.
+For Save, select <strong>As Named Report</strong>, enter <strong>Departments Public Report</strong> for Name. Select the <strong>Public</strong> check box and click <strong>Apply</strong>.
+<img src="images/hol06/image71.png" alt="24f" /></p></li>
+<li><p>This report is now saved as a public report and is available in the Reports drop down list.
+<img src="images/hol06/image72.png" alt="24g" /></p></li>
+<li><p>Click <strong>Actions &gt; Download</strong>.</p></li>
+<li><p>Notice that the Email and RTF formats are no longer available. Click <strong>Cancel</strong>. </br>
+<img src="images/hol06/image73.png" alt="24i" /></p></li>
+<li><p>From the Reports drop down list, select <strong>Primary Report</strong>.</p></li>
+</ol>
+<hr />
+<p><img src="images/hol06/image74.png" alt="Snap3.jpeg" /></p>

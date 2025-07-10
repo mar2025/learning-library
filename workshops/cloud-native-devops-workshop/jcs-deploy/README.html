@@ -1,0 +1,128 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h2 id="-oracle-cloud-native-devops-workshop-"># ORACLE Cloud-Native DevOps workshop #</h2>
+<h2 id="deploy-techco-java-ee-demo-application-to-java-cloud-service">Deploy TechCo (Java EE) Demo Application to Java Cloud Service</h2>
+<h3 id="introduction">Introduction</h3>
+<p>This section describes deploying and undeploying applications to an Oracle Java Cloud Service instance by using the WebLogic Server Administration Console. You cannot deploy and undeploy applications directly through the Oracle Java Cloud Service Console.</p>
+<p>You can use the WebLogic Server Administration Control graphical user interface to deploy and undeploy an application to an Oracle Java Cloud Service instance, just as you would deploy and undeploy the application to an on-premises service instance.</p>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>create resource (Data Source) for Java Cloud Service using WebLogic console,</li>
+<li>deploy Java EE application to Java Cloud Service using WebLogic console.</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="../dbcs-prepare/README.md">Prepared Database Cloud Service</a> instance which holds the TechCo Demo application's data.</li>
+<li>Running <a href="../jcs-create/README.md">Java Cloud Service instance</a> configured to access to the prepared Database Cloud Service</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<h4 id="build-sample-application">Build sample application</h4>
+<p>Open a terminal and change to <code>GIT_REPO_LOCAL_CLONE/techco-app</code> folder and build the sample application.</p>
+<pre><code>$ [oracle@localhost Desktop]$ cd /u01/content/cloud-native-devops-workshop/techco-app
+$ [oracle@localhost techo-app]$ mvn install
+</code></pre>
+<p>Running the build you should see output similar to:</p>
+<pre><code>[oracle@localhost techo-app]$ mvn install
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building TechCo-ECommerce 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+Downloading: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.4/maven-war-plugin-2.4.pom
+Downloaded: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-war-plugin/2.4/maven-war-plugin-2.4.pom (10 KB at 3.7 KB/sec)
+...
+...
+...
+[INFO] Installing /u01/content/cloud-native-devops-workshop/techo-app/pom.xml to /home/oracle/.m2/repository/com/oracle/samples/TechCo-ECommerce/1.0-SNAPSHOT/TechCo-ECommerce-1.0-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 01:06 min
+[INFO] Finished at: 2016-08-20T05:41:55-07:00
+[INFO] Final Memory: 24M/491M
+[INFO] ------------------------------------------------------------------------
+[oracle@localhost techco-app]$
+</code></pre>
+<p>Now the web archive (war) is ready to deploy in the <code>target</code> folder.</p>
+<h4 id="create-data-source-for-sample-application">Create Data Source for sample application</h4>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. Using the dashboard open the Java Cloud Service Console.</p>
+<p><img src="images/00.png" alt="" /></p>
+<p>Click on the hamburger icon located at the right top corner of the service summary. From the 
+menu select Open WebLogic Server Console</p>
+<p><img src="images/01.png" alt="" /></p>
+<p>A new browser opens and you are redirected to the selected console’s log-in page. If the server is protected with a self-signed certificate, you will be warned that this certificate is not trusted. This is the default configuration and you can configure your certification. Select I Understand the Risk, and Add Exception (accept certificate). </p>
+<p><img src="images/02.png" alt="" /></p>
+<p>When dialog appears select Confirm Security Exception.</p>
+<p><img src="images/03.png" alt="" /></p>
+<p>When the console log-in page appears, enter the log-in credentials you entered for WebLogic Administrator when you created the service instance.</p>
+<p><img src="images/04.png" alt="" /></p>
+<p>After a successful login the WebLogic Server Administration Console is displayed. Click Lock &amp; Edit and Service -&gt; Data Sources. Create New <strong>Generic Data Source</strong></p>
+<p><img src="images/05.png" alt="" /></p>
+<p>Configure the data source with the following parameters:</p>
+<ul>
+<li><strong>Name</strong>: jdbc-OE</li>
+<li><strong>Scope</strong>: Global (default)</li>
+<li><strong>JNDI Name</strong>: jdbc/OE</li>
+<li><strong>Database type</strong>: Oracle (default)</li>
+</ul>
+<p>Click Next.</p>
+<p><img src="images/06.png" alt="" /></p>
+<p>Leave the default Database Driver and click Next.</p>
+<p><img src="images/07.png" alt="" /> </p>
+<p>Leave the default Transactions Options and click Next.</p>
+<p><img src="images/08.png" alt="" /></p>
+<p>Configure the database service connection descriptor.</p>
+<ul>
+<li><strong>Database Name</strong>: <code>PDB1.&lt;identitydomain&gt;.oraclecloud.internal</code></li>
+<li><strong>Host Name</strong>: the Database Cloud Service <a href="../dbcs-prepare/README.md">prepared</a> to run sample.  application. If you followed the instructions its name likely is <code>techcoDB</code></li>
+<li><strong>Port</strong>: leave the default 1521</li>
+<li><strong>Database User Name</strong>: oe</li>
+<li><strong>Password</strong>: password you entered for DBA (Database Cloud Service adminsitrator - sys) account</li>
+<li><strong>oracle.jdbc.DRCPConnectionClass</strong>: leave empty</li>
+</ul>
+<p>Click Next.</p>
+<p><img src="images/09.png" alt="" /></p>
+<p>Test the data source by click <strong>Test Configuration</strong></p>
+<p><img src="images/10.png" alt="" /></p>
+<p>Select the servers or clusters to which you want to deploy the application. For this tutorial, choose to deploy the application to all the servers in the cluster, and then click Finish.</p>
+<p><img src="images/11.png" alt="" /></p>
+<p>Activate Changes and check the acknowledgement: <code>All changes have been activated. No restarts are necessary</code></p>
+<p><img src="images/12.png" alt="" /></p>
+<h4 id="deploy-sample-application">Deploy sample application</h4>
+<p>Click Lock &amp; Edit and select Deployments in the Domain Structure tree panel. On the Deployments page, click Install.</p>
+<p><img src="images/13.png" alt="" /></p>
+<p>On the Install page, click upload your file(s) to upload file.</p>
+<p><img src="images/14.png" alt="" /></p>
+<p>In the Install Application Assistant, click Browse to find <code>GIT_REPO_LOCAL_CLONE/techco-app/target/TechCo-ECommerce-1.0-SNAPSHOT.war</code> (In case of virtualbox image environment it is: <code>/u01/content/cloud-native-devops-workshop/techco-app/target/TechCo-ECommerce-1.0-SNAPSHOT.war</code>) to deploy and upload it.</p>
+<p><img src="images/15.png" alt="" /></p>
+<p>After the file is uploaded, its name appears next to the Browse button. Click Next.</p>
+<p><img src="images/16.png" alt="" /></p>
+<p>Select the file, and then click Next.</p>
+<p><img src="images/17.png" alt="" /></p>
+<p>Make sure the installation type is Install this deployment as an application. Click Next.</p>
+<p><img src="images/18.png" alt="" /></p>
+<p>Choose to deploy the application to all the servers in the cluster, and then click Next.</p>
+<p><img src="images/19.png" alt="" /></p>
+<p>The default settings for Optional Settings are typically adequate so leave defaults. Click Next</p>
+<p><img src="images/20.png" alt="" /></p>
+<p>In the Change Center, click Activate Changes.</p>
+<p><img src="images/21.png" alt="" /></p>
+<p>Now the application is in Prepared state and you need to make it ready to accept requests. To start a deployed application select Deployments in Domain Structure and click on Control Tab. The previously deployed application can be found in the list.</p>
+<p><img src="images/22.png" alt="" /></p>
+<p>Select the application, click Start and then select Servicing all requests.</p>
+<p><img src="images/23.png" alt="" /></p>
+<p>Click Yes to confirm the deployment.</p>
+<p><img src="images/24.png" alt="" /></p>
+<p>The application is now in the Active state and is ready to accept requests.</p>
+<p><img src="images/25.png" alt="" /></p>
+<h4 id="launch-sample-application">Launch sample application</h4>
+<p>To test an application that you have deployed and started on an Oracle Java Cloud Service instance that does not include a load balancer requires public IP address of the compute node.</p>
+<p>Change to the browser where the Oracle Cloud My Services dashboard is already opened. If it was closed or the session time expired then <a href="../common/sign.in.to.oracle.cloud.md">sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. On the dashboard open the Java Cloud Service Console.</p>
+<p><img src="images/00.png" alt="" /></p>
+<p>Click the name of the service instance to which the application is deployed.</p>
+<p><img src="images/26.png" alt="" /></p>
+<p>On the service instance details pages, find the list of nodes, and take note of the public IP address for the virtual machine that contains the Administration Server and Managed Server. In case if your Java Cloud Service have Load Balancer configured then use its public IP address.</p>
+<p><img src="images/27.png" alt="" /></p>
+<p>Open a browser and write the following URL: <code>https://&lt;public-ip-address&gt;/TechCo-ECommerce</code>
+You should now see the home page of the sample application.</p>
+<p><img src="images/28.png" alt="" /></p>

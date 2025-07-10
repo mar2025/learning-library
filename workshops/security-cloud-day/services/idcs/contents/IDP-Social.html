@@ -1,0 +1,98 @@
+<h1 id="social-identity-provider">Social Identity Provider</h1>
+<p>Oracle Identity Cloud Service(IDCS) supports social identity providers so that users can log in to IDCS with their social credentials. Social login feature allows users to self-register in IDCS if they do not already have an account.</p>
+<p>Following Social providers comes out-of-the-box with IDCS -</p>
+<ul>
+<li>Facebook</li>
+<li>Google</li>
+<li>LinkedIn</li>
+<li>Microsoft</li>
+<li>Twitter</li>
+</ul>
+<p>IDCS also supports any generic social identity provider that is <strong>OpenID Connect</strong> compliant.</p>
+<h2 id="objective">Objective</h2>
+<ol>
+<li>Configure IDCS to leverage <strong>Google</strong> as the social identity provider. </li>
+<li>(Optional) Establish <strong>Auth0</strong> as the social provider leveraging <strong>Generic OpenID Connect</strong> provider support.</li>
+</ol>
+<h2 id="persona">Persona</h2>
+<p>Administrators, End-Users</p>
+<h2 id="logistics">Logistics</h2>
+<p>G-suite account for <strong>Google</strong> authentication provider configuration. For this exercise, we will be using necessary parameters from a pre-existing account.</p>
+<h2 id="configure-idcs-to-use-google-provider">Configure IDCS to use Google Provider</h2>
+<p><code>(Persona: Administrators)</code></p>
+<ul>
+<li>Go to IDCS Admin console -&gt; <strong>Security</strong> tab -&gt; <strong>Identity Providers</strong> from the left sidebar menu</li>
+</ul>
+<p><img src="images/IDP-Social-1.png" alt="" /></p>
+<ul>
+<li><p>Click on <strong>Add Social IDP</strong></p></li>
+<li><p>Select the type as <strong>Google</strong>. Provide a name of the provider. We will use an intuitive one - <strong>Google</strong></p></li>
+</ul>
+<p><img src="images/IDP-Social-2.png" alt="" /></p>
+<ul>
+<li>Provide the provider parameter values -</li>
+</ul>
+<pre><code>Client ID - 291328507778-r3h3k909dg7ponsf6mpal6vlc8vlu29p.apps.googleusercontent.com
+Client Secret - URCTp86DdeQ8N2ojgl9Jpjnd
+</code></pre>
+<p><img src="images/IDP-Social-3.png" alt="" /></p>
+<ul>
+<li>Click on <strong>Finish</strong></li>
+</ul>
+<p><img src="images/IDP-Social-4.png" alt="" /></p>
+<ul>
+<li><strong>Activate</strong> the provider</li>
+</ul>
+<p><img src="images/IDP-Social-5.png" alt="" /></p>
+<p><img src="images/IDP-Social-6.png" alt="" /></p>
+<ul>
+<li>Enable the option <strong>Show on Login Page</strong></li>
+</ul>
+<p><img src="images/IDP-Social-7.png" alt="" /></p>
+<p><img src="images/IDP-Social-8.png" alt="" /></p>
+<p><img src="images/IDP-Social-9.png" alt="" /></p>
+<ul>
+<li>Finally enable the option <strong>Activate Federated SSO</strong></li>
+</ul>
+<p><img src="images/IDP-Social-10.png" alt="" /></p>
+<h2 id="verify-social-login">Verify Social Login</h2>
+<p><code>(Persona: End-Users)</code></p>
+<ul>
+<li>Go to IDCS user console. Verify that IDCS login page shows the option <strong>Sign in with Google</strong></li>
+</ul>
+<p><img src="images/IDP-Social-11.png" alt="" /></p>
+<ul>
+<li><p>Click on <strong>Google</strong></p></li>
+<li><p>From the popup sign-in page for google, login with your gmail account</p></li>
+</ul>
+<p><img src="images/IDP-Social-12.png" alt="" /></p>
+<p><img src="images/IDP-Social-13.png" alt="" /></p>
+<ul>
+<li>Verify that, the flow comes back to IDCS login screen with a message <strong>You don't have an account….[Click here to register]()</strong>. Click on the link</li>
+</ul>
+<p><img src="images/IDP-Social-14.png" alt="" /></p>
+<ul>
+<li>On the registration page notice that the first name and last name have been populated automatically. IDCS gets this information from the social provider. </li>
+</ul>
+<p><img src="images/IDP-Social-15.png" alt="" /></p>
+<ul>
+<li><p>Click on <strong>Register</strong>. This will create the user in IDCS and link with the social identity.</p></li>
+<li><p><strong>Skip</strong> if there is any prompt for 2-factor authentication enrollment.</p></li>
+</ul>
+<p><img src="images/IDP-Social-16.png" alt="" /></p>
+<ul>
+<li>Verify that user can see an empty <strong>MyApps</strong> page</li>
+</ul>
+<p><img src="images/IDP-Social-17.png" alt="" /></p>
+<ul>
+<li><p>Logout of IDCS and Google</p></li>
+<li><p>Login again in IDCS using <strong>Google</strong> provider </p></li>
+<li><p>Verify that after successful google authentication, user is logged in to IDCS MyApps console without any additional prompt.</p></li>
+</ul>
+<h2 id="end-to-end-configuration">End-to-end Configuration</h2>
+<p>For configuring social authentication with Google, an OAuth client need to be setup in <a href="https://console.developers.google.com">Google Developer Console</a>. In the exercise, existing OAuth client details (<strong>Client ID</strong> and <strong>Client Secret</strong>) have been used. </p>
+<p>The end-to-end integration starting from setup in <a href="https://console.developers.google.com">Google Developer Console</a>, has been captured in this <em>less than 7 minutes</em> video -</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JU8ArDvzWq0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<h2 id="optional-auth0-integration">(Optional) Auth0 Integration</h2>
+<p>This optional video demonstrates using and setting up <strong>Auth0</strong> as the social provider. It leverages generic <strong>OpenID Connect</strong> provider of IDCS.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kgik7VDdn-k" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>

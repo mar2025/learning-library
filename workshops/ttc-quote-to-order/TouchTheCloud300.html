@@ -1,0 +1,525 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-300---integration-cloud-service">Lab 300 - Integration Cloud Service</h1>
+<hr />
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Part 1: Explore Integration Cloud Service (ICS)</li>
+<li>Part 2: Use ICS to modify an integration</li>
+<li>Part 3: Modify PCS Process from Lab 200 to Call New ICS Integration</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab and an Oracle Public Cloud account that will be supplied by your instructor.</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>iPaaS - Build a Quote to Order Process Workshop</strong>. </p>
+<p>In this lab, you will acquire a good overview of the Oracle Integration Cloud Service (ICS), the next generation integration platform. You will explore various consoles and tools available to interact with your integration. The exercise will get your familiar with all the tooling available to work with this cloud service. You will then modify an integration to Oracle EBS, then update a PCS application to call to the updated ICS endpoint.</p>
+<h1 id="part-1-explore-integration-cloud-service">Part 1: Explore Integration Cloud Service</h1>
+<p>In this first part of the lab, we will explore the main parts of Integration Cloud Service (ICS).  We’ll look at the following:</p>
+<ol>
+<li>Oracle Cloud Services Dashboard</li>
+<li>ICS Designer User Interface</li>
+<li>ICS Monitoring User Interface</li>
+</ol>
+<p>The ICS integration that we'll be working with is shown in the following picture:</p>
+<p><img src="images/300/image000.png" alt="" /></p>
+<p>Here is a description of what is happening with this integration:</p>
+<p>Process Cloud Service (PCS) will be used to call the exposed Web Service endpoint of the ICS integration called <em>Create EBS Order</em>.  This integration has 3 connections.  The incoming message is received by the incoming <em>Create Order</em> Soap Connection.  The <em>Create EBS Order</em> orchestration makes 2 queries into the EBS database using the <em>eBusiness Suite DB APPS</em> connection to get details needed to create an order.  The orchestration finally uses the <em>eBusiness Suite OPERATIONS</em> EBS Adapter connection for creating the order in EBS.  After the order is created in EBS, the Order Number is returned to PCS.</p>
+<p>Let’s start by logging into the Oracle Cloud account and explore the Services Dashboard</p>
+<h2 id="11-explore-the-oracle-cloud-dashboard">1.1: Explore the Oracle Cloud Dashboard</h2>
+<h3 id="111-login-to-your-oracle-cloud-account"><strong>1.1.1</strong>: Login to your Oracle Cloud Account</h3>
+<hr />
+<p><strong>1.1.1.1</strong> From your browser (Firefox or Chrome recommended) go to the following URL:
+<a href="https://cloud.oracle.com">https://cloud.oracle.com</a></p>
+<p><strong>1.1.1.2</strong> Click Sign In in the upper right hand corner of the browser</p>
+<ul>
+<li><strong>IMPORTANT</strong> - Under My Services, change Data Center to <code>US Commercial 2 (us2)</code> and click on Sign In to My Services</li>
+</ul>
+<p><img src="images/300/image001.png" alt="" /></p>
+<p><strong>1.1.1.3</strong> If your identity domain is not already set, enter it and click <strong>Go</strong></p>
+<p><strong>NOTE:</strong> the <strong>Identity Domain</strong> values will be given to you from your instructor.</p>
+<p><img src="images/300/image002.png" alt="" />  </p>
+<p><strong>1.1.1.4</strong>  Once your Identity Domain is set, enter your <code>User Name</code> and <code>Password</code> and click <strong>Sign In</strong></p>
+<p><strong><em>NOTE:</em></strong> the <strong>User Name and Password</strong> values will be given to you by your instructor.</p>
+<p><img src="images/300/image003.png" alt="" />  </p>
+<p><strong>1.1.1.5</strong>  You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><strong>NOTE:</strong> The Cloud Services dashboard is intended to be used by the <em>Cloud Administrator</em> user role.  The Cloud Administrator is responsible for adding users, service instances, and monitoring usage of the Oracle cloud service account.  Developers and Operations roles will go directly to the service console link, not through the service dashboard.</p>
+<p><img src="images/300/image004.png" alt="" /></p>
+<h3 id="112----explore-oracle-cloud-dashboard"><strong>1.1.2:</strong>    Explore Oracle Cloud Dashboard</h3>
+<hr />
+<p>The Cloud Dashboard is the launching pad for all the cloud services in your account. You have access to the following Cloud service: <strong>Oracle Integration Cloud Service, Oracle Process Cloud Service, Oracle Database Cloud Service, Oracle Database Backup Service, Oracle Storage Cloud Service, Oracle Compute Cloud Service, Oracle Java Cloud Service and Oracle SOA Cloud Service</strong>. The dashboard can be customized by selecting the <code>Customize Dashboard</code> button.</p>
+<p><strong>1.1.2.1</strong> To look at the details for the Integration Cloud Service (ICS) instance, first click on the <code>hamburger</code> icon, then click on the <code>View Details</code> link.</p>
+<p><img src="images/300/image004a.png" alt="" /></p>
+<p><strong>1.1.2.2</strong>  The <code>Service Details</code> pages will show various important details about the ICS service instances in this identity domain such as service start date, end date, and your Oracle Cloud subscription ID.</p>
+<p><img src="images/300/image004b.png" alt="" /></p>
+<p><strong>1.1.2.3</strong>  Access to <code>Billing Metrics</code>, <code>Resource Quotas</code>, etc.  can be found in the left-hand navigation.  Select the <code>Business Metrics</code> tab as shown below:</p>
+<p><img src="images/300/image004c.png" alt="" /></p>
+<p><strong>1.1.2.4</strong>  The <code>Business Metrics</code> page will show the total number of messages that ICS has processed and the total number of active connections currently in the subscription.</p>
+<p><img src="images/300/image004d.png" alt="" /></p>
+<p><strong>1.1.2.5</strong>  After getting familiar with the Business Metrics, go back to the “Overview” tab and select the <code>Open Service Console</code> link to go to the ICS Service Console.  </p>
+<p><img src="images/300/image005.png" alt="" />  </p>
+<p><strong>1.1.2.6</strong>  You will now be presented with the ICS Service Console from which you will be performing the rest of this workshop lab.</p>
+<p><img src="images/300/image006.png" alt="" />  </p>
+<h2 id="12-explore-the-ics-designer-user-interface">1.2: Explore the ICS Designer User Interface</h2>
+<h3 id="121----open-the-ics-designer"><strong>1.2.1:</strong>    Open the ICS Designer</h3>
+<hr />
+<p><strong>1.2.1.1</strong>  <strong>Click</strong> on the <code>Designer</code> tab in the upper-right corner of the ICS Service Console to navigate to open the ICS Designer.</p>
+<p><img src="images/300/image007.png" alt="" />  </p>
+<p><strong>1.2.1.2</strong> You will be presented with the ICS Designer Portal:</p>
+<p><img src="images/300/image008.png" alt="" />  </p>
+<h3 id="122----explore-ics-connections"><strong>1.2.2:</strong>    Explore ICS Connections</h3>
+<hr />
+<p><strong>1.2.2.1</strong> Select the <code>Connections</code> graphic in the designer portal</p>
+<p><img src="images/300/image009.png" alt="" />  </p>
+<p><strong>1.2.2.2</strong> Make note of the connections that have been created. Notice that there are three connections, one called <em>eBusiness Suite OPERATIONS</em>, one called <em>eBusiness Suite DB APPS</em> and the other called <em>Create Order</em>.</p>
+<p><img src="images/300/image010.png" alt="" />  </p>
+<p><strong>1.2.2.3</strong> Note that both <em>eBusiness Suite OPERATIONS</em>, and <em>eBusiness Suite DB APPS</em> are using the ICS Connectivity Agent.  You can identify this by the note that it has an associated agent group.  This agent allows ICS to call on-premise systems.</p>
+<p><img src="images/300/image010a.png" alt="" /> </p>
+<p><em>(More information about the ICS Connectivity Agent will be given later)</em></p>
+<p><strong>1.2.2.4</strong> Click on the <code>New Connection</code> button so we can see all the different ICS Connectors that are available.</p>
+<p><img src="images/300/image010b.png" alt="" /></p>
+<p><strong>1.2.2.5</strong> Scroll through the list of connection types that are available in ICS:</p>
+<p><img src="images/300/image010c.png" alt="" /></p>
+<ul>
+<li>Note that the icons with the plug are those that support the ICS Connectivity Agent for those service types which are not in the cloud, but on-premise, behind the company firewall.</li>
+</ul>
+<p><strong>1.2.2.6</strong> When you are done browsing, select the “Cancel” button to dismiss the “Select an Adapter” dialog.</p>
+<h3 id="123----explore-ics-integrations"><strong>1.2.3:</strong>    Explore ICS Integrations</h3>
+<hr />
+<p><strong>1.2.3.1</strong> Select the <code>Integrations</code> link from the navigation bar on the left of the Connections designer console</p>
+<p><img src="images/300/image011.png" alt="" />  </p>
+<p><strong>1.2.3.2</strong> Make note of the integrations that have been created. We will be working with the integration called <em>Create EBS Order</em>.</p>
+<p><img src="images/300/image012.png" alt="" />  </p>
+<p><strong>1.2.3.3</strong> Open the integration <code>Create EBS Order</code> by clicking on the integration name.  We want to see what it looks like.  Since the integration is already active, we’ll be looking at it in <code>Viewing</code> mode.</p>
+<p><img src="images/300/image012a.png" alt="" /></p>
+<p><strong>1.2.3.4</strong>  You can see that this orchestration has many steps in it.  The view of the orchestration is <em>Zoom to Fit</em> in the browser real estate.  In order to get a closer view of the individual steps, you can either scroll with your mouse wheel to zoom in and out, or you can use the <em>-/+</em> slider in the top right of the designer.</p>
+<p><strong>1.2.3.5</strong> Try zooming in and out by using both methods.  </p>
+<p><strong>1.2.3.6</strong> If you get zoomed-in too close and want to pan, you’ll be able to move around the orchestration using the Pan window by clicking on the dark area and moving around.</p>
+<p><img src="images/300/image012b.png" alt="" /></p>
+<p><strong>1.2.3.7</strong> Selecting the Home icon (the little house) the drawing gets reset to a zoomed in view with the orchestration trigger at the very top.</p>
+<p><img src="images/300/image012c.png" alt="" /></p>
+<p><strong>1.2.3.8</strong> Try selecting the <code>Maximize</code> viewing control on the very right of the view control bar.  This will hide some of the detail on top of the screen to give the designer the most area to work in.  Hitting the <code>Maximize</code> button again will toggle that view.</p>
+<p><img src="images/300/image012d.png" alt="" /></p>
+<p><strong>1.2.3.9</strong> Let’s look at some of the components of the integration.  Select the <code>Home</code> view button again to reset the view.</p>
+<p><strong>1.2.3.10</strong> The component at the very top of the orchestration is the <code>Trigger</code>.  The trigger is representative of the connector that’s sending data into the integration.</p>
+<p><strong>1.2.3.11</strong> If you hover over the Trigger node, you can see the details.  Our trigger is a SOAP connector type.  It is called <em>CreateOrder</em> and it is using the connection named <em>Create Order</em> that we looked at before in the Connection section of the ICS Designer.</p>
+<p><img src="images/300/image012e.png" alt="" /></p>
+<p><strong>1.2.3.12</strong> If you click on the Trigger, a pop-up will appear with a view icon.  Select the little eye on the view icon so we can walk through the wizard that was used to setup the SOAP trigger.</p>
+<p><img src="images/300/image012f.png" alt="" /></p>
+<p><strong>1.2.3.13</strong> After the wizard initializes, you’ll be shown the basic information about the trigger – it’s name and description.</p>
+<p><img src="images/300/image012g.png" alt="" /></p>
+<p><strong>1.2.3.14</strong> Select the <code>Next</code> button to see the <code>Operations</code> that were configured for this SOAP Trigger.  Details like the Port Type, Operation, and request and response objects are shown.  In our case, no special SOAP headers were needed so that was set to <code>No</code>.</p>
+<p><img src="images/300/image012h.png" alt="" /></p>
+<p><strong>1.2.3.15</strong> Select <code>“Next</code> again to see the <code>Summary</code> of the Trigger’s configuration.  The SOAP WSDL was uploaded to ICS when the connection was first configured, not in the wizard to configure the Trigger.</p>
+<p><img src="images/300/image012i.png" alt="" /></p>
+<p><strong>1.2.3.16</strong> Select the <code>Close</code> button to dismiss the Trigger view wizard.</p>
+<p><strong>1.2.3.17</strong> Let’s view the next node down in the integration.  This is an <em>Assign</em> node.  The job of this Assign activity is to initialize variables that will be used in the calls to be made to the eBusiness Suite.</p>
+<p><img src="images/300/image012j.png" alt="" /></p>
+<p><strong>1.2.3.17</strong> The variables defined in this Assign activity are greyed-out because we are only viewing them.  Later on in this lab, we’ll de-activate the integration and all the values will be changeable.  These variables are constants that are needed for the EBS API call for creating an order.  You can see that variables such as the <em>EBS responsibility</em>, <em>application</em>, <em>security group</em>, and <em>OrgId</em> are needed.  Using variable rather than hard-coding these in the mapping for the adapter is preferable because they can be re-used across multiple EBS adapter invocations if necessary.</p>
+<p><img src="images/300/image012k.png" alt="" /></p>
+<p><strong>1.2.3.18</strong> Select the <code>Exit Assignments</code> button in the upper-left to go back to the view of the orchestration.</p>
+<p><strong>1.2.3.19</strong> Back in the view of the orchestration we want to explore some of the nodes toward the bottom.  You can pan directly in the design window by clicking &amp; holding the mouse button down in the background of the design palette, then you can pan up and down.</p>
+<p><img src="images/300/image012l.png" alt="" /></p>
+<p><strong>1.2.3.20</strong> Pan down to the map called <code>createEBSOrder</code>.  Click on this map activity and select the view icon.  We are going to see the values that are mapped into EBS.</p>
+<p><img src="images/300/image012m.png" alt="" /></p>
+<p><strong>1.2.3.21</strong> This is the most complex mapping in this integration because the EBS API we’re leveraging has thousands of attributes that can be passed.</p>
+<p>What you’ll see in the mapper is the possible input source variables on the left and the EBS target variables that can be mapped to on the right.  The values that have been mapped are shown to the right of the EBS inbound variables in the mapper.</p>
+<p><strong>1.2.3.22</strong> In order to simplify this view, we want to <code>Filter</code> the Target variables.  Select the <code>Filter</code> button above the Target section and then select the radio button labeled <code>Mapped</code>, then select the <code>Apply</code> button.</p>
+<p><img src="images/300/image012n.png" alt="" /></p>
+<p><strong>1.2.3.23</strong> Now we only see variables in the Target that have been mapped from a Source variable.  If you want to get a visual depiction of where a Target variable has been mapped from, select the little green checkbox to the very left of the Target variable.  This will make a line visible from the Source variable to the Target.</p>
+<p><img src="images/300/image012o.png" alt="" /></p>
+<p>Note that the icon next to the <code>P_LINE_TBL_ITEM</code> has a double bar on top of it.  This indicates that it is a variable that can have multiple values in it (an array).  The ICS mapper automatically adds the <code>for-each(Lines)</code> function to that mapping so all possible order lines passed in from the Source will be mapped to the EBS adapter’s invocation.</p>
+<p><strong>1.2.3.23</strong> Once you are done exploring this complex ICS map, select the <code>Exit Mapper</code> button in the upper-left to return back to the ICS orchestration.</p>
+<p><strong>1.2.3.24</strong> One last orchestration node we want to explore is one of the <em>Database Adapter</em> invocations.  Click on the database adapter call just above the <code>createEBSOrder</code> which is called <code>getCustomerShipToInfo</code>.   When you click on the little eye icon to view it, the DB Connector wizard will initialize.</p>
+<p><img src="images/300/image012p.png" alt="" /></p>
+<p><strong>1.2.3.25</strong> Along with the basic information about this invoke activity like the name and description, you can see that this connection is being used to execute a SQL query on the EBS database from ICS.</p>
+<p><img src="images/300/image012q.png" alt="" /></p>
+<p><strong>1.2.3.26</strong> The SQL query being run can be examined.  This query is joining together 6 tables to provide the shipping information needed to create the EBS order for the customer.</p>
+<p><img src="images/300/image012r.png" alt="" /></p>
+<p><strong>1.2.3.27</strong> Select the <code>Close</code> button now that we have seen the SQL used in the Database Adapter invocation to the EBS Oracle Database.</p>
+<p>Note that ICS also has Database adapters for <em>MySQL</em>, <em>DB2</em>, and <em>SQL Server</em>.</p>
+<p><strong>1.2.3.28</strong> We’ve spent a lot of time exploring the <code>Create EBS Order</code> integration.  Let’s move on and explore the Agent setup.  Select the <code>Exit Integration</code> button in the upper-left to navigate back to the ICS Designer.</p>
+<p><img src="images/300/image012s.png" alt="" /></p>
+<h3 id="124-explore-ics-agents"><strong>1.2.4:</strong> Explore ICS Agents</h3>
+<hr />
+<p><strong>1.2.4.1</strong> Select the <code>Agents</code> link from the navigation bar on the left of the Integrations designer console</p>
+<p><img src="images/300/image013.png" alt="" />  </p>
+<p><strong>1.2.4.2</strong> Make note of the agent that has been created to communicate with the EBS instance called <em>EBS Agent</em>.</p>
+<p><img src="images/300/image014.png" alt="" />  </p>
+<p><strong>1.2.4.3</strong> Selecting the <code>1</code> shows the on-premise connectivity agent that is registered with the <em>EBS Agent</em> agent group.</p>
+<p><img src="images/300/image014a.png" alt="" /></p>
+<p><strong>1.2.4.4</strong> The agent identifier along with the ICS version is shown in the details.  You can also remove the agent by selecting the <code>X</code> to the right of the dialog. Click on the <code>X</code> so you can see the connections that are currently associated with this agent.</p>
+<p><img src="images/300/image014b.png" alt="" /></p>
+<p><strong>1.2.4.5</strong> You can see that both the <em>eBusiness Suite DB APPS</em> and <em>eBusiness Suite OPERATIONS</em> ICS Connectors are both using this agent so you can’t just remove it without first removing the references to it in those connections.</p>
+<p><strong>1.2.4.6</strong> Select the <code>Close</code> button twice to dismiss the <code>“Agent Is In Use</code> and <code>Agent</code> dialogs.</p>
+<p><strong>1.2.4.7</strong> This Connectivity Agent was installed on the EBS system so it could have access to the on-premise EBS APIs.  EBS Business Events and XML Gateway messages are available for inbound integrations in Oracle Integration Cloud Service when adding the Oracle E-Business Suite Adapter as a trigger (source) connection in an integration. If the Oracle E-Business Suite Adapter is added as an invoke (target) connection, PL/SQL APIs and Concurrent Programs are available as REST services for invocation from Oracle Integration Cloud Service. In this workshop we are using an EBS PL/SQL API as a target connection.  The architecture of the ICS Connectivity Agent as used by the EBS Adapter is shown below:</p>
+<p><img src="images/300/image014c.png" alt="" /></p>
+<p><strong>1.2.4.8</strong> The Connectivity Agent is available from the <code>Download</code> pull-down on the Agent page shown below:</p>
+<p><img src="images/300/iamge014d.png" alt="" /></p>
+<p><strong>1.2.4.9</strong> The <code>Execution Agent</code> that you see in the download dropdown is a version of ICS that can run on-premise behind the customer firewall.  You can use ICS both in the cloud and on-premise for creating integrations.</p>
+<h2 id="13-explore-the-ics-monitoring-user-interface">1.3: Explore the ICS Monitoring User Interface</h2>
+<h3 id="131----open-ics-monitoring-console"><strong>1.3.1:</strong>    Open ICS Monitoring Console</h3>
+<hr />
+<p><strong>1.3.1.1</strong> In the upper right corner of the ICS Portal, click the <code>Monitoring</code> tab.  The <code>Monitoring Tab</code> is where you go to see how your activated integrations are working at runtime. </p>
+<p><img src="images/300/image015.png" alt="" /></p>
+<h3 id="132----explore-ics-monitoring-console---dashboard"><strong>1.3.2:</strong>    Explore ICS Monitoring Console - Dashboard</h3>
+<hr />
+<p><strong>1.3.2.1</strong> By default, you will be presented with the ICS Monitoring Dashboard.  Observe the various data that is available from this dashboard such as <em>% of successful messages</em>, <em># of Connection Currently Used</em>, etc.</p>
+<p><img src="images/300/image016.png" alt="" />  </p>
+<p><strong>1.3.2.2</strong> On the right side of the <code>Dashboard</code> there are links where you can view the <code>Activity Stream</code>, Download the logs, and Download an Incident if a service request needs to be raised.</p>
+<p><strong>1.3.2.3</strong> Click on the Activity Stream link</p>
+<p><img src="images/300/image017.png" alt="" /></p>
+<p><strong>1.3.2.4</strong> You will be directed to the <code>Runtime Health</code> screen where you can view a summary of all messages that have passed through ICS in both chart form and numerical rollup form.</p>
+<p><img src="images/300/image018.png" alt="" /></p>
+<p><strong>1.3.2.5</strong> In the <code>Activity Stream</code> at the bottom of the page you can see the steps in the <em>Create EBS Order</em> integration that were executed and whether or not they were successful.</p>
+<h3 id="133----explore-ics-monitoring-console---logfiles"><strong>1.3.3:</strong>    Explore ICS Monitoring Console - Logfiles</h3>
+<hr />
+<p><strong>1.3.3.1</strong> In order to see the details of the payload that passed through the ICS integration, you need to download the Activity Stream Log from the <code>Download Logs</code> link on the right of the Activity Stream.</p>
+<p><strong>1.3.3.2</strong> Select the <code>Download Activity Stream</code> link and then save the zipfile to a location on your workstation such as <em>C:\temp</em> (Windows path)</p>
+<p><img src="images/300/image019.png" alt="" />
+<img src="images/300/image020.png" alt="" /></p>
+<p><strong>1.3.3.3</strong> Extract the zipfile and you’ll see that there are 2 directories of logfiles – this is because the ICS instance is running on a cluster of 2 servers for high availability.</p>
+<p><img src="images/300/image021.png" alt="" /></p>
+<p><strong>1.3.3.4</strong> Navigate into one of the server directories and examine the <code>ics-flow.log</code> file in your favorite text editor.</p>
+<p>Here is a view of the end of the <em>ics-flow.log</em> file in the <em>Notepad++</em> text editor showing the response given by EBS of the order payload after a successful execution of the create order API call:</p>
+<p><img src="images/300/image022.png" alt="" /></p>
+<p>This logfile is helpful for investigation during development or runtime analysis.  The capture of the runtime payloads can be turned on or off during activation of the ICS integration where you are prompted whether or not you want to save the payloads.</p>
+<h3 id="134----explore-ics-monitoring-console---integrations--errors"><strong>1.3.4:</strong>    Explore ICS Monitoring Console - Integrations &amp; Errors</h3>
+<hr />
+<p><strong>1.3.4.1</strong> Back in the ICS Monitoring console, select “Integrations” from the left-hand navigation.</p>
+<p><strong>1.3.4.2</strong> Note that all the statistics of the “Create EBS Order” are shown.</p>
+<p><img src="images/300/image023.png" alt="" /></p>
+<p><strong>1.3.4.3</strong> We are wondering why there were 4 errors in the integration?  (<strong>Note:</strong> during the lab there may not be any errors in the integration flows like there were when this lab was written.  If not, just review the documentation below to see how the ICS monitoring can be used to pinpoint the error)</p>
+<p><strong>1.3.4.4</strong> Click on the <code>Errors</code> link beneath the red letter 4 to drill into the error details.</p>
+<p><img src="images/300/image024.png" alt="" /></p>
+<p><strong>1.3.4.5</strong> You are directed to the ICS <code>Error Message Details</code> screen where all 4 of the failed ICS instances are listed.</p>
+<p><strong>1.3.4.6</strong> Click on the grey warning icon <img src="images/300/image025.png" alt="" /> on the right of the instance error description to see the details of the error.</p>
+<p>You can see that there was a timeout in this integration of 120 seconds.</p>
+<p><strong>1.3.4.7</strong> We want to see which step the timeout occurred on.  Click on the integration instance name so you can see the flow of this instance and where it failed.</p>
+<p><img src="images/300/image026.png" alt="" /></p>
+<p><strong>1.3.4.8</strong> This leads us to a graphical view of that particular integration flow instance detail.</p>
+<p>Zooming in, we can see that everything was fine with the flow until the <em>createEBSOrder</em> API was called – this is where the flow line turns red.</p>
+<p><img src="images/300/image027.png" alt="" /></p>
+<p><strong>1.3.4.9</strong> This shows us that the API call was timing out.</p>
+<p>On investigation with the EBS system, it was found that the API was down because the EBS HTTP server (Oracle HTTP Server, OHS) was not running.  Starting OHS up on EBS made the API available and now the integration is up and running again.</p>
+<p><strong>1.3.4.10</strong>  Select the <code>Exit Instance</code> button to go back to the ICS Error Message Details Monitoring console.</p>
+<p><img src="images/300/image028.png" alt="" /></p>
+<h3 id="135----explore-ics-monitoring-console---agents"><strong>1.3.5:</strong>    Explore ICS Monitoring Console - Agents</h3>
+<hr />
+<p><strong>1.3.5.1</strong>  Now, select <code>Agents</code> from the left-hand navigation.</p>
+<p>From the <code>Agents</code> monitoring console, you’ll be able to see if the ICS Connectivity Agent is up or down.  The green <em>sun</em> or <em>light</em> icon indicates that the Connectivity Agent is running fine.</p>
+<p><img src="images/300/image029.png" alt="" /></p>
+<h3 id="136----explore-ics-monitoring-console---tracking"><strong>1.3.6:</strong>    Explore ICS Monitoring Console - Tracking</h3>
+<hr />
+<p><strong>1.3.6.1</strong> Select the <code>Tracking</code> link in the navigation bar on the left</p>
+<p><img src="images/300/image030.png" alt="" /></p>
+<p><strong>1.3.6.2</strong> The ICS <code>Tracking</code> monitor page shows all integration flows that have been executed.</p>
+<p><strong>1.3.6.3</strong> Select the chevron just to the right of the <em>Tracking</em> label at the top of the page to change the granularity of the Tracking report to <code>Last 6 Hours</code></p>
+<p><img src="images/300/image031.png" alt="" /></p>
+<p><strong>1.3.6.4</strong> Next, drill into a <code>COMPLETED</code> integration flow by selecting the integration name like we did while tracking down the Error earlier.</p>
+<p><img src="images/300/image032.png" alt="" /></p>
+<p><strong>1.3.6.5</strong> We can now see that all steps in the this ICS integration flow were successful because the arrow is green highlighting all the orchestration flow steps.</p>
+<p><img src="images/300/image033.png" alt="" /></p>
+<p><strong>1.3.6.6</strong> Select the <code>Exit Instance</code> button to go back to the ICS monitoring page.</p>
+<p><img src="images/300/image034.png" alt="" /></p>
+<p>We are now done exploring the ICS monitoring features.</p>
+<h1 id="part-2-use-integration-cloud-service-to-modify-an-integration">Part 2: Use Integration Cloud Service to Modify an Integration</h1>
+<p>In this second part of the lab, we will change the <em>Create EBS Order</em> ICS integration in order to support the new requirement of adding a comment to the EBS order from the mobile application.  The following steps will be followed in this part of the lab:</p>
+<ol>
+<li>Clone an existing ICS integration</li>
+<li>Modify the integration to support the new comment field</li>
+<li>Update ICS tracking to include the comment</li>
+<li>Re-Activate and Test the updated orchestration
+Let’s start by logging into ICS and cloning an existing integration.</li>
+</ol>
+<h2 id="21-clone-an-existing-integration">2.1: Clone an existing integration</h2>
+<h3 id="211----open-the-ics-design-console"><strong>2.1.1:</strong>    Open the ICS Design Console</h3>
+<hr />
+<p><strong>2.1.1.1</strong> Open the ICS Service Console.  (Steps to do this were outlined in the first part of this lab when we were exploring ICS)</p>
+<p><strong>2.1.1.2</strong> Select the <code>Designer</code> tab on top of the ICS Service Console to go to the <code>ICS Designer Portal</code>.</p>
+<p><strong>2.1.1.3</strong> Select the <code>Integrations</code> icon</p>
+<p><img src="images/300/image035.png" alt="" /></p>
+<h3 id="212----clone-the-integration"><strong>2.1.2:</strong>    Clone the integration</h3>
+<hr />
+<p><strong>2.1.2.1</strong> Click the <code>Hamburger</code> icon <img src="images/300/image036.png" alt="" />  just to the right of the <em>Create EBS Order</em> integration.</p>
+<p><strong>2.1.2.2</strong> Drop down to the <code>Clone</code> menu selection so we can make a working copy of the current working <em>Create EBS Order</em> integration.</p>
+<p><img src="images/300/image037.png" alt="" /></p>
+<p><strong>2.1.2.3</strong> In the <code>Clone</code> dialog that comes up, enter the new name of the cloned integration.  Since there may be multiple participants in this lab, use your assigned user # as a prefix with <em>Create EBS Order</em> at the end.  In the following example, <em>demo.user01</em> was assigned so the name of the cloned integration is <em>User 01 Create EBS Order</em></p>
+<p><strong>2.1.2.4</strong> After entering the name, select the <code>Clone</code> button in the lower-right of the dialog.</p>
+<p><img src="images/300/image038.png" alt="" /></p>
+<p><strong>2.1.2.5</strong> You will now see that your new cloned integration is ready to edit as it’s in the <code>de-activated</code> state.</p>
+<p><img src="images/300/image039.png" alt="" /></p>
+<p><strong>2.1.2.6</strong> Click on the integration name so that we can go to the integration editor.  In the image above <code>User 01 Create EBS Order</code> is the hot-link to select.</p>
+<h2 id="22-edit-the-mapping-to-the-ebs-update-service-call">2.2: Edit the mapping to the EBS update service call</h2>
+<h3 id="221----navigate-to-the-mapping-createebsorder"><strong>2.2.1:</strong>    Navigate to the mapping <em>createEBSOrder</em></h3>
+<hr />
+<p><strong>2.2.1.1</strong> Since there are many steps in this orchestration style integration the text on each step may be difficult to read.  In order to quickly zoom-in, select the <code>Home</code> icon in the view control bar in the upper-right.</p>
+<p><img src="images/300/image040.png" alt="" /></p>
+<p><strong>2.2.1.2</strong> The <em>createEBSOrder</em> mapping step we are going to change is toward the bottom of the orchestration.  As shown in the first part of the lab, by clicking and dragging your mouse in the background you can pan down the orchestration steps to the <em>createEBSOrder</em> mapping step.</p>
+<p><img src="images/300/image012l.png" alt="" /></p>
+<h3 id="222----open-the-mapping-createebsorder-for-editing"><strong>2.2.2:</strong>    Open the mapping <em>createEBSOrder</em> for editing</h3>
+<hr />
+<p><strong>2.2.2.1</strong> The <em>createEBSOrder</em> mapping orchestration step is just above the corresponding <em>createEBSOrder</em> API invocation.</p>
+<p><strong>2.2.2.2</strong> Click on the double arrow mapping symbol to pop-up the edit pencil.</p>
+<p><strong>2.2.2.3</strong> Click on the little pencil to edit the mapping.</p>
+<p><img src="images/300/image041.png" alt="" /></p>
+<h3 id="223----map-the-new-comment-field"><strong>2.2.3:</strong>    Map the new <em>Comment</em> field</h3>
+<hr />
+<p><strong>2.2.3.1</strong> Once the mapping is displayed, we need to expand the target node that we will map the inbound <code>Comment</code> field to.</p>
+<p><strong>2.2.3.2</strong> We are going to map <code>Comment</code> source to the target called <code>ATTRIBUTE1</code> which is in the <code>P_HEADER_REC</code> section of the Target payload.</p>
+<p><strong>2.2.3.3</strong> Select the little arrow icon <img src="images/300/image042.png" alt="" /> just to the left of the <code>P_HEADER_REC</code> in the Target payload to expand it and expose <code>ATTRIBUTE1</code>.</p>
+<p><img src="images/300/image043.png" alt="" /></p>
+<p><strong>2.2.3.4</strong> Now that the <code>ATTRIBUTE1</code> variable can be seen, we can map the <code>Comment</code> source variable to it by dragging the little circle just to the right of the <code>Comment</code> variable over to the <code>ATTRIBUTE1</code> circle.</p>
+<p><strong>2.2.3.5</strong> Click and hold on the circle just to the right of the <code>Comment</code> Source variable then drag it on top of the little circle just to the left of the <code>ATTRIBUTE1</code> Target variable.</p>
+<p><img src="images/300/image044.png" alt="" /></p>
+<p><strong>2.2.3.6</strong> Release the mouse on the little circle just to the left of the <code>ATTRIBUTE1</code> Target variable.</p>
+<p><img src="images/300/image045.png" alt="" /></p>
+<p><strong>2.2.3.7</strong> You will now be able to see the two variables mapped together by the green line connecting them.  Also note that the <code>Comment</code> field is shown as the mapping to the right of the <code>ATTRIBUTE1</code> variable.</p>
+<p><img src="images/300/image046.png" alt="" /></p>
+<p><strong>2.2.3.8</strong> Now we need to select the <code>Save</code> button in the upper right to save our mapping changes</p>
+<p><img src="images/300/image047.png" alt="" /></p>
+<h3 id="224----testing-the-updated-mapping"><strong>2.2.4:</strong>    Testing the Updated Mapping</h3>
+<hr />
+<p><strong>2.2.4.1</strong> ICS has a built-in test harness so that you can see if the changes you made to your mapping actually work.</p>
+<p><strong>2.2.4.2</strong> First, select the <code>Test</code> button just below the <code>Save</code> button just pressed.</p>
+<p><img src="images/300/image048.png" alt="" /></p>
+<p><strong>2.2.4.3</strong> Next, select the <code>Generate Inputs</code> button in the upper-right of the testing window.</p>
+<p><img src="images/300/image049.png" alt="" /></p>
+<p><strong>2.2.4.4</strong> We want to put some interesting comment in the input <code>&lt;ns0:Comment&gt;</code> element in the <code>Input: createOrderRequest</code> incoming payload.</p>
+<p><strong>2.2.4.5</strong> Edit the data in the generated inbound payload to something custom.  In this example it was set to <em>This is my Comment!</em></p>
+<p><img src="images/300/image050.png" alt="" /></p>
+<p><strong>2.2.4.6</strong> Now that the input data is ready, select the <code>Execute</code> button in the upper-right of the test window.</p>
+<p><img src="images/300/image051.png" alt="" /></p>
+<p><strong>2.2.4.7</strong> The mapping will be applied to the generated input data and the result will be shown in the <code>Output: PROCESS_ORDER_Input</code> section on the right side of the test window.</p>
+<p><strong>2.2.4.8</strong> Look for your custom comment and note that it has been mapped to the <code>P_HEADER_REC</code> -&gt; <code>ATTRIBUTE1</code> element.</p>
+<p><img src="images/300/image052.png" alt="" /></p>
+<p><strong>2.2.4.9</strong> Now that we have seen that our mapping has been successfully modified, we can close the test window.</p>
+<p><strong>2.2.4.10</strong> Select the <code>Close</code> button in the lower-right of the test window.</p>
+<p><img src="images/300/image053.png" alt="" /></p>
+<p><strong>2.2.4.11</strong> Now we can close the Mapping Editor because our changes have been made and tested.</p>
+<p><strong>2.2.4.12</strong> Click on the <code>Exit Mapper</code> button in the upper-left of the Mapping Editor.</p>
+<p><img src="images/300/image054.png" alt="" /></p>
+<p><strong>2.2.4.13</strong> Save your changes made to the cloned integration by pushing the <code>Save</code> button in the upper-right of the integration.</p>
+<p><img src="images/300/image055.png" alt="" /></p>
+<h2 id="23-add-tracking-to-the-integration">2.3: Add Tracking to the Integration</h2>
+<h3 id="231----open-the-“tracking”-editor"><strong>2.3.1:</strong>    Open the “Tracking” editor</h3>
+<hr />
+<p><strong>2.3.1.1</strong> We want to add the <em>Comment</em> we just mapped as a <code>Business Identifier</code>.  Business Identifiers enable runtime tracking on messages.  These identifiers will be saved in ICS’s monitoring tab for each instance of the integration that is run.</p>
+<p><strong>2.3.1.2</strong> Click on the <code>Tracking</code> button next to the <em>Save</em> button to bring up the business identifier editor.</p>
+<p><img src="images/300/image056.png" alt="" /></p>
+<h3 id="232----add-a-“business-identifier”"><strong>2.3.2:</strong>    Add a “Business Identifier”</h3>
+<hr />
+<p><strong>2.3.2.1</strong> The <code>Business Identifiers For Tracking</code> editor will be opened up</p>
+<p><img src="images/300/image057.png" alt="" /></p>
+<p><strong>2.3.2.2</strong> Click on the <em>Comment</em> variable in the Source variable section.  The editor will show the metadata for this variable such as type, path, etc.</p>
+<p><strong>2.3.2.3</strong> Next, click on the <code>Shuttle Icon</code> to move the <em>Comment</em> variable over to be a new <code>Tracking Field</code>.</p>
+<p><em>(Note that you can also click and drag variables from the Source to the Tracking Field instead of using the shuttle icon)</em></p>
+<p><img src="images/300/image058.png" alt="" /></p>
+<p><strong>2.3.2.4</strong> Observe that the <em>Comment</em> variable has now been added as a <code>Tracking Field</code>.  The source variable name is also added as the <code>Tracking Name</code> by default – since <em>Comment</em> means something and is suitable for people to read in the monitoring tab we’ll keep it. If the comment variable was something random like <em>C2EF</em>, we would want to change it and give it a human-readable tracking name.</p>
+<p><strong>2.3.2.5</strong> Select the <code>Done</code> button now that the new <code>Business Identifier</code> has been added.</p>
+<p><img src="images/300/image059.png" alt="" /></p>
+<p><strong>2.3.2.6</strong> Once again, click on the <code>Save</code> button to save the tracking changes.</p>
+<p><img src="images/300/image060.png" alt="" /></p>
+<p><strong>2.3.2.7</strong> All modifications have now been made to the cloned integration.</p>
+<p><strong>2.3.2.8</strong> Select the <code>Exit Integration</code> button to go back to the ICS Designer Portal.</p>
+<p><img src="images/300/image061.png" alt="" /></p>
+<h2 id="24-activate-changes-to-the-integration">2.4: Activate Changes to the Integration</h2>
+<h3 id="241----select-the-“activate”-switch"><strong>2.4.1:</strong>    Select the “Activate” switch</h3>
+<hr />
+<p><strong>2.4.1.1</strong> Click on the <em>Activate</em> switch/slider on the right of the cloned <code>Create EBS Order</code> integration.</p>
+<p><img src="images/300/image062.png" alt="" /></p>
+<p><strong>2.4.1.2</strong> The <code>Activate Integration?</code> dialog will be displayed</p>
+<p><strong>2.4.1.3</strong> Select the <em>Enable tracing</em> button since this isn’t a production deployment.  This checkbox will tell ICS that the payloads for each instance of the integration will be saved in the logfiles as explored in the first part of this lab earlier.</p>
+<p><strong>2.4.1.4</strong> Now select the <em>Activate</em> button to begin activation of the integration.</p>
+<p><img src="images/300/image063.png" alt="" /></p>
+<p><strong>2.4.1.5</strong> The progress bar of the integration activation will move across the <code>Activate Integration?</code> dialog box.</p>
+<p><img src="images/300/image064.png" alt="" /></p>
+<p><strong>2.4.1.6</strong> Once the integration is activated you will see that the activation slider now is colored green with a checkmark in it.</p>
+<p><strong>2.4.1.7</strong> A message will appear on the top of the ICS Designer Portal indicating that the integration activation was successful.  The WSDL for the service endpoint will also be displayed.</p>
+<p><img src="images/300/image065.png" alt="" /></p>
+<h3 id="242----check-the-service-endpoint"><strong>2.4.2:</strong>    Check the Service Endpoint</h3>
+<hr />
+<p><strong>2.4.2.1</strong> Click on the WSDL link so we can ensure that this integration has an available service endpoint.</p>
+<p><img src="images/300/image066.png" alt="" /></p>
+<p><strong>2.4.2.2</strong> The WSDL for you new ICS integration will now be displayed in your browser.</p>
+<p><img src="images/300/image067.png" alt="" /></p>
+<p><strong>2.4.2.3</strong> Now that we have a modified integration with a new service endpoint, we need to update PCS so that the comment sent in from the mobile application can be passed through ICS into EBS.</p>
+<h1 id="part-3-testing-the-new-ics-integration-from-pcs">Part 3: Testing the New ICS Integration from PCS</h1>
+<p>Now that we have a new ICS integration mapping the <em>Comment</em> field to the EBS order, we need to update the PCS process with the new ICS endpoint.
+Using the PCS Process from the previous lab we’ll now go through the steps necessary to do this.</p>
+<h3 id="31----update-pcs-process-with-the-new-ics-service"><strong>3.1:</strong>    Update PCS Process with the New ICS Service</h3>
+<hr />
+<p><strong>3.1.1</strong> First, get back into the PCS Composer and open up the PCS process you created in Lab 200 by clicking on the PCS Application name.</p>
+<ul>
+<li>In the screenshot below, we are using the process created with user <code>demo.user03</code>:</li>
+</ul>
+<p><img src="images/300/image068.png" alt="" /></p>
+<p><strong>3.1.2</strong> Open up the <em>Quote to Order Process</em> process by clicking on it:</p>
+<p><img src="images/300/image069.png" alt="" /></p>
+<p><strong>3.1.3</strong> Ensure that the process is in <em>Edit</em> mode by selecting the pencil icon in the top middle of the editor window.  If the process is not in edit mode, it will be shown in <em>Viewing</em> mode as shown below:</p>
+<p><img src="images/300/image070.png" alt="" /></p>
+<p><strong>3.1.4</strong> Pan over to the <em>Capture Order</em> service call, click on that activity and then select the <em>Open Properties</em>:</p>
+<p><img src="images/300/image071.png" alt="" /></p>
+<p><strong>3.1.5</strong> Edit the service call by clicking on the small pencil icon on the right of the <em>Service Call</em> dropbox.</p>
+<p><img src="images/300/image072.png" alt="" /></p>
+<p><strong>3.1.6</strong> Select the <code>Plus</code> (<code>+</code>) icon to the right of the ICS integration endpoint:</p>
+<p><img src="images/300/image073.png" alt="" /></p>
+<p><strong>3.1.7</strong> Now select the new ICS integration that was created in the previous part of this lab, then select the <em>Next</em> button.  In the screenshot below, the integration for the <em>demo.user03</em> user is shown:</p>
+<p><img src="images/300/image074.png" alt="" /></p>
+<p><strong>3.1.8</strong> In the Advanced service configuration dialog, select <em>APP Id – Username Token</em> for the Security.</p>
+<p><strong>3.1.9</strong> Select <em>[New Key]</em> for the Keystore Credential and give it a name that matches the user you have been given for the lab… something like <em>demo.user03.key</em></p>
+<p><strong>3.1.10</strong> Input the username/password given to you for the workshop.  In the screenshot below, the user <em>demo.user03</em> is shown.</p>
+<p><strong>3.1.11</strong> After inputting all this info, click on the <em>Create</em> button:</p>
+<p><img src="images/300/image075.png" alt="" /></p>
+<p><strong>3.1.12</strong> Select the <em>OK</em> button back in the <em>Configuration</em> dialog:</p>
+<p><img src="images/300/image076.png" alt="" /></p>
+<p><strong>3.1.13</strong> Collapse the properties window at the bottom of the PCS Composer by selecting the small down-arrow at the right hand side of the properties section:</p>
+<p><img src="images/300/image077.png" alt="" /></p>
+<p><strong>3.1.14</strong> Save the changes made to the PCS process by clicking on the diskette icon in the middle of the top blue header bar:</p>
+<p><img src="images/300/image081.png" alt="" /></p>
+<p>You are now ready to publish and deploy your changes</p>
+<h3 id="32----deploy-the-updated-pcs-process"><strong>3.2:</strong>    Deploy the Updated PCS Process</h3>
+<hr />
+<p><strong>3.2.1</strong> The first step in deploying is to publish the process.</p>
+<p><strong>3.2.2</strong> Select the little <em>globe + arrow</em> icon in the middle of the top blue header bar:</p>
+<p><img src="images/300/image082.png" alt="" /></p>
+<p><strong>3.2.3</strong> Select the <em>Make Snapshot</em> checkbox and enter the comment <em>Added New ICS Service Endpoint</em>.  Add the same comment to the free-form textarea at the bottom of the <em>Publish Application</em> dialog.</p>
+<p><strong>3.2.4</strong> After making these changes, select the <em>Publish</em> button on the bottom of the dialog:</p>
+<p><img src="images/300/image083.png" alt="" /></p>
+<p><strong>3.2.5</strong> After the application has been published, it needs to be deployed.</p>
+<p><strong>3.2.6</strong> Select the <em>Management</em> link in the top right of the PCS Composer screen:</p>
+<p><img src="images/300/image084.png" alt="" /></p>
+<p><strong>3.2.7</strong> If this is the first time you've published in this browser session, you may be prompted to login with your username/password for publishing.  If this is the case, enter your assigned username/password (ie: <code>demo.userXX</code>)</p>
+<p><img src="images/200/Picture55a.png" alt="" /></p>
+<p><strong>3.2.8</strong> In the upper left side of the PCS Management window, click on the <code>hamburger</code> icon then select the <em>Deploy</em> menu item:</p>
+<p><img src="images/300/image085.png" alt="" /></p>
+<p><strong>3.2.9</strong> Select your <em>Touch the Cloud</em> Space in the <em>Select Space</em> dropdown</p>
+<p><strong>3.2.10</strong> Select your PCS application <em>Quote to Order – UserXX</em> in the <em>Select Application</em> dropdown (where <code>XX</code> is your workshop user number, ie: 01, 02, etc.)</p>
+<p><strong>3.2.11</strong> Select your snapshot name in the <em>Select a snapshot</em> dropdown. In the example below, the snapshot was given the name <em>Added New ICS Service Endpoint</em></p>
+<p><strong>3.2.12</strong> After you have configured the application in the <em>Deploy Application to My Server</em> dialog, select the <em>Customize</em> button.</p>
+<p><img src="images/300/image086.png" alt="" /></p>
+<p><strong>3.2.13</strong> Select the <em>Use design-time credentials and certificates</em> checkbox in the upper right of the <em>Customize</em> page of the wizard.</p>
+<p><strong>3.2.14</strong> In the <em>Keystore Credential</em> dropdown box, select the security key created during design time.  In the example shown below, we created the key called <em>demo.user03.key</em>.</p>
+<p><strong>3.2.15</strong> The username/password will automatically be filled in based on the key which was already created during design time.</p>
+<p><strong>3.2.16</strong> After customizing the new service call, select the <em>Validate</em> button:</p>
+<p><img src="images/300/image087.png" alt="" /></p>
+<p><strong>3.2.17</strong> After the validation is shown to be successful, select the <em>Options</em> button:</p>
+<p><img src="images/300/image088.png" alt="" /></p>
+<p><strong>3.2.18</strong> Enter the id <em>1.0</em> in the <em>Revision id</em> textbox (we'll be overwriting the version currently deployed because we don't need two out there)</p>
+<p><strong>3.2.19</strong> Select the <em>Override</em> checkbox</p>
+<p><strong>3.2.20</strong> Select the <em>Force default</em> checkbox</p>
+<p><strong>3.2.21</strong> Finally, select the <em>Deploy</em> button</p>
+<p><img src="images/300/image089.png" alt="" /></p>
+<p><strong>3.2.22</strong> The <em>Deploying</em> modal-dialog will pop-up and spin while this new revision is deployed.  This could take about a minute depending on how many other participants are deploying at the same time.</p>
+<p><img src="images/300/image090.png" alt="" /></p>
+<p><strong>3.2.23</strong> Select the <em>Finish</em> button once the application deployment is complete</p>
+<p><img src="images/300/image091.png" alt="" /></p>
+<p>The updated PCS application is now ready to test</p>
+<h3 id="33----test-the-updated-end-to-end-application-using-max-mobile-application"><strong>3.3:</strong>    Test the Updated End-to-End Application Using MAX Mobile Application</h3>
+<hr />
+<p><strong>3.3.1</strong> Login to the Mobile Cloud Service (MCS) Console as described in Lab 100 using your assigned username (ie: demo.userXX).</p>
+<p><strong>3.3.2</strong> Once you have logged into MCS, click on the <strong>hamburger menu</strong> in the upper left of the screen.</p>
+<p><img src="images/300/image092.png" alt="" /></p>
+<p><strong>3.3.3</strong> Select the <strong>Applications</strong> link in the left-hand navigation - this will bring up a bunch of colorful icons in the main window for various MCS capabilities.</p>
+<p><img src="images/300/image093.png" alt="" /></p>
+<p><strong>3.3.4</strong> Click on the <strong>Mobile Apps</strong> icon to launch the MAX application editor</p>
+<p><img src="images/300/image094.png" alt="" /></p>
+<p><strong>3.3.5</strong> Select the mobile application you developed in Lab 100, labeled with your assigned user number.  In the screenshot below, <code>TTC_APP_03</code> is selected because the user was assigned <strong>demo.user03</strong> as their username.</p>
+<p><img src="images/300/image095.png" alt="" /></p>
+<p><strong>3.3.6</strong> The mobile application will be displayed with a map of the "Customers".</p>
+<p><strong>3.3.7</strong> Select the <strong>Test</strong> button in the upper right to launch the mobile phone simulator.</p>
+<p><img src="images/300/image096.png" alt="" /></p>
+<p><strong>3.3.8</strong> Login with the test user's credentials.  Note that if you have previously logged in with the <strong>Save test user</strong> checkbox selected you may not be prompted to login again.</p>
+<p>Remember that this mobile application is for a sales rep that is checking for his list of customers to visit in his area from whom he can take quotes for computer equipment orders.</p>
+<ul>
+<li><strong>Username</strong>: <code>maxtester</code></li>
+<li><strong>Password</strong>: <code>W3lcome1*</code></li>
+<li><strong>Save test user</strong>: check the box so you will only have to login once for the simulator per browser session</li>
+</ul>
+<p><strong>3.3.9</strong> Click on the <strong>Sign In</strong> button</p>
+<p><img src="images/300/image097.png" alt="" /></p>
+<p><strong>3.3.10</strong> Click on one of the orange dots representing a customer visit that the sales rep will be making.</p>
+<p><img src="images/300/image098.png" alt="" /></p>
+<p><strong>3.3.11</strong> In the screenshot below, the customer selected is <em>Bigmart</em>.  You can see their address and the main contact's information.</p>
+<p><strong>3.3.12</strong> After the sales rep has had a discussion with his contact, Paul Pub, he needs to order them one <code>Sentinel Standard Desktop - Rugged</code> because it is needed in the warehouse where conditions are rough.  </p>
+<p><strong>3.3.13</strong> Click on the elipses in the upper right of the mobile application to initiate creating a quote.</p>
+<p><img src="images/300/image099.png" alt="" /></p>
+<p><strong>3.3.14</strong> Select the <strong>Create Quote Line</strong> menu item</p>
+<p><img src="images/300/image100.png" alt="" /></p>
+<p><strong>3.3.15</strong> Click on the pulldown on the right side of the <code>ItemDescription</code> item and select <code>Sentinel Standard Desktop - Rugged</code> from the pulldown menu.</p>
+<p><img src="images/300/image101.png" alt="" /></p>
+<p><strong>3.3.16</strong> Fill in the rest of the quote line with the following information:</p>
+<ul>
+<li><strong>Price</strong> = <em>13000</em>  (We want this to be above $10000 so it trigger Sales Director approval in the PCS workflow)</li>
+<li><strong>Qty</strong> = <em>1</em></li>
+<li><strong>UOM</strong> = <em>Each</em></li>
+</ul>
+<p><strong>3.3.17</strong> After finishing filling out the information for the quote line, select the <strong>Save</strong> button in the upper right of the mobile app</p>
+<p><img src="images/300/image102.png" alt="" /></p>
+<p><strong>3.3.18</strong> Select <code>Quote Lines</code> tab in the <strong>Customer Summary</strong> page to see the quote line just saved</p>
+<p><img src="images/300/image111.png" alt="" /></p>
+<p><strong>3.3.19</strong> You can now submit the quote.  Select the elipses in the upper right of the mobile app.</p>
+<p><strong>3.3.20</strong> Select <code>Submit Quote</code> from the menu list.</p>
+<p><strong>3.3.21</strong> Wait for 5-10 seconds while the mobile application creates a process instance in PCS and initiates the approval workflow with the quote just created on the mobile application.</p>
+<p><img src="images/300/image112.png" alt="" /></p>
+<p>Now we will check in PCS to ensure that the process workflow was initiated.</p>
+<h3 id="34----ensure-the-mobile-application-created-the-pcs-workflow-instance"><strong>3.4:</strong>    Ensure the Mobile Application created the PCS Workflow Instance</h3>
+<hr />
+<p><strong>3.4.1</strong> Navigate back to the PCS Composer window from section 3.2 of this lab</p>
+<p><strong>3.4.2</strong> Select the <code>PCS Home</code> icon on the upper right of the PCS Management window</p>
+<p><img src="images/300/image113.png" alt="" /></p>
+<p><strong>3.4.3</strong> Select the Tasks button on the top of the PCS Workspace</p>
+<p><img src="images/300/image114.png" alt="" /></p>
+<p><strong>3.4.4</strong> First, the quote needs to be approved by the "Sales Operations" role.  In Lab 200, we had added our user (<code>demo.userXX</code>) to all 3 of the roles in our PCS process: "Sales Operations", "Sales Manager", and "Sales Director".</p>
+<p>Click on the task so we can see the approval form.</p>
+<p><img src="images/300/image121.png" alt="" /></p>
+<p><strong>3.4.5</strong> The Quote form will be shown so you can review that the data from the mobile application came through.  Note the <em>Account Name</em> and <em>Price</em> match what you put into the mobile application.</p>
+<p><strong>3.4.6</strong> After reviewing the quote, select the <strong>Approve</strong> button to send this process further down the workflow.</p>
+<p><img src="images/300/image122.png" alt="" /></p>
+<p><strong>3.4.7</strong> The previous task (Sales Operations Approval) will disappear from the tasklist.  Click on the <strong>Refresh</strong> icon in order to update the tasklist.  </p>
+<p><img src="images/300/image123.png" alt="" /></p>
+<p><strong>3.4.8</strong> Since this order was more than $10000, it will have been routed to the Sales Director role in the PCS process.</p>
+<p><strong>3.4.9</strong> Since you have "Sales Director" role, you should see another task show up in the tasklist for a secondary large quote order approval.</p>
+<p><img src="images/300/image124.png" alt="" /></p>
+<p><strong>3.4.10</strong> Just like you did as "Sales Operations", the Quote form will be shown so you can review that the data from the previous approval came through.</p>
+<p><strong>3.4.11</strong> After reviewing the quote, select the <strong>Approve</strong> button to send this quote over to EBS to create an order.</p>
+<p><img src="images/300/image125.png" alt="" /></p>
+<p><strong>3.4.12</strong> This was the last approval needed in the process so you won’t see any more tasks for that process showing up in the tasklist.</p>
+<p><strong>3.4.13</strong> Select the <strong>Tracking</strong> icon on the top of the PCS Workspace so we can see the details of the entire process just completed.</p>
+<p><img src="images/300/image117.png" alt="" /></p>
+<p><strong>3.4.14</strong> Select the <strong>Completed</strong> checkbox - by default because only the <code>In Progress</code>, <code>Suspended</code>, and <code>Completed</code> are shown by default.</p>
+<p><img src="images/300/image118.png" alt="" /></p>
+<p><strong>3.4.15</strong> Look near the top of the list for your process instance since it was just executed.</p>
+<p><strong>3.4.16</strong> Select the arrow at the right of the instance to see the details:</p>
+<p><img src="images/300/image119.png" alt="" /></p>
+<p><strong>3.4.17</strong> Select the chevron icon just to the right of the History section so you can see a graphical representation of the process history. The green line highlights the path that the process took.</p>
+<p><img src="images/300/image120.png" alt="" /></p>
+<p><strong>3.4.18</strong> Select the <strong>Maximize Instance Details</strong> button in the upper right so we can see the entire process flow graph</p>
+<p><img src="images/300/image126.png" alt="" /></p>
+<p><strong>3.4.19</strong> Observe the entire PCS process flow.  Note again that the <em>green highlighted lines</em> indicate the path of the successful process flow.</p>
+<p><img src="images/300/image127.png" alt="" /></p>
+<p>Now we want to be sure that the callout made by PCS to ICS worked and that the payload for creating the new order was sent to EBS.</p>
+<h3 id="35----ensure-that-pcs-called-the-new-ics-integration"><strong>3.5:</strong>    Ensure that PCS called the new ICS Integration</h3>
+<hr />
+<p><strong>3.5.1</strong> Login to ICS and visit the <em>Monitoring</em> window</p>
+<p><img src="images/300/image103.png" alt="" /></p>
+<p><strong>3.5.2</strong> Select “Tracking” from the left-hand navigation</p>
+<p><img src="images/300/image104.png" alt="" /></p>
+<p><strong>3.5.3</strong> Select your ICS integration name from the tracking list – this will probably be the first one in the list</p>
+<p><img src="images/300/image105.png" alt="" /></p>
+<p><strong>3.5.4</strong> Select the <em>Business Identifiers</em> icon on the upper right of the integration and make sure that the comment was sent over to ICS from PCS - this comment was the <code>mcs_id</code> variable from the MCS API which should be <code>UserXX</code> where XX is your user number.</p>
+<p><img src="images/300/image106.png" alt="" /></p>
+<h3 id="36----verify-the-order-was-created-in-ebs"><strong>3.6:</strong>    Verify the Order was Created in EBS</h3>
+<hr />
+<p><strong>3.6.1</strong> Login to EBS using the endpoint and credentials provided to you by the workshop organizer.  You will use the user <em>operations</em>.</p>
+<ul>
+<li><em>NOTE:</em> For the EBS instance used in this workshop, the Oracle Single Sign-On system is used to regulate access.  Unless individual users are explicitly added to have access to the EBS system, they will not be able to access the following EBS login page.  If you can't access the login page with your Oracle SSO login, then you can look at the following screenshots to see how you would be able to see your Order in an EBS R12.2 system.</li>
+</ul>
+<p><img src="images/300/image107.png" alt="" /></p>
+<p><strong>3.6.2</strong> Select the EBS Responsibility <em>Order Management, HTML User Interface</em>:</p>
+<p><img src="images/300/image108.png" alt="" /></p>
+<p><strong>3.6.3</strong> Examine the list in the <em>Open Orders</em> report and verify that your new order shows up in the list.</p>
+<p>Note that the <em>Order Amount</em> shown is larger than that of the quote because of shipping costs and taxes that were added automatically by EBS .</p>
+<p><img src="images/300/image109.png" alt="" /></p>
+<p>You now have used Oracle Integration Cloud Service to explore and modify an integration to Oracle EBS. </p>
+<p>This Lab is now completed.</p>

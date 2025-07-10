@@ -1,0 +1,444 @@
+<p><img src="images/lab300/300_00_01_Lab300TopImage.png" alt="" /></p>
+<p>Update: April 30, 2017</p>
+<h1 id="introduction">Introduction</h1>
+<p>This is the third of several labs that are part of the <strong>Oracle Public Cloud DevOps Cloud Native Microservices Workshop</strong>. This workshop walks you through the Software Development Lifecycle (SDLC) for a Cloud Native project that will create and use several microservices.</p>
+<p>In the first lab (100) Lisa Jones, the project manager, created a new project in the Developer Cloud Service. She then added team members to the project, and created and assigned tasks to the developers of this application. The second lab (200) focused on deploying a MySQL database instance in the Oracle Cloud. In this third lab, you will assume the persona of microservices developer Bala Gupta, who will build two Node.js REST services. One of these REST services will extract Alphaoffice product data from the MySQL database that you built in Lab 200. The second REST service will extract data from a Twitter feed.</p>
+<p><strong>Please direct comments to: John Hennen (<a href="mailto:john.hennen@oracle.com">john.hennen@oracle.com</a>).</strong></p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Access the Oracle Developer Cloud Service</li>
+<li>Import code from an external Git repository</li>
+<li>Import the project into the Brackets code editor, perform edits and push the edits to the repository in the Oracle Cloud</li>
+<li>Build and deploy the project using the Oracle Developer Cloud Service and the Oracle Application Container Cloud Service</li>
+<li>Follow the Git methodology for source code control</li>
+<li>Follow the Agile methodology for project management</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account that will be supplied by your instructor. Included in this account is an Oracle Compute Cloud Service that will simulate a client workstation with all necessary client software pre-installed for local code editing.  You will need to install VNC Viewer on your personal workstation to access this Compute Cloud Service client. </li>
+</ul>
+<h1 id="create-initial-rest-microservices">Create Initial REST Microservices</h1>
+<h3 id="step-1-review-and-update-the-agile-board"><strong>STEP 1</strong>: Review and Update the Agile Board</h3>
+<ul>
+<li><p>This Lab assumes that you completed Labs 100 and 200. It also assumes you and are still connected to the Oracle Cloud, that you're still in the Developer Cloud Service Dashboard, and that you're viewing the "Alphaoffice Marketing Project". If for some reason that is not the case, follow the first several steps of Lab 100 to once again view the Developer Cloud Service Console.</p>
+<p><img src="images/lab300/300_01_01_project_console.png" alt="" />   </p></li>
+<li><p>Although you will remain connected to the Oracle Cloud using the user account you were provided, you are to take on the persona of <strong><em>Bala Gupta</em></strong> (microservices developer) as you perform the following steps.</p>
+<p><img src="images/lab300/300_01_02_balagupta.png" alt="" /> </p></li>
+<li><p>Click on <strong>Agile</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_01_03_agilemenuchoice.png" alt="" /></p></li>
+<li><p>Click on the <strong>Microservices</strong> Board <strong>Active Sprints</strong> and focus on the sprints for Bala Gupta.</p>
+<p><img src="images/lab300/300_01_04_activesprints0.png" alt="" /></p></li>
+<li><p>Designate that Task 3 has moved to <strong>In Progress</strong> by dragging the Task 3 panel into the <strong>In Progress</strong> column.</p>
+<p><img src="images/lab300/300_01_05_sprint11.png" alt="" /></p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_01_06_sprint12.png" alt="" /></p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_01_07_sprint13.png" alt="" /></p></li>
+<li><p>The <strong>Active Sprints</strong> screen shows the change.</p>
+<p><img src="images/lab300/300_01_08_sprint14.png" alt="" /></p></li>
+</ul>
+<h2 id="create-the-mysql-microservice-repository-and-the-default-mysql-microservice-build-and-deploy-processes">Create the MySQL Microservice Repository, and the Default MySQL Microservice Build and Deploy Processes</h2>
+<h3 id="mysql-rest-step-2-create-the-new-git-repository-for-the-mysql-microservice-code"><strong>MySQL REST STEP 2</strong>: Create the New Git Repository for the MySQL Microservice Code</h3>
+<ul>
+<li><p>Click on <strong>Project</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_02_S02_01_repository1.png" alt="" /></p></li>
+<li><p>Click the <strong>New Repository</strong> button.</p>
+<p><img src="images/lab300/300_02_S02_02_repository2.png" alt="" /></p></li>
+<li><p>In the <strong>New Repository</strong> popup, enter the following:</p>
+<ul>
+<li><strong>Name</strong> <code>AlphaofficeMySQLREST</code> </li>
+<li><strong>Description</strong> (any)</li>
+<li>Select <strong>Import existing repository</strong> </li>
+<li>Enter <code>https://github.com/johnhennen/AlphaofficeMySQLREST</code> for the existing repository location.  </li>
+<li>Finally, click <strong>Create</strong>.</li></ul>
+<p><img src="images/lab300/300_02_S02_03_repository3.png" alt="" /></p></li>
+<li><p>Once all the code files are imported, you will have the file and folder structure below in the <strong>AlphaofficeMySQLREST</strong> repository.</p>
+<p><img src="images/lab300/300_02_S02_04_repository4.png" alt="" /></p></li>
+</ul>
+<h3 id="mysql-rest-step-3-create-default-build-process"><strong>MySQL REST STEP 3</strong>: Create Default Build Process</h3>
+<p>Now that you have the source code in your managed Git repository, you will need to create a build process that will be triggered whenever a commit is made to the master branch. In this step you will set up a shell script build process.</p>
+<ul>
+<li><p>Click <strong>Build</strong> on the navigation panel to access the build page, and then click the <strong>New Job</strong> button.</p>
+<p><img src="images/lab300/300_02_S03_01_build1.png" alt="" /></p></li>
+<li><p>In the New Job popup, enter <code>BuildMySQLREST</code> for Job Name. Select <strong>Create a free-style job</strong> and click <strong>Save</strong>.</p>
+<p><img src="images/lab300/300_02_S03_02_build2.png" alt="" /></p></li>
+<li><p>You are now placed into the job configuration screen.</p>
+<p><img src="images/lab300/300_02_S03_03_build3.png" alt="" /></p></li>
+<li><p>Click the <strong>Source Control</strong> tab. Select <strong>Git</strong> and select <strong>AlphaofficeMySQLREST.git</strong> from the dropdown.</p>
+<p><img src="images/lab300/300_02_S03_04_build4.png" alt="" /></p></li>
+<li><p>Click the <strong>Triggers</strong> tab. Select <strong>Based on SCM polling schedule</strong>.</p>
+<p><img src="images/lab300/300_02_S03_05_build5.png" alt="" /></p></li>
+<li><p>Click the <strong>Build Steps</strong> tab. Click the <strong>Add Build Step</strong> dropdown and select <strong>Execute shell</strong>.</p>
+<p><img src="images/lab300/300_02_S03_06_build6.png" alt="" /></p></li>
+<li><p>For the shell script command enter <code>npm install</code>.</p>
+<p><img src="images/lab300/300_02_S03_07_build7.png" alt="" /></p></li>
+<li><p>Click the <strong>Post Build</strong> tab and enter the following:</p>
+<ul>
+<li>Select <strong>Archive the artifacts</strong></li>
+<li><strong>Files To Archive:</strong> <code>**/target/*</code></li>
+<li><strong>Compression Type:</strong> <strong>GZIP</strong></li></ul>
+<p><img src="images/lab300/300_02_S03_08_build8.png" alt="" /></p></li>
+<li><p>Click the <strong>Save</strong> button in the upper right of the job configuration screen. </p>
+<p><img src="images/lab300/300_02_S03_09_build9.png" alt="" /></p></li>
+<li><p>The build process should immediately queue to begin. If not, you can always initiate a build with the <strong>Build Now</strong> button.</p>
+<p><img src="images/lab300/300_02_S03_10_build10.png" alt="" /></p></li>
+<li><p>After the build, the success status is shown with a check mark in a green circle.</p>
+<p><img src="images/lab300/300_02_S03_11_build11.png" alt="" /></p></li>
+</ul>
+<h3 id="mysql-rest-step-4-create-default-deploy-process"><strong>MySQL REST STEP 4</strong>: Create Default Deploy Process</h3>
+<ul>
+<li><p>Click <strong>Deploy</strong> on the navigation panel to access the Deployments page, and then click the <strong>New Configuration</strong> button.</p>
+<p><img src="images/lab300/300_02_S04_01_deploy1.png" alt="" /></p></li>
+<li><p>On the <strong>New Deployment Configuration</strong> popup, enter the following:</p>
+<ul>
+<li><strong>Configuration Name:</strong> <code>DeployMySQLREST</code> </li>
+<li><strong>Application Name:</strong> <code>AlphaofficeMySQLREST</code> (This will be the name for the application in the Oracle Application Container Cloud Service, and this string will be incorporated into the URL for the deployed application.)</li>
+<li><strong>Type:</strong> <strong>Automatic</strong> </li>
+<li><strong>Job:</strong> <strong>BuildMySQLREST</strong> </li>
+<li><strong>Artifact:</strong> <strong>target/msdbw-mysqlmicroservice.zip</strong> </li>
+<li>Finally, click on the <strong>New</strong> button and select <strong>Application Container Cloud</strong> from the dropdown.</li></ul>
+<p><img src="images/lab300/300_02_S04_02_deploy2.png" alt="" /></p></li>
+<li><p>Enter the Data Center, Identity Domain, Username and Password you were provided for the Oracle Cloud Service, and then click <strong>Test Connection</strong>.</p>
+<p><img src="images/lab300/300_02_S04_03_deploy3.png" alt="" /></p></li>
+<li><p>When this comes back with a <strong>Successful</strong> status, click <strong>Use Connection</strong>.</p>
+<p><img src="images/lab300/300_02_S04_04_deploy4.png" alt="" /></p></li>
+<li><p>Make sure you have chosen the following:</p>
+<ul>
+<li><strong>ACCS Properties:</strong> <strong>Node</strong></li>
+<li><strong>Type:</strong> <strong>Automatic</strong> with <strong>Deploy stable builds only</strong> checked</li>
+<li>Finally, click <strong>Save and Deploy</strong>.</li></ul>
+<p><img src="images/lab300/300_02_S04_05_deploy5.png" alt="" /></p></li>
+<li><p>The panel will first show the deployment in process, and then will show that the <strong>Last deployment succeeded</strong>.  <strong><em>Note: this may take several minutes.</em></strong></p>
+<p><img src="images/lab300/300_02_S04_06_deploy6.png" alt="" /></p></li>
+<li><p>If the arrow is not green but is orange and pointed down <img src="images/lab300/300_02_S04_07_deploy7.png" alt="" />, this means the application has not been started.</p></li>
+<li><p>To manually start, stop or redeploy the application in Oracle Application Container Cloud Service, go to the gear dropdown icon for the application, and select the appropriate action.</p>
+<p><img src="images/lab300/300_02_S04_08_deploy8.png" alt="" /></p></li>
+</ul>
+<h2 id="transition-from-the-mysql-microservice-to-the-twitter-microservice">Transition From the MySQL Microservice to the Twitter Microservice</h2>
+<p><strong><em>You have just completed steps MySQL REST STEP 2, MySQL REST STEP 3 and MySQL REST STEP 4.  These cover the initial build and deployment of the MySQL microservice. The next 3 steps (Twitter REST STEP 2, Twitter REST STEP 3 and Twitter REST STEP 4) are very similar to the MySQL REST steps. They cover the build and deployment of the Twitter microservice.</em></strong></p>
+<h2 id="create-the-twitter-microservice-repository-and-the-default-twitter-microservice-build-and-deploy-processes">Create the Twitter Microservice Repository, and the Default Twitter Microservice Build and Deploy Processes</h2>
+<h3 id="twitter-rest-step-2-create-the-new-git-repository-for-the-twitter-microservice-code"><strong>Twitter REST STEP 2</strong>: Create the New Git Repository for the Twitter Microservice Code</h3>
+<ul>
+<li><p>Click on <strong>Project</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_02_T02_01_repository1.png" alt="" /></p></li>
+<li><p>Click the <strong>New Repository</strong> button.</p>
+<p><img src="images/lab300/300_02_T02_02_repository2.png" alt="" /></p></li>
+<li><p>In the <strong>New Repository</strong> popup, enter the following:</p>
+<ul>
+<li><strong>Name</strong> <code>AlphaofficeTitterREST</code> </li>
+<li><strong>Description</strong> (any)</li>
+<li>Select <strong>Import existing repository</strong> </li>
+<li>Enter <code>https://github.com/johnhennen/AlphaofficeTwitterREST</code> for the existing repository location.  </li>
+<li>Finally, click <strong>Create</strong>.</li></ul>
+<p><img src="images/lab300/300_02_T02_03_repository3.png" alt="" /></p></li>
+<li><p>Once all the code files are imported, you will have the file and folder structure below in the <strong>AlphaofficeTwitterREST</strong> repository.</p>
+<p><img src="images/lab300/300_02_T02_04_repository4.png" alt="" /></p></li>
+</ul>
+<h3 id="twitter-rest-step-3-create-default-build-process"><strong>Twitter REST STEP 3</strong>: Create Default Build Process</h3>
+<p>Now that you have the source code in your managed Git repository, you will need to create a build process that will be triggered whenever a commit is made to the master branch. In this step you will set up a shell script build process.</p>
+<ul>
+<li><p>Click <strong>Build</strong> on the navigation panel to access the build page, and then click the <strong>New Job</strong> button.</p>
+<p><img src="images/lab300/300_02_T03_01_build1.png" alt="" /></p></li>
+<li><p>In the New Job popup, enter <code>BuildTwitterREST</code> for Job Name. Select <strong>Create a free-style job</strong> and click <strong>Save</strong>.</p>
+<p><img src="images/lab300/300_02_T03_02_build2.png" alt="" /></p></li>
+<li><p>You are now placed into the job configuration screen.</p>
+<p><img src="images/lab300/300_02_T03_03_build3.png" alt="" /></p></li>
+<li><p>Click the <strong>Source Control</strong> tab. Select <strong>Git</strong> and select <strong>AlphaofficeTwitterREST.git</strong> from the dropdown.</p>
+<p><img src="images/lab300/300_02_T03_04_build4.png" alt="" /></p></li>
+<li><p>Click the <strong>Triggers</strong> tab. Select <strong>Based on SCM polling schedule</strong>.</p>
+<p><img src="images/lab300/300_02_T03_05_build5.png" alt="" /></p></li>
+<li><p>Click the <strong>Build Steps</strong> tab. Click the <strong>Add Build Step</strong> dropdown and select <strong>Execute shell</strong>.</p>
+<p><img src="images/lab300/300_02_T03_06_build6.png" alt="" /></p></li>
+<li><p>For the shell script command enter <code>npm install</code>.</p>
+<p><img src="images/lab300/300_02_T03_07_build7.png" alt="" /></p></li>
+<li><p>Click the <strong>Post Build</strong> tab and enter the following:</p>
+<ul>
+<li>Select <strong>Archive the artifacts</strong></li>
+<li><strong>Files To Archive:</strong> <code>**/target/*</code></li>
+<li><strong>Compression Type:</strong> <strong>GZIP</strong></li></ul>
+<p><img src="images/lab300/300_02_T03_08_build8.png" alt="" /></p></li>
+<li><p>Click the <strong>Save</strong> button in the upper right of the job configuration screen. </p>
+<p><img src="images/lab300/300_02_T03_09_build9.png" alt="" /></p></li>
+<li><p>The build process should immediately queue to begin. If not, you can always initiate a build with the <strong>Build Now</strong> button.</p>
+<p><img src="images/lab300/300_02_T03_10_build10.png" alt="" /></p></li>
+<li><p>After the build, the success status is shown with a check mark in a green circle.</p>
+<p><img src="images/lab300/300_02_T03_11_build11.png" alt="" /></p></li>
+</ul>
+<h3 id="twitter-rest-step-4-create-default-deploy-process"><strong>Twitter REST STEP 4</strong>: Create Default Deploy Process</h3>
+<ul>
+<li><p>Click <strong>Deploy</strong> on the navigation panel to access the Deployments page, and then click the <strong>New Configuration</strong> button.</p>
+<p><img src="images/lab300/300_02_T04_01_deploy1.png" alt="" /></p></li>
+<li><p>On the <strong>New Deployment Configuration</strong> popup, enter the following:</p>
+<ul>
+<li><strong>Configuration Name:</strong> <code>DeployTwitterREST</code> </li>
+<li><strong>Application Name:</strong> <code>AlphaofficeTwitterREST</code> (This will be the name for the application in the Oracle Application Container Cloud Service, and this string will be incorporated into the URL for the deployed application.)</li>
+<li><strong>Type:</strong> <strong>Automatic</strong> </li>
+<li><strong>Job:</strong> <strong>BuildTwitterREST</strong> </li>
+<li><strong>Artifact:</strong> <strong>target/msdbw-twittermicroservice.zip</strong> </li>
+<li>Finally, click on the <strong>New</strong> button and select <strong>Application Container Cloud</strong> from the dropdown.</li></ul>
+<p><img src="images/lab300/300_02_T04_02_deploy2.png" alt="" /></p></li>
+<li><p>Enter the Data Center, Identity Domain, Username and Password you were provided for the Oracle Cloud Service, and then click <strong>Test Connection</strong>.</p>
+<p><img src="images/lab300/300_02_T04_03_deploy3.png" alt="" /></p></li>
+<li><p>When this comes back with a <strong>Succssful</strong> status, click <strong>Use Connection</strong>.</p>
+<p><img src="images/lab300/300_02_T04_04_deploy4.png" alt="" /></p></li>
+<li><p>Make sure you have chosen the following:</p>
+<ul>
+<li><strong>ACCS Properties:</strong> <strong>Node</strong></li>
+<li><strong>Type:</strong> <strong>Automatic</strong> with <strong>Deploy stable builds only</strong> checked</li>
+<li>Finally, click <strong>Save and Deploy</strong>.</li></ul>
+<p><img src="images/lab300/300_02_T04_05_deploy5.png" alt="" /></p></li>
+<li><p>The panel will first show the deployment in process, and then will show that the <strong>Last deployment succeeded</strong>.  <strong><em>Note: this may take several minutes.</em></strong></p>
+<p><img src="images/lab300/300_02_T04_06_deploy6.png" alt="" /></p></li>
+<li><p>If the arrow is not green but is orange and pointed down <img src="images/lab300/300_02_T04_07_deploy7.png" alt="" />, this means the application has not been started.</p></li>
+<li><p>To manually start, stop or redeploy the application in Oracle Application Container Cloud Service, go to the gear dropdown icon for the application, and select the appropriate action.</p>
+<p><img src="images/lab300/300_02_T04_08_deploy8.png" alt="" /></p></li>
+</ul>
+<h2 id="test-the-initial-microservice-deployments-and-update-the-agile-board">Test the Initial Microservice Deployments and Update the Agile Board</h2>
+<h3 id="step-5-update-the-agile-active-sprints-screen"><strong>STEP 5</strong>: Update the Agile Active Sprints Screen</h3>
+<ul>
+<li><p>Click <strong>Agile</strong> on the navigation panel, and then drag the Task 3 panel from <strong>In Progress</strong> to the <strong>Verify Code</strong> column to signal Lisa, the project manager, that it's time to verify completion of Task 3.</p>
+<p><img src="images/lab300/300_05_01_sprint14.png" alt="" /></p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_05_02_sprint15.png" alt="" /></p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_05_03_sprint16.png" alt="" /></p></li>
+<li><p>The <strong>Active Sprints</strong> screen shows the change.</p>
+<p><img src="images/lab300/300_05_04_sprint17.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6-test-the-new-cloud-microservice-applications"><strong>STEP 6</strong>: Test the New Cloud Microservice Applications</h3>
+<ul>
+<li><p>Click <strong>Deploy</strong> on the navigation panel. </p>
+<p><img src="images/lab300/300_06_01_deploymenuchoice.png" alt="" /></p></li>
+<li><p>Right click on the application name <strong>AlphaofficeMySQLREST</strong>, and choose <strong>Copy link address</strong> in the dropdown. This is the URL for the MySQLREST application in the Application Container Cloud Service.</p>
+<p><img src="images/lab300/300_06_02_getappurl.png" alt="" /> </p></li>
+<li><p>Paste this URL into the address bar of any browser (such as on your personal workstation), and then press <strong>Enter</strong> to navigate to the MySQLREST application in the Oracle Application Container Cloud Service. Note that there is no data displayed (only the JSON structure) because the code must be edited to access and return the MySQL data.</p>
+<p><img src="images/lab300/300_06_03_testcloudmysqlapp.png" alt="" /> </p></li>
+<li><p>In the same way, right click on the application name <strong>AlphaofficeTwitterREST</strong>, and paste this URL into the address bar of any browser. Note that this shows an unfiltered listing of Twitter data in JSON format.</p>
+<p><img src="images/lab300/300_06_04_testcloudtwitterapp.png" alt="" /> </p></li>
+</ul>
+<h3 id="step-7-designate-that-repository-creation-is-completed"><strong>STEP 7</strong>: Designate That Repository Creation is Completed</h3>
+<ul>
+<li><p>Briefly assume the persona of Lisa Jones (the project manager) to verify the completion of the repositories for the microservice applications. Drag the Task 3 panel from <strong>Verify Code</strong> to the <strong>Completed</strong> column.</p>
+<p><img src="images/lab300/300_07_01_sprint17.png" alt="" />  </p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_07_02_sprint18.png" alt="" />  </p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_07_03_sprint19.png" alt="" />  </p></li>
+<li><p>The <strong>Active Sprints</strong> screen shows the change.</p>
+<p><img src="images/lab300/300_07_04_sprint20.png" alt="" />  </p></li>
+</ul>
+<h1 id="edit-the-mysql-microservice-code-to-access-the-mysql-data-and-push-the-edits-to-the-cloud">Edit the MySQL Microservice Code to Access the MySQL Data and Push the Edits to the Cloud</h1>
+<h3 id="step-8-designate-feature-4-is-in-progress"><strong>STEP 8</strong>: Designate Feature 4 is <strong>In Progress</strong></h3>
+<ul>
+<li><p>At this point you will return to the persona of microservices developer Bala Gupta to designate that Feature 4 (Create REST Services) has been moved to <strong>In Progress</strong>. Do this by dragging the Feature 4 panel from <strong>To Do</strong> to the <strong>In Progress</strong> column.</p>
+<p><img src="images/lab300/300_08_01_sprint21.png" alt="" />  </p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_08_02_sprint22.png" alt="" />  </p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_08_03_sprint23.png" alt="" /> </p></li>
+<li><p>The <strong>Active Sprints</strong> screen shows the change.</p>
+<p><img src="images/lab300/300_08_04_sprint23b.png" alt="" /></p></li>
+</ul>
+<h2 id="clone-the-mysql-microservice-code-and-test-it-on-the-client-workstation">Clone the MySQL Microservice Code and Test it on the Client Workstation</h2>
+<h3 id="step-9-open-the-brackets-code-editor"><strong>STEP 9</strong>: Open the Brackets Code Editor</h3>
+<p><strong><em>At this point you will be moving to the client workstation. (This is the Oracle Compute Cloud Service with pre-installed client software that simulates a client workstation.)</em></strong> </p>
+<ul>
+<li><p>Start the VNC Viewer software on your personal workstation, and enter the URL you have been provided (including ":" with the port number at the end). Also enter the password provided to you when prompted. After login, you are a user on a UNIX client workstation. </p>
+<p><img src="images/lab300/300_09_01_vncviewer.png" alt="" /></p></li>
+<li><p>First open a terminal session on the workstation.</p>
+<p><img src="images/lab300/300_09_02_startterminal.png" alt="" /></p></li>
+</ul>
+<p>Your first task is to create (or locate) a working folder for the local AlphaofficeMySQLREST repository. If you were not given a specific folder location, any appropriate location in the UNIX folder structure will work as long as it is easy for you to access and organize this folder. (Perhaps name the folder <strong>AlphaofficeMySQLREST</strong>.) Also make sure permissions are sufficiently open for your work (chmod). Once an empty folder is created or located, you can move on to the next step.</p>
+<ul>
+<li><p>Click the Brackets icon on the workstation desktop to start the Brackets code editor.</p>
+<p><img src="images/lab300/300_09_03_bracketsicon.png" alt="" /></p></li>
+<li><p>In the upper left, click on the dropdown for folder location and then select <strong>Open Folder</strong> from the dropdown.</p>
+<p><img src="images/lab300/300_09_04_bracketsopenfolder1.png" alt="" /></p></li>
+<li><p>Navigate the ensuing popups to select the correct folder (the folder you just created or located).</p>
+<p><img src="images/lab300/300_09_05_bracketsopenfolder2.png" alt="" /></p></li>
+<li><p>In the end you will have the correct folder displayed in the upper left.</p>
+<p><img src="images/lab300/300_09_06_bracketsrightfolder.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10-clone-a-repository-from-the-oracle-developer-cloud-service-repository"><strong>STEP 10</strong>: Clone a Repository from the Oracle Developer Cloud Service Repository</h3>
+<ul>
+<li><p>Click the Git icon on the right side of the Brackets screen to make sure the Git panel is open at the bottom of the Brackets screen.</p>
+<p><img src="images/lab300/300_10_01_giticon.png" alt="" /></p></li>
+<li><p>Click the <strong>Clone</strong> button at the top of the Git panel.</p>
+<p><img src="images/lab300/300_10_02_bracketsgitopen.png" alt="" /></p></li>
+</ul>
+<p><strong><em>At this point you will be returning very briefly to the Oracle Developer Cloud Service console.</em></strong> </p>
+<ul>
+<li><p>Click <strong>Project</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_10_03_projectmenuchoice.png" alt="" /></p></li>
+<li><p>In the <strong>Repositories</strong> panel, navigate to the URL for the <strong>AlphaofficeMySQLREST.git</strong> repository. Copy this URL </p>
+<p><img src="images/lab300/300_10_04_getDCSgiturl.png" alt="" /></p></li>
+</ul>
+<p><strong><em>At this point you will be returning to the Brackets code editor on the client workstation.</em></strong></p>
+<ul>
+<li><p>Since you just clicked the <strong>Clone</strong> button in the Brackets editor, the <strong>Clone repository</strong> popup is displayed. </p>
+<ul>
+<li>Paste the Oracle Cloud repository URL for <strong>AlphaofficeMySQLREST.git</strong> into the field labeled <strong>Enter Git URL of the repository you want to clone:</strong>.</li>
+<li>Enter the Username and Password for your Oracle Cloud account.</li>
+<li>Check <strong>Save credentials to remote url (in plain text)</strong>.</li>
+<li>Finally, click <strong>OK</strong>.</li></ul>
+<p><img src="images/lab300/300_10_05_clone1.png" alt="" /> </p></li>
+<li><p>Note the cloning <strong>in progress</strong> message.</p>
+<p><img src="images/lab300/300_10_06_clone2.png" alt="" /></p></li>
+<li><p>When the cloning is successfully completed, the code files and folders for the local repository will be displayed in the Brackets editor.</p>
+<p><img src="images/lab300/300_10_07_clone3.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11-test-the-local-code"><strong>STEP 11</strong>: Test the Local Code</h3>
+<p>At this point you will be testing the code running on the client workstation.</p>
+<ul>
+<li><p>Open a terminal session on the client workstation.</p>
+<p><img src="images/lab300/300_11_01_startterminal.png" alt="" /></p></li>
+<li><p>Navigate to the folder where the <strong>server.js</strong> file is located in the local AlphaofficeMySQLREST repository. (The server.js file is in the root folder of the repository folder you opened in Step 9.) Then enter the command <code>node server.js</code> and press <strong>Enter</strong>.</p>
+<p><img src="images/lab300/300_11_02_startnode.png" alt="" /></p></li>
+</ul>
+<p>The terminal session will appear to suspend without returning a new command prompt. At this point you may minimize the terminal window because the Node.js listener for server.js is running in the background.</p>
+<ul>
+<li><p>Enter the url <code>localhost:8002</code> in the address bar of the browser provided on the client workstation (with the icon displayed on the desktop) and press <strong>Enter</strong> to navigate to the local MySQLREST application.</p>
+<p><img src="images/lab300/300_11_03_testlocal.png" alt="" /></p></li>
+</ul>
+<p>Again note that there is no data displayed because the microservice code must be edited to access and return the MySQL data.</p>
+<h2 id="edit-the-code-and-test-the-local-edited-version">Edit the Code and Test the Local Edited Version</h2>
+<h3 id="step-12-edit-the-local-version-of-the-code"><strong>STEP 12</strong>: Edit the Local Version of the Code</h3>
+<ul>
+<li><p>In the left code repository panel of the Brackets code editor, click on the <strong>server.js</strong> file. <strong><em>Note: there are a number of formatting and other non-fatal warnings that will be reported when you open the server.js file. Ignore these.</em></strong></p>
+<p><img src="images/lab300/300_12_01_editnode1.png" alt="" /></p></li>
+</ul>
+<p>In the section highlighted within the red rectangle, notice a number of values required to connect to the MySQL database that you deployed in Lab 200. In particular the host (IP address) and the password will be different from what is displayed in this image. Change these values in the code to reflect your MySQL database deployment.</p>
+<ul>
+<li><p>Note the code section with critical code commented out.</p>
+<p><img src="images/lab300/300_12_02_editnode2.png" alt="" /></p></li>
+<li><p>Remove the <code>/*</code> and <code>*/</code> strings from the code to uncomment the code section.</p>
+<p><img src="images/lab300/300_12_03_editnode3.png" alt="" /></p></li>
+<li><p>From the Brackets <strong>File</strong> menu, click <strong>Save</strong> to save your edits to <strong>server.js</strong>.</p>
+<p><img src="images/lab300/300_12_04_editnode4.png" alt="" /></p></li>
+</ul>
+<h3 id="step-13-test-the-edited-code"><strong>STEP 13</strong>: Test the Edited Code</h3>
+<ul>
+<li><p>You must terminate the Node.js session you started in <strong>Step 11</strong>. You must do this in order to execute the <code>node server.js</code> command again with the new edits to the server.js file. To do this, return to the terminal session you used in <strong>Step 11</strong> and press the <strong>CTRL</strong> and <strong>C</strong> keys simultaneously.</p></li>
+<li><p>Alternatively you can close the terminal session that you opened in <strong>Step 11</strong> and then open a new terminal session on the client workstation.</p>
+<p><img src="images/lab300/300_13_01_startterminal.png" alt="" /></p></li>
+<li><p>Restart the Node.js module. To do this, navigate to the folder where the <strong>server.js</strong> file is located in the local AlphaofficeMySQLREST repository. Then enter the command <code>node server.js</code> and press <strong>Enter</strong>.</p>
+<p><img src="images/lab300/300_13_02_startnode.png" alt="" /></p></li>
+</ul>
+<p>The terminal session will appear to suspend without returning a new command prompt. At this point you may minimize the terminal window because the Node.js listener for server.js is running in the background.</p>
+<ul>
+<li><p>Enter the url <code>localhost:8002</code> in the address bar of the browser provided on the client workstation (with the icon displayed on the desktop) and press <strong>Enter</strong> to navigate to the edited local MySQLREST application.</p>
+<p><img src="images/lab300/300_13_03_testnodeafteredit.png" alt="" /></p></li>
+</ul>
+<p>Notice that after the edits, the local version of the MySQL microservice application displays all the data from the Oracle Cloud MySQL database in JSON format. (If you do not see this data, make sure the MySQL database you deployed in Lab 200 is still accessible.)</p>
+<h2 id="create-a-new-branch-and-push-the-edits-to-the-cloud">Create a New Branch and Push the Edits to the Cloud</h2>
+<h3 id="step-14-create-a-new-branch-and-commit-the-changes"><strong>STEP 14</strong>: Create a New Branch and Commit the Changes</h3>
+<ul>
+<li><p>Click on the <strong>master</strong> branch dropdown in the upper left panel of the Brackets code editor.  Then select <strong>Create new branch</strong>.</p>
+<p><img src="images/lab300/300_14_01_createbranch1.png" alt="" /></p></li>
+<li><p>In the <strong>Create new branch…</strong> popup, enter the branch name <code>serverjsV2</code> and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_14_02_createbranch2.png" alt="" /></p></li>
+<li><p>You may need to click the Git icon <img src="images/lab300/300_14_03_giticon.png" alt="" /> on the right side of the Brackets editor screen in order to display the Git panel at the bottom of the Brackets screen.</p></li>
+<li><p>Make sure both check boxes are checked at the bottom left of the Brackets screen. (One checkbox is on the same line as the <strong>Commit</strong> button, and one is on the same line as <strong>server.js</strong> and the label <strong>Modified</strong> or <strong>Staged, Modified</strong>.)</p></li>
+<li><p>Then click <strong>Commit</strong>.</p>
+<p><img src="images/lab300/300_14_04_createbranch4.png" alt="" /></p></li>
+<li><p><strong><em>Note: there are a number of formatting and other non-fatal warnings that will be reported for the server.js file. Ignore these.</em></strong></p></li>
+<li><p>Enter a comment for the commit and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_14_05_createbranch5.png" alt="" /></p></li>
+<li><p>You may need to enter a Git username. (Enter your username for your cloud service.) And you may need to enter some email address. (Any will do.) Finally, click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_14_06_createbranch6.png" alt="" /></p></li>
+</ul>
+<h3 id="step-15-push-the-branch-commits-to-the-cloud"><strong>STEP 15</strong>: Push the Branch Commits to the Cloud</h3>
+<ul>
+<li><p>Click on the <strong>Git Push Icon</strong> in the Brackets code editor.</p>
+<p><img src="images/lab300/300_15_01_gitpushicon.png" alt="" /></p></li>
+<li><p>Enter your cloud username and password that you were given. Make sure <strong>Save credentials to remote url (in plain text)</strong> is checked. Finally, click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_15_02_createbranch9.png" alt="" /></p></li>
+<li><p>The edited branch within the local Git repository has been successfully pushed to the repository in the Oracle Developer Cloud Service. Click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_15_03_createbranch10.png" alt="" /></p></li>
+</ul>
+<h1 id="merge-the-code-edits-and-rebuild-and-redeploy-the-mysqlrest-application">Merge the Code Edits and Rebuild and Redeploy the MySQLREST Application</h1>
+<h2 id="submit-a-merge-request-for-the-branch-with-the-code-edits-and-designate-the-edited-code-is-ready-for-verification">Submit a Merge Request for the Branch With the Code Edits and Designate the Edited Code is Ready for Verification</h2>
+<h3 id="step-16-create-a-merge-request-as-bala-gupta-to-merge-the-code-edits"><strong>STEP 16</strong>: Create a Merge Request as Bala Gupta to Merge the Code Edits</h3>
+<p>It's time to follow the code repository push to the Oracle Developer Cloud Service. Return to the Oracle Developer Cloud Service Services Console.</p>
+<ul>
+<li><p>Click <strong>Code</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_16_01_codemenuchoice.png" alt="" /> </p></li>
+<li><p>Choose <strong>AlphaofficeMySQLREST.git</strong> as the repository.</p>
+<p><img src="images/lab300/300_16_02_merge1.png" alt="" /> </p></li>
+<li><p>Choose <strong>serverjsV2</strong> as the branch. (This is the branch that has the code edits which we wish to merge with the master branch.)</p>
+<p><img src="images/lab300/300_16_03_merge2.png" alt="" /> </p></li>
+<li><p>Click the <strong>Commits</strong> button to view recent commits. Here we again see that the push we made from the Brackets code editor on the client workstation has succeeded. The edited files are now in the <strong>servicerjsV2</strong> branch of the Developer Cloud Service repository. They're all ready to be merged into the <strong>master</strong> branch. </p>
+<p><img src="images/lab300/300_16_04_merge3.png" alt="" /></p></li>
+</ul>
+<p>But remember, we are following a rigorous Git-based source control methodology. We cannot have developers like Bala Gupta make changes to the main branch of the code. </p>
+<ul>
+<li><p>Instead Bala must make a <strong>merge request</strong> to Lisa the project manager.</p>
+<p><img src="images/lab300/300_16_05_guptalisa.png" alt="" /></p></li>
+<li><p>Click <strong>Merge Request</strong> on the navigation panel, and then click the <strong>New Merge Request</strong> button.</p>
+<p><img src="images/lab300/300_16_06_merge4.png" alt="" /></p></li>
+<li><p>On the <strong>New Merge Request</strong> popup, choose the <strong>Repository</strong>, <strong>Target Branch</strong> and <strong>Review Branch</strong>. Then click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_16_07_merge5.png" alt="" /></p></li>
+<li><p>On the second popup, add a summary description and select a reviewer. (In real life, Bala might designate several reviewers. In this exercise the only option may be <strong>Cloud Admin</strong>.)  Finally, click <strong>Next</strong>. </p>
+<p><img src="images/lab300/300_16_08_merge6.png" alt="" /></p></li>
+<li><p>On the third popup, click <strong>Create</strong>.</p>
+<p><img src="images/lab300/300_16_09_merge7.png" alt="" /></p></li>
+</ul>
+<h3 id="step-17-designate-that-the-ui-code-is-ready-for-verification"><strong>STEP 17</strong>: Designate That the UI Code is Ready for Verification</h3>
+<ul>
+<li><p>Click <strong>Agile</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_17_01_agilemenuchoice.png" alt="" /> </p></li>
+<li><p>Drag the Feature 4 panel from <strong>In Progress</strong> to the <strong>Verify Code</strong> column to designate to the project manager (Lisa) that the code is ready for verification.</p>
+<p><img src="images/lab300/300_17_02_sprint24.png" alt="" />  </p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_17_03_sprint25.png" alt="" /></p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_17_04_sprint26.png" alt="" /> </p></li>
+<li><p>The <strong>Active Sprints</strong> screen shows the change.</p>
+<p><img src="images/lab300/300_17_05_sprint26b.png" alt="" /> </p></li>
+</ul>
+<h2 id="as-lisa-jones-project-manager-merge-the-edits-test-the-edited-code-and-designate-the-edits-and-merge-have-been-completed">As Lisa Jones (Project Manager) Merge the Edits, Test the Edited Code, and Designate the Edits and Merge Have Been Completed</h2>
+<h3 id="step-18-perform-the-merge-as-lisa-the-project-manager"><strong>STEP 18</strong>: Perform the Merge as Lisa the Project Manager</h3>
+<ul>
+<li><p>For this step, you will assume the persona of Lisa, the project manager.</p>
+<p><img src="images/lab300/300_18_01_lisa.png" alt="" /></p></li>
+<li><p>As Lisa, click the <strong>Assigned To Me</strong> button. Then click the merge request just submitted by Bala Gupta.</p>
+<p><img src="images/lab300/300_18_02_merge8.png" alt="" /></p></li>
+<li><p>Click on the <strong>Changed Files</strong> tab to review the changed code, and note how the changes reflect the edits Bala Gupta made in the Brackets code editor on the client workstation. As Lisa, approve and process the merge by clicking the <strong>Merge</strong> button.</p>
+<p><img src="images/lab300/300_18_03_merge9.png" alt="" /></p></li>
+<li><p>On the popup uncheck <strong>Squash commits</strong> and click <strong>Merge</strong>.</p>
+<p><img src="images/lab300/300_18_04_merge10.png" alt="" /></p></li>
+<li><p>Click <strong>Build</strong> on the navigation panel to navigate to the <strong>Build</strong> screen. Processing the merge automatically initiates a rebuild process. Note how the <strong>BuildMySQLREST</strong> job has been placed in the queue automatically.</p>
+<p><img src="images/lab300/300_18_05_merge11.png" alt="" /></p></li>
+<li><p>The rebuild begins.</p>
+<p><img src="images/lab300/300_18_06_merge12.png" alt="" /></p></li>
+<li><p>The rebuild has successfully completed.</p>
+<p><img src="images/lab300/300_18_07_merge13.png" alt="" /></p></li>
+<li><p>Click <strong>Deploy</strong> on the navigation panel to navigate to the <strong>Deployments</strong> screen. Once the rebuild is complete, a redeploy will also automatically start. The panel will first show the deployment in process, and then will show that the <strong>Last deployment succeeded</strong>.</p>
+<p><img src="images/lab300/300_18_08_merge14.png" alt="" /></p></li>
+<li><p>If the arrow is not green but is orange and pointed down <img src="images/lab300/300_18_09_merge15.png" alt="" />, this means the application has not been started.</p></li>
+<li><p>To manually start, stop or redeploy the application in Oracle Application Container Cloud Service, go to the gear dropdown icon for the application, and select the appropriate action.</p></li>
+<li><p><strong><em>If you must manually redeploy, make sure you deploy the latest build with the latest build number.</em></strong></p>
+<p><img src="images/lab300/300_18_10_merge16.png" alt="" /></p></li>
+</ul>
+<h3 id="step-19-test-the-completed-code"><strong>STEP 19</strong>: Test the Completed Code</h3>
+<ul>
+<li><p>Click <strong>Deploy</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_19_01_deploymenuchoice.png" alt="" /> </p></li>
+<li><p>As Lisa Jones, test the code edits. Right click on the application name <strong>AlphaofficeMySQLREST</strong>, and choose <strong>Copy link address</strong> in the dropdown. This is the URL for the application in the Application Container Cloud Service.</p>
+<p><img src="images/lab300/300_19_02_getappurl.png" alt="" /></p></li>
+<li><p>Paste this URL into the address bar of any browser (such as on your personal workstation), and then press <strong>Enter</strong> to navigate to the MySQLREST application in the Oracle Application Container Cloud Service. Note that all data from the database is now displayed in JSON format. The application is fully operational.</p>
+<p><img src="images/lab300/300_19_03_cloudtestbrowser.png" alt="" /></p></li>
+</ul>
+<h3 id="step-20-designate-the-edits-are-complete"><strong>STEP 20</strong>: Designate the Edits are Complete</h3>
+<ul>
+<li><p>Again you have assumed the persona of Lisa, the project manager. As Lisa you will verify that the MySQL microservice code has been completed. Click <strong>Agile</strong> on the navigation panel.</p>
+<p><img src="images/lab300/300_20_01_agilemenuchoice.png" alt="" /></p></li>
+<li><p>Drag the Feature 4 panel from <strong>Verify Code</strong> to the <strong>Completed</strong> column.</p>
+<p><img src="images/lab300/300_20_02_sprint27.png" alt="" /></p></li>
+<li><p>Leave the default values and click <strong>Next</strong>.</p>
+<p><img src="images/lab300/300_20_03_sprint28.png" alt="" /></p></li>
+<li><p>Set the <strong>Time Spent</strong> value to 1 day and click <strong>OK</strong>.</p>
+<p><img src="images/lab300/300_20_04_sprint29.png" alt="" /></p></li>
+<li><p>The MySQL microservice edits have been completed and merged, and the Agile board has been updated. You have successfully completed Lab 300!</p>
+<p><img src="images/lab300/300_20_05_sprint30.png" alt="" /></p></li>
+</ul>

@@ -1,0 +1,226 @@
+<p><img src="images/SS-100/001.png" alt="" /></p>
+<p>Update January 25, 2018</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the first of several labs that are part of the Oracle Public Cloud Database Cloud Service workshop. These labs will give you a basic understanding of the Oracle Database Cloud Service and many of the capabilities around administration and database development.</p>
+<p>This lab will walk you through creating a new Database Cloud Service from the backup, and then have you connect into the Database image using the ssh private key to familiarize yourself with the image layout. Next you will learn how to create an ssh configuration file that can be used to tunnel simultaneously multiple ports to a remote OPC instance. Using the tunnels, you will learn how to access various Database consoles.  Note that all Oracle Cloud Databases are configured by default with Transparent Data Encryption (TDE).  To restore an on-premise database that was backed up to the cloud it must be configured with with archivelog and TDE prior to backup.  Since this simulated on-premise instance is in fact a DBCS instance it already has this configured.  See the instructor led version (or documentation) on how to do this if you are using a non-cloud version.  The instructions to do this are in an appendix of the instructor led version if you wish to try this on your own 12.2 database.  Note that TDE has evolved between database versions, including between 12.1 and 12.2, and these instructions specifically relate to 12.2.</p>
+<p>This lab supports the following use cases:</p>
+<ul>
+<li><p>Migration of on-premise databases to a cloud based environment.</p></li>
+<li><p>Rapid creation of test or development database copies in the Cloud.</p></li>
+<li><p>Replication of Databases for reporting and analytics.</p></li>
+<li><p>To log issues and view the Lab Guide source, go to the <a href="https://github.com/oracle/learning-library/tree/master/workshops/dbcs">github oracle</a> repository.</p></li>
+</ul>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Backup your local database to the Oracle Cloud</li>
+<li>Drop a table and then restore it from your cloud backup.</li>
+<li>Create Database Cloud Service from your on-premise backup </li>
+<li>SSH configuration</li>
+<li>Explore VM and consoles</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires a VNC Viewer to connect to an Image running on Oracle's IaaS Compute Service.</li>
+</ul>
+<h2 id="configure-and-backup-the-local-database-to-the-oracle-cloud">Configure and Backup the Local Database to the Oracle Cloud</h2>
+<h3 id="step-1--use-rman-to-back-up-to-the-cloud"><strong>STEP 1</strong>:  Use RMAN to Back Up to the Cloud</h3>
+<p>The following steps will be done on the desktop of the WorkshopImage through VNC.  Log into VNC (if you are already not logged in).</p>
+<ul>
+<li><p>Create opc_wallet directory.  Right click on the desktop and open a command window and enter the following:</p>
+<ul>
+<li><code>mkdir /u01/app/oracle/product/12.2.0/opc_wallet</code></li></ul>
+<p><img src="images/SS-100/002.png" alt="" /></p>
+<p><img src="images/SS-100/003.png" alt="" /></p></li>
+<li><p>Install the Oracle Cloud Database Backup Module (previously downloaded from the <a href="https://docs.oracle.com/en/cloud/paas/db-backup-cloud/csdbb/installing-oracle-database-cloud-backup-module.html#GUID-DA5B65A2-0A59-460E-8D2A-1E6E1F510A57">Oracle website</a>).  Open a terminal window and enter the following.  <strong>Be sure to replace the identity domain and password placeholder with your own:</strong></p>
+<ul>
+<li><code>/u01/app/oracle/product/12.2.0/dbhome_1/jdk/bin/java -jar /home/oracle/opc_install.jar -serviceName Storage -identityDomain &lt;identity domain&gt; -opcId cloud.admin -opcPass &lt;cloud account password&gt; -walletDir /u01/app/oracle/product/12.2.0/opc_wallet -libDir $ORACLE_HOME/lib -libPlatform linux64 -container oracle-data-storageg-1</code></li></ul>
+<p><img src="images/SS-100/004.png" alt="" /></p></li>
+<li><p>Connect to RMAN.</p>
+<ul>
+<li><code>rman target /</code></li></ul>
+<p><img src="images/SS-100/005.png" alt="" /></p></li>
+<li><p>List backups and create restore point. </p>
+<ul>
+<li><code>list backup summary;</code></li>
+<li><code>create restore point gold preserve;</code></li></ul>
+<p><img src="images/SS-100/006.png" alt="" /></p></li>
+</ul>
+<h2 id="recover-dropped-table">Recover Dropped Table</h2>
+<p>Since we have configured backup when we created our DBCS/WorkshopImage we can always restore to a point in time.  We are going to “accidently” drop a table that will reappear once we perform the restore.  </p>
+<h3 id="step-2--drop-table"><strong>STEP 2</strong>:  Drop Table</h3>
+<ul>
+<li><p>Exit out of RMAN and log into alpha</p>
+<ul>
+<li><code>exit;</code></li>
+<li><code>sqllplus alpha/Alpha2018_@pdb1</code></li>
+<li><code>drop table alpha_services_stats;</code></li></ul>
+<p><img src="images/SS-100/007.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3--recover-table"><strong>STEP 3</strong>:  Recover Table</h3>
+<p>We now need to restore the database to the point in time before the alpha_services_stats table was accidentally deleted (: The backup files stored in cloud will be used.  These steps will bring the entire database to a point where media recovery can occur. This of course takes the database offline. </p>
+<ul>
+<li><p>Exit out of SQLPlus and log into RMAN and recover table.  Enter the following commands.</p>
+<ul>
+<li><code>exit</code></li>
+<li><code>rman target /</code></li>
+<li><code>shutdown immediate;</code></li>
+<li><code>startup mount;</code></li>
+<li><code>run {restore database; recover database to restore point gold; alter database open resetlogs;}</code></li></ul>
+<p><img src="images/SS-100/008.png" alt="" /></p>
+<p><img src="images/SS-100/009.png" alt="" /></p></li>
+<li><p>Exit out of RMAN and log back into SQL Plus to confirm the alpha_services_stats is restored.</p>
+<ul>
+<li><code>exit</code></li>
+<li><code>sqlplus sys/Alpha2018_ as sysdba</code></li>
+<li><code>alter database open;</code></li>
+<li><code>alter pluggable database all open;</code></li>
+<li><code>connect alpha/Alpha2018_@pdb1</code></li>
+<li><code>select count(*) from alpha_services_stats;</code></li></ul></li>
+</ul>
+<h2 id="create-database-cloud-service-from-backup">Create Database Cloud Service from Backup</h2>
+<h3 id="step-4--login-to-your-oracle-cloud-account"><strong>STEP 4</strong>:  Login to your Oracle Cloud account</h3>
+<ul>
+<li><p>From within the VNC Session, open <strong>Firefox</strong> and go to the following URL: https://cloud.oracle.com</p>
+<p><img src="images/SS-100/010.png" alt="" /></p></li>
+<li><p>Click <strong>Sign In</strong> in the upper right hand corner of the browser.  Note this is the same account/login that you used earlier in this lab.</p>
+<p><img src="images/SS-100/011.png" alt="" /></p></li>
+<li><p><strong>IMPORTANT</strong> - Select 'Traditional Cloud Account' and then select from the Data Center drop down list the correct data center and click on <strong>My Services</strong>. If you are unsure of the data center you should select, and this is an in-person training event, <strong><em>ask your instructor</em></strong> which <strong>Region</strong> to select from the drop down list. If you received your account through an Oracle Trial, your Trial confirmation email should provide a URL that will pre-select the region for you.</p>
+<p><img src="images/SS-100/012.png" alt="" /></p></li>
+<li><p>Enter the <strong>identity domain</strong> and click <strong>Go</strong>.  <strong>NOTE</strong>: The <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you from your instructor.  Once your Identity Domain is set, enter your User Name and Password and click <strong>Sign In</strong></p>
+<p><img src="images/SS-100/013.png" alt="" /></p>
+<p><img src="images/SS-100/014.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5--create-database-cloud-service"><strong>STEP 5</strong>:  Create Database Cloud Service</h3>
+<ul>
+<li><p>From the main dashboard, click on the <strong>Database</strong> service link</p>
+<p><img src="images/SS-100/015.png" alt="" /></p></li>
+<li><p>From this page you can view general information about this Database Cloud Service. Click on the <strong>Open Service Console</strong> button.</p>
+<p><img src="images/SS-100/016.png" alt="" /></p></li>
+<li><p>From the console, click <strong>Create Service</strong></p>
+<p><img src="images/SS-100/017.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6--enter-the-instance-configuration"><strong>STEP 6</strong>:  Enter the Instance Configuration</h3>
+<p>When providing a name, please note you may have another service instance already created in your account, so the name must be unique.</p>
+<ul>
+<li><p>Enter the Service Name (Alpha01A-DBCS) and other fields as noted below.  Note it is important you select <strong>Software Release Oracle Database 12c Release 2</strong> (default is 1) </p>
+<p><img src="images/SS-100/018.png" alt="" /></p></li>
+<li><p>Click on the <strong>Next</strong> Button to navigate to the Service Details page.  Enter the DB Name, PDB Name, Administration Password ('Alpha2018_'), and then <strong>select Edit for the SSH Public Key</strong>.</p>
+<p><img src="images/SS-100/019.png" alt="" /></p></li>
+<li><p>Click on Browse, select File System on the left, and then navigate to oracle on the left and select publicKey file.</p>
+<p><img src="images/SS-100/020.png" alt="" /></p>
+<p><img src="images/SS-100/021.png" alt="" /></p>
+<p><img src="images/SS-100/022.png" alt="" /></p></li>
+<li><p>Select <strong>Backup Destination None</strong> and <strong>Create Instance from Existing Backup Yes</strong>.  Note that while we are simulating an on-premise migration/restore from backup we are in fact restoring from a DBCS backup.  If you were restoring from a manually configured instance you would select the on-premise checkbox and specify encryption wallet and other fields.</p>
+<p><img src="images/SS-100/023.png" alt="" /></p></li>
+<li><p>Select Create</p>
+<p><img src="images/SS-100/024.png" alt="" /></p></li>
+<li><p>The creation of the DBCS instance will take approximately 30 minutes. While your DBCS instance is being created, you can monitor the progress by clicking on the <strong>Activity</strong> menu item, and view the current status.  </p>
+<p><img src="images/SS-100/025.png" alt="" /></p>
+<p><img src="images/SS-100/026.png" alt="" /></p></li>
+<li><p>Wait for this to complete.  It should complete with a success message.</p>
+<p><img src="images/SS-100/030.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7--record-the-ip-address-of-the-database-cloud-service"><strong>STEP 7</strong>:  Record the IP address of the Database Cloud Service</h3>
+<ul>
+<li><p>Return to the dashboard, select Database, and then click on <strong>Alpha01A-DBCS</strong> from the list of Database Instances</p>
+<p><img src="images/SS-100/031.png" alt="" /></p>
+<p><img src="images/SS-100/032.png" alt="" /></p>
+<p><img src="images/SS-100/033.png" alt="" /></p></li>
+<li><p>Note the IP address of <strong>Alpha01A-DBCS</strong>. </p>
+<p><img src="images/SS-100/034.png" alt="" /></p></li>
+</ul>
+<h3 id="step-8start-a-ssh-tunnel-in-the-background"><strong>STEP 8</strong>:start a SSH tunnel in the background</h3>
+<p>For security reasons, the default Oracle Public Cloud network configuration is locked down. You have the option of opening up ports to the various servers in your environment by ether using the Compute Cloud Service console and creating/re-using protocol definitions and access rules, OR you can create SSH tunnels to the specific server/port combinations as needed. This lab and the rest of the labs require access via development tools and the browser to various admin consoles running on the cloud servers themselves.</p>
+<p>In this step you will create a SSH tunnel in the background for port 5500, which is not open.</p>
+<ul>
+<li><p>Open a terminal Window by right clicking anywhere on the desktop, and then enter the following.  Do not close the window when finished:</p>
+<ul>
+<li><code>ssh -o StrictHostKeyChecking=no -i /home/oracle/privateKey -L 5555:&lt;your Alpha01A-DBCS IP&gt;:5500 opc@&lt;Alpha01A-DBCS IP&gt;</code></li></ul>
+<p><img src="images/SS-100/027.png" alt="" /></p>
+<p><img src="images/SS-100/028.png" alt="" /></p></li>
+</ul>
+<h2 id="explore-db-image-via-ssh">Explore DB image via SSH</h2>
+<h3 id="step-9--open-a-new-ssh-connection-to-browse-the-database-image"><strong>STEP 9</strong>:  Open a new SSH Connection to browse the database image</h3>
+<ul>
+<li><p>Enter the following command in a terminal window using the IP address for your DBCS cloud instance.</p>
+<ul>
+<li><code>ssh -o StrictHostKeyChecking=no -i /home/oracle/privateKey oracle@&lt;your Alpha01A-DBCS IP&gt;</code></li></ul>
+<p><img src="images/SS-100/035.png" alt="" /></p></li>
+<li><p>Now that you are connected to <strong>Alpha01A-DBCS,</strong> let's look around. Enter the <strong>df</strong> command to see mounted disks.</p>
+<p><img src="images/SS-100/036.png" alt="" /></p></li>
+<li><p>Issue the following command to view the Database environment variable.</p>
+<ul>
+<li><code>env | grep ORA</code></li></ul>
+<p><img src="images/SS-100/037.png" alt="" /></p></li>
+<li><p>Now let's change directories to the Oracle Home and list the directories.</p>
+<ul>
+<li><code>cd $ORACLE_HOME</code></li>
+<li><code>ls</code></li></ul>
+<p><img src="images/SS-100/038.png" alt="" /></p></li>
+</ul>
+<h2 id="access-the-database-consoles">Access the Database Consoles</h2>
+<p><strong>Access DB Monitor, Apex, EM Consoles</strong></p>
+<h3 id="step-10--access-database-monitor"><strong>STEP 10</strong>:  Access Database Monitor</h3>
+<p>To gain access to the various consoles used by the Database Cloud Service you have two options. You can open up the port on which the monitor is listening, or you can create a SSH tunnels to the specific server/port combinations as needed. We have already created the SSH tunnel, and you will use that tunnel to access most of the consoles.</p>
+<p>In this step you will open the port 443 on the VM using a pre-create access rule and protocol definition.</p>
+<ul>
+<li><p>If not already on the <strong>Alpha01A-DBCS</strong> details page, navigate back to Database Cloud Service console and click on <strong>Alpha01A-DBCS</strong> to get to this page.</p>
+<p><img src="images/SS-100/039.png" alt="" /></p></li>
+<li><p>To the right next to the instance name <strong>Alpha01A-DBCS</strong> select <strong>Access Rules</strong> off the hamburger menu icon.</p>
+<p><img src="images/SS-100/040.png" alt="" /></p></li>
+<li><p>From this screen you see all the <strong>Access Rules</strong> that have been created for this instance</p>
+<p><img src="images/SS-100/041.png" alt="" /></p></li>
+<li><p>The Rule named <strong>ora_p2_httpssl</strong> is setup to open port 443 to the public internet. Click on the <strong>hamburger menu</strong> (on the right) for this rule and select <strong>Enable</strong></p>
+<p><img src="images/SS-100/042.png" alt="" /></p></li>
+<li><p>On Enable Access Rule popup window, click <strong>Enable</strong>.</p>
+<p><img src="images/SS-100/043.png" alt="" /></p></li>
+<li><p>You should now see that the Access Rule <strong>ora_p2_httpssl</strong> is enabled. You will need to re-fresh your screen and re-select Access Rules to see the update.</p>
+<p><img src="images/SS-100/044.png" alt="" /></p></li>
+<li><p>Go back to the list of DBCS services (click on the breadcrumbs) and then  select <strong>Open DBaaS Monitor Console.</strong> from the hamburger menu.</p>
+<p><img src="images/SS-100/045.png" alt="" /></p>
+<p><img src="images/SS-100/046.png" alt="" /></p></li>
+<li><p>If you get a security warning, click <strong>ADVANCED</strong> followed by <strong>Add Exception..</strong></p>
+<p><img src="images/SS-100/047.png" alt="" /></p>
+<p><img src="images/SS-100/048.png" alt="" /></p></li>
+<li><p>Then Confirm Security Exception</p>
+<p><img src="images/SS-100/049.png" alt="" /></p></li>
+<li><p>When prompted, enter <strong>dbaas_monitor</strong> for the <strong>User Name</strong> and <strong>Alpha2018_</strong> for the <strong>Password</strong>.</p>
+<p><img src="images/SS-100/050.png" alt="" /></p></li>
+<li><p>Once connected to the Database Monitor Console, feel free to explore the various screens.</p>
+<p><img src="images/SS-100/051.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11--access-enterprise-manager-db-express-inside-the-workshop-image"><strong>STEP 11</strong>:  Access Enterprise Manager DB Express (inside the workshop image)</h3>
+<ul>
+<li><p>On the firefox browser, open a new tab, and <strong>enter</strong> the following <strong>URL</strong> to access the <strong>EM Express</strong> page. The first time the URL is used, it can take a minute for the console to load. The ssh tunnel you created earlier will cause all traffic referencing localhost:5555 to actually be routed to the database cloud service.</p>
+<ul>
+<li><code>https://localhost:5555/em</code></li></ul>
+<p><img src="images/SS-100/052.png" alt="" /></p></li>
+<li><p>If you get a security warning, click <strong>ADVANCED</strong> followed by <strong>Add Exception</strong>, and then </p>
+<p><img src="images/SS-100/053.png" alt="" /></p>
+<p><img src="images/SS-100/054.png" alt="" /></p></li>
+<li><p>On the EM login page enter the following and click on <strong>Login</strong>:</p>
+<p><strong>User Name:</strong> <code>sys</code>
+<strong>Password:</strong> <code>Alpha2018_</code>
+<strong>Container:</strong>  <code>pdb1</code>
+<strong>Select</strong> the <strong>as sysdba</strong> box.</p>
+<p><img src="images/SS-100/055.png" alt="" /></p></li>
+<li><p>De[ending on what version of Firefox and Flash is installed from the repositories you may end up with a hung page.  This may be a firefox or flash bug.</p>
+<p><img src="images/SS-100/056.png" alt="" /></p></li>
+<li><p>To get around this problem go to the Firefox menu Tools &gt; Web Developer &gt; Debugger.  This should clear the error.  You can then close the debugger window.</p>
+<p><img src="images/SS-100/057.png" alt="" /></p>
+<p><img src="images/SS-100/058.png" alt="" /></p>
+<p><img src="images/SS-100/059.png" alt="" /></p></li>
+</ul>
+<h3 id="step-12--access-apex-monitor"><strong>STEP 12</strong>:  Access Apex Monitor</h3>
+<ul>
+<li><p>Return to the database console to access the <strong>Apex console</strong>.  Select <code>Open Application Express Console</code>.  Click through the security warnings.</p>
+<p><img src="images/SS-100/060.png" alt="" /></p></li>
+<li><p>Once the Apex login window is displayed, <strong>enter the following</strong> and click on <strong>Sign In</strong>:</p>
+<p><strong>Workspace</strong>: <code>internal</code></p>
+<p><strong>Username</strong>: <code>ADMIN</code></p>
+<p><strong>Password</strong>: <code>Alpha2018_</code></p>
+<p><img src="images/SS-100/061.png" alt="" /></p></li>
+<li><p>You are now connected to Apex. Feel free to explore the menu options.</p>
+<p><img src="images/SS-100/062.png" alt="" /></p></li>
+<li><p>You are now ready to move to the next lab.</p></li>
+</ul>

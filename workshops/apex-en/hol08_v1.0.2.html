@@ -1,0 +1,107 @@
+<h1 id="unit-8-creating-and-using-forms">Unit 8: Creating and Using Forms</h1>
+<p>This exercise includes two hands-on-labs.</p>
+<p><strong>HOL 8-1 Updating the Form Pages in the Demo Projects Application</strong>: In this hands-on-lab, you update the default form pages in the Demo Projects application.</p>
+<p><strong>HOL 8-2 Creating a Form on a Table and Linking a Report</strong>: In this hands-on lab, you create a form on the PROJECT_BUDGET table. Then, you create a classic report on the PROJECT_BUDGET table and link this report to the form. This lab utilizes the Budget App application.</p>
+<h2 id="hol-8-1-updating-the-form-pages-in-the-demo-projects-application">HOL 8-1 Updating the Form Pages in the Demo Projects Application</h2>
+<p>In the Demo Projects application, you create a report that allows each Team Member to see their outstanding tasks.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Demo Projects</strong> application.</p></li>
+<li><p>In the navigation menu, click <strong>Demo Proj Team Members</strong>.
+Then, click the <strong>Edit</strong> icon (pencil), next to a team member's name to view the modal form page, for the person you selected.
+<img src="images/hol08/image3.png" alt="1a" /></p></li>
+<li><p>On the Developer Toolbar at the bottom of the page, click <strong>Edit Page 3</strong> to jump to the modal page in Page Designer.
+<img src="images/hol08/image4.png" alt="1b" /></p></li>
+<li><p>In the property editor &gt; Page &gt; Identification, enter <strong>Maintain Team Member</strong> for both Name and Title.
+<img src="images/hol08/image5.png" alt="1c" /></p></li>
+<li><p>Under Rendering, select the Edit_Demo_Proj_Team_Members region. In the property editor, navigate to Appearance &gt; Template Options. Click <strong>Use Template Defaults</strong>.
+<img src="images/hol08/image6.png" alt="1d" /></p></li>
+<li><p>In the Template Options dialog, under Advanced, for Item Width, select <strong>Stretch Form Fields</strong> and click <strong>OK</strong>. Then, click <strong>Save</strong>. </br>
+<img src="images/hol08/image7.png" alt="1e" /></p></li>
+<li><p>Now, modify the default Project form page to be more visually appealing and consistent with how the Maintain Team Member page was improved. Navigate to the application runtime environment. In the navigation menu, click <strong>Demo Projects</strong>.</p></li>
+<li><p>Click one of the Project names, to open a modal dialog. </br>
+<img src="images/hol08/image8.png" alt="1f" /></p></li>
+<li><p>In the runtime environment, after selecting a project, in the Developer Toolbar, click <strong>Edit Page 5</strong>. </br>
+<img src="images/hol08/image9.png" alt="1g" /></p></li>
+<li><p>In the Property Editor:</p>
+<ul>
+<li><p>Identification: Name - enter <strong>Maintain Project</strong></p></li>
+<li><p>Identification: Title - enter <strong>Maintain Project</strong>
+<img src="images/hol08/image10.png" alt="1h" /></p></li></ul>
+<p>Scroll down to Navigation and for Cursor Focus, select <strong>First item on page</strong>. Then, click <strong>Save</strong>.
+<img src="images/hol08/image11.png" alt="1i" /></p></li>
+<li><p>Modify the default Milestone form page to be more visually appealing. In the Demo Projects runtime environment, navigate to the Demo Proj Milestones page and open one of the records by clicking the edit icon (pencil).
+<img src="images/hol08/image12.png" alt="1j" /></p></li>
+<li><p>In the Developer Toolbar, click <strong>Edit Page 7</strong>.
+<img src="images/hol08/image13.png" alt="1k" /></p></li>
+<li><p>In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Name - enter <strong>Maintain Milestone</strong> </br></p></li>
+<li><p>Identification: Title - enter <strong>Maintain Milestone</strong> </br>
+<img src="images/hol08/image14.png" alt="1l" /></p>
+<p>Scroll down to Navigation and for Cursor Focus, select <strong>First item on page</strong>. Then, click <strong>Save</strong>. </br>
+<img src="images/hol08/image15.png" alt="1m" /></p></li>
+</ul>
+<ol>
+<li><p>Modify the default Task form page to be more visually appealing. In the Demo Projects runtime environment, navigate to the Demo Proj Tasks page and open one of the records by clicking the edit icon (pencil).</p></li>
+<li><p>In the runtime environment, view a record by clicking the Edit icon (pencil) for a task.
+<img src="images/hol08/image16.png" alt="1n" /></p></li>
+<li><p>In the Developer Toolbar, click <strong>Edit Page 9</strong>.</p></li>
+<li><p>In the Property Editor:</p></li>
+</ol>
+<ul>
+<li><p>Identification: Name - enter <strong>Maintain Task</strong> </p></li>
+<li><p>Identification: Title - enter <strong>Maintain Task</strong> </br></p>
+<p><img src="images/hol08/image14.png" alt="1l" />
+ </br>Scroll down to Navigation and for Cursor Focus, select <strong>First item on page</strong>. </br>
+ Then, click <strong>Save</strong>. </br>
+ <img src="images/hol08/image17.png" alt="1p" /></p></li>
+</ul>
+<h2 id="hol-8-2-creating-a-form-on-a-table-and-linking-a-report">HOL 8-2: Creating a Form on a Table and Linking a Report</h2>
+<p>In this lab, you first create a classic report on the PROJECT_BUDGET table. Then, you create a form on the PROJECT_BUDGET table. Finally, you link the classic report to the form.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and in the applications report, click <strong>Budget App</strong>.
+<img src="images/hol08/image18.png" alt="2a" /></p></li>
+<li><p>The application home page appears. Now, create a Classic Report on the PROJECT_BUDGET table. Click <strong>Create Page</strong> and then perform the following steps:</p>
+<p>a)  Select <strong>Report</strong> and click <strong>Next</strong></p>
+<p>b)  Select <strong>Classic Report</strong> and click <strong>Next</strong></p>
+<p>c)  Enter <strong>Project Budget Report</strong> for Page Name and click <strong>Next</strong></p>
+<p>d)  For Navigation, select <strong>Create a new navigation menu entry</strong> and click <strong>Next</strong></p>
+<p>e)  Select <strong>PROJECT_BUDGET</strong> for Table / View Name and click <strong>Create</strong>.</p></li>
+
+<li><p>The report page is created successfully. Now, create a form on the PROJECT_BUDGET table. Perform the following steps:</p>
+<p>a)  In the page designer toolbar, click <strong>Create</strong> and select <strong>Page</strong>.
+    <img src="images/hol08/image19.png" alt="2b" /></p>
+<p>b)  Select <strong>Form</strong> and click <strong>Next</strong>.</p>
+<p>c)  Select <strong>Form on a Table</strong> and click <strong>Next</strong>.</p>
+<p>d)  Enter <strong>Project Budget Details</strong> for Name, select <strong>Modal Dialog</strong> for Page Mode and click <strong>Next</strong>.</p>
+<p>e)  Click <strong>Next</strong>.</p>
+<p>f)  Select <strong>PROJECT_BUDGET</strong> for Table / View Name, ensure that all the columns selected to be displayed and click <strong>Next</strong>.</p>
+<p>g)  Click <strong>Create</strong>.</p>
+<p>The form page is created successfully.</p></li>
+<li><p>The form you just created is a dialog page and so you cannot run it directly. If you click the Save and Run Page, you see this message: </br>
+<img src="images/hol08/image20.png" alt="2c" /></p></li>
+<li><p>You want to navigate to the Project Budget Report page in the page designer. In the toolbar, click the Navigate to previous page arrow (down arrow).
+<img src="images/hol08/image21.png" alt="2d" /></p></li>
+<li><p>Under Rendering &gt; Regions, select <strong>Report 1</strong>. In the property editor, replace the existing title with <strong>Project Budget Report</strong>.</p></li>
+<li><p>Under Rendering, expand <strong>Columns</strong> and select <strong>ID</strong>.</p></li>
+<li><p>In the property editor, select <strong>Link</strong> for Type. Scroll down and locate Link &gt; Target. Click <strong>No Link Defined</strong>.
+<img src="images/hol08/image22.png" alt="2e" /></p></li>
+<li><p>In the Link Builder – Target dialog, select the following:</p>
+<ul>
+<li><p>Target &gt; Type: <strong>Page in this application</strong></p></li>
+<li><p>Target &gt; Page: Select the form page, Project Budget Details</p></li>
+<li><p>Set Items &gt; Name: <strong>P&lt;<em>n</em>&gt;_ID</strong> where <em>n</em> is the page number of the form page</p></li>
+<li><p>Set Items &gt; Value: <strong>#ID#</strong></p></li></ul>
+<p>Click <strong>OK</strong>. </br>
+<img src="images/hol08/image23.png" alt="2f" /></p></li>
+<li><p>In the property editor, navigate to Link. For Link Text, click the Quick Pick and select <strong>apex-edit-pencil.png</strong>.
+<img src="images/hol08/image24.png" alt="2g" /></p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run Page</strong>.</p></li>
+<li><p>The Project Budget Report page is displayed.
+<strong>Note</strong>: You might have to log in to the application using username and password. Then, in the navigation menu, click Project Budget Report.\
+Click the Edit icon (pencil) for any row, and you see that the form dialog page is displayed.
+<img src="images/hol08/image25.png" alt="2h" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol08/image26.png" alt="Snap3.jpeg" /></p>

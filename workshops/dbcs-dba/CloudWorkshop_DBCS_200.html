@@ -1,0 +1,357 @@
+<p><img src="images/200/image1.png" alt="" /></p>
+<p>Update Dec 4, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you will explore some common use cases for moving your data from on-premises to the cloud. There are multiple options for solving this data movement challenge. In this lab, we will use SQL*Developer and command line tools to clone and move a pluggable database from your on-premises database (your Virtual Machine) to your cloud database. You will also use standard Oracle Data Pump tools to export a schema from the on-premises database, and then import that data to your cloud database in a new schema. The final exercise uses RMAN to move a tablespace to the cloud.  These are only a few of the many options for moving data into and between Oracle databases.  More choices for how to migrate Oracle Databases from on-premise to the cloud can be found in this <a href="http://www.oracle.com/technetwork/database/database-appliance/documentation/oda-migration-strategies-1676870.pdf">Migration Strategies Document</a>.</p>
+<p>This lab supports the following use cases:</p>
+<ul>
+<li><p>Migration of on-premise pluggable databases to a cloud based environment.</p></li>
+<li><p>Rapid creation of test or development pluggable database copies in the Cloud.</p></li>
+<li><p>Rapid replication of on-premise data for reporting and analytics.</p></li>
+<li><p>Rapid re-fresh of selected on-premise schemas for test and/or development activities and/or reporting and analytics.</p></li>
+<li><p>To log issues and view the Lab Guide source, go to the <a href="https://github.com/oracle/learning-library/tree/master/workshops/dbcs">github oracle</a> repository.</p></li>
+</ul>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Migrate a pluggable database from on-premise to the Cloud.</li>
+<li>Migrate a schema using Oracle Data Pump.</li>
+<li>Migrate data using a Transportable Tablespace.</li>
+<li>Copy data using Database Links.</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li><p>The following labs assume that the steps outlined in lab guide 100 have been completed.</p></li>
+<li><p>The SSH tunnels must be active in a terminal window.</p></li>
+</ul>
+<h1 id="cloud-migration-using-pluggable-databases">Cloud Migration Using Pluggable Databases</h1>
+<h2 id="configure-the-environment">Configure the Environment</h2>
+<h3 id="step-1--open-a-dba-navigator-connection-to-the-on-premise-database"><strong>STEP 1</strong>:  Open a <strong>DBA Navigator</strong> connection to the on-premise database</h3>
+<ul>
+<li><p>From the VNC Session desktop, locate and double-click on the <strong>SQL Developer</strong> icon. <strong><em>NOTE</em></strong>: The first time SQL Developer is brought up; it may take some time to instantiate.</p>
+<p><img src="images/200/image3.png" alt="" /></p></li>
+<li><p>Double-click the <strong>On-premises</strong> folder to expand the list of database connections. Please note the pre-configured connections to the on-premises database.</p>
+<p><img src="images/200/image4.png" alt="" /></p></li>
+<li><p>Select the <strong>View</strong> -&gt; <strong>DBA</strong> menu option from the top dropdown menu.</p>
+<p><img src="images/200/image5.png" alt="" /></p></li>
+<li><p>On the DBA tab, click the green plus icon to create a new connection.</p>
+<p><strong>Note</strong>: you may also right-click on Connections and select Add Connection.</p>
+<p><img src="images/200/image6.png" alt="" /></p></li>
+<li><p>Select the <strong>sys - CDB</strong> connection and click <strong>OK</strong>. </p>
+<p><strong>Note: sys - CDB</strong> is an “on-premises” database located on the Virtual Box Image.</p>
+<p><img src="images/200/image7.png" alt="" /></p></li>
+<li><p>Expand the <strong>sys - CDB connect</strong>, and then expand the <strong>Container Database</strong> tree item. Click on the <strong>ALPHAPDB</strong> pluggable database to show the details for the pluggable database.</p>
+<p><img src="images/200/image8.png" alt="" /></p></li>
+</ul>
+<h2 id="clone-the-on-premise-alphapdb">Clone the On-premise ALPHAPDB</h2>
+<h3 id="step-2--clone-the-alphapdb"><strong>STEP 2</strong>:  Clone the ALPHAPDB</h3>
+<ul>
+<li><p>In the DBA Navigator panel, right click on the ALPHAPDB pluggable database and select the Clone PDB… menu option.</p>
+<p><img src="images/200/image10.png" alt="" /></p></li>
+<li><p>Enter the following</p>
+<ul>
+<li><strong>Database Name:</strong> <code>ALPHACLONE</code></li>
+<li><strong>File Name Conversions:</strong> <code>Customer Expressions</code> (note by default the directory name is derived from the database name - we are overriding this)</li>
+<li><strong>Click the + on the right</strong></li>
+<li><strong>Source File Pattern:</strong> <code>alphapdb</code></li>
+<li><strong>Target File Pattern:</strong> <code>alphaclone</code></li>
+<li>Then select the SQL table above</li></ul>
+<p><img src="images/200/image11.png" alt="" /></p></li>
+<li><p>Since we have implemented TDE (Transparent Data Encryption) we need to override the SQL.  Select the SQL tab above and enter the following</p>
+<ul>
+<li><code>keystore identified by oracle</code></li></ul>
+<p><img src="images/200/image12.png" alt="" /></p></li>
+<li><p>You should see the new PDB</p>
+<p><img src="images/200/image13.png" alt="" /></p></li>
+<li><p>Click on the ALPHACLONE database in the DBA navigator to see the status of the database.  Note: The cloned database shows an OPEN_MODE of MOUNTED indicating the database is plugged-in but is not open for access.</p>
+<p><img src="images/200/image14.png" alt="" /></p></li>
+<li><p>Click on the Data Files tab for the ALPHACLONE to review the data files created during the cloning operation.</p>
+<p><img src="images/200/image14.1.png" alt="" /></p></li>
+</ul>
+<h2 id="clone-the-alphaclone-db-to-the-cloud">Clone the ALPHACLONE DB to the Cloud</h2>
+<h3 id="step-3--create-ssh-and-sys-database-cloud-connections"><strong>STEP 3</strong>:  Create SSH and SYS Database Cloud Connections</h3>
+<ul>
+<li><p>First we need to setup a SSH host connection to the Database Cloud Service instance. From the top menu select <strong>View -> SSH</strong> to display SSH hosts panel on the left.</p>
+<p><img src="images/200/image18.png" alt="" /></p></li>
+<li><p>Right click on <strong>SSH Hosts</strong> and select <strong>New SSH Host</strong>.</p>
+<p><img src="images/200/image20.png" alt="" /></p></li>
+<li><p>We will now configure an SSH connection to our DBCS instance</p>
+<p><strong>Name</strong>: <code>Alpha01A-DBCS</code></p>
+<p><strong>Host</strong>: <code>&lt;Database Image public IP you obtained in lab 100&gt;</code></p>
+<p><strong>Username</strong>: <code>oracle</code></p>
+<p><img src="images/200/image21.png" alt="" /></p></li>
+<li><p>Select <strong>Use key file</strong> and click <strong>Browse…</strong> Select file <strong>/u01/OPCWorkshop/ci<em>opc</em>keys</strong> and click <strong>Open</strong>.</p>
+<p><img src="images/200/image22.png" alt="" /></p></li>
+<li><p>Click <strong>Add a Local Port Forward</strong> and enter the following values:</p>
+<p><strong>Name</strong>: <code>Database</code></p>
+<p><strong>Host</strong>: <code>&lt;Database Image Public IP you obtained in lab 100&gt;</code></p></li>
+<li><p>Select <strong>Use specific local port</strong> and enter <strong>1530</strong></p>
+<p><strong>NOTE</strong>: We are using port 1530 since 1521 is already in use for our local database.</p>
+<p><img src="images/200/image23.png" alt="" /></p></li>
+<li><p>Verify the configuration and click <strong>OK</strong></p></li>
+<li><p>Right click on the SSH connection and test.  You should see a message saying the connection was successful.</p>
+<p><img src="images/200/image17.png" alt="" /></p>
+<p><img src="images/200/image16.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4--create-a-sql-developer-connection-to-the-public-cloud-database-sys-schema"><strong>STEP 4</strong>:  Create a SQL Developer connection to the Public Cloud database SYS schema</h3>
+<ul>
+<li><p>Click the green plus sign <img src="images/200/image24.png" alt="" /> in the <strong>Connections</strong> window to create a new connection; enter the following connection details:</p>
+<p><strong>Connection Name</strong>:    <code>sys - OPCDBCS</code></p>
+<p><strong>Username</strong>:           <code>sys</code></p>
+<p><strong>Password</strong>:           <code>Alpha2018_</code></p>
+<p><strong>Check</strong>               "Save Password"</p>
+<p><strong>Optionally select a color for the connection</strong></p>
+<p><strong>ConnectionType</strong>:     <code>SSH</code></p>
+<p><strong>Role</strong>:               <code>SYSDBA</code></p>
+<p><strong>Service Name</strong>:       <code>ORCL.&lt;Your ID Domain&gt;.oraclecloud.internal</code></p>
+<p><img src="images/200/image25.png" alt="" /></p></li>
+<li><p>Click <strong>Test</strong> to confirm the information was entered correctly.</p>
+<p><img src="images/200/image26.png" alt="" /></p></li>
+<li><p>Click <strong>Connect</strong> to save the connection information which opens a new SQL&nbsp;Worksheet.</p>
+<p><img src="images/200/image27.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5--unplug-alphaclone"><strong>STEP 5</strong>:  Unplug ALPHACLONE</h3>
+<ul>
+<li><p>Since TDE requires additional commands that are not included in the generation of SQL within SQL Developer we will do step 5 in a terminal window.  Open a termainal window off the desktop.</p>
+<p><img src="images/200/image14.001.png" alt="" /></p></li>
+<li><p>Remove the auto-open wallet.  We will use the password wallet.  Enter the following commands</p>
+<ul>
+<li><code>source dbenv.sh</code></li>
+<li><code>sqlplus sys/Alpha2018_ as sysdba</code></li>
+<li><code>shutdown immediate</code></li>
+<li><code>exit</code></li>
+<li><code>mv /u01/app/oracle/product/12.2/wallet/cwallet.sso /u01/app/oracle/product/12.2</code></li>
+<li><code>source dbenv.sh</code></li>
+<li><code>sqlplus sys/Alpha2018_ as sysdba</code></li>
+<li><code>startup</code></li></ul>
+<p><img src="images/200/image14.002.png" alt="" /></p></li>
+<li><p>Enter the following commands</p>
+<ul>
+<li><code>alter pluggable database all open;</code></li>
+<li><code>administer key management set keystore open identified by oracle container=all;</code></li>
+<li><code>alter session set container=alphaclone;</code></li>
+<li><code>administer key management set keystore open force keystore identified by oracle;</code></li>
+<li><code>administer key management export encryption keys with secret "oracle" to '/u01/app/oracle/oradata/orcl/alphaclone/alphaclone.p12' identified by oracle;</code></li>
+<li><code>alter session set container=cdb$root;</code></li>
+<li><code>alter pluggable database alphaclone close;</code></li>
+<li><code>alter pluggable database alphaclone unplug into '/u01/app/oracle/oradata/orcl/alphaclone/alphaclone.xml';</code></li></ul>
+<p><img src="images/200/image14.003.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6--copy-the-data-files-of-new-cloned-on-premise-pdb-to-the-oracle-cloud"><strong>STEP 6</strong>:  Copy the data files of new cloned on-premise PDB to the Oracle Cloud</h3>
+<ul>
+<li><p>Exit out of SQL PLus and run the following commands.</p>
+<ul>
+<li><code>exit;</code></li>
+<li><code>cd /u01/app/oracle/oradata/orcl/alphaclone</code></li>
+<li><code>tar -cvzf alphaclone.tar.gz *</code></li></ul>
+<p><img src="images/200/image14.004.png" alt="" /></p></li>
+<li><p>SSH into the Alpha01A-DBCS instance, create an alphaclone directory, and then copy the pluggable database to DBCS.</p>
+<ul>
+<li><code>ssh -i /u01/OPCWorkshop/ci_opc_keys oracle@&lt;Alpha01A-DBCS IP&gt;</code></li>
+<li><code>mkdir /u02/app/oracle/oradata/ORCL/alphaclone</code></li>
+<li><code>exit</code></li>
+<li><code>scp -i /u01/OPCWorkshop/ci_opc_keys /u01/app/oracle/oradata/orcl/alphaclone/alphaclone.tar.gz oracle@&lt;Alpha01A-DBCS IP&gt;:/u02/app/oracle/oradata/ORCL/alphaclone</code></li></ul>
+<p><img src="images/200/image14.005.png" alt="" /></p></li>
+<li><p>Untar the files</p>
+<ul>
+<li><code>ssh -i /u01/OPCWorkshop/ci_opc_keys oracle@&lt;Alpha01A-DBCS IP&gt;</code></li>
+<li><code>cd /u02/app/oracle/oradata/ORCL/alphaclone</code></li>
+<li><code>tar -xvzf alphaclone.tar.gz</code></li></ul>
+<p><img src="images/200/image14.006.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7--plug-the-cloned-on-premise-database-to-oracle-cloud-database"><strong>STEP 7</strong>:  Plug the cloned on-premise database to Oracle Cloud Database</h3>
+<ul>
+<li><p>Open Firefox on the Desktop and log into Enterprise Manager Express</p>
+<ul>
+<li><code>https://localhost:5500/em</code></li>
+<li><strong>User Name:</strong> <code>sys</code></li>
+<li><strong>Password:</strong> <code>Alpha2018_</code></li>
+<li><strong>Container Name:</strong> leave blank</li>
+<li>check 'as sysdba'</li></ul>
+<p><img src="images/200/image14.007.png" alt="" /></p></li>
+<li><p>Click on the CDB link.</p>
+<p><img src="images/200/image14.008.png" alt="" /></p></li>
+<li><p>Click on Plug</p>
+<p><img src="images/200/image14.009.png" alt="" /></p></li>
+<li><p>Enter Meetadata file, uncheck the 'Reuse source datafile' and enter the Source Datafile Location</p>
+<ul>
+<li><strong>Metadata File:</strong> <code>/u02/app/oracle/oradata/ORCL/alphaclone/alphaclone.xml</code></li>
+<li><strong>Source Datafile Location:</strong> <code>/u02/app/oracle/oradata/ORCL/alphaclone</code></li></ul>
+<p><img src="images/200/image14.010.png" alt="" /></p>
+<p><img src="images/200/image14.011.png" alt="" /></p></li>
+<li><p>Notice the pluggable database has a violation.  Click on this.</p>
+<p><img src="images/200/image14.012.png" alt="" /></p>
+<p><img src="images/200/image14.013.png" alt="" /></p></li>
+<li><p>Cloud databases have TDE configured by default, but we need to import the alphapdb key.  Open a terminal window on the compute desktop and SSH into the Alpha01A-DBCS instance.</p>
+<ul>
+<li><code>source dbenv.sh</code></li>
+<li><code>ssh -i /u01/OPCWorkshop/ci_opc_keys oracle@&lt;Alpha01A-DBCS IP&gt;</code></li>
+<li><code>sqlplus sys/Alpha2018_ as sysdba</code></li>
+<li><code>alter session set container = alphaclone;</code></li>
+<li><code>select * from v$encryption_wallet;</code></li></ul>
+<p><img src="images/200/image14.014.png" alt="" /></p></li>
+<li><p>Import keys</p>
+<ul>
+<li><code>administer key management import keys with secret "oracle" from '/u02/app/oracle/oradata/ORCL/alphaclone/alphaclone.p12' force keystore identified by Alpha2018_ with backup;</code></li></ul>
+<p><img src="images/200/image14.015.png" alt="" /></p></li>
+<li><p>Review status of pluggable database in EM.  Open (or go back to) Firefox and log into IM:</p>
+<ul>
+<li><code>https://localhost:5500/em</code></li>
+<li><strong>User:</strong> <code>sys</code></li>
+<li><strong>password:</strong> sys password</li></ul>
+<p><img src="images/200/image14.016.png" alt="" /></p></li>
+<li><p>Navigate to containers.</p>
+<p><img src="images/200/image14.017.png" alt="" /></p></li>
+<li><p>Highlight the Alphapdb pluggable database (don't click on the link) and select action close.</p>
+<p><img src="images/200/image14.018.png" alt="" /></p>
+<p><img src="images/200/image14.019.png" alt="" /></p></li>
+<li><p>Re-open alphapdb pdb</p>
+<p><img src="images/200/image14.020.png" alt="" /></p>
+<p><img src="images/200/image14.021.png" alt="" /></p>
+<p><img src="images/200/image14.022.png" alt="" /></p>
+<p><img src="images/200/image14.023.png" alt="" /></p></li>
+</ul>
+<h3 id="step-8--create-a-sql-developer-connection-to-the-public-cloud-database-alphapdb-schema"><strong>STEP 8</strong>:  Create a SQL Developer connection to the Public Cloud database ALPHAPDB schema</h3>
+<ul>
+<li><p>Back in SQL Developer, click the green plus sign <img src="images/200/image24.png" alt="" /> in the Connections window to create a new connection; enter the following connection details:</p>
+<p><strong>Connection Name</strong>:    <code>Alpha01A-DBCS</code></p>
+<p><strong>Username</strong>:           <code>alpha</code></p>
+<p><strong>Password</strong>:           <code>Alpha2018_</code></p>
+<p><strong>Check</strong> "Save Password"</p>
+<p><strong>Optionally select a color for the connection</strong></p>
+<p><strong>ConnectionType</strong>:     <code>SSH</code></p>
+<p><strong>Service Name</strong>:       <code>alphaclone.&lt;Your ID Domain&gt;.oraclecloud.internal</code></p>
+<p><img src="images/200/image55.png" alt="" /></p></li>
+<li><p>Click <strong>Test</strong> to confirm the information was entered correctly.</p>
+<p><img src="images/200/image56.png" alt="" /></p></li>
+<li><p>Click <strong>Connect</strong> to save the connection information and open a new SQL&nbsp;Worksheet.</p>
+<p><img src="images/200/image57.png" alt="" /></p></li>
+</ul>
+<h1 id="cloud-migration-using-data-pump-schema-level">Cloud Migration Using Data Pump: Schema Level</h1>
+<h2 id="export-the-alpha-schema">Export the Alpha Schema</h2>
+<h3 id="step-9--create-directory-for-datapump-export"><strong>STEP 9</strong>:  Create directory for datapump export</h3>
+<ul>
+<li><p>Open a terminal window and run the following commands</p>
+<ul>
+<li><code>source dbenv.sh</code></li>
+<li><code>sqlplus alpha/Alpha2018_@alphapdb</code></li>
+<li><code>create directory oracle as '/home/oracle';</code></li>
+<li><code>exit;</code></li></ul>
+<p><img src="images/200/image58.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10--run-datapump-export"><strong>STEP 10</strong>:  Run datapump export</h3>
+<ul>
+<li><p>Exit out of sqlplus and export the data</p>
+<ul>
+<li><code>exit</code> if you are still in sqlplus, otherwise open a new command window and enter source dbenv.sh</li>
+<li><code>expdp alpha/Alpha2018_@alphapdb directory=oracle dumpfile=alpha.dmp compression=all</code></li>
+<li>Note that directory tmp was created previously for you and is mapped to /tmp.  Also we are compressing the export file on the fly to reduce the size for when we scp the file to DBCS.</li></ul>
+<p><img src="images/200/image59.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11--copy-the-export-data-pump-file-to-the-server"><strong>STEP 11</strong>:  Copy the export Data Pump file to the server</h3>
+<ul>
+<li><p>Use the following secure copy (<strong>scp</strong>) command to transfer the Data Pump export to the DBCS server using your Database Service's Public IP address identified in Lab 100:</p>
+<ul>
+<li><code>scp -i /u01/OPCWorkshop/ci_opc_keys /home/oracle/alpha.dmp oracle@{your public IP}:.</code></li></ul>
+<p><img src="images/200/image60.png" alt="" /></p></li>
+</ul>
+<h3 id="step-12--create-a-new-schema-to-hold-a-copy-of-the-data"><strong>STEP 12</strong>:  Create a new schema to hold a copy of the data</h3>
+<ul>
+<li><p>Open a new terminal window (or use the current one) and enter the following commands that will SSH to the Alpha01A-DBCS instance, create an Oracle directory, and import the data.</p>
+<ul>
+<li><code>ssh -i /u01/OPCWorkshop/ci_opc_keys oracle@{your public IP}</code> -- log into your remote DBCS instance</li>
+<li><code>sqlplus system/Alpha2018_@pdb1;</code> -- log into system in the alphapdb</li>
+<li><code>create user alpha2 identified by Alpha2018_;</code> -- create schema alpha2 (alpha already has the data from the previous lab)</li>
+<li><code>grant dba to alpha2;</code></li>
+<li><code>connect alpha2/Alpha2018_@pdb1;</code> -- connect to alpha2 so we can create the oracle directory</li>
+<li><code>create directory oracle as '/home/oracle';</code></li>
+<li><code>exit</code></li></ul></li>
+<li><p><img src="images/200/image61.png" alt="" /></p></li>
+</ul>
+<h3 id="step-13--import-the-data"><strong>STEP 13</strong>:  Import the data</h3>
+<ul>
+<li><p>Import the data.  Run the following command in your terminal window.</p>
+<ul>
+<li><code>impdp alpha2/Alpha2018_@pdb1 directory=oracle dumpfile=alpha.dmp remap_schema=alpha:alpha2</code></li></ul></li>
+<li><p><img src="images/200/image62.png" alt="" /></p></li>
+</ul>
+<h1 id="cloud-migration-using-data-pump-tablespace-level">Cloud Migration Using Data Pump: Tablespace Level</h1>
+<p>While datapump provides a very fast multi-threaded technique to move data quickly between Oracle Databases, it was not designed for very large volumes of data.  Transportable Tablespaces enable a database file copy technique that does not require an exported copy of the data, but instead allow you to copy the in-place data files to target, which using Datapump to capture the metadata only.</p>
+<h2 id="export-the-euro-schema">Export the euro Schema</h2>
+<p>We will be exporting a GG (GoldenGate) tablespace, since there already is a users tablespace in the target database.</p>
+<h3 id="step-14--open-euro-in-readwrite-mode-and-export-the-metadata"><strong>STEP 14</strong>:  Open euro in read/write mode and export the metadata</h3>
+<ul>
+<li><p>Open a terminal window and create an Oracle export directory and put the tablespace in read only mode.</p>
+<ul>
+<li><code>source dbenv.sh</code></li>
+<li><code>sqlplus system/Alpha2018_@pdb1</code></li>
+<li><code>create directory oracle as '/home/oracle';</code></li>
+<li><code>alter tablespace gg read only;</code></li></ul>
+<p><img src="images/200/image63.png" alt="" /></p></li>
+<li><p>Export the data.  Enter the following commands in the terminal window.</p>
+<ul>
+<li><code>exit</code></li>
+<li><code>expdp system/Alpha2018_@pdb1 directory=oracle dumpfile=ggtbs.dmp transport_tablespaces=gg exclude=statistics encryption_password=oracle logfile=full_tts_export.log</code></li></ul>
+<p><img src="images/200/image64.png" alt="" /></p></li>
+</ul>
+<h3 id="step-15--copy-the-datafiles-to-the-target-dbcs-instance"><strong>STEP 15</strong>:  Copy the datafiles to the target DBCS instance</h3>
+<ul>
+<li><p>In the terminal window enter the following:</p>
+<ul>
+<li><code>scp -i /u01/OPCWorkshop/ci_opc_keys /home/oracle/ggtbs.dmp oracle@&lt;DBCS IP&gt;:.</code> -- metadata</li>
+<li><code>scp -i /u01/OPCWorkshop/ci_opc_keys /u01/app/oracle/oradata/orcl/pdb1/gg.dbf oracle@&lt;DBCS IP&gt;:.</code> -- datafiles</li></ul>
+<p><img src="images/200/image66.png" alt="" /></p></li>
+</ul>
+<h3 id="step-16--import-the-tablespace-into-the-target-dbcs-instance"><strong>STEP 16</strong>:  Import the tablespace into the target DBCS instance</h3>
+<p>We will be importing the data into the pdb1 instance.  First we'll need to drop the users tablespace since it already exists, then create an Oracle tmp directory, and then run the import.</p>
+<ul>
+<li><p>SSH to the target DBCS instance, log in, and create euro user (must already exist in the target).</p>
+<ul>
+<li><code>ssh -i /u01/OPCWorkshop/ci_opc_keys oracle@&lt;DBCS IP&gt;</code></li>
+<li><code>sqlplus system/Alpha2018_@pdb1</code></li>
+<li><code>create user euro identified by Alpha2018_;</code></li>
+<li><code>grant dba to euro;</code> </li>
+<li><code>create directory oracle as '/home/oracle';</code></li></ul>
+<p><img src="images/200/image67.png" alt="" /></p></li>
+<li><p>Exit from sqlplus and copy the ggtbs.dbf datafile to the pdb1 directory.</p>
+<ul>
+<li><code>exit</code></li>
+<li><code>cp /home/oracle/gg.dbf /u02/app/oracle/oradata/ORCL/PDB1</code></li></ul>
+<p><img src="images/200/image68.png" alt="" /></p></li>
+<li><p>Import the data (note you will see some errors due to existence of some objects).</p>
+<ul>
+<li><code>impdp system/Alpha2018_@pdb1 directory=oracle dumpfile=ggtbs.dmp logfile=full_tts_imp.log encryption_password=oracle transport_datafiles='/u02/app/oracle/oradata/ORCL/PDB1/gg.dbf'</code></li></ul>
+<p><img src="images/200/image69.png" alt="" /></p></li>
+<li><p>Confirm tablespace and contents exist by querying the Oracle dictionary.  Log into sqlplus and run the following query.</p>
+<ul>
+<li><code>sqlplus system/Alpha2018_@pdb1</code></li>
+<li><code>select tablespace_name, count(*) from dba_tables group by tablespace_name;</code></li></ul>
+<p><img src="images/200/image70.png" alt="" /></p></li>
+</ul>
+<h1 id="cloud-migration-using-database-links-table-level">Cloud Migration Using Database Links (Table Level)</h1>
+<p>Occasionally you just want to copy one or more tables from one database to another, and the easiest/quickest way to do that is to use a database link.  A database link connects two databases with sqlnet allowing you to reference remote tables in your local database.  This is good for table data, but other object types such as stored procedures, etc. cannot be replicated as easily.</p>
+<h2 id="create-a-database-link">Create a Database Link</h2>
+<h3 id="step-17--create-database-link-on-the-local-system"><strong>STEP 17</strong>:  Create Database Link on the local system</h3>
+<ul>
+<li><p>Since we need to use tunnels to communicate with the remote DBCS instance when using ports other than 22 (which is open) we need to ensure our tunnels are still open (from lab 100).  In a terminal window enter the following</p>
+<ul>
+<li><code>sudo su</code></li>
+<li><code>ps -ef|grep DBCS</code></li></ul>
+<p><img src="images/200/image71.png" alt="" /> -- if this is all you see then the tunnels are not open.  If you see the tunnels then no need for the next step</p></li>
+<li><p>If you do need to re-establish the tunnels enter the following, and do NOT close the terminal window, just minimize it.</p>
+<ul>
+<li><code>/u01/OPCWorkshop/lab/setssh.sh DBONLY</code> -- enter the DBCS IP address when prompted</li></ul></li>
+<li><p>Re-test tunnels - you should see this.</p>
+<p><img src="images/200/image72.png" alt="" /></p></li>
+<li><p>Log into SQLPlus in and create the database link.  Be sure to update this command with your Identity Domain.</p>
+<ul>
+<li><code>source dbenv.sh</code></li>
+<li><code>sqlplus alpha/Alpha2018_@alphapdb;</code></li>
+<li><code>create database link alpha_dbcs.oracledemo.com connect to alpha2 identified by Alpha2018_ using '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1530))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=pdb1.&lt;IDENTITY DOMAIN&gt;.oraclecloud.internal)))';</code></li>
+<li><code>select sysdate from dual@alpha_dbcs.oracledemo.com;</code></li></ul>
+<p><img src="images/200/image73.png" alt="" /></p></li>
+<li><p>Copy a table from the remote DBCS to the local instance.  Note that you cannot create a remote table (DDL operation) on the remote server but you can do an insert operation.  First need alter the local users tablespace and make it read write.</p>
+<ul>
+<li><code>create table mstars_local as select * from mstars@alpha_dbcs.oracledemo.com;</code></li>
+<li><code>insert into mstars@alpha_dbcs.oracledemo.com select * from mstars;</code></li>
+<li><code>commit;</code></li></ul>
+<p><img src="images/200/image74.png" alt="" /></p></li>
+</ul>

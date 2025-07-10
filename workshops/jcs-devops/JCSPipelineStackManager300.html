@@ -1,0 +1,263 @@
+<h1 id="devops-jcs-pipeline-using-oracle-stack-manager">DevOps: JCS Pipeline Using Oracle Stack Manager</h1>
+<p><img src="images/300/Picture300-title.png" alt="" />  </p>
+<p>Update: February 7, 2018</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the third of several labs that are part of the <strong>DevOps JCS Pipeline using Oracle Stack Manger workshop</strong>. This workshop will walk you through the Software Development Lifecycle (SDLC) for a Java Cloud Service (JCS) project that goes through Infrastructure as Code and deployment of a Struts application.</p>
+<p>In the first lab (100), the Project Manager created a new project in the Developer Cloud Service, created and assigned tasks to the developers of this application. In this lab, you will assume the persona of Java Developer who will be tasked with making enhancements to the Alpha Office Product Catalog UI.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Access Developer Cloud Service</li>
+<li>Import configuration from external Git Repository</li>
+<li>Import Project into Eclipse</li>
+<li>Setup Build and Deployment of UI using Developer Cloud Service and Java Cloud Service</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account. You will need to download and install latest version of Eclipse. Instructions can be found in  <a href="StudentGuide.md">Student Guide</a>.</li>
+</ul>
+<h1 id="create-initial-git-repository-for-alpha-office-catalog-ui">Create Initial Git Repository for Alpha Office Catalog UI</h1>
+<h2 id="create-initial-git-repository">Create Initial Git Repository</h2>
+<h3 id="logical-persona-overview">Logical Persona Overview</h3>
+<p>Although you will remain connected to the Oracle Cloud using the user account you were provided, you are to take on the Persona of <strong><em>John Dunbar</em></strong> as you perform the following steps. John is our Java developer who will be making the enhancements to our product catalog UI.</p>
+<p><img src="images/john.png" alt="" /></p>
+<h3 id="step-1-update-issue-status"><strong>STEP 1:</strong> Update Issue Status</h3>
+<ul>
+<li><p>From the Developer Cloud console, click on the <strong>AlphaOffice</strong> Agile Board <strong>Active Sprints</strong>.</p>
+<p><img src="images/300/Picture300-1.png" alt="" /></p></li>
+<li><p>Drag and drop <strong>Task 3 - Create Initial GIT Repository for Alpha Office UI</strong> into the <strong>In Progress</strong> swim-lane.</p>
+<p><img src="images/300/Picture300-2.png" alt="" /></p></li>
+<li><p>Click <strong>OK</strong> on Change Progress popup.</p>
+<p><img src="images/300/Picture300-3.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-create-initial-git-repository"><strong>STEP 2:</strong> Create Initial Git Repository</h3>
+<ul>
+<li><p>In the left hand navigation panel, click <strong>Project</strong></p></li>
+<li><p>Click on <strong>New Repository</strong> to create a new Git Repository.</p>
+<p><img src="images/300/Picture300-4.png" alt="" /></p></li>
+<li><p>In the New Repository wizard enter the following information and click <strong>Create</strong>.</p>
+<p><strong>Name:</strong> <code>AlphaOfficeProductCatalogUI</code></p>
+<p><strong>Description:</strong> <code>Alpha Office Product Catalog UI</code></p>
+<p><strong>Initial content:</strong> <code>Import existing repository</code></p>
+<p><strong>Enter the URL:</strong> <code>https://github.com/pcdavies/AlphaOfficeProductCatalogUI.git</code></p>
+<p><img src="images/300/Picture300-5.png" alt="" /></p></li>
+<li><p>You have now created a new GIT repository based on an existing repository.</p>
+<p><img src="images/300/Picture300-6.png" alt="" /></p></li>
+</ul>
+<h2 id="create-default-build-for-and-deployment-process">Create Default Build for and Deployment Process</h2>
+<h3 id="step-3-create-alpha-office-product-catalog-ui-build-process"><strong>STEP 3:</strong> Create Alpha Office Product Catalog UI Build Process</h3>
+<p>Now that we have the source code in our managed GIT repository, we need to create a build process that will be triggered whenever a commit is made to the master branch. We will set up a Maven build process in this section.</p>
+<ul>
+<li><p>On navigation panel, click <strong>Build</strong> to access the build page and click <strong>New Job</strong>.</p>
+<p><img src="images/300/Picture300-7.png" alt="" /></p></li>
+<li><p>In the New Job popup enter <code>Alpha Office Product Catalog UI</code> for the Job Name, and then click <strong>Save</strong>.</p>
+<p><img src="images/300/Picture300-8.png" alt="" /></p></li>
+<li><p>You are now placed into the job configuration screen.</p>
+<p><img src="images/300/Picture300-9.png" alt="" /></p></li>
+<li><p>On the Main tab on the Configure Build screen change the <strong>JDK</strong> drop down to <strong>JDK8</strong>.</p>
+<p><img src="images/300/Picture300-10.png" alt="" /></p></li>
+<li><p>Click the <strong>Source Control</strong> tab. Click <strong>Git</strong> and select <strong>AlphaOfficeProductCatalogUI.git</strong> from the drop down.</p>
+<p><img src="images/300/Picture300-11.png" alt="" /></p></li>
+<li><p>Click the <strong>Triggers</strong> tab. Select <strong>Based on SCM polling schedule</strong>.</p>
+<p><img src="images/300/Picture300-12.png" alt="" /></p></li>
+<li><p>Click the <strong>Build Steps</strong> tab. Click <strong>Add Build Step</strong>, and select <strong>Invoke Maven 3</strong>.</p>
+<p><img src="images/300/Picture300-13.png" alt="" /></p></li>
+<li><p>In the Maven Build Step set the following:</p>
+<p><strong>Goal</strong>: <code>clean -Dmaven.test.skip=true install</code></p>
+<p>(Note: This new Goal will allow integration tests to be run after the deployment of the application)</p>
+<p><strong>POM File</strong>: <code>AlphaProducts/pom.xml</code></p>
+<p><img src="images/300/Picture300-14.png" alt="" /></p></li>
+<li><p>Click the <strong>Post Build</strong> tab. Check <strong>Archive the artifacts</strong> and enter <code>**/target/*</code> for the Files to Archive.</p>
+<p><img src="images/300/Picture300-15.png" alt="" /></p></li>
+<li><p>Click <strong>Save</strong> to complete the configuration.</p></li>
+<li><p>Click the <strong>Build Now</strong> button to start the build. This will trigger for the build to be placed in the build queue.</p></li>
+<li><p>Click on the <strong>Jobs Overview</strong> link to return to the jobs dashboard. </p>
+<p><img src="images/300/Picture300-16.5.png" alt="" /></p></li>
+<li><p>It is possible that the Job will show in the Queue. Wait, as it may take 30 seconds or more, but the status will change indicating that the job is building as is shown below:</p>
+<p><img src="images/300/Picture300-16.6.png" alt="" /></p></li>
+<li><p>Once the build has completed, you should see a green check next to the build name.  <strong><em>Wait for the build to complete</em></strong> before continuing to the next step, as we need the build artifact to complete the deployment configuration.</p>
+<p><img src="images/300/Picture300-16.7.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-retrieve-public-ip-of-jcs-instance-for-deployment"><strong>STEP 4:</strong> Retrieve Public IP of JCS Instance for Deployment</h3>
+<p>Before we can configure deployment of our application we need to make note of the IP for our JCS instance. The <strong>Alpha01-JCS</strong> instance was provisioned as part of lab 200.</p>
+<ul>
+<li><p>Switch over to browser tab for cloud services. On the main dashboard, click on the navigation icon <img src="images/Menu.png" alt="" /> for the <strong>Java</strong> Cloud Service and select <strong>Open Service Console</strong>.</p>
+<p><img src="images/300/Picture300-18.png" alt="" /></p></li>
+<li><p>The Java Cloud Service console shows all the provisioned instances of JCS.  You should see the instance <strong>Alpha01-JCS</strong> which has been provisioned in advance.</p>
+<p><img src="images/300/Picture300-19.png" alt="" /></p></li>
+<li><p>Click on <strong>Alpha01-JCS</strong> to view the details of the service. Copy down the <strong>Public IP</strong> to be used later in the lab.</p>
+<p><img src="images/300/Picture300-20.png" alt="" /></p></li>
+</ul>
+<h3 id="step-5-create-alpha-office-product-catalog-ui-deployment-process"><strong>STEP 5:</strong> Create Alpha Office Product Catalog UI Deployment Process</h3>
+<ul>
+<li><p>Switch back to <strong>Developer Cloud Service</strong>. On the navigation panel click <strong>Deploy</strong> to access the Deployment page. Click <strong>New Configuration</strong></p>
+<p><img src="images/300/Picture300-22.png" alt="" /></p></li>
+<li><p>Enter the following data:</p>
+<p><strong>Configuration Name:</strong> <code>AlphaProductsDeploy</code></p>
+<p><strong>Application Name:</strong> <code>AlphaProducts</code></p>
+<p><img src="images/300/Picture300-23.png" alt="" /></p></li>
+<li><p>To the right of the Deployment Target, click <strong>New</strong> and select <strong>Java Cloud Service</strong></p>
+<p><img src="images/300/Picture300-24.png" alt="" /></p></li>
+<li><p>Enter the following data, and leave to other fields set to their defaults:</p>
+<p><strong>Host:</strong> <code>&lt;Public IP for JCS Service capture in previous step&gt;</code></p>
+<p><strong>Username:</strong> <code>weblogic</code></p>
+<p><strong>Password:</strong> <code>Alpha2018_</code></p>
+<p><img src="images/300/Picture300-25.png" alt="" /></p></li>
+<li><p>Click <strong>Find Targets</strong>. Check <strong>Accept this certificate when connecting to the JCS instance</strong> and click <strong>OK</strong></p>
+<p><img src="images/300/Picture300-26.png" alt="" /></p></li>
+<li><p>Check <strong>Alpha01-_cluster</strong> to deploy to the entire cluster and click <strong>OK</strong></p>
+<p><img src="images/300/Picture300-27.png" alt="" /></p></li>
+<li><p>Set the following Properties and click <strong>Save</strong></p>
+<p><strong>Type:</strong> <code>Automatic and check Deploy stable builds only</code></p>
+<p><strong>Job:</strong> <code>Alpha Office Product Catalog UI</code></p>
+<p><img src="images/300/Picture300-28.png" alt="" /></p></li>
+<li><p>Click drop down and select <strong>Start</strong></p>
+<p><img src="images/300/Picture300-29.png" alt="" /></p></li>
+<li><p>Wait until the message <strong>Starting application</strong> changes to <strong>Last deployment succeeded</strong></p>
+<p><img src="images/300/Picture300-30.png" alt="" />
+<img src="images/300/Picture300-31.png" alt="" /></p></li>
+</ul>
+<h2 id="verify-alpha-office-product-catalog-ui-deployment">Verify Alpha Office Product Catalog UI deployment</h2>
+<h3 id="step-6-verify-deployment-in-weblogic-console"><strong>STEP 6:</strong> Verify deployment in Weblogic Console</h3>
+<ul>
+<li><p>Switch back to the Java Cloud Service Console browser tab, in which you are viewing <strong>Alpha01-JCS</strong>. Click the hamburger menu <img src="images/menu.png" alt="" /> and select <strong>Open WebLogic Server Console</strong></p>
+<p><img src="images/300/Picture300-32.png" alt="" /></p></li>
+<li><p>You will be presented with the <strong>WebLogic Server Console</strong> login. Enter the following and click <strong>Login</strong></p>
+<p><strong>Username:</strong> <code>weblogic</code></p>
+<p><strong>Password:</strong> <code>Alpha2018_</code></p>
+<p><img src="images/300/Picture300-34.png" alt="" /></p></li>
+<li><p>In the <strong>Domain Structure</strong> panel click <strong>Deployments</strong></p>
+<p><img src="images/300/Picture300-35.png" alt="" /></p></li>
+<li><p>You should see the newly deployed <strong>AlphaProducts</strong> application you deployed in the previous Step.</p>
+<p><img src="images/300/Picture300-36.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7-open-ui-in-browser"><strong>STEP 7:</strong> Open UI in browser</h3>
+<ul>
+<li><p>Open a new tab in the browser and enter the following URL:</p>
+<p><code>https://&lt;Public IP of Alpha01-JCS&gt;/AlphaProducts</code></p></li>
+<li><p>You should now see the <strong>Alpha Office Product Catalog UI</strong></p>
+<p><img src="images/300/Picture300-38.png" alt="" /></p></li>
+</ul>
+<h3 id="step-8-complete-task"><strong>STEP 8:</strong> Complete Task</h3>
+<p>We have now verified that both the build and deployment of the Alpha Office Product Catalog UI is functioning properly. To finish up this part of the lab, we will mark the Issue as completed in the Sprint.</p>
+<ul>
+<li><p>Back in the Developer Cloud Service window, click <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>.</p></li>
+<li><p>Drag and drop <strong>Task 3</strong> from <strong>In Progress</strong> to <strong>Completed</strong></p>
+<p><img src="images/300/Picture300-39.png" alt="" /></p></li>
+<li><p>In the Change Progress popup click <strong>Next</strong></p></li>
+<li><p>Set number of days to <strong>1</strong> and click <strong>OK</strong></p>
+<p><img src="images/300/Picture300-40.png" alt="" /></p></li>
+<li><p>Your Sprint should now look like the following:</p>
+<p><img src="images/300/Picture300-41.png" alt="" /></p></li>
+</ul>
+<h2 id="add-dollar-sign-in-the-display-of-the-price">Add dollar sign in the display of the price</h2>
+<h3 id="step-9-import-project-into-eclipse"><strong>STEP 9:</strong> Import Project into Eclipse</h3>
+<p>Our next activity is to work on the defect issue that has been assigned to us. We will start by updating the status in the Sprint. We will be performing the majority of work in Eclipse.</p>
+<ul>
+<li><p>You should already have Eclipse running and be connected to Oracle Cloud. Click back into the <strong>Oracle Cloud</strong> connection tab. Right click on <strong>OracleConnection</strong> and select <strong>Refresh</strong></p>
+<p><img src="images/300/Picture300-42.png" alt="" /></p></li>
+<li><p>Expand <strong>Developer</strong>, Expand <strong>Alpha Office Product Catalog</strong>, Expand <strong>Code</strong>. Double click on <strong>Git Repo AlphaOfficeProductCatalogUI.git</strong> to clone the repository.</p>
+<p><img src="images/300/Picture300-43.png" alt="" /></p></li>
+<li><p><strong>Right Click</strong> on the <strong>AlphaOfficeProductCatalogUI</strong> cloned repository and click on <strong>Import Projects</strong>.</p>
+<p><img src="images/300/Picture300-44.png" alt="" /></p></li>
+<li><p>Accept the Import defaults and click <strong>Finish</strong></p>
+<p><img src="images/300/Picture300-45.png" alt="" /></p></li>
+</ul>
+<h3 id="step-10-set-defect-4-status-to-in-progress"><strong>STEP 10:</strong> Set Defect 4 Status to In Progress</h3>
+<ul>
+<li><p>click the <strong>Issues</strong> to expand, then double click on <strong>Mine</strong> to expand your list. Once you see the list of your Issues, then double click on <strong>Add dollar sign in the display of the price</strong>.</p>
+<p><img src="images/300/Picture300-46.png" alt="" />   </p></li>
+<li><p>Scroll down to the bottom of the <strong>Add dollar sign in the display of the price</strong> window. In the <strong>Actions section</strong>, and change the Actions to <strong>Accept (change status to ASSIGNED)</strong>, then click on <strong>Submit</strong>.</p>
+<p><img src="images/300/Picture300-47.png" alt="" /></p></li>
+<li><p>Optionally, if you return to the Developer Cloud Service web interface, you’ll see that the Eclipse interface caused the <strong>Defect 4</strong> to be moved to the <strong>In Progress</strong> column of the <strong>Agile > Active Sprints</strong>.</p>
+<p><img src="images/300/Picture300-48.png" alt="" /></p></li>
+</ul>
+<h3 id="step-11-fix-the-code"><strong>STEP 11:</strong> Fix the Code</h3>
+<ul>
+<li><p>Before we start making any changes to our code we will want to create a branch that will contain all of our work for this issue. Right click on <strong>AlphaProducts</strong> and select <strong>Team >
+Switch To > New Branch</strong></p>
+<p><img src="images/300/Picture300-49.png" alt="" /></p></li>
+<li><p>Enter <strong>Defect4</strong> for the Branch name, and click <strong>Finish</strong>. It may take minute to update the Maven dependencies. </p>
+<p><img src="images/300/Picture300-50.png" alt="" /></p></li>
+<li><p>Expand <strong>AlphaProducts > WebContent</strong> then double click on <strong>displayrecords.jsp</strong></p>
+<p><img src="images/300/Picture300-51.png" alt="" /></p></li>
+<li><p>On line 20 of <strong>displayrecords.jsp</strong> add <strong>$</strong> after the Price and click <strong>Save All</strong> <img src="images/SaveAll.png" alt="" />. Note: The line number is displayed at the bottom right-hand side of the Eclipse window.</p>
+<p><img src="images/300/Picture300-52.png" alt="" /></p></li>
+</ul>
+<h3 id="step-12-commit-and-push-code-to-developer-cloud-service"><strong>STEP 12:</strong> Commit and push Code to Developer Cloud Service</h3>
+<ul>
+<li><p>Right click on <strong>AlphaProducts</strong> and select <strong>Team >
+Commit</strong></p>
+<p><img src="images/300/Picture300-53.png" alt="" /></p></li>
+<li><p>Drag <strong>displayrecords.jsp</strong> from <strong>Unstaged Changes</strong> to <strong>Staged Changes</strong>.</p></li>
+<li><p>Enter <code>Added dollar sign to display of Price</code> for Commit Message. </p></li>
+<li><p>Click <strong>Commit and Push</strong></p>
+<p><img src="images/300/Picture300-54.png" alt="" /></p></li>
+<li><p>Accept defaults and click <strong>Next</strong></p>
+<p><img src="images/300/Picture300-55.png" alt="" /></p></li>
+<li><p>On Push Confirmation click <strong>Finish</strong></p>
+<p><img src="images/300/Picture300-56.png" alt="" /></p></li>
+<li><p>Click <strong>OK</strong> on Push Results</p>
+<p><img src="images/300/Picture300-57.png" alt="" /></p></li>
+</ul>
+<h2 id="create-merge-request">Create Merge Request</h2>
+<h3 id="step-13-create-merge-request"><strong>STEP 13:</strong> Create Merge request</h3>
+<ul>
+<li><p>Return to the Developer Cloud Service Dashboard in the browser. Click on <strong>Code</strong>. Select the <strong>Defect4</strong> from the branch selection dropdown, and then click on the <strong>Logs</strong> sub tab. Now view the commit made to the branch from within Eclipse.</p>
+<p><img src="images/300/Picture300-58.png" alt="" /></p></li>
+<li><p>Now that John Dunbar has completed the task of adding dollar sign, a <strong>Merge Request</strong> can be created and assigned to Lisa Jones for review. Click on <strong>Merge Requests</strong> on the navigation panel, and then click on the <strong>New Merge Request</strong> button.</p>
+<p><img src="images/300/image084.5.png" alt="" /></p></li>
+<li><p>Enter the following information into the <strong>New Merge Request</strong> and click <strong>Next</strong></p>
+<p><strong>Repository:</strong> <code>AlphaOfficeProductCatalogUI.git</code></p>
+<p><strong>Target Branch:</strong> <code>master</code></p>
+<p><strong>Review Branch:</strong> <code>Defect4</code></p>
+<p><img src="images/300/Picture300-59.png" alt="" /></p></li>
+<li><p>Enter following information into <strong>Details</strong> and click <strong>Create</strong></p>
+<p><strong>Summary:</strong> <code>Added dollar sign to the display of the price</code></p>
+<p><strong>Reviewers:</strong> <code>Logical user is Lisa Jones - Select your username</code></p>
+<p><img src="images/300/Picture300-60.png" alt="" /></p></li>
+</ul>
+<h2 id="merge-the-branch-as-lisa-jones">Merge the Branch as Lisa Jones</h2>
+<h3 id="step-14-merge-requests"><strong>STEP 14:</strong> Merge Requests</h3>
+<ul>
+<li><p>In the following steps the logical persona “Lisa” will merge the branch created by “John” into the master.</p>
+<p><img src="images/lisa.png" alt="" /></p></li>
+<li><p>on the navigation panel, click <strong>Merge Requests</strong>. Select the <strong>Assigned to Me</strong> search. After the search completes. click on the <strong>Added dollar sign to the display of the price</strong> assigned request.</p>
+<p><img src="images/300/Picture300-62.png" alt="" /></p></li>
+<li><p>Once the request has loaded, select the <strong>Changed Files</strong> tab. "Lisa" will now the opportunity to review the changes in the branch, make comments, request more information, etc. before Approving, Rejecting or Merging the Branch.</p>
+<p><img src="images/300/Picture300-63.png" alt="" /></p></li>
+<li><p>Click on the <strong>Merge</strong> button.</p>
+<p><img src="images/300/Picture300-64.png" alt="" /></p></li>
+<li><p>Leave the defaults, and click on the <strong>Create a Merge Commit</strong> button in the confirmation dialog.</p>
+<p><img src="images/300/Picture300-65.png" alt="" /></p></li>
+</ul>
+<h3 id="step-15-monitor-build-and-deployment"><strong>STEP 15:</strong> Monitor Build and Deployment</h3>
+<ul>
+<li><p>Now that the code has been committed to the master branch, <strong><em>it may take a minute or two</em></strong>, but the build and deployment will automatically start. On the navigation panel click <strong>Build</strong>, and you should see <strong>Alpha Office Product Catalog UI</strong> in the queue.</p>
+<p><img src="images/300/Picture300-66.png" alt="" /></p></li>
+<li><p>Wait a minute or two for the build to complete. The <strong>Last Success</strong> will be set to <strong>Just Now</strong> when the build completes.</p>
+<p><img src="images/300/Picture300-67.png" alt="" /></p></li>
+<li><p>On the navigation panel click <strong>deploy</strong>. The <strong>Last deployment</strong> will be set to <strong>Just Now</strong> when the deployment completes.</p>
+<p><img src="images/300/Picture300-68.png" alt="" /></p></li>
+</ul>
+<h3 id="step-16-open-ui-in-browser"><strong>STEP 16:</strong> Open UI in browser</h3>
+<ul>
+<li><p>Open a new tab in the browser and enter the following URL:</p>
+<p><code>https://&lt;Public IP of Load Balancer&gt;/AlphaProducts</code></p></li>
+<li><p>You should now see the update <strong>Alpha Office Product Catalog UI</strong></p>
+<p><img src="images/300/Picture300-69.png" alt="" /></p></li>
+</ul>
+<h3 id="step-17-complete-task"><strong>STEP 17:</strong> Complete Task</h3>
+<p>We have now verified that <strong>Alpha Office Product Catalog UI</strong> is now displaying the price correctly. To finish up this part of the lab, we will mark the Issue as completed in the Sprint.</p>
+<ul>
+<li><p>Back in the Developer Cloud Service window, click <strong>Agile</strong>, followed by clicking <strong>Active Sprints</strong>.</p></li>
+<li><p>Drag and drop <strong>Defect 4</strong> from <strong>In Progress</strong> to <strong>Completed</strong></p>
+<p><img src="images/300/Picture300-70.png" alt="" /></p></li>
+<li><p>In the Change Progress popup click <strong>Next</strong></p>
+<p><img src="images/300/Picture300-71.png" alt="" /></p></li>
+<li><p>Set number of days to 1 and click <strong>OK</strong></p>
+<p><img src="images/300/Picture300-72.png" alt="" /></p></li>
+<li><p>Your Sprint should now look like the following:</p>
+<p><img src="images/300/Picture300-73.png" alt="" /></p></li>
+<li><p>You are now ready to move the the last lab.</p></li>
+</ul>

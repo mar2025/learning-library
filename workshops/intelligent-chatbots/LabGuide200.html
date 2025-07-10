@@ -1,0 +1,105 @@
+<h1 id="integrating-instant-app-and-web-channel-in-the-cafeteriaassistance-bot">Integrating Instant App and Web channel in the CafeteriaAssistance Bot</h1>
+<h3 id="objective">Objective</h3>
+<ul>
+<li>Adding Instant App feature to the Bot.</li>
+<li>Integrate the Bot with Web Page</li>
+</ul>
+<h3 id="features-overview">Features Overview</h3>
+<p>Intelligent Bots in Oracle Mobile Cloud Enterprise (or just Bots) provide lot of features which can be used based on the requirements like Instant App, Translation Services, Bot-Agent handoff, Quality, and Channels support for the Bot like Web Channel, iOS App, Android App, Facebook Messenger, and some other channels supported using webhook.</p>
+<h3 id="step-1-adding-instant-app-feature-to-the-bot"><strong>Step 1</strong>: Adding Instant App feature to the Bot</h3>
+<p>Natural language conversations are, by their very nature, free-flowing. But they may not always be the best way for your Bot to collect information from its users. For example, some situations like entering credit card or passport details require users to enter specific and precise information. To help your Bot’s users to enter this type of information easily, your Bot can call an Instant App, which provides forms with labels, options, choices, check boxes, data fields, and other UI elements. The CafeteriaAssistance Bot calls an Instant app for the Feedback that walks users through a series of steps to provide feedback. </p>
+<p>The CafeteriaAssistance and the Instant App show you how your Bot transitions to an Instant app, how Bots pass variable values to an Instant App, and how the Instant app returns the user to the bot.</p>
+<p><img src="images/100/media/image1.png" alt="D:\Workshop_Bot\BotsLab2\Capture1.PNG" /></p>
+<p>Once you click on the Link button, you will get a form like below to fill:</p>
+<p><img src="images/100/media/image2.png" alt="" /></p>
+<p><strong>The Instant App Builder</strong></p>
+<p>You can build the Instant Apps using the Instant App Builder, which you access by clicking Instant Apps in the Bots landing page.</p>
+<p><img src="images/100/media/image3.png" alt="D:\Workshop_Bot\BotsLab2\Capture2.PNG" />
+Instant apps are made up of sets of panes, which gets displayed one at a time. You can populate these panes with various elements that can display charts or images and collect customer data using widgets like checkboxes, radio buttons, and file upload functions.
+<img src="images/100/media/image4.png" alt="D:\Workshop_Bot\BotsLab2\Capture3.PNG" /></p>
+<p>To get you started, you can customize the templates that display in the landing page. You can also start from scratch by clicking the&nbsp;<strong>New Instant App</strong>&nbsp;tile. <img src="images/100/media/image5.png" alt="This is an image of the instant app landing page." /></p>
+<p><strong>Creating an Instant App for feedback</strong></p>
+<p>Once you click new Instant app, it will provide some pre-defined templates which you can use after edit. For our CafeteriaAssistance Bot feedback, choose Customer Survey template.</p>
+<h4 id="dworkshop_botbotslab2capture4pngimages100mediaimage6png"><img src="images/100/media/image6.png" alt="D:\Workshop_Bot\BotsLab2\Capture4.PNG" /></h4>
+<h4 id="app-settings"><strong>App Settings</strong></h4>
+<p>App Settings is where you manage general information about your Instant App.</p>
+<p><strong>Name</strong></p>
+<p>The Instant App name is your internal way of identifying the specific Instant App among all your other Instant Apps on main page. The name can include letters, numbers, and special characters. The name is not exposed to the end user, as you can see in the image Internal Description below.</p>
+<p><strong>ID</strong></p>
+<p>The Instant App ID is how you reference the Instant App if you need to call it from somewhere, like from a Bot, an API, or a JavaScript Snippet. When you create a new Instant App, the ID itself is derived from the Instant App name that you enter. The ID cannot contain special characters or spaces. You can edit the ID at any point, but if you do change it, you will need to update any references to the previous ID.</p>
+<p><strong>Icon</strong></p>
+<p>An icon is the image that shows up on the Instant App tile on the main Instant Apps page. You can remove unwanted icons by clicking on the red X on the top right corner. Then, you can drag and drop an icon, add an icon via regular file lookup, or input a URL.</p>
+<p>Write Name as “CafeteriaAssistanceBotFeedback” and same will be taken by default as ID. Please make a note of the ID as you will use the same to call Instant App from the Bot YAML.</p>
+<p><img src="images/100/media/image7.png" alt="D:\Workshop_Bot\BotsLab2\Capture6.PNG" /></p>
+<p><strong>Internal Description</strong></p>
+<p>The Internal Description is what shows up on the Instant App’s tile on the main Instant Apps page as a reminder of the particular Instant App’s function.</p>
+<p><strong>Initially Active</strong></p>
+<p>When you create a new Instant App, you can set the Instant App to be Initially Active before you save it. If you set it to active, the Instant App can be activated from the Bot. If you do not set it to Initially Active, then you can always set it to Active from the Instant App tile on the main menu. You can see which apps are inactive by the Inactive display next to the Instant App name.</p>
+<p><strong>Invite Message and Link</strong></p>
+<p>The Invite Message is a pre-configured message that is sent to customers as an invitation to use the Instant App, and it is the first thing a customer sees.  Include the {link} in the position where you want the Instant App link, and do not change anything else. The message, including the link, cannot exceed 160 characters.</p>
+<p><img src="images/100/media/image8.png" alt="D:\Workshop_Bot\BotsLab2\Capture7.PNG" /></p>
+<p>Once you have followed the above given instructions, don’t forget to click on the save button.</p>
+<p>Now add the below lines after in the CafeteriaAssistanceBot lab1 YAML flow like below:</p>
+<p><strong>Now add the below YAML code in the flow:</strong></p>
+<pre><code>interactive:
+
+component: \"System.Interactive\"
+
+properties:
+
+sourceVariableList:
+
+variable: \"feedback\"
+
+id: \"CafeteriaAssistanceBotFeedback\"
+
+prompt: \"Please provide us feedback using the below link\"
+
+feedbackDone:
+
+component: \"System.Output\"
+
+properties:
+
+text: \"Thank\'s for providing your valuable feedback. Have a nice day!\"
+
+keepTurn: true
+
+transitions:
+
+return: \"feedbackDone\"
+</code></pre>
+<p>Follow the below screen for the same:</p>
+<p><img src="images/100/media/image9.png" alt="D:\Workshop_Bot\BotsLab2\Capture16.PNG" /></p>
+<p>Now click “Validate”, “Train” and “Run” button to test the Instant App:</p>
+<p><img src="images/100/media/image10.png" alt="D:\Workshop_Bot\BotsLab2\Capture17.PNG" /></p>
+<p>Now click the Link button, and you will be able to see the Feedback page like below:</p>
+<p><img src="images/100/media/image11.png" alt="" /></p>
+<p>Now fill the form and click on “Submit Feedback” button:</p>
+<p><img src="images/100/media/image12.png" alt="D:\Workshop_Bot\BotsLab2\Capture15.PNG" /></p>
+<p>Now, if you go back to the Bot you can see the response like below:</p>
+<p><img src="images/100/media/image13.png" alt="" /></p>
+<h3 id="step-2-integrating-the-bot-with-website-page-as-a-channel"><strong>Step 2</strong>: Integrating the Bot with website page as a channel</h3>
+<p><strong>Channels</strong></p>
+<p>To introduce your Bot to the users of these services, you need to configure a channel.</p>
+<p>OMCe provides channel for Facebook Messenger, Web, Android and iOS messaging platforms and a generic channel called Webhook that you can use for other messaging services. Your Bots are limited to messaging services; using one of our SDKs, you can integrate the Bot in web pages.</p>
+<p><strong>Tip:</strong></p>
+<p>Your Bot can run on any messaging service that supports Webhooks, calls that allows real-time messaging without polling. You don’t need to implement a Webhook to get your Bot running on Facebook Messenger. All you need to configure the Facebook channel is the keys that are generated by both Facebook and Bots. Setting up the Webhook channel for other messaging services require you to perform a few more tasks in addition to the channel configuration, like setting up an HTTP server with a Webhook for sending and receiving your Bot’s messages.</p>
+<p>Click on the setting option:</p>
+<p><img src="images/100/media/image25.png" alt="D:\Workshop_Bot\image2.PNG" /></p>
+<p>Now, click on “Channels”. Then, click on the green colored button called “Channel”. </p>
+<p><img src="images/100/media/image26.png" alt="D:\Workshop_Bot\BotsLab2\web1.PNG" /></p>
+<p>Provide Name as “Webchannel” or any other name. After that, click on “Channel Type”, you can see all the available channel options. In these options, select “Web”. And, then click on create green button.</p>
+<p><img src="images/100/media/image27.png" alt="D:\Workshop_Bot\BotsLab2\web4.PNG" /></p>
+<p>Now, you will get the below screen note down the App Id because you have to use this while integrating the Bot to the web page:</p>
+<p><img src="images/100/media/image28.png" alt="D:\Workshop_Bot\BotsLab2\web5.PNG" /></p>
+<p>Now, unzip the below folder and then open index.html file which is inside the html folder in any editor.</p>
+<p><a href="https://github.com/AdityaVishwekar/IntelligentChatBots/blob/master/workshops/intelligent-chatbots/images/CafeteriaAssistanceBotWebPage.zip">CafeteriaAssistanceBotWebPage.zip</a></p>
+<p>In the index.html file change the appId like below:</p>
+<p><img src="images/100/media/image30.png" alt="D:\Workshop_Bot\BotsLab2\page1.PNG" /></p>
+<p>Once you change the appId, save the file and open in any browser (preferred Mozilla Firefox). It will be seen as the below screen:</p>
+<p><img src="images/100/media/image31.png" alt="D:\Workshop_Bot\BotsLab2\webpage.PNG" /></p>
+<p>Once you click on the right-bottom corner image - ChatBot icon (marked as red in above snapshot), you can see the below screen:</p>
+<p><img src="images/100/media/image32.png" alt="D:\Workshop_Bot\BotsLab2\webpage2.PNG" /></p>
+<p>Now your ChatBot is integrated with the web page. To do testing type “ShowMenu” in Type a message and then click on the “Send” button.</p>
+<p><strong>Note:</strong> You can download all the related files from <a href="https://github.com/AdityaVishwekar/IntelligentChatBots/blob/master/workshops/intelligent-chatbots/images/All_files.zip">Github</a> </p>

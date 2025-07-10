@@ -1,0 +1,59 @@
+<p><img src="images/600/TITLE600.JPG" alt="" /></p>
+<p>Draft Version. Updated: March 13, 2018</p>
+<h1 id="adwc-lab-600-scaling-and-performance">ADWC Lab 600: Scaling and Performance</h1>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab you will scale up your Oracle Autonomous Data Warehouse Cloud (ADWC) service to have more CPUs. And you will watch a demo that shows the performance and concurrency impacts of scaling your service online.</p>
+<p>To <strong>log issues</strong>, click <a href="https://github.com/millerhoo/journey4-adwc/issues/new">here</a> to go to the github oracle repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Learn how to scale up an ADWC service</p></li>
+<li><p>Understand the performance and concurrency impacts of scaling the ADWC service online</p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account. You may your own cloud account, a cloud account that you obtained through a trial, or a training account whose details were given to you by an Oracle instructor.</li>
+</ul>
+<h1 id="scaling-and-performance-hands-on-lab">Scaling and Performance Hands-on Lab</h1>
+<h2 id="steps">Steps</h2>
+<h3 id="step-1-scaling-your-adwc-instance">STEP 1: Scaling your ADWC instance</h3>
+<ul>
+<li>Go back to the Cloud Console you used during the provisioning exercise and open the Instances screen. Click the <strong>action menu</strong> and select <strong>Scale Service</strong>.</li>
+</ul>
+<p><img src="./images/600/Picture300-2.png" alt="" /></p>
+<ul>
+<li><p>Fill in the form with the following information.</p>
+<ul>
+<li><p><strong>Type of change:</strong> Scale Up</p></li>
+<li><p><strong>CPU core count change:</strong> 2</p></li>
+<li><p><strong>Storage capacity change:</strong> 0</p></li></ul></li>
+</ul>
+<blockquote>
+  <p><strong>Note</strong> that these values are additional increments over existing CPU and storage capacity. By specifying 2 as CPU core count change, we will be adding 2 CPUs to the service.</p>
+</blockquote>
+<p>Click <strong>Scale Service</strong> after filling in the form, this will take you the Instances screen.</p>
+<p><img src="./images/600/Picture300-3.png" alt="" /></p>
+<blockquote>
+  <p><strong>Note</strong> The applications can continue running during the scale operation without downtime.</p>
+</blockquote>
+<ul>
+<li><strong>Refresh</strong> the page to see the result of the scale operation.</li>
+</ul>
+<p><img src="./images/600/Picture300-4.png" alt="" /></p>
+<ul>
+<li><strong>Click</strong> on your database name and look at the Service Overview screen to see the new number of CPUs in your database.</li>
+</ul>
+<p><img src="./images/600/Picture300-5.png" alt="" /></p>
+<p><img src="./images/600/Picture300-6.png" alt="" /></p>
+<h3 id="step-2-performance-and-concurrency-benefits-of-dynamic-scaling">STEP 2: Performance and concurrency benefits of dynamic scaling</h3>
+<ul>
+<li><p><a href="https://raw.githubusercontent.com/millerhoo/journey4-adwc/master/workshops/journey4-adwc/images/ADWC%20HOL%20-%20Scaling.mp4" target="_blank">Click here</a> to watch a demo of the performance impact of scaling up your instance. In the demo you will see that scaling up provides more concurrency for your users.</p></li>
+<li><p>The demo will show a workload that has 10 concurrent users running with the MEDIUM database service. You will see that on a 2 CPU ADWC instance 5 queries are running whereas 5 queries are waiting in the queue for resources.</p></li>
+</ul>
+<p><img src="./images/600/Picture300-7.png" alt="" /></p>
+<ul>
+<li>While the workload is running the database will be scaled up from 2 CPUs to 4 CPUs. You will see that the queries waiting in the queue are now able to start and there are no sessions waiting in the queue anymore.</li>
+</ul>
+<p><img src="./images/600/Picture300-8.png" alt="" /></p>
+<ul>
+<li>ADWC allows you to dynamically scale your service online when you require more concurrency and performance.</li>
+</ul>

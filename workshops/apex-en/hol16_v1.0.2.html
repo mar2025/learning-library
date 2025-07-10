@@ -1,0 +1,152 @@
+<h1 id="unit-16-migrating-application-development-between-environments">Unit 16: Migrating Application Development Between Environments</h1>
+<p>This exercise includes two hands-on-labs and uses the Demo Projects application.</p>
+<p><strong>HOL 16-1 Importing an Application</strong>: In this lab, you import an application along with the underlying database objects and seed data.</p>
+<p><strong>HOL 16-2 Migrating your Application Development Between Environments:</strong> In this lab, you export an application and then use SQL Workshop to export database objects and seed data.</p>
+<p>Steps 3 through 15 in this lab are optional. You need a target APEX environment to perform these steps. To test these steps you might want to use a different Workspace. If you want to import the application in to the same Workspace, then you might have to choose a different application ID. Installing database objects and seed data will still fail, as they are already created.</p>
+<h2 id="hol-16-1-importing-an-application">HOL 16-1: Importing an Application</h2>
+<p>In this lab, you import an application in to your Workspace. Along with the application definition, you also install the supporting objects.</p>
+<p>This lab uses the application export file <strong>demo projects app export-unit 15.sql</strong> which is the application export file for HOL 15-5. If you have not performed any of the previous hands-on labs in this course, you can use the steps in this lab to create the corresponding application. You simply need to replace the application export file name in Step 2 with the one appropriate for that particular hands-on-lab.</p>
+<p><strong>Note</strong>:</p>
+<ul>
+<li><p>The steps in this lab assume that you are importing an application within the same Workspace that you used in the previous hands-on labs. If you are importing the application in to a different Workspace (either on the same or different instance), the steps might slightly differ.</p></li>
+<li><p>This lab assumes that you want to reuse the same application ID from the export file.</p></li>
+<li><p>The underlying database objects and seed data for this application are packaged along with the application definition in a single file. After installing the application, you can view the installation scripts for the database objects and data by clicking <strong>Supporting Objects</strong> on the application home page.</p></li>
+<li><p>Installation of supporting objects and seed data may fail if you already have the database objects created in your schema. If you do not need your existing objects and seed data, then you can simply run the <strong>drop_objects.sql</strong> before proceeding with the steps in this lab. However, note that this script will completely delete all of your underlying database objects along with the data.</p></li>
+</ul>
+<p><strong>Note</strong>: If you want to take a backup of your existing application along with the database objects and seed data, perform steps 1 and 2 in HOL 16-2.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and click <strong>Import</strong>.
+<img src="images/hol16/image3.png" alt="imp1" /></p></li>
+<li><p>Click <strong>Choose File</strong>.
+Navigate to your working directory and double-click the <strong>demo projects app export-unit 15.sql</strong> file. Then, click <strong>Next</strong>.
+<strong>Note</strong>: To import any other APEX application export in to your Workspace, you select that file in this step.</p>
+<p><img src="images/hol16/image4.png" alt="imp2" /></p></li>
+<li><p>On the File Import Confirmation page, click <strong>Next</strong>.</p></li>
+<li><p>For Install As Application, you can choose Auto Assign New Application ID. The steps might slightly differ if you select this option.
+However, in this lab, you select <strong>Reuse Application ID 103 from Export File</strong>.
+Click <strong>Install Application</strong>.
+<img src="images/hol16/image5.png" alt="imp4alt" /></p></li>
+<li><p>Click <strong>Replace Application</strong>.
+If you select Auto Assign New Application ID in Step 4, you do not see this warning.
+<img src="images/hol16/image6.png" alt="imp_alt1" /></p></li>
+<li><p>On the Supporting Objects page, click <strong>Next</strong>.
+<img src="images/hol16/image7.png" alt="imp_alt2" /></p></li>
+<li><p>On the Confirmation page, click <strong>Install</strong>.
+<img src="images/hol16/image8.png" alt="imp_alt3" /></p></li>
+<li><p>The application is successfully installed now.
+Click <strong>Run Application</strong>.
+<img src="images/hol16/image9.png" alt="imp_alt4" />
+<strong>Note</strong>: The installation of database objects and seed data may succeed or fail, depending on what database objects are already created. If installation fails, click <strong>Install Summary</strong>, and review the errors. The errors should relate to objects already existing, such as ORA-00955: name is already used by an existing object.</p></li>
+</ol>
+<h2 id="hol-16-2-migrating-your-application-development-between-environments">HOL 16-2: Migrating your Application Development between Environments</h2>
+<p>In this lab, you export an application definition, underlying database objects along with the seed data.
+Steps 3 through 15 are optional. After exporting application from the current development environment, you log in to the target Application Express environment, import the application and then load the tables along with data.</p>
+<ol>
+<li><p>From your current development environment, export an application. Navigate to App Builder and in the report, select the application you want to export. In this lab, you export the Demo Projects application that you created until HOL 15-5. Alternatively, you can export the application that you imported in HOL 16-1.</p>
+<p>a)  On your application home page, click <strong>Export / Import</strong>.
+    <img src="images/hol16/image10.png" alt="1a" /></p>
+<p>b)  Select <strong>Export</strong> and click Next.
+    <img src="images/hol16/image11.png" alt="1b" /></p>
+<p>c)  Make sure you select <strong>Yes</strong> for Export Private Reports and Export with Original IDs.
+    Click <strong>Export</strong>.
+    <img src="images/hol16/image12.png" alt="1c1" />
+    <img src="images/hol16/image13.png" alt="1c2" /></p>
+<p>d)  The application export file is saved in your local directory as a .sql file. You might want to rename the file.
+    Note: Depending on the browser, if you see a Save dialog, click <strong>Save</strong>.</p></li>
+
+<li><p>Now, you export database objects and data. Perform the following steps:</p>
+<p>a.  In your Workspace, click <strong>SQL Workshop &gt; Utilities</strong>.
+    Under Utilities, select <strong>Generate DDL</strong>.
+    <img src="images/hol16/image14.png" alt="2a" /></p>
+<p>b.  Click <strong>Create Script</strong>.
+    <img src="images/hol16/image15.png" alt="2b" /></p>
+<p>c.  Verify the Schema and click <strong>Next</strong>.
+    <img src="images/hol16/image16.png" alt="2c" /></p>
+<p>d.  For Output, select <strong>Save As Script File</strong>.
+    For Object Type, select <strong>Table</strong> and click <strong>Next</strong>.
+    <img src="images/hol16/image17.png" alt="2d" /></p>
+<p>e.  Select all of the relevant tables for this application.
+    Select the following tables:</p>
+<ul>
+<li><p><strong>DEMO_PROJECTS</strong></p></li>
+<li><p><strong>DEMO_PROJ_COMMENTS</strong></p></li>
+<li><p><strong>DEMO_PROJ_CONSTRAINTS</strong></p></li>
+<li><p><strong>DEMO_PROJ_MILESTONES</strong></p></li>
+<li><p><strong>DEMO_PROJ_STATUS</strong></p></li>
+<li><p><strong>DEMO_PROJ_TASKS</strong></p></li>
+<li><p><strong>DEMO_PROJ_TASK_LINKS</strong></p></li>
+<li><p><strong>DEMO_PROJ_TASK_TODOS</strong></p></li>
+<li><p><strong>DEMO_PROJ_TEAM_MEMBERS</strong></p>
+<p>Click Generate <strong>DDL</strong>.
+<img src="images/hol16/image18.png" alt="2e" /></p></li></ul>
+<p>f.  For Script Name, enter a meaningful name, for example <strong>Create Demo Project Tables</strong>. Optionally enter a description. </br></p>
+<p>Click <strong>Create Script</strong>.</p>
+<p>g.  The DDL is now saved as a script under SQL Scripts.
+    Click the <strong>Edit</strong> icon (pencil) on the recently created script.</p>
+<p>h.  Click <strong>Download</strong>.
+    <img src="images/hol16/image19.png" alt="2g" /></p>
+<p>i.  Click <strong>Save</strong>.</p>
+<p>j.  Now, create a script to include trigger definitions and then download the script.
+    Repeat steps a through i and input the following:</p>
+<ul>
+<li><p>Select Trigger for Object Type</p></li>
+<li><p>Enter <strong>Create Demo Projects Triggers</strong> for script name.</p></li>
+<li><p>Select the following triggers:</p>
+<ul>
+<li><p><strong>biu_demo_proj_status</strong></p></li>
+<li><p><strong>biu_demo_proj_team_members</strong></p></li>
+<li><p><strong>biu_demo_projects</strong></p></li>
+<li><p><strong>biu_demo_proj_milestones</strong></p></li>
+<li><p><strong>biu_demo_proj_tasks</strong></p></li>
+<li><p><strong>biu_demo_proj_task_todos</strong></p></li>
+<li><p><strong>biu_demo_proj_task_links</strong></p></li>
+<li><p><strong>biu_demo_proj_comments</strong></p></li></ul>
+<p><img src="images/hol16/image20.png" alt="2j" /></p></li></ul>
+<p>k.  Now that you have both the DDL scripts created and downloaded, you need to unload the table data.
+    Under SQL Workshop &gt; Utilities, select <strong>Data Workshop</strong>.
+    <img src="images/hol16/image21.png" alt="2k" /></p>
+<p>l.  Under Data Unload, click <strong>to XML</strong>. </br>
+    <img src="images/hol16/image22.png" alt="2l" /></p>
+<p>m.  On the Unload to XML – Columns page, select the application table for <strong>Table</strong>. See step <strong>e</strong> above for the Demo Projects table list. </br>
+    Use the Ctrl key to select all of the columns in a table and click <strong>Unload Data</strong>.
+    <img src="images/hol16/image23.png" alt="2m" /></p>
+<p>n.  Enter a meaningful name for the file and click <strong>Save</strong>.</p>
+<p>o.  Repeat steps m and n for each of the Demo Projects application tables.</p></li>
+
+<li><p>You have exported the application definition, database objects and data from your current development environment. Now first navigate to the target APEX environment and install the application definition.
+Log into your target Application Express development environment and perform the following steps:</p>
+<p>a)  Navigate to <strong>App Builder</strong> and click <strong>Import</strong></p>
+<p>b)  Click <strong>Choose File</strong>.
+    Navigate to your working directory and double-click the application export file. Then, click <strong>Next</strong>.</p>
+<p>c)  On the File Import Confirmation page, click <strong>Next</strong>.</p>
+<p>d)  For Install As Application, specify your choice for Application ID. The default is Auto Assign New Application ID.</p>
+<p>e)  Click <strong>Install Application</strong>. The application is successfully installed now.</p></li>
+
+<li><p>Log into your target Application Express development environment.</p></li>
+<li><p>Use SQL Workshop to load and run the script file, for creating the table and trigger definitions</p>
+<p>a)  Click SQL Workshop.</p>
+<p>b)  Click SQL Scripts.</p></li>
+
+<li><p>Upload the script to create the tables first.</p>
+<p>a)  Click <strong>Upload</strong>.</p>
+<p>b)  For File, click <strong>Choose File</strong>.</p>
+<p>c)  In the operating system File Browser, navigate to the subdirectory where you saved the table script file. Locate <strong>Create Demo Project Tables.sql</strong>, and double-click the file.</p>
+<p>d)  Click <strong>Upload</strong>.</p></li>
+
+<li><p>Click the <strong>Run</strong> icon to the right of the script you uploaded.
+Click Run Now.</p></li>
+<li><p>Click the View Results icon for the script you just ran.</p></li>
+<li><p>To create triggers, repeat steps 5 through 8 and select the <strong>Create Demo Projects Triggers.sql</strong>.</p></li>
+<li><p>Currently the tables you created do not have any data. Use the XML files you created to populate the tables.</p>
+<p><strong>Note</strong>: The order in which the tables are populated is crucial, to ensure referential integrity does not prevent records loading.
+ For example, loading any records into DEMO_PROJECTS before loading the records into DEMO_PROJ_TEAM_MEMERS will fail, as the ASSIGNEE column in DEMO_PROJECTS must correspond to an existing record in DEMO_PROJ_TEAM_MEMBERS.</p>
+<p>In the Application Express main toolbar, click the SQL Workshop Down Arrow, select Utilities and then select <strong>Data Workshop</strong>.</p></li>
+<li><p>Under Data Load, locate <strong>XML Data</strong>. Click <strong>XML Data</strong>.</p></li>
+<li><p>For Table, select <strong>DEMO_PROJ_TEAM_MEMBERS</strong>.
+For File, click <strong>Choose File</strong>, locate the file for DEMO_TEAM_MEMBERS, and double-click the file.</p></li>
+<li><p>Click <strong>Load Data</strong>.</p></li>
+<li><p>Load data for all of the Demo Projects tables. Repeat steps 10 through 13 for each of the table.</p></li>
+<li><p>Now, you can run and review the application.</p></li>
+</ol>
+<hr />
+<p><img src="images/hol16/image24.png" alt="Snap3" /></p>

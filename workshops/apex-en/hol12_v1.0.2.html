@@ -1,0 +1,158 @@
+<h1 id="unit-12-using-themes-and-theme-styles">Unit 12: Using Themes and Theme Styles</h1>
+<p>This exercise includes three hands-on-labs.</p>
+<p>HOL 12-1 and HOL 12-2 use the Demo Projects application.</p>
+<p>HOL 12-3 uses the Budget App application.</p>
+<p><strong>HOL 12-1 Updating the Navigation List</strong>: The Demo Projects application uses the Universal Theme. In this lab, you update the navigation list and while creating a list entry, specify user defined attributes.</p>
+<p><strong>HOL 12-2 Updating the Team Members Pages</strong>: In this hands-on lab, you create a Classic Report region and update the report template to use Cards. You specify template options.</p>
+<p><strong>HOL 12-3 Creating and Using Theme Styles</strong>: In this hands-on lab, you use the Budget App application. You use the Theme Roller to save the changes made to the Theme Style and then enable users to apply this Theme Style in the running application.</p>
+<h2 id="hol-12-1-updating-the-navigation-list">HOL 12-1: Updating the Navigation List</h2>
+<p>In this hands-on lab, you update the navigation list in the Demo Projects application. You create a new list entry and make this new entry as a parent list entry to the Logout entry.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and run the <strong>Demo Projects</strong> application.
+In the Developer Toolbar, click *<em>Application&lt;</em>n*&gt;.</p></li>
+<li><p>On the application home page, click <strong>Shared Components</strong>.
+Under Navigation, click <strong>Lists</strong>. </br>
+<img src="images/hol12/image3.png" alt="1a" /></p></li>
+<li><p>In the Lists report, click <strong>Desktop Navigation Bar</strong>.
+<img src="images/hol12/image4.png" alt="1b" /></p></li>
+<li><p>Click <strong>Create List Entry</strong>.
+<img src="images/hol12/image5.png" alt="1c" /></p></li>
+<li><p>To create a new list entry, input the following:</p>
+<ul>
+<li><p>Image/Class - enter <strong>fa-user</strong></p></li>
+<li><p>List Entry Label - enter <strong>&APP_USER.</strong></p></li>
+<li><p>Target Type - select <strong>URL</strong></p></li>
+<li><p>URL Target - enter <strong>#</strong></p></li>
+<li><p>User Defined Attributes 2 (List Item CSS Classes) - enter <strong>has-username</strong></p></li></ul>
+<p>Click <strong>Create List Entry</strong>.
+<img src="images/hol12/image6.png" alt="1d1" /> </br></p>
+<p><img src="images/hol12/image7.png" alt="1d2" /></p>
+<p><strong>Note</strong>: To determine the User Defined Attributes, click List Template Attributes. </br></p>
+<p>For Theme: Select <strong>Universal Theme 42</strong>, and for List Template: Select <strong>Navigation Bar</strong>. </br></p>
+<p>Verify that #A02# Description is List Item CSS Classes. </br>
+<img src="images/hol12/image8.png" alt="1d" />
+</br></p></li>
+<li><p>Place the Logout entry under the new Application User entry. In the report, click the <strong>Log Out</strong> list entry.
+<img src="images/hol12/image9.png" alt="1e" /></p></li>
+<li><p>For Parent List Entry, select <strong>&APP_USER.</strong>.
+Click <strong>Apply Changes</strong>.
+<img src="images/hol12/image10.png" alt="1f" /></p></li>
+<li><p>Click <strong>Run Page 1</strong>.
+<img src="images/hol12/image11.png" alt="1g" /></p></li>
+<li><p>The home page looks like:</p>
+<p><img src="images/hol12/image12.png" alt="1h" /></p></li>
+</ol>
+<h2 id="hol-12-2-updating-the-team-member-pages">HOL 12-2: Updating the Team Member Pages</h2>
+<p>In this lab, you update the Team Member pages by replacing the Interactive Grid with a card region. This will provide a directory of your team members' contact information and roles as though you had a stack of their business cards at hand.</p>
+<ol>
+<li><p>In the Demo Projects application runtime environment, click <strong>Team Members</strong> in the navigation menu.
+In the Developer Toolbar, click <strong>Edit Page 2</strong>.</p></li>
+<li><p>Update the page properties from Demo Proj Team Members to <strong>Team Members</strong>.
+In the Property Editor, with the page selected, for CSS - Inline, copy and paste the following code:</p>
+<pre><code>  .t-Card-icon img {
+
+  width: 48px;
+
+  height: 48px;
+
+  }
+</code></pre>
+<p><img src="images/hol12/image13.png" alt="2a" />
+ <strong>Note</strong>: This CSS ensures that the images are all the same size (48 pixels) irrespective of the size of the image uploaded.</p></li>
+<li><p>This page is an Interactive Grid. You want to convert the report type to a Classic Report type, so that you can utilize one of the built-in templates. Update the Interactive Grid to a Classic Report, and apply the Cards template to display the team members in a more visually pleasing manner.
+Click the <strong>DEMO_PROJ_TEAM_MEMBERS</strong> region and input the following:</p>
+<ul>
+<li><p>Identification: Title - enter <strong>Team Members</strong></p></li>
+<li><p>Identification: Type - select <strong>Classic Report</strong></p></li></ul>
+<p>In the SQL Query attribute, click the <strong>Code Editor</strong> button.
+<img src="images/hol12/image14.png" alt="2a1" /></p></li>
+<li><p>In the Code Editor window, delete the existing SQL Query and copy and paste the following code:</p>
+<pre><code>  select id
+
+  , full_name card_title
+
+  , profile card_text
+
+  , nvl(email,' ') card_subtext
+
+  , dbms_lob.getlength('PHOTO_BLOB') card_initials
+
+  , apex_util.prepare_url('f?p='||:APP_ID||':3:'||:APP_SESSION||'::::P3_ID:'||id) card_link
+
+  , photo_filename
+
+  , photo_mimetype
+
+  , photo_charset
+
+  , photo_last_updated
+
+  from demo_proj_team_members
+
+  order by created
+</code></pre>
+<p>Then, click <strong>OK</strong>.</p>
+<p><strong>Note</strong>: This SQL query uses specific column names, such as card_title, which correspond to the columns required for the Card template.
+ <img src="images/hol12/image15.png" alt="2b" /></p></li>
+<li><p>The report region has the required Type and SQL Source, now the report needs to be enhanced to display an image and utilize the correct report template.
+The DEMO_PROJ_TEAM_MEMBERS table includes columns which store an image and the image's associated properties. You can use this information to show the team Member's stored image, instead of the member's initials in the cards report.
+Under the Rendering &gt; Regions, locate Team Members, and expand the <strong>Columns</strong> node.
+Select the <strong>CARD_INITIALS</strong> column, and input the following:</p>
+<ul>
+<li><p>Identification: Type - select <strong>Display Image</strong></p></li>
+<li><p>BLOB Attributes: Table Name - select <strong>DEMO_TEAM_MEMBERS</strong></p></li>
+<li><p>BLOB Attributes: BLOB Column - select <strong>PHOTO_BLOB</strong></p></li>
+<li><p>BLOB Attributes: Primary Key Column 1 - select <strong>ID</strong></p></li>
+<li><p>BLOB Attributes: Mime Type Column - select <strong>PHOTO_MIMETYPE</strong></p></li>
+<li><p>BLOB Attributes: Filename Column - select <strong>PHOTO_FILENAME</strong></p></li>
+<li><p>BLOB Attributes: Last Updated Column - select <strong>PHOTO_LAST_UPDATED</strong>
+<img src="images/hol12/image16.png" alt="2c1" /></br></p></li></ul>
+<p><img src="images/hol12/image17.png" alt="2c2" /></p></li>
+<li><p>Under Rendering, expand the Team Members region. Select <strong>Attributes</strong>.
+In the property editor, locate Appearance. For Template, select <strong>Cards</strong>.
+Click <strong>Template Options</strong>.
+<img src="images/hol12/image18.png" alt="2d" /></p></li>
+<li><p>In the Template Options dialog:</p>
+<ul>
+<li><p>Style - select <strong>Basic</strong></p></li>
+<li><p>Icons - select <strong>Display Initials</strong></p></li>
+<li><p>Layout - select <strong>4 Columns</strong></p></li>
+<li><p>Body Text - select <strong>3 Lines</strong> </br></br>
+<img src="images/hol12/image19.png" alt="2e" /></p></li></ul>
+<p>Click <strong>OK</strong>.</p></li>
+<li><p>Click <strong>Save</strong>. Then, click <strong>Save and Run</strong> Page to see the new cards.
+<img src="images/hol12/image20.png" alt="2f" /></p></li>
+</ol>
+<h2 id="hol-12-3-using-themes-and-theme-styles">HOL 12-3: Using Themes and Theme Styles</h2>
+<p>In this hands-on lab, you use the Theme Roller to save a Theme Style. Then, you enable end users to apply this style while running the application.</p>
+<ol>
+<li><p>Navigate to <strong>App Builder</strong> and then run the <strong>Budget App</strong> application.
+In the Developer Toolbar, click <strong>Theme Roller</strong>.
+<img src="images/hol12/image21.png" alt="3a" /></p></li>
+<li><p>The current Theme Style is Vita.
+Under Global Colors, click the color swatch to select new colors.
+To edit a specific component, expand a group and select new colors or styling of the component you wish to edit.
+Modify the look by specifying colors of your choice and preview the changes. Once you are done, click <strong>Save As</strong>.</p>
+<p><img src="images/hol12/image22.png" alt="3b" /></p></li>
+<li><p>In the Save As dialog, enter <strong>Vita (Copy)</strong> for Style Name and click <strong>Save</strong>. </br>
+<img src="images/hol12/image23.png" alt="3c" /></p></li>
+<li><p>Click <strong>OK</strong>. </br>
+<img src="images/hol12/image24.png" alt="3d" /></p></li>
+<li><p>Click Application &lt;<em>n</em>&gt; in the Developer Toolbar.
+In the application home page, click <strong>Shared Components</strong>.
+Under User Interface, click <strong>User Interface Attributes</strong>.</p>
+<p><img src="images/hol12/image25.png" alt="3e" /></p></li>
+<li><p>Under User Interfaces, click the <strong>Edit</strong> icon for Desktop.
+<img src="images/hol12/image26.png" alt="3f" /></p></li>
+<li><p>Under Attributes, select <strong>Yes</strong> for Enable End Users to Choose Theme Style.
+Notice that the new Theme Style you saved is displayed under Theme Style list.
+Click <strong>Apply Changes</strong>.
+<img src="images/hol12/image27.png" alt="3g" /></p></li>
+<li><p>Now, run the application. At the bottom of the page, click the <strong>Customize</strong> link.</p></li>
+<li><p>Using the Customize dialog, users can specify their Theme Style while running the application. Select the Theme Style that you saved in step 3 above, and click <strong>Apply Changes</strong>.</p>
+<p><img src="images/hol12/image28.png" alt="3i" /></p></li>
+<li><p>The Theme Style is applied and you see a message that says Preferences changed for user &lt;<em>username</em>&gt;.
+ <img src="images/hol12/image29.png" alt="3j" /></p></li>
+</ol>
+<hr />
+<p><img src="images/hol12/image30.png" alt="Snap3" /></p>

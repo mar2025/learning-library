@@ -1,0 +1,275 @@
+<p><img src="images/100/image1.png" alt="" /></p>
+<p>Update March 27, 2017</p>
+<h2 id="introduction">Introduction</h2>
+<p>This is the first of several labs that are part of the Oracle Public Cloud Database Cloud Service workshop. These labs will give you a basic understanding of the Oracle Database Cloud Service and many of the capabilities around administration and database development.</p>
+<p>This lab will walk you through creating a new Database Cloud Service instance. After the database has been created, you will connect into the Database image using the ssh private key and familiarize yourself with the image layout. Next you will learn how to create an ssh configuration file that can be used to tunnel simultaneously multiple ports to a
+remote OPC instance. Using the tunnels, you will learn how to access various Database consoles.</p>
+<ul>
+<li>To log issues and view the Lab Guide source, go to the <a href="https://github.com/oracle/learning-library/tree/master/workshops/dbcs">github oracle</a> repository.</li>
+</ul>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li><p>Create Database Cloud Service</p></li>
+<li><p>SSH Configuration</p></li>
+<li><p>Explore VM and Consoles</p></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires a VNC Viewer to connect to an Image running on Oracle's IaaS Compute Service.</li>
+</ul>
+<h2 id="client-image">Client Image</h2>
+<p>For the Database Cloud Service Workshop we will be using a Client Image that will represent your on-premises environment. In this image we have installed an Oracle 12.1.0.2 database that contains a Pluggable database that we will be migrating to our Oracle Public Cloud Database instance. The image also contains SQL Developer 4.1 that will be used to connect to both your local and cloud database.</p>
+<p>The Client Image is a VM that is running on Oracle's IaaS Compute service.</p>
+<p><strong>Retrieve Public IP for Client Image</strong></p>
+<h3 id="step-1-login-to-your-oracle-cloud-account"><strong>STEP 1</strong>: Login to your Oracle Cloud account</h3>
+<ul>
+<li><p>Open a browser and go to the following URL:</p>
+<p>https://cloud.oracle.com</p></li>
+<li><p>Click <strong>Sign In</strong> in the upper right hand corner of the browser</p>
+<p><img src="images/100/image2.png" alt="" /></p></li>
+<li><p><strong>IMPORTANT</strong> - Under my services, select from the drop down list the correct data center and click on <strong>My Services</strong>. If you are unsure of the data center you should select, and this is an in-person training event, <strong><em>ask your instructor</em></strong> which <strong>Region</strong> to select from the drop down list. If you received your account through an Oracle Trial, your Trial confirmation email should provide a URL that will pre-select the region for you.</p>
+<p><img src="images/100/image3.png" alt="" /></p></li>
+<li><p>Enter the <strong>identity domain</strong> and click <strong>Go</strong></p>
+<p><strong>NOTE</strong>: The <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you from your instructor.</p>
+<p><img src="images/100/image4.png" alt="" /></p></li>
+<li><p>Once your Identity Domain is set, enter your User Name and Password and click <strong>Sign In</strong></p>
+<p><strong>NOTE</strong>: the <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you from your instructor.</p>
+<p><img src="images/100/image5.png" alt="" /></p></li>
+<li><p>You will be presented with a Dashboard summarizing all of your available services.</p>
+<p><img src="images/100/image6.png" alt="" /></p></li>
+<li><p>If all of your services are not visible, <strong>click</strong> on <strong>Customize Dashboard.</strong> You can then add services to the dashboard by clicking <strong>Show</strong>. If you do not want to see a specific service click <strong>Hide</strong>.</p>
+<p><img src="images/100/image7.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2--access-compute-service-console"><strong>STEP 2</strong>:  Access Compute Service Console</h3>
+<ul>
+<li><p>From the main dashboard, click on the <strong>Compute</strong> service link</p>
+<p><img src="images/100/image8.png" alt="" /></p></li>
+<li><p>From this page you can view general information about this Compute Cloud Service. Click on the <strong>Open Service Console</strong> button.</p>
+<p><img src="images/100/image9.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3--copy-public-ip-for-client-image"><strong>STEP 3</strong>:  Copy Public IP for Client Image</h3>
+<ul>
+<li><p>The Compute Service Console will show you all running VM's. Note: If a compute service is not visible, as shown below, the following task will provide instructions on how to change to the correct zone.</p>
+<p><img src="images/100/image10.png" alt="" /></p></li>
+<li><p>Identity Domains will have multiple sites. Please ask you instructor which site the Client Image is running on. If needed, click the <strong>Site</strong> drop down to access the <strong>Site Selector,</strong> and choose the correct site.</p>
+<p><img src="images/100/image11.png" alt="" /></p></li>
+<li><p>Now that you have the correct site selected, find the instance name <strong>ClientImage01</strong> and copy down the <strong>Public IP</strong></p>
+<p><img src="images/100/image12.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4--connect-to-client-image-using-vnc-viewer"><strong>STEP 4</strong>:  Connect to Client Image using VNC Viewer</h3>
+<ul>
+<li><p>If you do not already have a VNC Viewer installed on your computer, you will want to download a Viewer, or ask the instructor for the Real VNC Viewer executable. To run the VNC Viewer, enter the Public IP you just copied, along with appending either the display port <strong>:443</strong> or <strong>:10</strong>. Ask your instructor which port is active for this workshop. Next, click <strong>Connect</strong></p>
+<p><img src="images/100/image13.png" alt="" /></p></li>
+<li><p>Enter the password you used to log into the Oracle Cloud domain, and click <strong>OK</strong></p>
+<p><img src="images/100/image14.png" alt="" /></p></li>
+<li><p>You are now connected to the Client Image that will be used for all labs. You might want to place the image in full screen mode so that there is no confusion as to which environment you are working in. Note: the use of the compute “Client” image provides us the opportunity to simulate an on premises environment. We have pre-installed several tools, a database, etc. within this compute Client image. Of course, you could install the same tools and database on your laptop or in an on premises environment to accomplish the same functionality provided by the Client Image, but to reduce the time required to complete the workshop, the Client Image just simplifies the configuration you'd be required to perform.</p>
+<p><img src="images/100/image15.png" alt="" /></p></li>
+</ul>
+<h2 id="create-database-cloud-service">Create Database Cloud Service</h2>
+<p><strong>Create Database Cloud Service Instance</strong></p>
+<h3 id="step-5--login-to-your-oracle-cloud-account"><strong>STEP 5</strong>:  Login to your Oracle Cloud account</h3>
+<ul>
+<li><p>From within the VNC Session, open <strong>Chrome</strong>
+<img src="images/100/image16.png" alt="" /> and go to the following URL:</p>
+<p>https://cloud.oracle.com</p></li>
+<li><p>Click <strong>Sign In</strong> in the upper right hand corner of the browser</p></li>
+<li><p><strong>IMPORTANT</strong> - Under my services, select from the drop down list the correct data center and click on <strong>My Services</strong>. If you are unsure of the data center you should select, and this is an in-person training event, <strong><em>ask your instructor</em></strong> which <strong>Region</strong> to select from the drop down list. If you received your account through an Oracle Trial, your Trial confirmation email should provide a URL that will pre-select the region for you.</p>
+<p><img src="images/100/image3.png" alt="" /></p></li>
+<li><p>Enter the <strong>identity domain</strong> and click <strong>Go</strong></p>
+<p><strong>NOTE</strong>: The <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you from your instructor.</p>
+<p><img src="images/100/image4.png" alt="" /></p></li>
+<li><p>Once your Identity Domain is set, enter your User Name and Password and click <strong>Sign In</strong></p>
+<p><strong>NOTE</strong>: the <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you from your instructor.</p>
+<p><img src="images/100/image5.png" alt="" /></p></li>
+<li><p>You will be presented with a Dashboard summarizing all of your available services.</p>
+<p><img src="images/100/image17.png" alt="" /></p></li>
+</ul>
+<h3 id="step-6--create-database-cloud-service"><strong>STEP 6</strong>:  Create Database Cloud Service</h3>
+<ul>
+<li><p>From the main dashboard, click on the <strong>Database</strong> service link</p>
+<p><img src="images/100/image18.png" alt="" /></p></li>
+<li><p>From this page you can view general information about this Database Cloud Service. Click on the <strong>Open Service Console</strong> button.</p>
+<p><img src="images/100/image19.png" alt="" /></p></li>
+<li><p>From the console, click <strong>Create Service</strong></p>
+<p><img src="images/100/image20.png" alt="" /></p></li>
+</ul>
+<h3 id="step-7--identify-the-instance-configuration"><strong>STEP 7</strong>:  Identify the Instance Configuration</h3>
+<p>When providing a name, please note you may have another service instance already created in your account, so the name must be unique.</p>
+<ul>
+<li><p>Enter <code>Apha01B-DBCS</code> in the <strong>Service Name</strong> field</p>
+<p><img src="images/100/image21.png" alt="" /></p></li>
+<li><p>Enter <code>Alpha Office Database Cloud Service</code> in the <strong>Description</strong> field</p>
+<p><img src="images/100/image22.png" alt="" /></p></li>
+<li><p>Select <strong>Oracle Database Cloud Service</strong> for the <strong>Service Level</strong></p>
+<p><img src="images/100/image28.5.png" alt="" /></p></li>
+<li><p>Select <strong>Hourly</strong> for the <strong>Metering Frequency</strong></p>
+<p><img src="images/100/image29.png" alt="" /></p></li>
+<li><p>Select <strong>Oracle Database 12c Release 1</strong> for the <strong>Software    Release</strong></p>
+<p><img src="images/100/image27.png" alt="" /></p></li>
+<li><p>Select <strong>Enterprise Edition</strong> for <strong>Software Edition</strong></p>
+<p><img src="images/100/image28.png" alt="" /></p></li>
+<li><p>Select <strong>Database Type</strong> for <strong>Single Instance</strong></p>
+<p><img src="images/100/image29.5.png" alt="" /></p></li>
+<li><p>Your selections should appear as below. Click on the <strong>Next</strong> Button to navigate to the Service Details page.</p>
+<p><img src="images/100/image30.png" alt="" /></p></li>
+<li><p>In the <strong>Database Configuration section</strong>, provide the following:</p>
+<p><strong>DB Name (SID)</strong>: <code>ORCL</code></p>
+<p><strong>PDB Name</strong>: <code>PDB1</code></p>
+<p><strong>Administration Password</strong>: <code>Alpha2014_</code></p>
+<p><strong>Confirm Password</strong>: <code>Alpha2014_</code></p>
+<p><strong>Usable Database Storage (GB)</strong>: <code>Use Default (25)</code></p>
+<p><strong>Total Data File Storage (GB)</strong>: <code>Use Default (88.5)</code></p>
+<p><strong>Compute Shape</strong>: <code>OC3 - 1 OCPU, 7.5 GB RAM</code></p>
+<p><img src="images/100/image32.png" alt="" /></p></li>
+<li><p>Click on the <strong>Edit</strong> button next to the <strong>SSH Public Key</strong> field</p>
+<p><img src="images/100/image23.png" alt="" /></p></li>
+<li><p>Click on the <strong>Choose File button</strong> next to the <strong>Key File Name</strong> field</p>
+<p><img src="images/100/image24.png" alt="" /></p></li>
+<li><p>Click on the <strong>OPCWorkshop</strong> folder, then double click on the <strong>lab</strong> folder</p>
+<p><img src="images/100/image25.png" alt="" /></p></li>
+<li><p>Scroll down the list of files, and select the <strong>labkey.pub</strong> file.  Then click on the <strong>Open button</strong>.</p>
+<p><img src="images/100/image26.png" alt="" /></p></li>
+<li><p>Click on the <strong>Enter</strong> button to accept the new labkey. </p></li>
+<li><p>In the <strong>Backup and Recovery Configuration</strong> section, provide the following:</p>
+<p><strong>Backup Destination</strong>: <code>Both Cloud Storage and Local Storage</code></p>
+<p><strong>Cloud Storage Container</strong>: <code>Storage-&lt;Your Domain Name&gt;/Alpha01B_DBCS_SC</code>  Replace <Your Domain Name></p>
+<p><strong>Cloud Storage User Name</strong>: <code>&lt;Your Cloud user name&gt;</code></p>
+<p><strong>Cloud Storage Password</strong>: <code>&lt;Your Cloud password&gt;</code></p>
+<p><strong>Check</strong> the <strong>Create Cloud Storage Container</strong> box</p>
+<p><img src="images/100/image33.png" alt="" /></p></li>
+<li><p>Your Service Details screen should appear as follows: Click on the <strong>Next</strong> button</p>
+<p><img src="images/100/image34.png" alt="" /></p></li>
+<li><p>Confirm the Database Cloud Service configuration is correct, and click on the <strong>Create</strong> button:</p>
+<p><img src="images/100/image35.png" alt="" /></p></li>
+<li><p>You should now see your new Database Cloud Service instance <strong>Alpha01B-DBCS</strong></p>
+<p><img src="images/100/image36.png" alt="" /></p></li>
+<li><p>The creation of the DBCS instance will take approximately 20 minutes. While your DBCS instance is being created, you can monitor the progress by clicking on the <strong>Status</strong> link, and view the current status.</p>
+<p><strong>NOTE</strong>: We will continue with the lab by utilizing <strong>Alpha01A-DBCS</strong> DBCS instance already created. Alpha01A-DBCS was created following the exact steps you just performed.</p>
+<p><img src="images/100/image37.png" alt="" /></p></li>
+</ul>
+<h2 id="ssh-configuration-and-image-exploration">SSH Configuration and Image Exploration</h2>
+<p><strong>Record IP address of Database Cloud Service</strong></p>
+<p>In the upcoming steps you will record the IP addresses of the Virtual Machine on which the cloud service runs. You will then update the ssh configuration file for <strong>Alpha01A-DBCS</strong>.</p>
+<h3 id="step-8--record-the-ip-address-of-the-database-cloud-service"><strong>STEP 8</strong>:  Record the IP address of the Database Cloud Service</h3>
+<ul>
+<li><p>Click on <strong>Alpha01A-DBCS</strong> from the list of Database Instances</p>
+<p><img src="images/100/image38.png" alt="" /></p></li>
+<li><p>Note the IP address of <strong>Alpha01A-DBCS</strong>. In this example, we will note the IP address of 129.144.19.238</p>
+<p><img src="images/100/image39.png" alt="" /></p></li>
+</ul>
+<p><strong>Create SSH config file and start tunnels</strong></p>
+<h3 id="step-9--run-the-ssh-configuration-script-to-start-tunnels-in-the-background"><strong>STEP 9</strong>:  Run the SSH configuration script to start tunnels in the background</h3>
+<p>For security reasons, the default Oracle Public Cloud network configuration is locked down. You have the option of opening up ports to the various servers in your environment by ether using the Compute Cloud Service console and creating/re-using protocol definitions and access rules, OR you can create SSH tunnels to the specific server/port combinations as needed. This lab and the rest of the labs require access via development tools and the browser to various admin consoles running on the cloud servers themselves.</p>
+<p>In this step you will run a script that creates and configures a SSH file used to connect to your various servers. Once the script is generated, it will create SSH tunnels in the background with connections via selected ports used in this and other labs.</p>
+<ul>
+<li><p>Open a terminal Window by clicking the terminal icon in the screen's top menu bar:</p>
+<p><img src="images/100/image40.png" alt="" /></p></li>
+<li><p>Change Directories into the lab directory </p>
+<pre><code>cd lab
+</code></pre></li>
+<li><p>Type <strong>./setssh.sh DBONLY</strong></p>
+<pre><code>./setssh.sh DBONLY
+</code></pre>
+<p>If you make an error, you'll see:</p>
+<p><img src="images/100/image41.jpeg" alt="" /></p></li>
+<li><p>If the script runs successfully, you will enter the DB IP address previoulsly obtained. Click <strong>OK</strong>.</p>
+<p><img src="images/100/image42.png" alt="" /></p></li>
+<li><p>The script will try a test connection to your server. If it encounters errors, you will be re-prompted to enter the IP address. If successful, a SSH configuration file is created and a SSH session to the DB server will be placed in the background. A successful completion will show:</p>
+<p><img src="images/100/image43.png" alt="" /></p></li>
+<li><p>Click <strong>OK</strong></p></li>
+<li><p>You can look at the generated configuration file by typing <strong>gedit myssh</strong> within the terminal window. Notice under the <strong>Host AlphaDBCS</strong> section of the config file that the DBCS IP address has been inserted in 5 areas defining LocalForward ports (1526, 443, 4848, and 5500). These ports can now be accessed locally using “localhost” in connection information or URLs.</p>
+<p>Example:</p>
+<p><img src="images/100/image44.png" alt="" /></p></li>
+<li><p>Close the edit session.</p></li>
+<li><p>You can also enter: <code>ps -ef | grep DBCS</code> to see the running background session.</p>
+<pre><code>ps -ef | grep DBCS
+</code></pre>
+<p><img src="images/100/image45.jpeg" alt="" /></p></li>
+</ul>
+<h2 id="explore-db-image-via-ssh">Explore DB image via SSH</h2>
+<h3 id="step-10--open-a-new-ssh-connection-to-browse-the-database-image"><strong>STEP 10</strong>:  Open a new SSH Connection to browse the database image</h3>
+<p>In the previous step, SSH tunnels were started in the background to support our browser and development tools. In this step, we will demonstrate how to do an explicit SSH into your DB cloud server.</p>
+<ul>
+<li><p>In the same terminal window you ran the setssh.sh script; enter the following command using the IP address for your DBCS cloud instance.</p>
+<pre><code>ssh -o StrictHostKeyChecking=no -i ./labkey oracle@&lt;your-DB-IP&gt;;
+</code></pre>
+<p><img src="images/100/image46.png" alt="" /></p></li>
+<li><p>Now that you are connected to <strong>Alpha01A-DBCS,</strong> let's look around. Enter the <strong>df</strong> command to see mounted disks.</p>
+<p><img src="images/100/image47.png" alt="" /></p></li>
+<li><p>Issue the following command to view the Database environment variable.</p>
+<pre><code>env | grep ORA
+</code></pre>
+<p><img src="images/100/image48.png" alt="" /></p></li>
+<li><p>Now let's change directories to the Oracle Home and list the directories.</p>
+<pre><code>cd $ORACLE_HOME
+ls
+</code></pre>
+<p><img src="images/100/image49.png" alt="" /></p></li>
+<li><p>Type <strong>exit</strong> to close the remote Database Image ssh session.</p>
+<p><strong>NOTE:</strong> By typing exit once, you are only exiting the Cloud DBCS Service. Do not exit the Terminal window, as we have the SSH Tunnels running in the background, and these SSH Tunnels will be used during the remainder of the lab.</p></li>
+</ul>
+<h2 id="access-the-database-consoles">Access the Database Consoles</h2>
+<p><strong>Access DB Monitor, Apex, EM Consoles</strong></p>
+<p><strong><em>NOTE</em></strong>: For any of the URLs mentioned in this section you can also use the predefined browser links. If blocked ports on the network cause an issue loading any of these consoles, the predefined browser links will help by routing the traffic through the SSH tunnel that should already be open:</p>
+<p><img src="images/100/image50.png" alt="" /></p>
+<h3 id="step-11--access-database-monitor"><strong>STEP 11</strong>:  Access Database Monitor</h3>
+<p>To gain access to the various consoles used by the Database Cloud Service you have two options. You can open up the port on which the monitor is listening, or you can create a SSH tunnels to the specific server/port combinations as needed. We have already created the SSH tunnel, and you will use that tunnel to access most of the consoles.</p>
+<p>In this step you will open the port 443 on the VM using a pre-create access rule and protocol definition.</p>
+<ul>
+<li><p>If not already on the <strong>Alpha01A-DBCS</strong> details page, navigate back to Database Cloud Service console and click on <strong>Alpha01A-DBCS</strong> to get to this page.</p>
+<p><img src="images/100/image51.png" alt="" /></p></li>
+<li><p>At the top of the page click <img src="images/100/image52.png" alt="" /> next to the instance name <strong>Alpha01A-DBCS</strong> and select <strong>Access Rules</strong>.</p>
+<p><img src="images/100/image53.png" alt="" /></p></li>
+<li><p>From this screen you see all the <strong>Access Rules</strong> that have been created for this instance</p>
+<p><img src="images/100/image54.png" alt="" /></p></li>
+<li><p>The Rule named <strong>ora_p2_httpssl</strong> is setup to open port 443 to the public internet. Click on the <strong>hamburger menu</strong> <img src="images/100/image55.png" alt="" /> for this rule and select <strong>Enable</strong></p>
+<p><img src="images/100/image56.png" alt="" /></p></li>
+<li><p>On Enable Access Rule popup window, click <strong>Enable</strong>.</p></li>
+</ul>
+<p><img src="images/100/image57.png" alt="" /></p>
+<ul>
+<li><p>You should now see that the Access Rule <strong>ora_p2_httpssl</strong> is enabled. Click on <strong>Oracle Database Cloud Service</strong> link at the top of the window to navigate back to the Service Console</p>
+<p><img src="images/100/image58.png" alt="" /></p></li>
+<li><p>For the <strong>Alpha01A-DBCS</strong> instance click the <strong>hamburger menu</strong> <img src="images/100/image55.png" alt="" /> and select <strong>Open DBaaS Monitor Console.</strong></p>
+<p><img src="images/100/image59.png" alt="" /></p></li>
+<li><p>If you get a security warning, click <strong>ADVANCED</strong> followed by <strong>Proceed to…</strong></p>
+<p><img src="images/100/image60.png" alt="" /></p></li>
+<li><p>When prompted, enter <strong>dbaas_monitor</strong> for the <strong>User Name</strong> and <strong>Alpha2014_</strong> for the <strong>Password</strong>.</p>
+<p><img src="images/100/image61.png" alt="" /></p></li>
+<li><p>Once connected to the Database Monitor Console, feel free to explore the various screens.</p>
+<p><img src="images/100/image62.png" alt="" /></p></li>
+</ul>
+<h3 id="step-12--access-enterprise-manager-db-express"><strong>STEP 12</strong>:  Access Enterprise Manager DB Express</h3>
+<ul>
+<li><p>On the browser, open a new tab, and <strong>enter</strong> the following <strong>URL</strong> to access the <strong>EM Express</strong> page. The first time the URL is used, it can take a minute for the console to load. <strong>Note</strong>: The setssh.sh script that you ran earlier in this lab created the ssh tunnel that will cause all traffic referencing localhost:5500 to actually be routed to the database cloud service.</p>
+<pre><code>https://localhost:5500/em
+</code></pre></li>
+</ul>
+<p><img src="images/100/image63.png" alt="" /></p>
+<ul>
+<li><p>If you get a security warning, click <strong>ADVANCED</strong> followed by <strong>Proceed to localhost (unsafe)</strong></p>
+<p><img src="images/100/image64.png" alt="" /></p></li>
+<li><p>On the EM login page enter the following and click on <strong>Login</strong>:</p>
+<p><strong>User Name</strong>: <code>sys</code></p>
+<p><strong>Password</strong>: <code>Alpha2014_</code></p>
+<p><strong>Select</strong> the <strong>as sysdba</strong> box.</p>
+<p><img src="images/100/image65.png" alt="" /></p></li>
+<li><p>Feel free to explore the Enterprise Manager console.</p>
+<p><img src="images/100/image66.png" alt="" /></p></li>
+</ul>
+<h3 id="step-13--access-apex-monitor"><strong>STEP 13</strong>:  Access Apex Monitor</h3>
+<ul>
+<li><p>Enter the following URL into a browser window to access the <strong>Apex console</strong> (click to add a security exception if necessary). <strong>Note</strong>: All traffic to the default https port (443) on local host is also routed through the ssh tunnel to the database cloud service.</p>
+<p><a href="https://localhost/apex/pdb1/">https://localhost/apex/pdb1/</a></p>
+<p><img src="images/100/image67.png" alt="" /></p></li>
+<li><p>If you get a security warning, click <strong>ADVANCED</strong> followed by <strong>Proceed to localhost (unsafe)</strong></p>
+<p><img src="images/100/image64.png" alt="" /></p></li>
+<li><p>Once the Apex login window is displayed, <strong>enter the following</strong> and click on <strong>Sign In</strong>:</p>
+<p><strong>Workspace</strong>: <code>internal</code></p>
+<p><strong>Username</strong>: <code>ADMIN</code></p>
+<p><strong>Password</strong>: <code>Alpha2014_</code></p>
+<p><img src="images/100/image68.png" alt="" /></p></li>
+<li><p>You are now connected to Apex. Feel free to explore the menu options.</p>
+<p><img src="images/100/image69.png" alt="" /></p></li>
+<li><p>You are now ready to move to the next lab.</p></li>
+</ul>

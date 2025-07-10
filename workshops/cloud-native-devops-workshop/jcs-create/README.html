@@ -1,0 +1,57 @@
+<h2 id="commonimagescustomerlogopng"><img src="../common/images/customer.logo.png" alt="" /></h2>
+<h1 id="oracle-cloud-native-devops-workshop">ORACLE Cloud-Native DevOps workshop</h1>
+<h2 id="create-java-cloud-service-instance-using-user-interface">Create Java Cloud Service instance using user interface</h2>
+<h3 id="introduction">Introduction</h3>
+<p>By using Oracle Java Cloud Service, you can quickly create and configure an Oracle WebLogic Server domain and set up your Java EE application environment without worrying about setting up any infrastructure or platform details yourself. All Oracle Java Cloud Service instances that you create are also preconfigured to use your database deployment in Oracle Database Cloud Service, and an object storage container that you create in your Oracle Storage Cloud Service.</p>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>create Java Cloud Service using the user interface.</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Oracle Public Cloud Service account including Java, Database and Storage Cloud Service</li>
+<li>Oracle Java Cloud Service uses Oracle Database Cloud Service to host the Oracle Fusion Middleware component schemas required by Oracle Java Required Files (JRF). Prior to creating an Oracle Java Cloud Service instance, <a href="../dbcs-create/README.md">use your Oracle Database Cloud Service subscription to create a database deployment</a>. As part of the instance creation process, Oracle Java Cloud Service provisions this database deployment with the Oracle JRF schemas.</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<p><a href="../common/sign.in.to.oracle.cloud.md">Sign in</a> to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. On the dashboard click the hamburger icon on the Java tile. Select <strong>Open Service Console</strong>.</p>
+<p><img src="images/01.png" alt="" /></p>
+<p>This is the Java Cloud Service Console page. If this is the first time opening Java console then Welcome page will appear. In this case click <strong>Go to Console</strong> button.</p>
+<p><img src="images/02.png" alt="" /></p>
+<p>To create new instance click <strong>Create Service</strong> button.</p>
+<p><img src="images/03.png" alt="" /></p>
+<p>Select subscription type. Select the fully managed Oracle Java Cloud Service and the desired billing format. For more details about subscription types see the <a href="https://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-31F00F2C-221F-4069-8E8A-EE48BFEC53A2.htm#JSCUG-GUID-98DD6CE1-480F-4AA9-8131-A1D3D274440F">documentation</a>.
+<img src="images/create.jcs.03.png" alt="" /></p>
+<p>Select the latest 12c Software Release.</p>
+<p><img src="images/05.png" alt="" /></p>
+<p>Select the Enterprise Edition software edition.</p>
+<p><img src="images/06.png" alt="" /></p>
+<p>The last input page is the Service Details page. The following parameters have to be provided:</p>
+<ul>
+<li><strong>Service Name</strong>: the name of the service instance e.g. techco</li>
+<li><strong>Shape</strong>: number of OCPU and size of the RAM. Choose the smallest (default) one.</li>
+<li><strong>Description</strong>: any description for your service.</li>
+<li><strong>Cluster size</strong>: to save resources leave the default 1. Which means one managed server.</li>
+<li><strong>Domain Partitions</strong>: Create mutitenant instance. Select 1 to enable partitioning.</li>
+<li><strong>SSH Public Key</strong>: public key which will be uploaded to the VM during the creation. It allows to connect to the VM through ssh connection using the private key. Use the same publicKey what was generated for Database Cloud Service instance. Click on Edit button and select <a href="../dbcs-create/README.md">previously saved (during Database Cloud Service creation)</a> <code>GIT_REPO_LOCAL_CLONE/cloud-utils/publicKey</code>. You can also copy the content of <em>publicKey</em> into Key Value field. If you don't have or want to  to create different keypair select <strong>Create a New Key</strong> option and download the newly generated keypair for later usage.
+<img src="images/07.png" alt="" /></li>
+<li><strong>Enable Administration Console</strong>: because this instance will be available on public internet the default is that the WebLogic Admin console is not enabled. Do not forget to check in to get access to the Admin console.</li>
+<li><strong>Username</strong>: username of WebLogic administrator. For demo purposes you can use: weblogic</li>
+<li><strong>Password</strong>: WebLogic administrator's password. Don't forget to note the provided password.</li>
+<li><strong>Deploy Sample Application</strong>: deploy the sample application. It can be useful to test accessibility (correct LB configuration, etc.) of the Java Cloud Service Instance.</li>
+<li><strong>Database Configuration / Name</strong>: Database Cloud Service name to store WebLogic repository data. Basically the list populated with database services within the same identity domain.</li>
+<li><strong>Database Configuration / PDB Name</strong>: pluggable database service identifier of the Database Cloud Service instance -provided above- which will be used to store repository schema. If you have choosen default (PDB1) during Database Cloud Service creation then leave the default here too.</li>
+<li><strong>Database Configuration / Administrator User Name</strong>: DBA admin to create repository schema for Java Cloud Service instance. Enter: sys.</li>
+<li><strong>Database Configuration / Password</strong>: DBA admin password you provided during Database Cloud Service creation.</li>
+<li><strong>Database Configuration / For Application Schema</strong>: It is an option to add different database service instance accessibility. For example different database used by the application and different for Java Cloud Service instance repository. You can configure later another Database Cloud Service, but here it is easier to define.</li>
+<li><strong>Provision Load Balancer</strong>: the save resources for sample application we will not create Load Balancer instance. Leave default: No</li>
+<li><strong>Cloud Storage Container</strong>: the name of the container for Database Cloud Service instance. The format is the following: Storage-IDENTITYDOMAIN/CONTAINERNAME. The container don't need to be created in advance, because -see below- there is an option to create automatically. Now give the same container what you provided (created) earlier for Database Cloud Service instance.</li>
+<li><strong>Cloud Storage User Name and Password</strong>: the credentials for storage. Usually it is the same what was used to sign in to Oracle Cloud Services.</li>
+<li><strong>Create Cloud Storage Containers</strong>: if the container defined above does not exist then check in.</li>
+</ul>
+<p><img src="images/08.png" alt="" /></p>
+<p>For more details about parameters see the <a href="https://docs.oracle.com/cloud/latest/jcs_gs/JSCUG/GUID-31F00F2C-221F-4069-8E8A-EE48BFEC53A2.htm#JSCUG-GUID-88BD737C-8DA9-419A-8DBF-489BDFF9C512">documentation</a>. Click <strong>Next</strong>.</p>
+<p>The final page is the summary page about the configuration before submit the instance creation request. Click <strong>Create</strong> to start the provisioning of the new service instance.
+<img src="images/09.png" alt="" /></p>
+<p>When the request has been accepted the Java Cloud Service Console page appears and shows the new instance. The instance now is in Maintenance (Progress) mode. Click <strong>In Progress</strong> link to get more information about the status.
+<img src="images/10.png" alt="" /></p>

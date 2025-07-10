@@ -1,0 +1,223 @@
+<p><img src="images/studentguide/Picture-Title.png" alt="" /><br />
+Update: January 28, 2017</p>
+<h2 id="trial-account-student-guide">Trial Account Student Guide</h2>
+<p>This Oracle Trial Account Student Guide will provide you with the instructions nessesary to install the Client Tools used during this workshop. This Workshop will allow you to gain exposure to the Oracle Developer Cloud Service, the Oracle Application Container Cloud Service, and open source products such as Eclipse, Maven, Git, and Brackets. <strong><em>Complete Steps 1 and 2</em></strong></p>
+<h2 id="1-oracle-cloud-environment-setup">1. Oracle Cloud Environment Setup</h2>
+<p>If you are using an <strong>Oracle Trial/Try It</strong> account, there is an <strong><em>Account Configuration</em></strong> Step you must perform before attempting the Hands on Workshop labs.  </p>
+<ul>
+<li>You must <strong>Configure Your Storage Replication Policy</strong>. After you receive your account credentials, you can set the replication policy by follow the steps in the <strong><em>Setting the Storage Replication</em></strong> section of this document. </li>
+</ul>
+<h2 id="2-client-enviroment-options">2. Client Enviroment Options</h2>
+<p>Your client enviroment <strong><em>must be configured prior</em></strong> to attempting the Hands on Workshop, or you will not be able to complete the Workshop labs. </p>
+<p>You have two options for configuring your workshop client environment. </p>
+<ul>
+<li><strong><em>Option 1</em></strong>: You can install Virtual Box and download and run a pre-configured <strong>Virtual Box Image</strong>. </li>
+<li>Refer to the <strong><em>Virtual Box Client Installation</em></strong> section of this document to use this option</li>
+<li><strong>This option is best</strong>, if you don't want to worry about installing and configuring multiple Open Source Software tools on your laptop. </li>
+<li><strong><em>Option 2</em></strong>: You can <strong>install and configure</strong> Eclipse, Brackets and Git on your laptop.</li>
+<li>Refer to the <strong><em>Configure Client Tools Locally</em></strong> section of this document to use this option.</li>
+<li><strong>This option is best</strong> if you want to install and configure the opensource software on your laptop, or your corporate standards will not let you install a hypervisor, or your laptop's resorces are not adequate to run virtual images. </li>
+</ul>
+<h1 id="configure-your-storage-replication-policy">Configure Your Storage Replication Policy</h1>
+<h3 id="login-to-your-oracle-cloud-account">Login to your Oracle Cloud Account</h3>
+<ul>
+<li><p>From any browser, go to the URL:
+<code>https://cloud.oracle.com</code></p></li>
+<li><p>click <strong>Sign In</strong> in the upper right hand corner of the browser</p>
+<p><img src="images/100/Picture100-1.png" alt="" /></p></li>
+<li><p><strong>IMPORTANT</strong> - Under my services, select from the drop down list the correct data center and click on <strong>My Services</strong>. If you are unsure of the data center you should select, and this is an in-person training event, <strong><em>ask your instructor</em></strong> which <strong>Region</strong> to select from the drop down list. If you received your account through an Oracle Trial, your Trial confirmation email should provide a URL that will pre-select the region for you.</p></li>
+</ul>
+<p><img src="images/100/Picture100-2.png" alt="" /></p>
+<ul>
+<li>Enter your identity domain and click <strong>Go</strong>.</li>
+</ul>
+<p><strong>NOTE:</strong> The <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you by the instructor or within your Trial confirmation email.</p>
+<pre><code>![](images/100/Picture100-3.png)
+</code></pre>
+<ul>
+<li><p>Once your Identity Domain is set, enter your User Name and Password and click <strong>Sign In</strong></p>
+<p><img src="images/100/Picture100-3.5.png" alt="" /></p></li>
+<li><p>You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><img src="images/100/Picture100-4.png" alt="" /></p></li>
+<li><p>If all your <strong>Storage</strong> cloud service is not visible, <strong>click</strong> on the <strong>Customize Dashboard</strong>, you can add services to the dashboard by clicking <strong>Show.</strong> For this workshop, you will want to ensure that you are showing at least the <strong>Application Container, Developer and Storage</strong> cloud services. If you do not want to see a specific service, click <strong>Hide</strong></p>
+<p><img src="images/100/Picture100-5.png" alt="" /></p></li>
+</ul>
+<h3 id="checkset-storage-replication-policy">Check/Set Storage Replication Policy</h3>
+<p>Depending on the state of your Cloud Account, you may need to set the replication policy, if it has not been previously set. In this step you will go to the Storage Cloud Service to check on the status of the Replicaton Policy. </p>
+<ul>
+<li><p>Click on the <strong>Storage</strong> Cloud Service
+<img src="images/100/Picture-01.png" alt="" /></p></li>
+<li><p>Click on the <strong>Open Service Console</strong> icon at the top of the screen.</p>
+<p><img src="images/100/Picture-01.5.png" alt="" /></p></li>
+<li><p>If the follow dialog is displayed, care must be taking when setting your replication policy, because it cannot be changed. Take the default and click on the <strong>Set Policy</strong> button. If the message is not displayed, your replication policy has already been set, and your Cloud Account is ready for the Workshop.</p>
+<p><img src="images/100/Picture-02.5.png" alt="" /></p></li>
+<li><p>Your replication policy is now set, and you can close your browser window. </p></li>
+</ul>
+<h1 id="virtual-box-client-installation">Virtual Box Client Installation</h1>
+<p>As an alternative to installing Eclipse, Brackets and Git on your laptop, you can follow these steps to download a Virtual Box image that will contain all those products pre-integrated together.</p>
+<h3 id="hardware-requirements">Hardware Requirements</h3>
+<ul>
+<li><p>You will need a machine capable of running the wokrshop image within Oracle Virtual Box (MAC or PC / Minumum of 50GB of free storage / 8GB RAM)</p></li>
+<li><p>You will need full Administrator privileges on your machines, and in some cases will need to set Hardware Virtualization in the BIOS.</p></li>
+<li><p>Hardware Virtualization needs to be enabled in the BIOS to properly run Virtual Box.  If you getting virtualization errors, reboot into the BIOS and make sure that the setting to enable Hardware Virtualization is enabled. </p></li>
+<li><p>The latest version of Virtual Box should be installed and tested prior to the workhop.</p></li>
+</ul>
+<h3 id="copy-ova-file">Copy OVA file</h3>
+<p><strong>Note</strong>: you will download all 6 zip files. You can then use software such as winzip or 7zip to automatically unzip all 6 files into a single *.ova file that can be imported into virtual box. </p>
+<ul>
+<li><p><a href="https://www.virtualbox.org/wiki/Downloads">Download</a> and install Virtual box </p></li>
+<li><p>Download this workshops <a href="https://publicdocs-corp.documents.us2.oraclecloud.com/documents/link/LFF42D5B385ADB4324B055CBF6C3FF17C1177E4725F3/folder/FA853951DE14FED12E559568F6C3FF17C1177E4725F3/_VM">Virtual box OVA zip files</a>, and unzip.</p></li>
+</ul>
+<h3 id="unzip-and-import-ova-file">Unzip and import OVA File</h3>
+<ul>
+<li><p>Startup <strong>Oracle Virtual Box</strong></p>
+<p><img src="images/studentguide/Picture22.png" alt="" /></p></li>
+<li><p>From top left menu select <strong>File -> Import Appliance</strong></p>
+<p><img src="images/studentguide/Picture23.png" alt="" /></p></li>
+<li><p>Click on <strong>browse</strong> icon to select file to import.</p></li>
+<li><p>Navigate to the unzipped OVA file, and Click <strong>Open</strong></p>
+<p><img src="images/studentguide/Picture24.png" alt="" /></p></li>
+<li><p>Once the File is selected click <strong>Next</strong> to continue.</p>
+<p><img src="images/studentguide/Picture25.png" alt="" /></p></li>
+<li><p>Keep all the defaults and click <strong>Import</strong></p>
+<p><img src="images/studentguide/Picture26.png" alt="" /></p></li>
+<li><p>Wait for import to complete. The time required to import will vary depending on the speed of your hard disk.</p>
+<p><img src="images/studentguide/Picture27.png" alt="" /></p></li>
+</ul>
+<h3 id="start-virtual-box-image">Start Virtual Box Image</h3>
+<ul>
+<li>After completion of the import, you should see the Oracle Public Cloud image in a Powered Off state. The default settings will work, but if you are familiar with Virtual Box, you are welcome to change any of the settings.</li>
+</ul>
+<p><img src="images/studentguide/Picture28.png" alt="" /></p>
+<ul>
+<li><p>With the <strong>Oracle Public Cloud</strong> selected, click <strong>Start</strong>.</p>
+<p><img src="images/studentguide/Picture29.png" alt="" /></p></li>
+<li><p>After a few minutes you will have a running image that will be used for all of the labs.</p>
+<p><img src="images/studentguide/Picture30.png" alt="" /></p></li>
+</ul>
+<h1 id="configure-client-tools-locally">Configure Client Tools Locally</h1>
+<h2 id="verify-your-version-of-the-java-jdk">Verify your version of the Java JDK</h2>
+<p>Eclipse requires that you have the <strong>JDK 8</strong> installed.</p>
+<h3 id="jdk-verification-on-a-mac">JDK Verification on a MAC</h3>
+<p><strong>Note</strong>: Eclipse requires that you have the a Java JDK 8 installed. Even if you have a JRE version 8, you still need to verify that you have a JDK 8 installed. </p>
+<ul>
+<li>Open Terminal window and execute the following command: </li>
+</ul>
+<pre><code>ls /Library/java/JavaVirtualMachines/
+</code></pre>
+<ul>
+<li>If you do not have a JDK 1.8 folder, you will need to download the <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK 8</a> from the Oracle Technology Network website, and install.</li>
+</ul>
+<h3 id="jdk-verification-on-windows">JDK Verification on Windows</h3>
+<ul>
+<li>On Windows, open a <strong>cmd</strong> window and enter <code>java -version</code> </li>
+</ul>
+<pre><code>C:\Users\usr&gt;java -version
+java version "1.8.0_121"
+Java(TM) SE Runtime Environment (build 1.8.0_121-b13)
+Java HotSpot(TM) Client VM (build 25.121-b13, mixed mode, sharing)
+</code></pre>
+<ul>
+<li>If JDK/<strong>Java version 1.8</strong> is not installed,  you will need to download a <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">JDK</a> from the Oracle Technology Network website, and install.</li>
+</ul>
+<h2 id="download-and-install-eclipse">Download and Install Eclipse</h2>
+<h3 id="download-eclipse">Download Eclipse</h3>
+<p><strong><em>Note</em></strong>: If you already have Eclipse installed, you will still want to install and use the version documented below, for this version of Eclipse contains the <strong>Oracle Enterprise Pack for Eclipse</strong>, which will be used during the workshop.</p>
+<ul>
+<li><p>Go to the <a href="http://www.oracle.com/technetwork/developer-tools/eclipse/downloads/index.html">Eclipse</a> installation website</p></li>
+<li><p>Accept the <strong>licensing agreement</strong>, and then select the <strong>Neon</strong> version of Eclipse required for your operating system.</p>
+<p><img src="images/studentguide/Picture1.png" alt="" /></p></li>
+<li><p>Once you’ve downloaded eclipse, extract the zip file and install.</p></li>
+</ul>
+<h3 id="optionally-configure-proxies-if-behind-a-firewall">Optionally Configure Proxies (if behind a firewall)</h3>
+<p>If you are running Eclipse behind a firewall and need to configure the proxy setting, there are several updates to be made. First, you need to ensure that Eclipse’s proxy is set, next you need to update the maven proxy setting, and then finally, you need to ensure that the Oracle Plugin will work with your proxy settings.</p>
+<ul>
+<li><p>To set configure Eclipse’s proxy, open Eclipse and navigate to the Properties menu. Depending on the operating system, this drop down is found either from the <strong>Eclipse > Preferences, or Window > Preferences</strong></p>
+<p><img src="images/studentguide/Picture2.png" alt="" /></p></li>
+<li><p>From the preferences panel, enter “<strong>proxy</strong>” into the search window, and click on <strong>Network Connections</strong>. Select <strong>Native</strong> for the Active Provider. This setting works well, but it requires that you have the proxy setting configured correctly on the system running Eclipse – e.g. Windows, MAC OS or Linux. Selecting Manual should also work, but some of the plugins require the underlying operating system’s proxy to be configured.</p>
+<p><img src="images/studentguide/Picture3.png" alt="" /></p></li>
+<li><p>To test that your connection works, select the menu option <strong>Window > Show View > Other</strong></p>
+<p><img src="images/studentguide/Picture4.png" alt="" /></p></li>
+<li><p>Type “<strong>web</strong>” in the search field, select <strong>Internal Web Browser</strong> and click on <strong>OK</strong></p>
+<p><img src="images/studentguide/Picture5.png" alt="" /></p></li>
+<li><p>Enter a <strong>URL</strong> into the browser and press <strong>enter</strong> to test your proxy settings.</p></li>
+</ul>
+<p><img src="images/studentguide/Picture6.png" alt="" /></p>
+<h3 id="optionally-update-the-eclipse--maven-proxy-if-behind-a-firewall">Optionally Update the Eclipse / Maven proxy (if behind a firewall)</h3>
+<ul>
+<li><p>From the <strong>Eclipse > Preference or Window > Preferences</strong> panel, enter <strong>Maven</strong> into the search box. Click on the Maven User Settings. Make note of the directory where the settings.xml file is to be located. In the example below, the Maven User Settings are to be located in the <strong>/home/oracle/.m2</strong> directory</p>
+<p><img src="images/studentguide/Picture7.png" alt="" /></p></li>
+<li><p>Close Eclipse    </p></li>
+<li><p>If the directory does not exist where the settings.xml file is to be located, <strong>create the directory</strong>. In this example, we will create the <strong>.m2</strong> directory. </p></li>
+<li><p>Also, create the <strong>settings.xml</strong> file, if it does not exist. Add the following to the settings.xml file (NOTE: you will need to use your correct <strong>Host, Port, nonProxyHosts, username and Password settings</strong>):</p></li>
+</ul>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"&gt;
+&lt;proxies&gt;
+&lt;proxy&gt;
+&lt;active&gt;true&lt;/active&gt;
+&lt;protocol&gt;http&lt;/protocol&gt;
+&lt;username&gt;proxyuser&lt;/username&gt;
+&lt;password&gt;proxypass&lt;/password&gt;
+&lt;host&gt;www-proxy.us.oracle.com&lt;/host&gt;
+&lt;port&gt;80&lt;/port&gt;
+&lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;
+&lt;/proxy&gt;
+&lt;proxy&gt;
+&lt;active&gt;true&lt;/active&gt;
+&lt;protocol&gt;https&lt;/protocol&gt;
+&lt;username&gt;proxyuser&lt;/username&gt;
+&lt;password&gt;proxypass&lt;/password&gt;
+&lt;host&gt;www-proxy.us.oracle.com&lt;/host&gt;
+&lt;port&gt;80&lt;/port&gt;
+&lt;nonProxyHosts&gt;local.net|some.host.com&lt;/nonProxyHosts&gt;
+&lt;/proxy&gt;
+&lt;/proxies&gt;
+&lt;/settings&gt;
+</code></pre>
+<ul>
+<li>Reload Eclipse to use the new maven settings</li>
+</ul>
+<h2 id="download-installing-brackets-and-git">Download Installing Brackets and Git</h2>
+<h3 id="download-git">Download Git</h3>
+<ul>
+<li><p>Go to the following URL: https://git-scm.com/downloads</p>
+<p><img src="images/studentguide/Picture8.png" alt="" /></p></li>
+<li><p>Select your OS. In our example, we will show how to install on Windows. Click <strong>Windows</strong> Download and click <strong>Save File</strong></p>
+<p><img src="images/studentguide/Picture9.png" alt="" /></p></li>
+<li><p>Select your download location and click <strong>Save</strong>. We will use D:\Software    </p>
+<p><img src="images/studentguide/Picture10.png" alt="" /></p></li>
+<li><p>Open Windows Explorer and navigate you where you downloaded the Git executable. Double click on the Git executable to start the install process.</p>
+<p><img src="images/studentguide/Picture11.png" alt="" /></p></li>
+<li><p>Run through the installation process</p>
+<p><img src="images/studentguide/Picture12.png" alt="" /></p></li>
+</ul>
+<h3 id="download-brackets-text-editor">Download Brackets Text Editor</h3>
+<ul>
+<li><p>Go to the following URL: http://brackets.io    </p>
+<p><img src="images/studentguide/Picture13.png" alt="" /></p></li>
+<li><p>Click <strong>Download Brackets 1.X</strong> then click <strong>Save File</strong></p>
+<p><img src="images/studentguide/Picture14.png" alt="" /></p></li>
+<li><p>Select you download location and click <strong>Save</strong>. We will use D:\Software</p>
+<p><img src="images/studentguide/Picture15.png" alt="" /></p></li>
+<li><p>Open Windows Explorer and navigate you where you downloaded Brackets. Double click on the Brackets executable to start the install process.</p></li>
+</ul>
+<p><img src="images/studentguide/Picture16.png" alt="" /></p>
+<ul>
+<li>Run through the installation process</li>
+</ul>
+<h3 id="start-brackets-and-configure-git">Start Brackets and Configure Git</h3>
+<ul>
+<li><p>Create a directory called <strong>TwitterMarketingUI</strong>. From Windows Explorer navigate to the directory <strong>TwitterMarketingUI</strong>, right click and select <strong>Open as Brackets Project</strong></p>
+<p><img src="images/studentguide/Picture17.png" alt="" /></p></li>
+<li><p>Select <strong>File -> Extension Manager…</strong></p></li>
+<li><p>In the search field, type <strong>GIT</strong>. Click <strong>Install</strong> for Brackets Git</p>
+<p><img src="images/studentguide/Picture18.png" alt="" /></p></li>
+<li><p>After the install completes, leave the defaults for Git Settings and click <strong>Save</strong></p>
+<p><img src="images/studentguide/Picture19.png" alt="" /></p></li>
+<li><p>Click <strong>OK</strong> to restart Brackets</p>
+<p><img src="images/studentguide/Picture20.png" alt="" /></p></li>
+<li><p>You will now see the Git icon on the right-hand panel</p>
+<p><img src="images/studentguide/Picture21.png" alt="" /></p></li>
+</ul>

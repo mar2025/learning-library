@@ -1,0 +1,502 @@
+<p><img src="images/200Linux/Title200.png" alt="" /><br />
+Updated: January 6, 2018</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab we will explore more features of Docker and deploy a fully functional containerized version of the AlphaOffice application touched upon in Lab 100. The application is made up of the following four containers:</p>
+<ul>
+<li>Datasource: Your choice of Oracle 12c Enterprise Edition or MYSQL</li>
+<li>REST Client: To serve up data from the datasource</li>
+<li>TwitterFeed: Static Twitter posts related to products in the datasource</li>
+<li>AlphaOffice UI: Node.js application that makes REST calls to the RESTClient
+and TwitterFeed containers     </li>
+</ul>
+<p>You will use various Docker commands to setup, run and connect into containers. Concepts of Docker volumes, networking and intra-container communication will be used.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Deploy and test the AlphaOffice application<ul>
+<li>Choose and configure your datasource</li>
+<li>Deploy the datasource, TwitterFeed, RESTClient and AlphaOfficeUI containers</li></ul></li>
+<li>Once the application has been deployed<ul>
+<li>Make changes</li>
+<li>Create a new Docker image</li>
+<li>Fire up a container based on the new image</li>
+<li>Push this image your personal Docker Hub account</li></ul></li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Docker Hub Account: <a href="https://hub.docker.com/">Docker Hub</a></li>
+<li>Docker and GIT installed in your own environment<ul>
+<li>OR, you can use an available Linux based VirtualBox image</li></ul></li>
+</ul>
+<h1 id="start-up-and-login-into-your-linux-environment">Start up and login into your Linux environment</h1>
+<p>If you chose to use your own Linux setup then login and verify that the Docker engine is up and running. </p>
+<p><strong>NOTE:</strong> The screen shots shown in this lab are using the available VirtualBox image that has been imported per the SetUp documentation included with these lab guides. Using the VirtualBox VM you are automatically logged in as the "holuser".</p>
+<h2 id="verify-docker-installation">Verify Docker Installation</h2>
+<h3 id="step-1-open-up-a-terminal-window"><strong>STEP 1</strong>: Open up a Terminal Window</h3>
+<ul>
+<li>Right-click and open up a terminal session.</li>
+</ul>
+<p><img src="images/200Linux/Picture200-1.png" alt="" /></p>
+<h3 id="step-2-verify-that-docker-is-running"><strong>STEP 2</strong>: Verify that Docker is running</h3>
+<ul>
+<li><strong>Type</strong> the following into your terminal window:</li>
+</ul>
+<pre><code>cd
+docker version
+</code></pre>
+<p>The information on your docker engine should be displayed:</p>
+<p><img src="images/200Linux/Picture200-2.png" alt="" /></p>
+<h3 id="step-3-clone-the-setup-scripts"><strong>STEP 3</strong>: Clone the setup scripts</h3>
+<p>This will create a directory called AlphaOfficeSetup in your $HOME directory.</p>
+<ul>
+<li><strong>Cut and paste OR Type</strong> the following:</li>
+</ul>
+<pre><code>git clone https://github.com/wvbirder/AlphaOfficeSetup.git
+</code></pre>
+<p><img src="images/200Linux/Picture200-3.png" alt="" /></p>
+<h3 id="step-4-set-permissions"><strong>STEP 4</strong>: Set Permissions</h3>
+<ul>
+<li><p>We will be mounting the AlphaOfficeSetup directory to a directory within the Docker database container. To ensure that the "oracle" user (Oracle database) or "root" user (MYSQL database) inside of your database container will have RW capabilites to the HOST's volume we'll set some permissions.</p></li>
+<li><p><strong>Type</strong> the following:</p></li>
+</ul>
+<pre><code>chmod -R 777 Alpha* 
+</code></pre>
+<p><img src="images/200Linux/Picture200-4.png" alt="" /></p>
+<h3 id="step-5-login-using-your-docker-hub-credentials"><strong>STEP 5</strong>: Login using your Docker Hub credentials</h3>
+<ul>
+<li><p>When prompted enter your username/password. Example shown here:</p></li>
+<li><p><strong>Type</strong> the following:</p></li>
+</ul>
+<pre><code>docker login
+</code></pre>
+<p><img src="images/200Linux/Picture200-5.png" alt="" /></p>
+<h1 id="deploy-and-configure-alphaoffice-database">Deploy and Configure AlphaOffice Database</h1>
+<h2 id="choose-the-datasource">Choose the Datasource</h2>
+<p>In this section your going to chose and setup a datasource for the application. You have a choice between an Oracle 12c database or a MYSQL database. As the steps and commands are slightly different pick one of the flows that follow below. You will start up a database container, connect into the container and run a script that loads the application's schema into the database.</p>
+<ul>
+<li><strong>NOTE: You only have to set up ONE database (Oracle or MYSQL) to use with the AlphaOffice application but can go through the setup of both if you'd like.</strong></li>
+</ul>
+<h2 id="oracle-database-setup">Oracle Database Setup</h2>
+<h3 id="step-1-create-the-database-container"><strong>STEP 1</strong>: Create the database container</h3>
+<p>This docker command will create a container based on the database image file located in the wvbirder/database-enterprise repository having the tag: 12.2.0.1-slim. </p>
+<ul>
+<li><p>Let's take a look at what the docker <strong>run</strong> command options do:</p>
+<ul>
+<li>"-d" flag runs the container in the background</li>
+<li>"-it" flags instructs docker to allocate a pseudo-TTY connected to the container’s stdin, creating an interactive bash capable shell in the container (which we will use in a moment when we connect into the container)</li>
+<li>"-h" We give the container a hostname "oracledb-ao" to make it easier to
+start/stop/remove, reference from other containers, etc</li>
+<li>"-p" We map ports 1521 and 5600 from within the container to the same ports on
+the HOST for accessibility from outside of the container's private subnet (typically 172.17.0.0/16). This allows the container to be accessed from the HOST, for example. The default port for Oracle's tns listener is on port 1521 and port 5600 is used for HTTP access to Enterprise Manager Express</li>
+<li>"--name" The name of the container will be "orcl"</li>
+<li>"-v" This maps the directory where you downloaded the AlphaOfficeSetup GIT
+repository to the /dbfiles directory within the container  </li></ul></li>
+<li><p><strong>Type OR cut and paste</strong> (all on one line) the following; substituting your path "<strong>\<YOUR-HOME></strong>" where you download the AlphaofficeSetup GIT repository. For Example: <code>/YOUR-HOME/AlphaOfficeSetup</code> might change to this <code>~/AlphaOfficeSetup</code>, if you loaded the git repository in your home directory.</p></li>
+</ul>
+<pre><code>docker run -d -it --name orcl -h='oracledb-ao' -p=1521:1521 -p=5600:5600 -v /&lt;YOUR-HOME&gt;/AlphaOfficeSetup:/dbfiles wvbirder/database-enterprise:12.2.0.1-slim
+</code></pre>
+<p>Example:
+docker <code>run -d -it --name orcl -h='oracledb-ao' -p=1521:1521 -p=5600:5600 -v /home/holuser/AlphaOfficeSetup:/dbfiles wvbirder/database-enterprise:12.2.0.1-slim</code></p>
+<p><strong><em>If you make a mistake with the volume path to where you downloaded the AlphaOfficeSetup files you can stop and remove the container once it's created and try again using the following commands</em></strong></p>
+<pre><code>docker stop orcl
+docker rm orcl
+</code></pre>
+<p><strong><em>DON'T RUN THE TWO COMMANDS ABOVE UNLESS YOU'VE MADE AN ERROR</em></strong></p>
+<ul>
+<li>It will take several minutes to download the image file (since it does not yet reside locally), extract the content and finally create and configure the database</li>
+</ul>
+<p><img src="images/200Linux/Picture200-6.png" alt="" /></p>
+<h3 id="step-2-follow-the-progress-of-the-creation"><strong>STEP 2</strong>: Follow the progress of the creation</h3>
+<p>Once the container is instantiated a default database is configured. Since we've indicated the -it flag on startup we can follow the database creation progess using the docker logs command</p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker logs --follow orcl
+</code></pre>
+<p><img src="images/200Linux/Picture200-7.png" alt="" /></p>
+<ul>
+<li>When the database is created you will see "<strong>The database is ready for use</strong>" in the log output:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-8.png" alt="" /></p>
+<h3 id="step-3-create-and-populate-alpha-schema"><strong>STEP 3</strong>: Create and populate alpha schema</h3>
+<p>In this step we will connect into the database container and run a script to create the alpha schema user and populate the Product Catalog tables.</p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker exec -it orcl bash
+</code></pre>
+<ul>
+<li>Once into the container you will see a prompt which includes the hostname you set in the docker run command. <strong>Run the following commands</strong> to verify your /dbfiles directory is writable:</li>
+</ul>
+<pre><code>cd /dbfiles
+touch xxx
+ls
+</code></pre>
+<p><img src="images/200Linux/Picture200-9.png" alt="" /></p>
+<ul>
+<li>If there are no permissions errors the "xxx" file should be present in the directory</li>
+</ul>
+<h3 id="step-4-use-sqlplus-to-run-the-script-that-sets-up-the-database"><strong>STEP 4</strong>: Use SQLPlus to run the script that sets up the database</h3>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>sqlplus / as sysdba
+</code></pre>
+<ul>
+<li>Once in SQLPLus <strong>type</strong>:</li>
+</ul>
+<pre><code>@setupAlphaOracle.sql
+</code></pre>
+<p><img src="images/200Linux/Picture200-10.png" alt="" /></p>
+<ul>
+<li>After the script runs you should see a count of 57 and 20 records displayed. These are the records in the PRODUCTS and PRODUCT_CATEGORIES tables:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-11.png" alt="" /></p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>exit
+</code></pre>
+<ul>
+<li>to go back to the HOST</li>
+</ul>
+<h3 id="step-5-verify-container-is-running"><strong>STEP 5</strong>: Verify container is running</h3>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker ps
+</code></pre>
+<p><img src="images/200Linux/Picture200-12.png" alt="" /></p>
+<h3 id="step-6-log-into-enterprise-manager-express-optional"><strong>STEP 6</strong>: Log into Enterprise Manager Express (<strong>Optional</strong>)</h3>
+<p>Enterprise Manager Express comes bundled with the Oracle database you just created which is running in a container.
+HTTP access as been defined on port 5600.</p>
+<ul>
+<li><p>Open a browser (in this example we are using Firefox). </p></li>
+<li><p><strong>NOTE:</strong> If you want to login to Enterprise Manager Express the browser needs the Shockwave add-on installed. Install this into your browser environment by going to the adobe webite and downloading the player from: <a href="https://get.adobe.com/shockwave/">Shockwave</a></p></li>
+<li><p><strong>If you are using the workshop VirtualBox VM Shockwave has already been installed and you will only have to enable it.</strong></p></li>
+<li><p>In your browser <strong>enter</strong>:</p></li>
+</ul>
+<pre><code>http://localhost:5600/em
+</code></pre>
+<p><img src="images/200Linux/Picture200-12.6.png" alt="" /></p>
+<ul>
+<li>You may get prompted to enable Adobe Flash. Click the link to do so.</li>
+</ul>
+<p><img src="images/200Win/Picture200-12.8.png" alt="" /></p>
+<p><img src="images/200Linux/Picture200-13.png" alt="" /></p>
+<p><strong>Enter</strong> the following:</p>
+<pre><code>Username: sys
+Password: Oradoc_db1
+Check the "as SYSDBA" checkbox
+</code></pre>
+<p><img src="images/200Linux/Picture200-14.png" alt="" /></p>
+<h2 id="mysql-database-setup">MYSQL Database Setup</h2>
+<h3 id="step-1-create-the-database-container-1"><strong>STEP 1</strong>: Create the database container</h3>
+<p>This docker command will create a container based on the latest MYSQL database image file located in Docker Hub</p>
+<ul>
+<li><p>Let's take a look at what the docker <strong>run</strong> command options do:</p>
+<ul>
+<li>"-d" flag runs the container in the background</li>
+<li>"-it" flags instructs Docker to allocate a pseudo-TTY connected to the
+container’s stdin, creating an interactive bash capable shell in the container (which we will use in a moment when we connect into the container)</li>
+<li>"-h" We give the container a hostname "mysqldb-ao" to make it easier to
+start/stop/remove, reference from other containers, etc</li>
+<li>"-p" We map port 3306 to the same port on the HOST for accessibility from
+outside of the container's private subnet (typically 172.17.0.0/16). This allows the container to be accessed from the HOST, for example. The default port for MYSQL is on port 3306</li>
+<li>"--name" The name of the container will be "mysql"</li>
+<li>"-v" This maps the directory where you downloaded the AlphaOfficeSetup GIT
+repository to the /dbfiles directory within the container </li></ul></li>
+<li><p><strong>Type OR cut and paste</strong> the following, but <strong><em>Substitute</em></strong> the <strong>YOUR-HOME</strong> place holder with the directory name where you loaded the AlphaofficeSetup GIT repository. For Example: <code>/YOUR-HOME/AlphaOfficeSetup</code> might change to this <code>~/AlphaOfficeSetup</code>, if you loaded the git repository in your home directory.</p></li>
+</ul>
+<pre><code>docker run -d -it --name mysql -h='mysqldb-ao' -p=3306:3306 -v /&lt;YOUR-HOME&gt;/AlphaOfficeSetup:/dbfiles --env="MYSQL_ROOT_PASSWORD=Alpha2017_" mysql
+</code></pre>
+<ul>
+<li><p>Example: <code>docker run -d -it --name mysql -h='mysqldb-ao' -p=3306:3306 -v /home/holuser/AlphaOfficeSetup:/dbfiles --env="MYSQL_ROOT_PASSWORD=Alpha2017_" mysql</code></p></li>
+<li><p>This sets up a default MYSQL database using the "root" database users password as "Alpha2017_"</p></li>
+</ul>
+<p><strong><em>If you make a mistake with the volume path to where you downloaded the AlphaOfficeSetup files you can stop and remove the container once it's created and try again using the following commands</em></strong></p>
+<pre><code>docker stop mysql
+docker rm mysql
+</code></pre>
+<p><strong><em>DON'T RUN THE TWO COMMANDS ABOVE UNLESS YOU'VE MADE AN ERROR</em></strong></p>
+<ul>
+<li>This will take a couple of minutes to download the image file (since it does not yet reside locally), extract the content and finally create and configure the default database</li>
+</ul>
+<p><img src="images/200Linux/Picture200-15.png" alt="" /></p>
+<h3 id="step-2-follow-the-progress-of-the-creation-1"><strong>STEP 2</strong>: Follow the progress of the creation</h3>
+<p>Once the container is instantiated a default database is configured. Since we've indicated the -it flag on startup we can follow the database creation progess using the docker logs command</p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker logs --follow mysql
+</code></pre>
+<ul>
+<li>When the database is created you will see "<strong>mysqld.sock  port: 3306</strong>" in the log output:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-16.png" alt="" /></p>
+<h3 id="step-3-create-and-populate-alpha-schema-1"><strong>STEP 3</strong>: Create and populate alpha schema</h3>
+<p>In this step we will connect into the database container and run a script to create the AlphaOfficeDB and then create the database user and populate the Product Catalog tables.</p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker exec -it mysql bash
+</code></pre>
+<p>Once into the container you will see a prompt which includes the hostname you set in the docker run command. <strong>Run the following commands</strong> to verify your /dbfiles directory is writable:</p>
+<pre><code>cd /dbfiles
+touch yyy
+ls
+</code></pre>
+<p><img src="images/200Linux/Picture200-17.png" alt="" /></p>
+<ul>
+<li>If there are no permissions errors the "yyy" file should be present in the directory</li>
+</ul>
+<h3 id="step-4-run-the-script-that-sets-up-the-database-user-and-tables"><strong>STEP 4</strong>: Run the script that sets up the database, user and tables</h3>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>./setupAlphaMYSQL.sh
+</code></pre>
+<p><img src="images/200Linux/Picture200-18.png" alt="" /></p>
+<h3 id="step-5-verify-mysql-tables"><strong>STEP 5</strong>: Verify MYSQL tables</h3>
+<ul>
+<li><strong>Type</strong> the following to confirm the database tables were created and populated:</li>
+</ul>
+<pre><code>mysql -uroot -pAlpha2017_
+use AlphaOfficeDB
+show tables;
+select count(*) from PRODUCTS;
+</code></pre>
+<p><img src="images/200Linux/Picture200-19.png" alt="" /></p>
+<ul>
+<li>You should see 57 records in the PRODUCTS table. Enter <strong>exit, (TWICE)</strong> to return to the HOST</li>
+</ul>
+<h3 id="step-6-verify-that-container-is-running"><strong>STEP 6</strong>: Verify that container is running</h3>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker ps
+</code></pre>
+<p><img src="images/200Linux/Picture200-20.png" alt="" /></p>
+<h1 id="deploy-supporting-alphaoffice-containers">Deploy Supporting AlphaOffice Containers</h1>
+<p>In this section of the lab you will deploy the remaining containers to support the AlphaOffice application</p>
+<ul>
+<li><p><strong>TwitterFeed</strong>: This <strong>java</strong> application provides static Twitter posts (via a JSON file) via REST calls. The AlphaOffice UI makes calls to this container and associates the twitter posts to products displayed in the UI.</p></li>
+<li><p><strong>RESTClient</strong>: This <strong>Node.js</strong> application makes REST calls to the selected datasource (Oracle or MYSQL) and returns details from the Product Catalog tables. Selection of the datasource is parameter driven.</p></li>
+<li><p><strong>AlphaOfficeUI</strong>: <strong>Node.js</strong> application container that displays data obtained via the TwitterFeed and ClientREST containers. </p></li>
+</ul>
+<h2 id="application-deployment">Application Deployment</h2>
+<h3 id="step-1-run-and-test-the-twitterfeed"><strong>STEP 1</strong>: Run and test the TwitterFeed</h3>
+<ul>
+<li><strong>Type OR cut and paste</strong> the following:</li>
+</ul>
+<pre><code>docker run -d --name=twitterfeed -p=9080:9080 wvbirder/twitterfeed
+</code></pre>
+<ul>
+<li><p>The docker image will download the first time, extract and run the container.</p></li>
+<li><p><strong>Type</strong> the following:</p></li>
+</ul>
+<pre><code>docker ps
+</code></pre>
+<ul>
+<li>This will display all running containers. In this example the MYSQL database and the Twitterfeed containers are seen:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-21.png" alt="" /></p>
+<ul>
+<li>Go to the browser, open up a new tab and <strong>enter</strong>: <code>http://localhost:9080/statictweets</code></li>
+</ul>
+<p><strong>NOTE:</strong> The firefox browser included in the Linux VirtualBox VM has a built-in JSON formatter. If you don't have a JSON formatter add-on you'll see a stream of text representing the tweets.</p>
+<p><img src="images/200Linux/Picture200-22.png" alt="" /></p>
+<h3 id="step-2-run-and-test-the-restclient"><strong>STEP 2</strong>: Run and test the RESTClient</h3>
+<ul>
+<li><p>Let's take a look at what the docker <strong>run</strong> command options do:</p>
+<ul>
+<li>"-d" flag runs the container in the background</li>
+<li>"-it" flags instructs Docker to allocate a pseudo-TTY connected to the
+container’s stdin, creating an interactive bash capable shell in the container (which we will use in a moment when we connect into the container)</li>
+<li>"--rm" When this container is stopped all resources associated with it (storage, etc) will be deleted</li>
+<li>"--name" The name of the container will be "restclient"</li>
+<li>"-p" Port 8002 is mapped from the container to the same port on the HOST</li>
+<li>"--link" A intra-container link to the "mysql" database is created using the</li>
+<li>"mysqldb" hostname. This hostname is added to the restclient container's /etc/host file. Hostname is used because it is more flexible than using the private IP address of the container that can change upon subsquent invocations. The hostname is used for making a connection to the database </li>
+<li>"-e" Environment variables used by the application. "MYSQL<em>HOST" and "DS" settings designate the MYSQL datasource. The Oracle datsource uses the "ORACLE</em>CONNECT" variable (an example of that is shown below)</li></ul></li>
+<li><p><strong><em>NOTE: This example assumes we are using the MYSQL database as the datasource</em></strong>. If you choose to use the Oracle database, then that command is in the <strong>ALERT</strong> shown below.</p></li>
+<li><p><strong>Type OR cut and paste</strong>:</p></li>
+</ul>
+<pre><code>docker run -d -it --rm --name restclient -p=8002:8002 --link mysql:mysqldb-ao -e MYSQL_HOST='mysqldb-ao' -e DS='mysql' wvbirder/restclient
+</code></pre>
+<p><strong><em>ALERT: If you are using the Oracle database as the datasource the docker command would be:</em></strong></p>
+<pre><code>docker run -d -it --rm --name restclient -p=8002:8002 --link orcl:oracledb-ao -e ORACLE_CONNECT='oracledb-ao/orclpdb1.localdomain' -e DS='oracle' wvbirder/restclient
+</code></pre>
+<ul>
+<li><strong>Type</strong> the following to display all running containers:</li>
+</ul>
+<pre><code> docker ps
+</code></pre>
+<p><img src="images/200Linux/Picture200-23.png" alt="" /></p>
+<p>Go to the browser, open up a new tab and <strong>enter</strong>: </p>
+<pre><code>http://localhost:8002/products
+</code></pre>
+<ul>
+<li>A list of ALL products are shown:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-24.png" alt="" /></p>
+<ul>
+<li>You can also query an individual product. In the browser, open up a new tab and <strong>enter</strong>:</li>
+</ul>
+<pre><code>http://localhost:8002/product/1025
+</code></pre>
+<ul>
+<li><strong>NOTE:</strong> In the URL that "<strong>product</strong>" is singular.</li>
+</ul>
+<p><img src="images/200Linux/Picture200-25.png" alt="" /></p>
+<p><strong>SIDEBAR:</strong> If you don't want use a database as the datasource, you can always stop the current <code>restclient</code> and fall back to a version that uses a JSON file for the Products buy using: <code>docker run -d -it --rm --name restclient -p=8002:8002 -e DS='json' wvbirder/restclient</code></p>
+<p><strong>OPTONAL:</strong>
+If you configured both ORACLE and MYSQL databases then you can stop the <code>restclient</code> container after testing with one of the datasources by typing: <code>docker stop restclient</code>. Then, start another <code>restclient</code> container stipulating the new datasource using the appropriate commands already shown at the beginning of this step.</p>
+<h3 id="step-3-run-and-test-the-alphaofficeui"><strong>STEP 3</strong>: Run and Test the AlphaOfficeUI</h3>
+<ul>
+<li><strong>Type</strong> OR cut and paste:</li>
+</ul>
+<pre><code>docker run -d --name=alphaofficeui -p=8085:8085 wvbirder/alpha-office-catalog-ui
+</code></pre>
+<ul>
+<li>After it is running test the completed application deployment by going to the browser, and opening a new tab:</li>
+</ul>
+<pre><code>http://localhost:8085
+</code></pre>
+<ul>
+<li>You should see something like:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-26.png" alt="" /></p>
+<ul>
+<li>Clicking on one of the products brings up details for that item with its associated Twitter comments.</li>
+</ul>
+<p><img src="images/200Linux/Picture200-27.png" alt="" /></p>
+<h1 id="make-changes-to-the-alphaoffice-application">Make changes to the AlphaOffice application</h1>
+<p>In this section you will make a couple of changes to the AlphaOfficeUI application. One will correct a typo and another will change the background image. The flow for this will be as follows:</p>
+<ul>
+<li>Copy the new background image into the container</li>
+<li>Connect into the AlphaOfficeUI container</li>
+<li>Install the vim text editor</li>
+<li>Fix a typo and specify the new background image</li>
+<li>Save (docker commit) a copy of the changes to a NEW docker image</li>
+<li>Start up and test another AlphaOfficeUI container using the NEW image</li>
+<li>Push the NEW image to your personal Docker Hub account</li>
+</ul>
+<h2 id="container-in-place-modifications">Container In-place Modifications</h2>
+<h3 id="step-1-copy-a-new-background-image"><strong>STEP 1</strong>: Copy a New Background Image</h3>
+<p>Copy a background image file into the running AlphaOfficeUI container. This file is in your YOUR_HOME/AlphaOfficeSetup directory that you GIT cloned at the beginning of the lab</p>
+<ul>
+<li><strong>Type</strong> (substituting <strong>\<YOUR-HOME></strong>)</li>
+</ul>
+<pre><code>docker cp /&lt;YOUR_HOME&gt;/AlphaOfficeSetup/dark_blue.jpg alphaofficeui:/pipeline/source/public/Images
+</code></pre>
+<p>Example: docker cp /home/holuser/AlphaOfficeSetup/dark_blue.jpg alphaofficeui:/pipeline/source/public/Images</p>
+<h3 id="step-2-install-the-vim-editor-in-the-container"><strong>STEP 2</strong>: Install the VIM editor in the container</h3>
+<p>Even though the orginal AlphaOfficeUI image could have been set up ahead of time with any needed client tools we're adding the the environment on-the-fly to give you some idea that it can be done</p>
+<ul>
+<li>Connect into the <code>alphaofficeui</code> container:</li>
+</ul>
+<pre><code>docker exec -it alphaofficeui bash
+</code></pre>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>apt-get update
+</code></pre>
+<p><img src="images/200Linux/Picture200-28.png" alt="" /></p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>apt-get install vim
+</code></pre>
+<ul>
+<li><p>Say <strong>Y</strong> at the "Do you want to continue?" prompt.</p></li>
+<li><p>Verify the "<strong>dark_blue.jpg</strong>" file is in the container by <strong>typing</strong>:</p></li>
+</ul>
+<pre><code>ls /pipeline/source/public/Images
+</code></pre>
+<p><img src="images/200Linux/Picture200-28.1.png" alt="" /></p>
+<h3 id="step-3-edit-the-alphahtml-file"><strong>STEP 3</strong>: Edit the alpha.html file</h3>
+<ul>
+<li>Edit the "alpha.html" file to fix a typo - Note, if you are unfamiliar with <code>vim</code>, you'll find information at this URL: <a href="http://vimsheet.com">VIM</a>. The commands are very similar to vi:</li>
+</ul>
+<pre><code>vim /pipeline/source/public/alpha.html
+</code></pre>
+<ul>
+<li>Move the cursor to the text you wish to edit and press the letter <strong>i</strong> to make changes. Fix the header title to read "<strong>Alpha Office Product Listing</strong>". You can also change the body title to whatever you want:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-29.png" alt="" /></p>
+<ul>
+<li>Save the file and exit by hitting the <strong>ESC</strong> key and then holding the <strong>SHIFT</strong> key down and typing "<strong>Z</strong>" TWICE</li>
+</ul>
+<h3 id="step-4-edit-the-alphacss-file"><strong>STEP 4</strong>: Edit the alpha.css file</h3>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>vim /pipeline/source/public/css/alpha.css
+</code></pre>
+<ul>
+<li>Change the background image reference to "<strong>dark_blue.jpg</strong>"</li>
+</ul>
+<p><img src="images/200Linux/Picture200-30.png" alt="" /></p>
+<ul>
+<li><p>Save the file and exit by hitting the <strong>ESC</strong> key and then holding the <strong>SHIFT</strong> key down and typing "<strong>Z</strong>" TWICE</p></li>
+<li><p><strong>Exit</strong> out of the container:</p></li>
+</ul>
+<pre><code>exit
+</code></pre>
+<h1 id="commit-and-run-the-new-version-of-alphaoffice">Commit and run the NEW version of AlphaOffice</h1>
+<h2 id="test-modified-application">Test modified Application</h2>
+<h3 id="step-1-commit-a-new-docker-image"><strong>STEP 1</strong>: Commit a NEW Docker image</h3>
+<p>In this step you will save a copy of your modifed docker container and give it a new name. You're back out in the HOST now. Substitute your docker hub account name where asked for in the following commands:</p>
+<ul>
+<li><strong>Type</strong> in following:</li>
+</ul>
+<pre><code>docker commit alphaofficeui (your-dockerhub-account)/(image-name)
+</code></pre>
+<ul>
+<li><p>Example: <code>docker commit alphaofficeui wvbirder/alphaoffice-new</code></p></li>
+<li><p><strong>Type</strong> the following:</p></li>
+</ul>
+<pre><code>docker images
+</code></pre>
+<ul>
+<li>See the new saved image:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-31.png" alt="" /></p>
+<h3 id="step-2-start-a-container-based-on-your-new-image"><strong>STEP 2</strong>: Start a container based on your new image</h3>
+<p>Since there is already a running <code>alphaofficeui</code> container we'll name the new container <code>alphaofficeui2</code> and use port 8086 on the HOST since 8085 is in use. We will also use the PORT enviroment variable.</p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker run -d --name=alphaofficeui2 -p=8086:8086 -e PORT=8086 (your-dockerhub-account)/(image-name)
+</code></pre>
+<ul>
+<li><p>Example: <code>docker run -d --name=alphaofficeui2 -p=8086:8086 -e PORT=8086 wvbirder/alphaoffice-new</code></p></li>
+<li><p>Verify the new container is running by <strong>typing</strong>:</p></li>
+</ul>
+<pre><code>docker ps
+</code></pre>
+<p><img src="images/200Linux/Picture200-32.png" alt="" /></p>
+<ul>
+<li>Open up a new browser tab and <strong>enter</strong>:</li>
+</ul>
+<pre><code>http://localhost:8086
+</code></pre>
+<p><img src="images/200Linux/Picture200-33.png" alt="" /></p>
+<h3 id="step-3-push-the-new-image-to-your-docker-hub-account"><strong>STEP 3</strong>: Push the new image to your docker hub account</h3>
+<p>Now others will be able to take advantage of the changes you made to the application. In this example "wvbirder" is the Docker Hub account name but you will be using your own account</p>
+<ul>
+<li><strong>Type</strong> the following:</li>
+</ul>
+<pre><code>docker push (your-dockerhub-account)/(image-name)
+</code></pre>
+<ul>
+<li>Example:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-34.png" alt="" /></p>
+<ul>
+<li>Once the push is completed you can log into your Docker Hub account and verify it is there:</li>
+</ul>
+<p><img src="images/200Linux/Picture200-35.png" alt="" /></p>
+<p><strong>This completes the Lab!</strong></p>

@@ -1,0 +1,279 @@
+<h2 id="deploy-complex-cloud-environment-using-oracle-cloud-stack-manager">Deploy complex cloud environment using Oracle Cloud Stack Manager</h2>
+<h3 id="about-this-tutorial">About this tutorial</h3>
+<p>Oracle Cloud Stack Manager is a feature of Oracle Cloud that allows for the provisioning of multiple services within the Oracle Cloud. In order to build and deploy their applications, businesses often require sophisticated environments that consist of multiple, integrated cloud services. Consider a development environment whose needs include a Java application server along with a relational database. Provisioning each of these services for every member of your development team is time consuming and error prone, regardless of whether you’re using service consoles or REST APIs to provision the services. Oracle Cloud Stack Manager uses templates to provision a group of services (called a stack) and in the correct order.</p>
+<p>In this tutorial you will learn how to quickly provision a group of related Oracle Cloud resources with Oracle Cloud Stack Manager.
+You will use Cloud Stack Manager and a custom Oracle stack template to provision multiple Oracle Application Container Cloud services instances.</p>
+<p>The FixItFast Cloud Native Application requires the following services:</p>
+<ul>
+<li>Cache service for customer and location data</li>
+<li>JavaSE (Spring Boot) REST service to store customer and location data in the cache</li>
+<li>NodeJS REST Service to persist FixItFast application's data</li>
+<li>NodeJS Server to host front end (JavaScript) application</li>
+</ul>
+<p><img src="images/stack.environment.cache.png" alt="" /></p>
+<p>This tutorial demonstrates how to:</p>
+<ul>
+<li>create Oracle Developer Cloud Service project using existing external Git repository</li>
+<li>configure build job to build multiple services required by Cloud Native Application</li>
+<li>create and import custom Stack Template</li>
+<li>create Stack instance using Stack Template</li>
+</ul>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>A valid identity domain, username and password for Oracle Cloud</li>
+<li>A subscription for Oracle Application Container Cloud Service</li>
+</ul>
+<hr />
+<h4 id="create-oracle-developer-cloud-service-project">Create Oracle Developer Cloud Service project</h4>
+<p>Sign in to <a href="https://cloud.oracle.com/sign-in">https://cloud.oracle.com/sign-in</a>. First select your datacenter then click <strong>My Services</strong> and provide your identity domain and credentials (use DEVCS<em>DOMAIN, DEVCS</em>USER, DEVCS_PWD). After a successful login you will see your Dashboard. Find the Developer services tile and click the hamburger icon. In the dropdown menu click <strong>Open Service Console</strong> to open Oracle Developer Cloud Services console.
+<img src="images/01.dashboard.png" alt="" /></p>
+<p>Click <strong>+ New Project</strong> button to create a new project.</p>
+<p><img src="images/02.new.project.png" alt="alt text" /></p>
+<p>Enter <em>fixitfast</em> as name of the project, a desired description and Click <strong>Next</strong>.</p>
+<p><img src="images/03.new.project.details.png" alt="alt text" /></p>
+<p>Click <strong>Next</strong> and select <em>Initial Repository</em> as template.</p>
+<p><img src="images/04.select.template.png" alt="" /></p>
+<p>Click <strong>Next</strong> and on the Properties page select <em>MARKDOWN</em> as Wiki Markup and select <em>Import existing repository</em> to copy existing repository in this new project. Enter or copy the <em>https://github.com/oracle/cloud-native-devops-workshop.git</em> repository address.</p>
+<p><img src="images/05.import.repository.png" alt="" /></p>
+<p>Now click <strong>Finish</strong> to create the project and to clone the specified repository.</p>
+<h3 id="configure-build-job-to-produce-fixitfast-sample-applications-components">Configure build job to produce FixItFast sample application's components</h3>
+<p>Once the project provisioning is ready let's create the build job to compile and packaging all necessary components for FixItFast Cloud Native application.</p>
+<p>Select <strong>Build</strong> item on the left side menu and click the <strong>New Job</strong> button.</p>
+<p><img src="images/06.new.job.png" alt="alt text" title="Create new build job" /></p>
+<p>Enter a name e.g. <em>FixItFast-build-all-components</em> for the new job. Select the <em>Create a free-style job</em> option and click <strong>Save</strong>.</p>
+<p><img src="images/07.new.job.name.png" alt="alt text" /></p>
+<p>On the Main configuration page of the newly created job make sure <strong>JDK 8</strong> is the selected JDK.</p>
+<p><img src="images/08.new.job.main.png" alt="alt text" /></p>
+<p>Change to the <strong>Build Parameters</strong> tab and select the <strong>This build is parameterized</strong> option. Click the <strong>Add Parameter</strong> button and for first select <strong>String Parameter</strong>. </p>
+<p><img src="images/09.build.parameters.png" alt="alt text" /></p>
+<p>When the details area appears enter the following values below. Note you need to click <strong>Add Parameter</strong> for each value-pair. In case of password parameter select <strong>Password Parameter</strong>.</p>
+<ul>
+<li><strong>Type</strong>:String Parameter, <strong>Name</strong>: STORAGE<em>USER, <strong>Default Value</strong>: your Oracle Public Cloud account's username (use ACCS</em>USER)</li>
+<li><strong>Type</strong>:Password Parameter, <strong>Name</strong>: STORAGE<em>PASSWORD, <strong>Default Value</strong>: your Oracle Public Cloud account's password (use ACCS</em>PWD)</li>
+<li><strong>Type</strong>:String Parameter, <strong>Name</strong>: STORAGE_CONTAINER, <strong>Default Value</strong>: xweek</li>
+<li><strong>Type</strong>:String Parameter, <strong>Name</strong>: IDENTITY<em>DOMAIN, <strong>Default Value</strong>: your Oracle Public Cloud identity domain (use ACCS</em>DOMAIN)</li>
+</ul>
+<p>When you have all the necessary parameters it should look similar like below, expect the default values. To give default values here is just an option, you can define the correct values when the build job will be started.</p>
+<p><img src="images/10.build.parameters.values.png" alt="alt text" /> </p>
+<p>Now change to the <strong>Source Control</strong> tab and select <strong>Git</strong>. In the git's properties section select the only one available Git repository which is provided in the list. Leave the advanced settings default.</p>
+<p><img src="images/11.scm.config.png" alt="alt text" /></p>
+<p>Change to <strong>Build Steps</strong> tab and add <strong>Maven 3</strong> build step for the first, JavaSE backend service component. </p>
+<p><img src="images/12.add.maven3.png" alt="alt text" /></p>
+<p>Make sure the <strong>Goals</strong> are <em>clean install</em> and enter <em>stack/java-cache-backend/pom.xml</em> to <strong>POM File</strong> field. Leave default for the rest.</p>
+<p><img src="images/13.maven3.step.cache.png" alt="alt text" /></p>
+<p>The rest of the build tasks (the 2 NodeJS components build and to copy artifacts to storage container) will be executed as shell script, thus add an Execute Shell as a second build step.</p>
+<p><img src="images/14.execute.shell.step.png" alt="alt text" /></p>
+<p>Scroll down to Command text area and copy or enter the commands below.</p>
+<pre><code># copy JavaSE backend artifact (fixitfast-java-cache-backend.zip) to the defined cloud storage location
+cd stack/java-cache-backend
+../postBuildAction.sh $IDENTITY_DOMAIN $STORAGE_USER $STORAGE_PASSWORD $STORAGE_CONTAINER
+
+# build NodeJS backend application
+cd ../node-fixitfast-backend
+npm install
+# copy NodeJS backend artifact (fixitfast-backend.zip) to the defined cloud storage location
+../postBuildAction.sh $IDENTITY_DOMAIN $STORAGE_USER $STORAGE_PASSWORD $STORAGE_CONTAINER
+
+cd ../..
+
+# build NodeJS client application
+git clone https://github.com/oracle/oraclejet.git
+
+cd oraclejet
+
+git checkout tags/2.2.0
+
+npm install bower
+
+bower install
+
+bower install knockout-mapping#2.4.1
+
+cd ../stack/node-fixitfast-client
+
+cp -ra ../../oraclejet/bower_components/. js/libs
+cp -ra ../../oraclejet/dist/js/libs/. js/libs
+cp -ra ../../oraclejet/dist/css/alta css/
+cp -ra ../../oraclejet/dist/css/common css/
+
+mkdir -p scss/oj/v2.2.0
+cp -ra ../../oraclejet/dist/scss/. scss/oj/v2.2.0
+
+npm install
+
+../postBuildAction.sh $IDENTITY_DOMAIN $STORAGE_USER $STORAGE_PASSWORD $STORAGE_CONTAINER
+</code></pre>
+<p>Quick explanation to the script. As you can see from the comments the script first copies the previous Maven build's result to the storage. The second part builds the NodeJS backend application then copies that to the same storage location. Finally the last part builds again a NodeJS application, but now the client component. The client requires specific version of <a href="http://www.oracle.com/webfolder/technetwork/jet/index.html">Oracle JET</a> which is available on <a href="https://github.com/oracle/oraclejet">github</a>. The last step is a copy again to the defined storage location. Basically NodeJS build requires <em>npm install</em> which downloads the dependencies and archive the result to a single zip file. In case of the client Oracle JET uses bower to get dependencies. The <em>postBuildAction.sh</em> script simply copies any archived artifact in given folder to the cloud storage location using <em>curl</em> and defined build parameters.</p>
+<p><img src="images/15.all.build.steps.cache.png" alt="alt text" /></p>
+<p>To archive artifact in Developer Cloud Service too, change to <strong>Post Build</strong> tab and check in the <strong>Archive the artifacts</strong> option. Enter <strong>**/*.zip</strong> into <strong>Files To Archive</strong> field. Finally click <strong>Save</strong> to update the new job configurations.</p>
+<p><img src="images/16.post.build.png" alt="alt text" title="Post build" /></p>
+<p>Now execute the new build job. The previous step result navigated to the <em>FixItFast-build-all-components</em> detail page. Click <strong>Build Now</strong>.</p>
+<p><img src="images/17.build.now.png" alt="alt text" /></p>
+<p>The parameters dialog appears. If the default values are correct then click <strong>Build</strong> and wait until the build completed. Note the container name has to be <em>xweek</em>, but the rest of the parameters need to reflect your cloud environment. </p>
+<p><img src="images/18.build.parameters.png" alt="alt text" /></p>
+<p>If the build succeded you can find a green tick at the status field in the Build History. You can download the archived artifacts, but now it is not necessary. During the build or later anytime you can check the console output of the build process. Click on <strong>Console</strong> icon to review the log.</p>
+<p><img src="images/19.build.finished.cache.png" alt="alt text" /></p>
+<p>In case of build failure you can find the problem easily here in the log. If the build was successful then you can find <em>Finished: SUCCESS</em> entry at the end of the log.</p>
+<p><img src="images/20.build.console.png" alt="alt text" /></p>
+<h3 id="create-custom-stack-template">Create custom Stack template</h3>
+<p>A template in Oracle Cloud Stack Manager defines the cloud services that are part of a stack as well as how they are provisioned in Oracle Cloud. They act like blueprints for the creation of cloud environments.</p>
+<p>A template is comprised of several elements:</p>
+<ul>
+<li><em>Resources</em> define the cloud services to create and the dependencies between them.</li>
+<li><em>Resource parameters</em> control how the resources are created through the service’s public REST APIs.</li>
+<li><em>Resource attributes</em> enable you to use the runtime characteristics of one resource as parameters for the creation of another resource.</li>
+<li><em>Template parameters</em> allow users of the template to customize the template for a specific cloud stack.</li>
+<li><em>Template attributes</em> customize the monitoring information that is displayed for stacks created from this template.</li>
+</ul>
+<p>Templates are authored using the YAML standard syntax and then imported into Oracle Cloud Stack Manager. You can rapidly provision similar environments, in the same cloud data center or in different ones, by creating multiple stacks from a single template. After a stack is created from a template, its lifecycle is completely independent from the template’s lifecycle. In other words, modifications you make to the template will not affect existing cloud stacks.</p>
+<p>Open your favourite text editor and copy or enter the following content into a new text file and save as <em>fixitfast-cache-stack.yaml</em>.</p>
+<pre><code>---
+  template: 
+    templateName: FixItFast-Cache-Stack
+    templateVersion: 1.0.0
+    templateDescription: Stack template to create simple ACCS 
+    parameters: 
+      appFrontEndURL: 
+        label: Front End App archive cloud URL
+        description: Location inside Storage from where the frontend app archive can be downloaded from
+        type: String
+        mandatory: true
+        default: xweek/fixitfast-client.zip
+      appBackEndNodeURL: 
+        label: Back End Node App archive cloud URL
+        description: Location inside Storage from where the backend node app archive can be downloaded from
+        type: String
+        mandatory: true
+        default: xweek/fixitfast-backend.zip
+      appBackEndJavaURL: 
+        label: Back End Java App archive cloud URL
+        description: Location inside Storage from where the backend java app archive can be downloaded from
+        type: String
+        mandatory: true
+        default: xweek/fixitfast-java-cache-backend.zip
+    resources: 
+      customerCache: 
+        type: caching
+        parameters: 
+             serviceParameters: 
+                serviceName: customerCache
+                serviceLevel: PAAS
+                subscription: HOURLY
+                serviceDescription: Customer Cache for FixItFast application 
+      backendCacheJavaApp: 
+        type: apaas
+        parameters: 
+            name: backendCacheJava
+            runtime: java
+            subscription: MONTHLY
+            archiveURL:
+                Fn::GetParam: appBackEndJavaURL
+            deployment:
+                memory: 1G
+                instances: 1
+                services: 
+                      - 
+                        identifier: CacheBinding
+                        name: 
+                          Fn::GetAtt: 
+                            - customerCache
+                            - serviceName
+                        type: caching
+      backendNodeApp:
+        type: apaas
+        parameters: 
+            name: backendNode
+            runtime: node
+            subscription: MONTHLY
+            archiveURL:
+                Fn::GetParam: appBackEndNodeURL
+            deployment:
+                memory: 1G
+                instances: 1
+                services:
+      clientApp:
+        type: apaas
+        parameters: 
+            name: client
+            runtime: node
+            subscription: MONTHLY
+            archiveURL:
+                Fn::GetParam: appFrontEndURL
+            deployment:
+                memory: 1G
+                instances: 1
+                services:
+                environment:
+                  {
+                    "REST_FIXIT" :  { "Fn::GetAtt" : [ "backendNodeApp", "attributes.webURL.value" ] },
+                    "REST_CUSTOMERS" :  { "Fn::GetAtt" : [ "backendCacheJavaApp", "attributes.webURL.value" ] }
+                  }
+</code></pre>
+<p>Please spend few minutes and try to understand this configuration format. Files that contain YAML documents can use any file extension but <em>.yaml</em> is a typical convention. The first line in the file identifies it as a YAML document by using 3 dashes.</p>
+<p>At the beginning you can find the Name, Version and Description of the template. The second part is for the parameters. There you can defined parameters which is necessary to create stack (services) using default values what you can override during stack creation. As you can see in this template we defined the artifacts location on the storage cloud container where the previous build job has uploaded.</p>
+<p>The third main part is about the resources what are the service definitions. We have defined the following services:</p>
+<ol>
+<li><em>customerCache</em> - Application Container Cloud Cache Cloud Service</li>
+<li><em>backendCacheJavaApp</em> - Application Container Cloud Service hosting JavaSE depends on <em>customerCache</em></li>
+<li><em>backendNodeApp</em> - Application Container Cloud Service hosting NodeJS</li>
+<li><em>clientApp</em> - Application Container Cloud Service hosting NodeJS depends on <em>backendNodeApp</em> and <em>backendCacheJavaApp</em></li>
+</ol>
+<p>Please note the dependencies and how it's parameters dynamically defined. For example the <em>backendCacheJavaApp</em> needs to get the Cache Service connection string and credentials which is done by Service Bindings and parameter usage. Or the <em>clientApp</em> needs to know the REST endpoints of <em>backendNodeApp</em> and <em>backendCacheJavaApp</em>. For more clear picture scroll up to the beginning of the this guide and review the FixItFast Cloud Native Application (Cache version) architecture.</p>
+<h3 id="import-custom-stack-template-to-oracle-cloud-stack-manager">Import custom Stack template to Oracle Cloud Stack Manager</h3>
+<p>Open a new browser tab or window and use the <a href="https://cloud.oracle.com/sign-in">sign in</a> page to access your dashboard again (USE ACCS DOMAIN CREDENTIALS - NOT DEVCS DOMAIN). Select your datacenter click <strong>My Services</strong> then provide your identity domain and credentials (if necessary, because in same browser SSO session should still alive). After a successful login you will see your Dashboard. Find the Application Container tile and click the hamburger icon. In the dropdown menu click <strong>Open Service Console</strong> to open Oracle Application Container Cloud Services console.</p>
+<p><img src="images/21.accs.console.png" alt="" /></p>
+<p>On the Application Container Cloud Service Console click the drop down menu icon next to the console title and select <strong>Oracle Cloud Stack</strong>.</p>
+<p><img src="images/22.open.stack.manager.png" alt="" /></p>
+<p>On the Oracle Cloud Stack console page select the <strong>Template</strong> tab and click <strong>Import</strong> to import your custom stack template. As you can see Stack templates are already available in the template list. These certified, Oracle-defined templates address popular use cases and deployment patterns. You do not have to import these templates into Oracle Cloud Stack Manager to begin using them. However, you can export an Oracle template, customize its definition to meet your requirements, and then import it back into Oracle Cloud Stack Manager as a new template.</p>
+<p><img src="images/23.import.template.png" alt="" /></p>
+<p>Find the <em>fixitfast-cache-stack.yaml</em> template file what you have created using the text editor on your desktop. Click <strong>Import</strong>.</p>
+<p><img src="images/24.browse.yaml.cache.png" alt="" /></p>
+<p>If the validation succeded then Oracle Cloud Stack imports the template. Click OK on the message dialog.</p>
+<p><img src="images/25.imported.png" alt="" /></p>
+<p>Now click the name of the newly created <strong>FixItFast-Cache-Stack</strong> template.</p>
+<p><img src="images/26.template.details.cache.png" alt="" /></p>
+<p>In the details page you can see the <em>Topology</em> and the raw content of the <em>Template</em> file. You can Export the yaml file for further usage, but now click <strong>Done</strong> to close the detail page.</p>
+<p><img src="images/27.topology.cache.png" alt="" /></p>
+<h3 id="create-stack-using-stack-template">Create Stack using Stack template</h3>
+<p>Now create stack using the imported , custom stack template. Click the drop down menu icon in the <strong>FixItFast-Cache-Stack</strong> template row on the right side and select <strong>Create Stack</strong> menu item.</p>
+<p><img src="images/28.create.stack.cache.png" alt="" /></p>
+<p>The Create New Oracle Cloud Stack — Details page is displayed. Enter <em>FixItFast-application</em> as <strong>Name</strong>  and optional <strong>Description</strong> for the stack. Do not select <strong>On Failure Retain Resources</strong> otherwise the stack creation fails, any resources that were created will not be automatically deleted.
+The rest of the parameters are specific to the template you imported. If you haven't changed the storage container build parameter and the stack template configuration file you can accept the default values. Click <strong>Next</strong>.</p>
+<p><img src="images/29.stack.details.cache.png" alt="" /></p>
+<p>The Create New Oracle Cloud Stack — Confirmation page is displayed. Review the values you provided for the template parameters and click <strong>Confirm</strong> to create your stack.</p>
+<p><img src="images/30.confirm.cache.png" alt="" /></p>
+<p>To check the stack status by services go back to the <strong>Stacks</strong> page and click the <strong>FixItFast-application</strong> stack.</p>
+<p><img src="images/31.creating.stack.cache.png" alt="" /></p>
+<p>Using this page (click refresh icon after every few minutes) you can get information about the  status of services what are being created by this stack. Please note during the <em>customerCache</em> creation the stack also started to create <em>backendNode</em> component because there is no dependency between them. But the <em>backendCacheJava</em> and <em>client</em> components need to wait for <em>customerCache</em> completion since they use that service directly and indirectly. The creation of service instances should not be longer than 15 minutes.</p>
+<p><img src="images/32.stack.in.progress.cache.png" alt="" /></p>
+<p>When all the services are up and running click on the <em>client</em> application's URL.</p>
+<p><img src="images/33.stack.ready.cache.png" alt="" /></p>
+<p>The FixItFast application is opened in a new browser tab or window. Click <strong>Skip</strong>.</p>
+<p><img src="images/35.fixitfast.skip.png" alt="" /></p>
+<p>Leave the default credentials and click <strong>Sign In</strong>.</p>
+<p><img src="images/36.fixitfast.signin.png" alt="" /></p>
+<p>Discover the FixItFast application.</p>
+<p><img src="images/37.fixitfast.dashboard.png" alt="" /></p>
+<h3 id="modify-data-directly-in-the-application-container-cloud-cache-service">Modify data directly in the Application Container Cloud Cache Service</h3>
+<p>To check dependencies the last task in this lab is to modify data directly in the cache and check changes using FixItFast application.</p>
+<p>First check the customer list using FixItFast application. Click on the menu icon what can be found in the top left corner. In the navigation menu select <strong>Customers</strong></p>
+<p><img src="images/38.fixitfast.open.customer.png" alt="" /></p>
+<p>Note the first customer's name. In this demo it is <em>Bob Smith</em>. You will update this name to confirm backend dependency.</p>
+<p><img src="images/39.customers.png" alt="" /></p>
+<p>Go back to the  FixItFast-application's Stack detail page find the <em>backendCacheJava</em> application and click it's URL.</p>
+<p><img src="images/40.backendjava.url.cache.png" alt="" /></p>
+<p>The <em>backendCacheJava</em> application's home page is displayed. Basically this component just provides REST access to customer and location data stored in Application Container Cloud Cache  Service. These pages are just for demo purposes. Click <strong>Edit Customers</strong> link.</p>
+<p><img src="images/41.cache.app.png" alt="" /></p>
+<p>Using this page you can modify any customer data. Select <em>Bob Smith</em> customer and click <strong>Edit</strong>.</p>
+<p><img src="images/42.edit.customer.png" alt="" /></p>
+<p>On the customer edit form change the first name to <em>Bobby</em> and click Update to save changes.</p>
+<p><img src="images/42.update.customer.png" alt="" /></p>
+<p>As a result you can see the changes in the customer list.</p>
+<p><img src="images/42.update.result.cache.png" alt="" /></p>
+<p>To refresh customer list go back to the FixItFast application and click the menu icon at the top left corner and select e.g. <strong>Incidents</strong>.</p>
+<p><img src="images/44.go.back.incidents.png" alt="" /></p>
+<p>Now go back to the customer list using the menu icon again.</p>
+<p><img src="images/38.fixitfast.open.customer.png" alt="" /></p>
+<p>In the customer list you have to see the updated name: <strong>Bobby Smith</strong></p>
+<p><img src="images/45.updated.customer.png" alt="" /></p>
+<p>Congratulations! You have completed the Oracle Cloud Stack lab.</p>

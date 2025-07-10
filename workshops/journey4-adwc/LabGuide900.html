@@ -1,0 +1,57 @@
+<p><img src="./images/900/title900.jpg" alt="" /></p>
+<h1 id="lab-900-creating-visualization-from-adwc">Lab 900: Creating Visualization from ADWC</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This lab will walk you through the connection of ADWCS to Data Visualization Desktop. This lab will elaborate on how you can connect your already created ADWCS instance (which has data already loaded into data warehouse) to DVD and perform beautiful visualizations in DVD.</p>
+<p>At this point, you should have performed the following:</p>
+<ol>
+<li><p>You have downloaded the latest version of Data Visualization Desktop (DVD) from <a href="http://www.oracle.com/technetwork/middleware/oracle-data-visualization/downloads/oracle-data-visualization-desktop-2938957.html">here</a>.</p></li>
+<li><p>Existing ADWCS instance: You should create and launch the ADWCS instance. Note down the details such as host, service name and port number of your instance. These details will be required when connecting to DVD, more on this later.</p></li>
+</ol>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Set Up Local Environment</li>
+<li>Create New Data Visualization Desktop Connection</li>
+<li>Prepare Data Set and Create Visualization</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Data Visualization Desktop</li>
+<li>An ADWC environment that you have access to</li>
+<li>This lab works only with Windows at this time.</li>
+</ul>
+<h2 id="set-up-local-environment">Set Up Local Environment</h2>
+<h3 id="step-1-set-up-local-environment">Step 1: Set Up Local Environment</h3>
+<ul>
+<li><p>Once you have the ADWCS instance up and running, you should have a wallet zip file from previous lab.</p></li>
+<li><p>Go to the directory that you saved your credentials wallet file from the previous lab. Open up the .ZIP file.</p></li>
+<li><p>Copy the cwallet.sso from unzipped folder to <strong>C:\%HOMEPATH%\AppData\Local\DVDesktop\components\OBIS\DWCS</strong>. Note: Change <strong>%HOMEPATH%</strong> to your PC home path. </p>
+<p><img src="./images/900/Picture300-08.png" alt="" /></p></li>
+</ul>
+<h2 id="create-new-data-visualization-desktop-connection">Create New Data Visualization Desktop Connection</h2>
+<h3 id="step-2-create-adwc-connection">Step 2: Create ADWC Connection</h3>
+<ul>
+<li><p>Start DVD Version 4, Click on "Create" on top right of window.</p>
+<p><img src="./images/900/Picture300-01.PNG" alt="" /></p></li>
+
+<li><p>Click on Connection Icon. In Create Connection window, search data warehouse and click on Oracle Data Warehouse.</p>
+<p><img src="./images/900/Picture300-02.PNG" alt="" /></p></li>
+<li><p>On this window, you will need information from the tnsnames.ora file in the ADWC wallet folder. tnsnames.ora file can be obtained from wallet.zip.</p></li>
+<li><p>Find the service for you and copy the host, port, and service name to DVD </p>
+<p><img src="./images/900/Picture300-04.PNG" alt="" /></p></li>
+<li><p><strong>Connection Name</strong>: name for this connection</p></li>
+<li><p><strong>Host</strong>: host name from tnsnames.ora for your service</p></li>
+<li><p><strong>Post</strong>: port number from tnsnames.ora for your service</p></li>
+<li><p><strong>Username</strong>: \<username></p></li>
+<li><p><strong>Password</strong>: \<password></p>
+<p><img src="./images/900/Picture300-03.PNG" alt="" /></p>
+<p>Note: you can also connect as a user that has dwrole, like <strong>dwuser</strong> you created in lab 400. </p></li>
+<li><p>Click on OK to save connection. If it says “Invalid Wallet file”, please follow step 2 to make sure the cwallet file is in the right folder. </p></li>
+</ul>
+<h3 id="step-3-create-data-set-and-create-visualization">Step 3: Create Data Set and Create Visualization</h3>
+<ul>
+<li><p>Once the connection is saved, create a data set using that connection. </p>
+<p><img src="./images/900/Picture300-07.PNG" alt="" /></p></li>
+<li><p>In this window, you can either select the columns you would like to visualize or just enter in a SQL statement.</p></li>
+<li><p>You can save the data set to create a new visualization project.</p></li>
+<li><p>You are now done with this lab.</p></li>
+</ul>

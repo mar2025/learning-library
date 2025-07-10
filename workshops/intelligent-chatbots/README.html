@@ -1,0 +1,76 @@
+<!-- TODO: rename parent folder from workshop-template to the name of this workshop (e.g. chatbot-intro or intelligent-chatbots) -->
+<!-- TODO: remove unnecessary files from this directory (e.g. LabGuide2,3,400.md, manifest-*-version.json, intro-*.md, css folder, js folder -- basically everything except your readme, labguide100, manifest.json, images folder, and index.html can go.) check-->
+<!-- TODO: manifest.json should reference README.md instead of Intro-Instructor-Led.md check-->
+<!-- TODO: need to create and link to an interactive lab guide (currently a broken link in manifest.json: "interactive":"https://launch.oracle.com/?") -->
+<!-- TODO: need to create a video walkthrough of the lab -->
+<h1 id="intelligent-chatbot-creation-workshop">Intelligent ChatBot Creation Workshop</h1>
+<h4 id="oracle-cloud-test-drive-labs"><strong>Oracle Cloud Test Drive Labs</strong></h4>
+<h2 id="pre-requisite">Pre-requisite:</h2>
+<h3 id="step-1-getting-your-trial-account"><strong>STEP 1</strong>: Getting your Trial Account</h3>
+<ul>
+<li><p>From any browser, go to the URL:
+<code>https://cloud.oracle.com</code></p></li>
+<li><p>Click on <strong>Try for Free</strong> icon located on the top of the right most side</p>
+<p><img src="images/100/Picture100-1.png" alt="" /></p></li>
+</ul>
+<!--  TODO: we do not ask for regions anymore -- accounts are managed with IDCS -->
+<ul>
+<li><p><strong>IMPORTANT</strong> - Click on Create a Free Account icon located on the right most side.</p>
+<p><img src="images/100/Picture100-2.png" alt="" /></p></li>
+</ul>
+<!-- TODO: these login screenshots are out of date -->
+<ul>
+<li><p>Fill in the Account Details. Verification code will be sent to the mobile number provided. Fill in the Credit Card Details. Accept the Terms and conditions to get started.</p>
+<p><img src="images/100/Picture100-3.png" alt="" /></p>
+<p><strong>NOTE:</strong> The <strong>Identity Domain, User Name</strong> and <strong>Password</strong> values will be given to you by Trial confirmation email.</p>
+<p><img src="images/100/Picture100-4.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-record-information-from-the-welcome-email-and-login"><strong>STEP 2</strong>: Record information from the welcome email and login</h3>
+<ul>
+<li><p>During the provisioning of your account, you will receive a welcome email message.</p>
+<p><strong>NOTE:</strong> The <strong>Username</strong>: With a trial account, this should be your email address. <strong>Temporary Password</strong>: The first-time login with temporary password.</p>
+<p><img src="images/100/Picture100-5.png" alt="" /></p>
+<p><img src="images/100/Picture100-6.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-log-into-your-cloud-account"><strong>STEP 3</strong>: Log into your Cloud Account</h3>
+<ul>
+<li><p>Click on the <strong>Get Started with Oracle Cloud</strong> provided in the access details email.
+<img src="images/100/Picture100-7.png" alt="" /></p>
+<p><strong>NOTE:</strong> Provide the username and temporary password provided in the email. Follow the instructions to <strong>set your password</strong>, and then record in your notes the new password for this <strong>Cloud Account Password</strong> field.</p></li>
+<li><p>You will be presented with a Dashboard displaying the various cloud services available to this account.</p>
+<p><img src="images/100/Picture100-8.png" alt="" /></p></li>
+<li><p>If all your services are not visible, <strong>click</strong> on the <strong>Customize Dashboard</strong>, you can add services to the dashboard by clicking <strong>Show.</strong> Towards the left panel expand the Services to access all the available services</p>
+<p><img src="images/100/Picture100-9.png" alt="" /></p></li>
+</ul>
+<h2 id="oracle-mobile-cloud-enterprise----intelligent-bots">Oracle Mobile Cloud Enterprise -- Intelligent Bots</h2>
+<h3 id="step-1-introduction"><strong>STEP 1</strong>: Introduction</h3>
+<p>Intelligent Bots in Oracle Mobile Cloud Enterprise (or just Bots) is a conversational computing platform for the enterprise. </p>
+<p>You can think of your Bot as a virtual personal assistant, one that completes a task through a combination of text messages and simple UI elements like select lists. While a Bot can open your enterprise to messaging, it’s not a replacement for a mobile or web app. It instead provides a new channel.</p>
+<p><img src="images/100/image1.png" alt="" /></p>
+<p>Bots enables you to connect your users to the enterprise while engaging them in naturalistic conversations. The Bots you create can respond to free-form user input because the Bots’ language intelligence framework uses machine learning. While users are probably aware that they’re chatting with a Bot, they don’t need to limit or constrain their input.</p>
+<p>You can build the Bot, test it, and configure it to run on different messaging services using the Bot Builder, a simple user interface. Although, you can run this Bot through Facebook Messenger and other platforms or websites, you need only write the bot once. Bots optimizes the Bot for the target platform.</p>
+<h3 id="step-2-how-do-i-create-a-bot"><strong>STEP 2</strong>: How Do I Create a Bot?</h3>
+<p>Here's a bird's-eye view of bot development.
+<img src="images/100/image2.png" alt="Description of bots-overall-process.png follows" />
+<strong>Description of the illustration bots-overall-process.png</strong></p>
+<p><strong>Create Intents</strong>---You can start by creating Intents. Intents illustrate your use case by describing the various actions that your Bot helps its users complete. If your Bot enables users to perform various banking transactions, for example, then you could create intents like CheckBalance or TransferMoney. Intents not only describe what your Bot can do, but, they are also the key to your Bot’s intelligence. They enable it to recognize user input because each Intent has a set of typical user statements known as utterances associated with it. While these phrases share the same meaning, they make your Bot resilient because they’re also varied (for example, What’s my savings account balance? and How much is in my checking account?).</p>
+<p><strong>Train the Bot</strong>---To enable your Bot to reference Intents when it parses the user input, you need to train it. Specifically, you need to train it with the Intents and their utterances (collectively, the training data), so that it can resolve the user input to one of the Intents. By training your Bot, you leverage the language intelligence which is at the core of the Bots platform. Its algorithms enable your Bot to not only recognize the sample phrases that belong to each intent, but similar phrases as well.</p>
+<p><strong>Create Entities</strong>---In some cases, you may need to provide some context to enable your Bot to complete a user request. While some user requests might resolve to the same intent, they are nonetheless asking for different things (for example, What’s my savings account balance? and How much is in my checking account? would both resolve to the CheckBalance intent). To clarify the request, you would add an entity. Using the banking Bot example, an entity called AccountType, which defines values called checking and saving would enable the Bot to parse the user request and respond appropriately.</p>
+<p><strong>Integrate Custom Components</strong>---At this point, your Bot can recognize input, but it can’t respond to it. To put your Bot’s intelligence to work, you need to add components and then later, create a dialog flow. Components enable your Bot to do its job. There are two types of components: the ones provided by Bots that perform functions ranging from holding the resolved Intent to outputting text, and the ones that you provide. The components belonging to this latter category are known as custom components. Unlike the built-in components that you can use in any Bot that you build with the Bots platform, the custom components perform tasks that are specific to a single bot, like checking a user’s age, or returning account information. Custom components don’t reside within the Bots platform, so for your Bot to use them, you need to access them through a REST service.</p>
+<p><strong>Create the Dialog Flow</strong>---Next, you need to give the Bot the wherewithal to express its intelligence to its users by creating the dialog flow. The dialog flow describes how your Bot reacts as different Intents are resolved. It defines what your Bot says to its users, how it prompts them for input, and how it returns data. Think of the dialog flow as a flow chart that’s been transposed to a simple markdown language. In Bots, this markdown language is a version of YAML called OBotML.</p>
+<p><strong>Test the Bot</strong>---Once you’ve started your dialog flow, you can chat with your Bot to test it out. You can see how the Tester works in <a href="https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/bot-basics1.html#GUID-0C3BF9FB-563D-427C-8536-4E98C115CDB0">Building Your First Bot</a>.</p>
+<p><strong>Configure Channels</strong>---Users subscribe to your bot through messaging platforms such as Facebook Messenger, iOS App, Android App, and Web Page. You don’t have to rewrite your Bot for each messaging platform, but you do need to configure a channel for each one. Bots enables you to integrate with Facebook Messenger quickly through its Facebook Channel. You don’t need to craft any REST calls to run your Bot on Facebook. Instead, you complete a UI using artifacts that are generated by both Facebook and Bots. See <a href="https://docs.oracle.com/en/cloud/paas/mobile-suite/develop/bot-channels.html#GUID-CCEE3FD5-21F2-4288-9450-0D24202F2615">Running Your Bot on Facebook Messenger</a>. To integrate your Bot with other services, Bots provides the Webhook channel. You build your own Webhooks for these non-Facebook integrations. </p>
+<h3 id="step-3-how-to-prepare-for-this-workshop"><strong>STEP 3</strong>: How to prepare for this workshop</h3>
+<p><strong><em>Get an Oracle Cloud Account</em></strong></p>
+<ul>
+<li>Oracle provides several methods for gaining access to Oracle Cloud Accounts used to complete the Labs in this Hands-on-Workshop.<ul>
+<li>For some workshop events, cloud environments will be provided.</li>
+<li>For others events (e.g. <strong>Oracle Code</strong>), or when completing this workshop in a self-service model, you must gain access to your own Trial account. Trial accounts can be obtained at <a href="http://cloud.oracle.com/tryit">Try It</a></li>
+<li>If you are attending an Oracle sponsored event, please <strong>review your Event invitation</strong> for more instruction on how to gain access to your Workshop Account.</li></ul></li>
+</ul>
+<h3 id="step-4-how-to-view-the-lab-guides"><strong>STEP 4</strong>: How to View the Lab Guides</h3>
+<ul>
+<li><p>The Labguides are best viewed using the Workshop's <a href="http://oracle.github.io/learning-library/workshops/intelligent-chatbots">GitHub Pages Website URL</a></p></li>
+<li><p>Once you are viewing the Workshop's GitHub Pages website, you can see a list of Lab Guides at any time by clicking on the <strong>Menu Icon</strong></p>
+<p><img src="images/WorkshopMenu1.png" alt="" />  </p></li>
+</ul>

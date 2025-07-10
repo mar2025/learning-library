@@ -305,39 +305,46 @@ labGuide.controller('labGuideController', ['$scope', '$http', '$mdSidenav', '$sa
 
         $scope.loadContent = function (page) {
             console.log('Loading page: ' + page);
-            $http.get(page).then(function (res) {
-              console.log('Got page: ' + page);
-              var converter = new showdown.Converter({tables: true})
-                , text = res.data;
-              converter.setFlavor('github');
-
-              var html = converter.makeHtml(text);
-
-              $scope.htmlContent = html;
+            const htmlCandidate = page.replace(/\.md$/, '.html');
+            // Try to fetch pre-rendered HTML first
+            $http.get(htmlCandidate).then(function(res){
+              console.log('Loaded pre-rendered HTML: ' + htmlCandidate);
+              $scope.htmlContent = res.data;
               $scope.selection = 'lab';
-              page.htmlContent = html;
-              setTimeout(function () {
-                  $("#labguide h2").next("h3").addClass("first-in-section");
-                  $("#labguide h3").nextUntil("#labguide h1, #labguide h2, #labguide h3").hide();
-                  $("#labguide h3").addClass('plus');
-                  $("#labguide h3").unbind('click', stepClickHandler);
-                  $("#labguide h3").click(stepClickHandler);
-                  window.scrollTo(0, 0);
-              }, 0);
-            }, function (msg) {
+              setTimeout(applyLabGuideBehaviours, 0);
+            }, function(){
+              // Fallback to Markdown conversion
+              $http.get(page).then(function (res) {
+                console.log('Fallback to Markdown for: ' + page);
+                var converter = new showdown.Converter({tables: true});
+                converter.setFlavor('github');
+                var html = converter.makeHtml(res.data);
+                $scope.htmlContent = html;
+                $scope.selection = 'lab';
+                setTimeout(applyLabGuideBehaviours, 0);
+              }, function (msg) {
                 if(page === 'Home.md') {
                   console.log('Home.md not found. Displaying README.md...');
                   $scope.currentFilename = "README.md";
                   $scope.getLabGuide({ filename: 'README.md' });
-                }
-                else {
+                } else {
                   $scope.showCustomToast({'text': 'File: ' + page + ' not found!'}, 5000, false, true);
                   $scope.currentFilename = 'README.md';
                   $scope.getLabGuide({ filename: 'README.md' });
                   console.log('Error getting lab guide markdown!');
                   console.log(msg);
                 }
+              });
             });
+        }
+
+        function applyLabGuideBehaviours(){
+            $("#labguide h2").next("h3").addClass("first-in-section");
+            $("#labguide h3").nextUntil("#labguide h1, #labguide h2, #labguide h3").hide();
+            $("#labguide h3").addClass('plus');
+            $("#labguide h3").unbind('click', stepClickHandler);
+            $("#labguide h3").click(stepClickHandler);
+            window.scrollTo(0, 0);
         }
         var updateFilenameInHeader = function(filename) {
           var headerElement = document.getElementsByTagName('h2')[0];

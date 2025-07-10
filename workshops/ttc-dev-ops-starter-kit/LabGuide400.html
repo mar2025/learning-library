@@ -1,0 +1,192 @@
+<p><img class="float-right" src="https://oracle.github.io/learning-library/workshops/common-content/images/touch-the-cloud/ttc-logo.png" width="200"></p>
+<h1 id="lab-400">Lab 400</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Welcome to lab 400. In this lab we will be completing our application architecture by deploying a Golang microservice on Docker. The service will be responsible to translating currencies on our UI. </p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Setup your docker host on Container Cloud Service</li>
+<li>Deploy the microservices from it's Docker Hub build location</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>The following lab requires an Oracle Public Cloud account that will be supplied by your instructor.</li>
+<li>You will need an ssh key: <a href="labkey.pub">labkey</a></li>
+</ul>
+<h2 id="optional-artifacts">Optional Artifacts</h2>
+<ul>
+<li>The Code Base for Docker Hub Build is located here: <a href="https://github.com/CloudAccelerate/TTC-CurrencyMicroservice.git">https://github.com/CloudAccelerate/TTC-CurrencyMicroservice.git</a></li>
+<li>The Docker Hub Build is here: <a href="https://hub.docker.com/r/cloudaccelerate/ttc-currencymicroservicebuild/">https://hub.docker.com/r/cloudaccelerate/ttc-currencymicroservicebuild/</a></li>
+<li>Google's Go Programming Language is described here: <a href="https://golang.org/">https://golang.org/</a></li>
+<li>Docker information can be found here: <a href="https://www.docker.com/">https://www.docker.com/</a></li>
+<li>Oracle's Container Cloud Service is detailed here: <a href="https://cloud.oracle.com/en_US/container">https://cloud.oracle.com/en_US/container</a></li>
+</ul>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Expected that labs 100, 200 and 300 have been completed already</li>
+<li>Expected that your storage policy has been set as described in the <strong>prerequisite guide</strong></li>
+</ul>
+<h2 id="technologies-involved">Technologies Involved</h2>
+<ul>
+<li>Oracle Cloud Services:</li>
+<li>Oracle Container Cloud Serivce</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>You will be adding your second microserivce.
+<img src="images/400/targeted-architecture.png" alt="" /> </p>
+<h1 id="setup-and-deploy-a-golang-microservice-on-docker">Setup and Deploy a Golang Microservice on Docker</h1>
+<h2 id="setup-your-docker-host">Setup your Docker Host</h2>
+<h3 id="step-1-create-a-container-cloud-service-instance"><strong>STEP 1</strong>: Create a Container Cloud Service Instance</h3>
+<ul>
+<li>Return to the Cloud Services Dashboard</li>
+</ul>
+<p><img src="images/400/step01.png" alt="" /></p>
+<ul>
+<li>From the dashboard click on the <strong>Container</strong> Cloud Service menu (not to be confused with Application Container) and select Open Service Console</li>
+</ul>
+<p><img src="images/400/step02.png" alt="" /></p>
+<ul>
+<li>You will now be on the landing page for Oracle's Container Cloud Service</li>
+</ul>
+<p><img src="images/400/step03.png" alt="" /></p>
+<ul>
+<li>Click Create a service to start the wizard process of setting up your Docker host</li>
+</ul>
+<p><img src="images/400/step04.png" alt="" /></p>
+<ul>
+<li>Fill in the form and click Next</li>
+</ul>
+<pre><code>Service Name: TouchTheCloudDemo
+SSH Public Key:&lt;use labkey.pub found in required artifacts&gt;
+Admin Username: admin
+Admin Password: Oracle123!
+</code></pre>
+<p><img src="images/400/step05.png" alt="" /></p>
+<ul>
+<li>Confirm your setup</li>
+</ul>
+<p><img src="images/400/step06.png" alt="" /></p>
+<ul>
+<li>Wait for a few minutes while your host provisions (approx 10 minutes to setup your host)</li>
+</ul>
+<blockquote>
+  <p>Note that we will see 2 OCPUs and 15GB or memory being used. This is due to the management console needing a OC3 shape to run (1 OCPU and 7.5GB memory). Additional shapes are then allocated based on the number of workers and the worker shape selected in the cofiguration. For our Demo we have a single OC3 shaped worker.</p>
+</blockquote>
+<p><img src="images/400/step07.png" alt="" /></p>
+<h3 id="step-2-create-a-new-container-service"><strong>STEP 2</strong>: Create a new container service</h3>
+<ul>
+<li>Once your Container Service instance is provisioned, click on the menu to open the Container Console (you may have to add a browser security exception)</li>
+</ul>
+<p><img src="images/400/step09.png" alt="" /></p>
+<ul>
+<li>Use the admin username and password you setup in the instance configuration to login</li>
+</ul>
+<pre><code>Username: admin
+Password: Oracle123!
+</code></pre>
+<p><img src="images/400/step10.png" alt="" /></p>
+<ul>
+<li>Once logged in, you will be presented with the main dashboard</li>
+</ul>
+<p><img src="images/400/step11.png" alt="" /></p>
+<ul>
+<li>Select Services from the left hand menu, here you will find a listing of out-of-the-box containers available to be deployed<ul>
+<li>A new deployment is as easy as hitting deploy.</li></ul></li>
+</ul>
+<p><img src="images/400/step12.png" alt="" /></p>
+<ul>
+<li>We are now going to create a new service based off a Docker image built on Docker Hub (by default, Docker hub is linked to Oracle's Container Cloud service via the Registries Menu). Select New Service</li>
+</ul>
+<p><img src="images/400/step13.png" alt="" /></p>
+<ul>
+<li>Fill out the New Service Form</li>
+</ul>
+<pre><code>Service Name: Currency Microservice
+Image: cloudaccelerate/ttc-currencymicroservicebuild
+</code></pre>
+<p><img src="images/400/step14-1.png" alt="" /></p>
+<ul>
+<li>Select Ports from the Available Options and Add a new port mapping</li>
+</ul>
+<pre><code>Host Port: 80
+Container Port: 8089
+Protocol: TCP
+</code></pre>
+<blockquote>
+  <p>Our application is set to listen on port 8089 which is exposed by the container (defined in the docker file). In order to access the container port we need to create a mapping from the host to the container. In this case we have chosen to set port 80 on the host to create the mapping to port 8089 on the container.</p>
+</blockquote>
+<p><img src="images/400/step15.png" alt="" /></p>
+<ul>
+<li>Now Save your new service</li>
+</ul>
+<p><img src="images/400/step16-1.png" alt="" /></p>
+<ul>
+<li>verify your new service is in the list by filtering for Currency</li>
+</ul>
+<p><img src="images/400/step17.png" alt="" /></p>
+<h3 id="step-3-deploy-the-container"><strong>STEP 3</strong>: Deploy the container</h3>
+<ul>
+<li>find the Currency Microservice in the list of services and select Deploy</li>
+</ul>
+<p><img src="images/400/step17.png" alt="" /></p>
+<ul>
+<li>Use the default values for the deployment and hit Deploy</li>
+</ul>
+<p><img src="images/400/step18.png" alt="" /></p>
+<ul>
+<li>Your container should start deploying</li>
+</ul>
+<p><img src="images/400/step19.png" alt="" /></p>
+<ul>
+<li>Once successfully deployed the status should update</li>
+</ul>
+<p><img src="images/400/step20.png" alt="" /></p>
+<h3 id="step-4-verify-your-microservice"><strong>STEP 4</strong>: Verify your Microservice</h3>
+<ul>
+<li>Select Containers on the left menu to see a listing of your containers</li>
+</ul>
+<p><img src="images/400/step21.png" alt="" /></p>
+<ul>
+<li>Click on hostname to view host details. <strong>Make a note of the public IP</strong></li>
+</ul>
+<p><img src="images/400/step22.png" alt="" /></p>
+<ul>
+<li>To Verify the microservice, open a new web browser tab and use the public IP to hit the following URL:</li>
+</ul>
+<pre><code>http://&lt;Public_IP&gt;/currencies/v1/usd
+ex: http://129.144.154.28/currencies/v1/usd
+</code></pre>
+<p><img src="images/400/step23.png" alt="" /></p>
+<h3 id="step-5-bind-your-microservice"><strong>STEP 5</strong>: Bind your Microservice</h3>
+<ul>
+<li>Return to your main service dashboard</li>
+</ul>
+<p><img src="images/400/step01.png" alt="" /></p>
+<ul>
+<li>Select Application Container Cloud Service to view your previously deployed Applications from Labs 100 and 200</li>
+</ul>
+<p><img src="images/200/step21.png" alt="" /></p>
+<ul>
+<li>From the application dashboard step into your UI application</li>
+</ul>
+<p><img src="images/200/step23.png" alt="" /></p>
+<ul>
+<li>Select the Deployments tab on the left</li>
+</ul>
+<p><img src="images/400/step24.png" alt="" /></p>
+<ul>
+<li>Add a new environment variable</li>
+</ul>
+<pre><code>Name: CURRENCY_MICROSERVICE_URL
+Value: &lt;Currency Microservice URL&gt;
+ex: http://129.144.154.28/currencies/v1/usd
+</code></pre>
+<p><img src="images/400/step25.png" alt="" /></p>
+<ul>
+<li>Save and apply your biding</li>
+</ul>
+<p><img src="images/400/step26.png" alt="" /></p>
+<ul>
+<li>Once the Application is recreated, open the URL to see the new binding in action.</li>
+</ul>
+<p><img src="images/400/step29.png" alt="" /></p>
+<p><strong>Lab 400 is now complete</strong></p>

@@ -1,0 +1,78 @@
+<h1 id="student-guide">Student Guide</h1>
+<p><img src="images/studentguide/Title.png" alt="" /><br />
+Update: January 16, 2018</p>
+<p>This Student Guide will provide you with the instructions necessary to install the Client Tools used during this workshop. This Workshop will allow you to gain exposure to Docker concepts and how those concepts can be applied within the Oracle Public Cloud.</p>
+<h2 id="client-environment-options">Client Environment Options</h2>
+<p>Your client environment <strong>must be configured prior</strong> to attempting the Hands on Workshop, or you will not be able to complete the Workshop labs.</p>
+<p>Docker lab guides are provided for the on-line "Play with Docker" classroom,  Mac, Linux and Windows. Docker functionality is the same between the environments.</p>
+<ul>
+<li>Installation instructions for most operating systems can be found here: <a href="https://docs.docker.com/install/">Docker Installs</a></li>
+</ul>
+<h3 id="docker-toolbox-on-windows">Docker Toolbox on Windows</h3>
+<p>On Windows, there are a couple of options:</p>
+<ul>
+<li>To <strong>download and install</strong> follow the directions found here: <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">Install Directions</a></li>
+<li>This implementation can run on Windows 7 64-bit and above and uses VirtualBox for the supporting Linux VM. Docker Toolbox provides a way to use Docker on Windows systems that do not meet minimal system requirements for the newer "Docker for Windows" release (see next option below)</li>
+<li><strong>Docker for Windows</strong> (Requires Windows 10 Pro or higher) To download and install, follow the directions found here: <a href="https://docs.docker.com/docker-for-windows/install/">Windows Install Directions</a></li>
+<li>Docker for Windows requires 64bit Windows 10 Pro with Hyper-V available. Please see the web site for the full set of requirements.</li>
+<li><strong>NOTE:</strong> The "Windows" lab guides shown are from a Docker Toolbox on Windows installation but the Docker functionally and commands will be the same using ether Windows option</li>
+</ul>
+<h3 id="docker-toolbox-on-other-operating-systems">Docker Toolbox on Other Operating Systems</h3>
+<ul>
+<li><strong>MAC:</strong> Mac specific installation instructions can be found here: <a href="MacStudentGuide.md">Mac Student Guide</a></li>
+<li><strong>Linux:</strong> Using a native docker install on the Linux flavor or your choice</li>
+<li><strong>Play with Docker:</strong> on-line classroom found here: <a href="http://training.play-with-docker.com/">On-line Classroom</a>.<ul>
+<li><strong>NOTE:</strong> The Play with Docker classroom will only be used for Lab 100</li></ul></li>
+<li><strong>Virtual Box Linux VM:</strong> Pre-loaded with Docker.</li>
+</ul>
+<h2 id="virtual-box-workshop-vm-installation-option">Virtual Box Workshop VM Installation Option</h2>
+<p>As an alternative to installing Docker natively, you can follow these steps to download a Virtual Box image that will contain a pre-loaded environment.</p>
+<h3 id="hardware-requirements">Hardware Requirements</h3>
+<ul>
+<li><p>You will need a machine capable of running the workshop image within Oracle Virtual Box (MAC or PC / Minumum of 20GB of free storage / 8GB RAM)</p></li>
+<li><p>You will need full Administrator privileges on your machines, and in some cases will may need to turn on Hardware Virtualization in the BIOS.</p>
+<ul>
+<li>Hardware Virtualization needs to be enabled in the BIOS to properly run Virtual Box.  If you get virtualization errors, reboot into the BIOS and make sure that the setting to enable Hardware Virtualization is enabled. </li></ul></li>
+<li><p>The latest version of Virtual Box should be installed and tested prior to the workhop.</p></li>
+</ul>
+<h3 id="step-1-install-virtual-box-and-download-vm"><strong>STEP 1</strong>: Install Virtual Box and Download VM</h3>
+<ul>
+<li><p><a href="https://www.virtualbox.org/wiki/Downloads">Download</a> and install Virtual box </p></li>
+<li><p>Download all 7 parts of the workshop Linux VM into the same directory: <a href="https://publicdocs-corp.documents.us2.oraclecloud.com/documents/link/LF3AECCFE80C8B381E41E491F6C3FF17C1177E4725F3/folder/F81AC36043787ED102DC77DDF6C3FF17C1177E4725F3/_Docker_VM">Location of Virtual box OVA</a></p>
+<p><img src="images/studentguide/Picture31.png" alt="" /></p></li>
+</ul>
+<h3 id="step-2-download-and-install-7-zip-and-extract-ova-file"><strong>STEP 2</strong>: Download and install 7-zip and Extract OVA file</h3>
+<p>You will use 7-zip to reassemble the 7 part file. It will extract an OVF and VMDK file</p>
+<ul>
+<li><p><a href="http://www.7-zip.org/download.html">Download</a> and install 7-zip</p></li>
+<li><p>Run 7-zip and browse to the directory when you downloaded the multi-part file. <strong>Select</strong> the FIRST part and click <strong>Extract</strong>;</p>
+<p><img src="images/studentguide/Picture32.png" alt="" /></p></li>
+<li><p>Then click <strong>OK</strong>:</p>
+<p><img src="images/studentguide/Picture33.png" alt="" /></p></li>
+</ul>
+<h3 id="step-3-import-ovf-file"><strong>STEP 3</strong>: Import OVF File</h3>
+<ul>
+<li><p>Startup <strong>Oracle Virtual Box</strong></p>
+<p><img src="images/studentguide/Picture22.png" alt="" /></p></li>
+<li><p>From top left menu select <strong>File -> Import Appliance</strong></p>
+<p><img src="images/studentguide/Picture23.png" alt="" /></p></li>
+<li><p>Click on <strong>browse</strong> icon to select file to import.</p></li>
+<li><p>Navigate to the <strong>DockerWorkshop.ovf</strong> file, select it, and click <strong>Open</strong></p>
+<p><img src="images/studentguide/Picture24.png" alt="" /></p></li>
+<li><p>Once the File is selected click <strong>Next</strong> to continue.</p>
+<p><img src="images/studentguide/Picture25.png" alt="" /></p></li>
+<li><p>Keep all the defaults and click <strong>Import</strong></p>
+<p><img src="images/studentguide/Picture26.png" alt="" /></p></li>
+<li><p>Wait for import to complete. The time required to import will vary depending on the speed of your hard disk.</p>
+<p><img src="images/studentguide/Picture27.png" alt="" /></p></li>
+</ul>
+<h3 id="step-4-start-virtual-box-image"><strong>STEP 4</strong>: Start Virtual Box Image</h3>
+<ul>
+<li><p>After completion of the import, you should see the DockerWorkshop image in a Powered Off state. The default settings will work, but if you are familiar with Virtual Box, you are welcome to change any of the settings.</p>
+<p><img src="images/studentguide/Picture28.png" alt="" /></p></li>
+<li><p>With <strong>DockerWorkshop</strong> selected, click <strong>Start</strong>.</p>
+<p><img src="images/studentguide/Picture29.png" alt="" /></p></li>
+<li><p>After a few minutes you will have a running image that will be used for all of the labs.</p>
+<p><img src="images/studentguide/Picture30.png" alt="" /></p></li>
+<li><p><strong>You are ready to begin with the labs</strong></p></li>
+</ul>

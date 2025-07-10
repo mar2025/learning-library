@@ -1,0 +1,112 @@
+<h1 id="unit-5-developing-reports">Unit 5: Developing Reports</h1>
+<p>This exercise includes three hands-on-labs.</p>
+<p><strong>HOL 5-1 Creating a Classic Report</strong>: In this hands-on-lab, you create a classic report region on the home page of the Demo Projects application.</p>
+<p><strong>HOL 5-2 Creating an Interactive Report</strong>: In this hands-on lab, you create a new database application and then using the Create Page wizard, you add an interactive report page.</p>
+<p><strong>HOL 5-3 Creating an Interactive Grid</strong>: In this hands-on lab, you use the Create Page wizard and add an interactive grid page in the Budget App application.</p>
+<h2 id="hol-5-1-creating-a-classic-report">HOL 5-1 Creating a Classic Report</h2>
+<p>In the Demo Projects application, you create a report that allows each Team Member to see their outstanding tasks.</p>
+<ol>
+<li><p>View the home page (Page 1) in page designer. If you are on the Home page, then click <strong>Edit Page 1</strong> in the Developer Toolbar.
+<img src="images/hol05/image3.png" alt="1a" /></p></li>
+<li><p>In the Rendering tree, right-click <strong>Content Body</strong> and select <strong>Create Region</strong>.
+<img src="images/hol05/image4.png" alt="1b" /></p></li>
+<li><p>In the property editor, under Identification, enter <strong>My Outstanding Tasks</strong> for Title. Select <strong>Classic Report</strong> for Type.
+<img src="images/hol05/image5.png" alt="1c" /></p></li>
+<li><p>In the property editor, under Source, copy and paste the following code for SQL Query.</p>
+<pre><code>  select p.name project
+
+  , t.name task
+
+  , t.end_date
+
+  from demo_proj_tasks t
+
+  , demo_projects p
+
+  , demo_proj_milestones m
+
+  , demo_proj_team_members tm
+
+  where p.id = t.project_id
+
+  and m.id = t.milestone_id (+)
+
+  and tm.id = t.assignee and nvl(t.is_complete_yn, 'N') = 'N'
+
+  and upper(tm.username) = upper(:APP_USER)
+
+  order by t.end_date
+</code></pre>
+<p><strong>Note</strong>: The where condition of username = :APP_USER restricts the records to those assigned to the person running the application.
+<img src="images/hol05/image6.png" alt="1d" /></p></li>
+<li><p>In the Property Editor, locate Appearance &gt; Template Options and click <strong>Use Template Defaults, Scroll - Default</strong>.
+<img src="images/hol05/image7.png" alt="1e" /></p></li>
+<li><p>For General, enable <strong>Remove Body Padding</strong>, and for Body Height select <strong>480px</strong>. Click <strong>OK</strong>.
+<img src="images/hol05/image8.png" alt="1f" /></p></li>
+<li><p>Locate the Rendering tree. Under the My Outstanding Tasks region, click <strong>Attributes</strong>.</p></li>
+<li><p>Under Attributes, locate Template Options and click <strong>Use Template Defaults, Enable, Enable</strong>.
+<img src="images/hol05/image9.png" alt="1g" /></p></li>
+<li><p>For General, enable Stretch Report, and for Report Border, select No Outer Borders. Click <strong>OK</strong>.
+<strong>Note</strong>: Region Template Options (such as Body Height, Header, Style and so on) alter the overall presentation of a region. However, Attribute Template Options (such as Stretch Report, Row Highlighting and so on) alter the way the records within a region display.
+<img src="images/hol05/image10.png" alt="1h" /></p></li>
+<li><p>Click <strong>Save</strong>. Run the application to see how the Home page looks now. Click <strong>Save and Run Page</strong>. Your home page might look like:
+<img src="images/hol05/image11.png" alt="1" /></p>
+<p>In the Developer Toolbar, click <strong>Home</strong>.</p></li>
+</ol>
+<h2 id="hol-5-2-creating-an-interactive-report">HOL 5-2 Creating an Interactive Report</h2>
+<p>In this lab, you create an interactive report on the HARDWARE table. You created this table in HOL 2-2. First, you create a database application and then you create the interactive report page.</p>
+<ol>
+<li><p>Create a database application. Perform the following steps:</p>
+<p>a)  Navigate to Application Builder. Click <strong>Create</strong>.</p>
+<p>b)  Click <strong>Desktop</strong>.</p>
+<p>c)  Enter <strong>Hardware</strong> for Name and click <strong>Create Application</strong>.
+    <img src="images/hol05/image12.png" alt="2a" /></p>
+<p>d)  Click <strong>Create Application</strong>.</p></li>
+
+<li><p>Now, create an interactive report on the HARDWARE table. On the application home page, click <strong>Create Page</strong>.
+<img src="images/hol05/image13.png" alt="2b" /></p></li>
+<li><p>Select <strong>Report</strong> for Page Type, and click <strong>Next</strong>.</p></li>
+<li><p>Select <strong>Interactive Report</strong> and click <strong>Next</strong>. </br>
+<img src="images/hol05/image14.png" alt="2c" /></p></li>
+<li><p>For Page Attributes:</p>
+<ul>
+<li><p>Page Name: Enter <strong>Hardware Interactive Report</strong></p></li>
+<li><p>Breadcrumb: Select Breadcrumb</p></li>
+<li><p>Parent Entry: Home</p></li></ul>
+<p>Click <strong>Next</strong>.</p></li>
+<li><p>For Navigation Menu:</p>
+<ul>
+<li><p>Navigation Preference: Select <strong>Create a new navigation menu entry</strong></p></li>
+<li><p>Parent Navigation Menu Entry: <strong>Home</strong></p></li></ul>
+<p>Click <strong>Next</strong>.</p></li>
+<li><p>Select <strong>Hardware</strong> for Table / View Name and click <strong>Create</strong>.</p></li>
+<li><p>Click <strong>Save and Run Page</strong>.</p></li>
+<li><p>Enter your Workspace username and password. Click <strong>Sign In</strong>. Your interactive report might look like:
+<img src="images/hol05/image15.png" alt="2" />
+In the Developer Toolbar, click <strong>Home</strong>.</p></li>
+</ol>
+<h2 id="hol-5-3-creating-an-interactive-grid">HOL 5-3 Creating an Interactive Grid</h2>
+<p>In this lab, you create an interactive grid on the PROJECT_BUDGET table. You already created the Budget App application in HOL 3-2. Now, you create an interactive grid in the Budget App application.</p>
+<ol>
+<li><p>Navigate to <strong>Application Builder</strong>. In the report, select <strong>Budget App</strong>.
+<img src="images/hol05/image16.png" alt="3a" /></p></li>
+<li><p>Click <strong>Create Page</strong>. </br>
+<img src="images/hol05/image17.png" alt="3b" /></p></li>
+<li><p>Select <strong>Report</strong> and click <strong>Next</strong>.</br></p></li>
+<li><p>Select <strong>Interactive Grid</strong> and click <strong>Next</strong>.</br>
+<img src="images/hol05/image18.png" alt="3c" /></p></li>
+<li><p>For Page Attributes, Enter <strong>Project Budget Interactive Grid</strong> for Page Name and click <strong>Next</strong>.</p></li>
+<li><p>For Navigation Menu:</p>
+<ul>
+<li><p>Navigation Preference: Select <strong>Create a new navigation menu entry</strong></p></li>
+<li><p>New Navigation Menu Entry: <strong>Interactive Grid</strong></p></li></ul>
+<p>Click <strong>Next</strong>.</p></li>
+<li><p>On the Report Source dialog, note that you can set the Editing Enabled to Yes or No. In this lab, you accept the default, <strong>No</strong>.
+Select <strong>Project_Budget</strong> for Table / View Name and click <strong>Create</strong>.
+<img src="images/hol05/image19.png" alt="3d" /></p></li>
+<li><p>Click <strong>Save and Run Page</strong>. The interactive grid displays. Your screen might look like:
+<img src="images/hol05/image20.png" alt="3" /></p>
+<p>In the Developer Toolbar, click <strong>Home</strong>.</p></li>
+</ol>
+<hr />
+<p><img src="images/hol05/image21.png" alt="Snap3.jpeg" /></p>

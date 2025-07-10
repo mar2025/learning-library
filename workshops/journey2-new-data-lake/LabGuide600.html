@@ -1,0 +1,117 @@
+<p><img src="images/600/600.JPG" alt="" />  </p>
+<p>Updated: Aug 29, 2017</p>
+<h2 id="work-in-progress">WORK IN PROGRESS</h2>
+<p>For now follow pages 4 to 24 of this document: http://www.oracle.com/partners/en/most-popular-resources/journey2-module2-3702610.pdf</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab, you learn how to provision a **Oracle Data base cloud service ** Instance and access it  </p>
+<p>The Oracle database cloud service that supports any size workload from dev/test to large scale production deployment. Multi-layered, in depth security with encryption by default. A highly available and scalable service delivering speed, simplicity and flexibility for faster time to value and savings. In this lab, we will walk you through the steps to quickly configure and create a Database cloud service instance.  </p>
+<p>Please direct comments to: David Bayard (david.bayard@oracle.com)</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Learn how to provision a DBCS instance</li>
+<li>Learn how to access DBCS</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Access to an Oracle Public Cloud identity domain (by following Lab100 or Lab100GSE)</li>
+<li>A provisioned Storage Cloud instance (included the Replication Policy setup, as described in Lab100 or Lab100GSE)</li>
+</ul>
+<h1 id="provision-a-new-dbcs-instance">Provision a new DBCS Instance</h1>
+<h2 id="provision-database-cloud-service">Provision Database cloud service</h2>
+<h3 id="step-1-navigatelogin-to-the-oracle-cloud-my-services-dashboard"><strong>STEP 1</strong>: Navigate/login to the Oracle Cloud My Services Dashboard</h3>
+<ul>
+<li><img src="images/300/snap0011988.jpg" alt="" /> </li>
+</ul>
+<h3 id="step-2-click-the-create-instance-link-in-the-create-instance-box-under-the-welcome-layer"><strong>STEP 2</strong>: Click the Create Instance link (in the Create Instance box under the Welcome layer)</h3>
+<h3 id="step-3-click-all-services-then-click-create-next-to-database-cloud-service"><strong>STEP 3</strong>: Click All Services, then click Create next to Database cloud service</h3>
+<ul>
+<li><img src="images/600/DBCS-createinstance.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-4-click-create-service-on-the-dbcs-services-page"><strong>STEP 4</strong>: Click Create Service on the DBCS services page</h3>
+<ul>
+<li><img src="images/600/DBCS-createservice.gif" alt="" />  </li>
+</ul>
+<h3 id="step-5-fill-in-the-following-parameters-and-click-next"><strong>STEP 5</strong>: Fill in the following parameters and click next</h3>
+<ul>
+<li><p>Service Name: Name of the service</p></li>
+<li><p>Description: Generic Description. </p></li>
+<li><p>Notification email:  Email address for DBCS instance creation notification</p></li>
+<li><p>Service type:</p></li>
+<li><p>Metering Frequncy: Monthly/Hourly</p></li>
+<li><p>Software Release: Software Release of DBCS</p></li>
+<li><p>Software Edition: Standard/high performance/Exterme edtion</p></li>
+<li><p>Database Type: type of database single instance or clustered
+Backup and recovery: None</p></li>
+<li><p><img src="images/600/DBCS-createservice.jpg" alt="" /></p></li>
+</ul>
+<h3 id="step-6-enter-database-connection-details"><strong>STEP 6</strong>: Enter Database connection details</h3>
+<p>Database Name: Database container name
+PDB Name: Pluggable database
+Adminstaration Password: Password for System and Sys users
+usable database storage: Actual database storage
+Compute shape:  Choose the compute shape based your compute needs</p>
+<ul>
+<li><img src="images/600/DBCS-connection.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-8-in-the-credentials-section-define-your-ssh-public-key"><strong>STEP 8</strong>: In the Credentials section, define your SSH public key</h3>
+<ul>
+<li><p>SSH Public Key: Define a value for a VM Public Key, use a file with a VM Public Key or create a new key. The easiest choice if new to this environment may be to create a new key. Choose to Create a New Key and hit the Enter button.   Once you hit Enter, a File Folder Window will pop up to allow you to control where on your local computer you wish to store your SSH Key file (ex: sshkeybundle.zip).  Make sure and write down the location of this SSH key file.   The SSH Public Key field will then get filled in automatically.</p></li>
+<li><p><img src="images/600/DBCS-keyconfig.jpg" alt="" />  </p></li>
+</ul>
+<h3 id="step-9-optionalif-you-choose-backup-to-storage-cloud-in-step-6-enter-following-details-in-the-cloud-storage-credentials-section-provide-storage-cloud-url-usernamepassword-"><strong>STEP 9</strong>: (optional)If you choose Backup to storage cloud in step 6, Enter following details In the Cloud Storage Credentials section, provide storage cloud URL, username/password .</h3>
+<ul>
+<li><img src="images/600/DBCS-Storagecloud.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-9-click-next"><strong>STEP 9</strong>: Click Next.</h3>
+<h3 id="step-10-click-create"><strong>STEP 10</strong>: Click Create.</h3>
+<ul>
+<li><img src="images/600/confirm.jpg" alt="" />  </li>
+</ul>
+<h3 id="step-11-wait-for-the-dbcs-instance-to-be-provisioned"><strong>STEP 11</strong>: Wait for the DBCS instance to be provisioned.</h3>
+<ul>
+<li><p>While being provisioned, the Status will say "Creating service".  You can click on the status to get more information.</p></li>
+<li><p>As of 17.2.5, it can take about 20-40 minutes.</p></li>
+<li><p><img src="images/600/DBCS-creatingservice.jpg" alt="" />  </p></li>
+</ul>
+<h3 id="step-12-when-the-dbcs-instance-is-provisioned-click-on-the-name-of-the-instance-to-go-to-the-service-overview-page"><strong>STEP 12</strong>: When the DBCS instance is provisioned, click on the name of the instance to go to the Service Overview page.</h3>
+<ul>
+<li><img src="images/600/DBCS-postcreat.gif" alt="" />  </li>
+</ul>
+<h3 id="step-13-review-the-details-on-the-service-overview-page"><strong>STEP 13</strong>: Review the details on the Service Overview Page</h3>
+<p>While your instance is being created the status will be “Creating service”.   Once the new Cloud Service instance changes its status to Ready, you can then click on the hyperlink with your Service name and you can look at the details of your new Service.  Sections include:</p>
+<ul>
+<li>Overview – displays the number of nodes</li>
+<li>Administration – displays if there are any patches available.</li>
+</ul>
+<h3 id="step-14-accessing-dbcs"><strong>STEP 14</strong>: Accessing DBCS</h3>
+<h4 id="access-dbcs-through-ssh-putty">Access DBCS through SSH (Putty)</h4>
+<p>SSH connection to DBCS is using private key created during the provisioning process.  </p>
+<pre><code>     - ![](images/600/DBCS-ssh_connect.gif)
+</code></pre>
+<h4 id="accessing-dbcs-through-sql-developer">Accessing DBCS through SQL developer</h4>
+<p>Port 1521 is blocked is on DBCS.  So we can either open 1521 port or create a ssh port forwarding to access SQL developer
+ Option1: 
+   This option is preferred option to use SQL developer with DBCS. create SSH port tunnel between SQL developer and DBCS</p>
+<pre><code>- ![](images/600/SQL_developer_portfwd.gif)
+</code></pre>
+<p>For additonal information 
+   https://blogs.oracle.com/dbaas/connecting-to-a-database-cloud-service-with-sql-developer-and-ssh
+ Option2: </p>
+<p>Open Port 1521. 
+      - <img src="images/600/DBCS-SQLDeveloper-access.gif" alt="" /></p>
+<p>/// Populate Data to do</p>
+<p>From End user laptop - use SQL developer import data option 
+  From Object store - CLI 
+                    - External table - pre-processor script to stream data from object store.
+  From DBCS (Block store) - SQL Loader </p>
+<h3 id="more-on-creation-of-dbcs-instance-httpwwworaclecomwebfoldertechnetworktutorialsobeclouddbaasobe_dbaas_creating_an_instanceobe_dbaas_creating_an_instancehtmloverview">More on creation of DBCS instance: http://www.oracle.com/webfolder/technetwork/tutorials/obe/cloud/dbaas/obe<em>dbaas</em>creating<em>an</em>instance/obe<em>dbaas</em>creating<em>an</em>instance.html#overview</h3>
+<h1 id="what-you-learned">What you Learned</h1>
+<ul>
+<li>Learned how to create DBCS instance</li>
+<li>Learned how to work with the DBCS </li>
+</ul>
+<h1 id="next-steps">Next Steps</h1>
+<ul>
+<li>Experiment with your own data.  Load it into the DBCS and run querries.</li>
+<li>Try in-memory and multitenant labs.(Coming soon)</li>
+</ul>

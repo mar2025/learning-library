@@ -46,7 +46,7 @@
     <md-toolbar class="md-hue-2 infra" flex="none" layout-padding>
         <div class="md-toolbar-tools infra">
             <md-button class="md-icon-button md-raised md-accent infra" aria-label="menu-button" ng-disabled="hasMultipleVersions && !version.selected" ng-click="toggleLeft()">
-                <img loading="lazy" src="https://oracle.github.io/learning-library/workshops/common-content/images/common/hamburger.png" class="menu-hamburger infra" />
+                <img loading="lazy" src="images/common/hamburger.webp" class="menu-hamburger infra" />
             </md-button>
             <h2 class="infra" flex="noshrink">
                 <span class="infra">{{manifest.workshop.title}}</span>
@@ -58,7 +58,7 @@
                      <md-option ng-repeat="version in versionsAvailable" value="{{version.name}}">{{version.name}}</md-option>
                    </md-select>
                  </md-input-container>
-                 <img loading="lazy" src="https://oracle.github.io/learning-library/workshops/common-content/images/common/ic_help_white_18dp_1x.png" ng-click="openDialog()" class="infra" flex-shrink style="margin-right: 100px;"/>
+                 <img loading="lazy" src="images/common/ic_help_white_18dp_1x.webp" ng-click="openDialog()" class="infra" flex-shrink style="margin-right: 100px;"/>
                </div>
               <md-button class="high-contrast-hover" aria-label="Home" ng-click="showHomeOrVersionSelectPage()">
                 <!-- <md-icon md-svg-icon="images/common/ic_home_black_24px.svg"></md-icon> -->

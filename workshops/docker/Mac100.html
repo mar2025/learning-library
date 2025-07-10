@@ -1,0 +1,118 @@
+<h1 id="docker-workshop">Docker Workshop</h1>
+<p><img src="images/100Mac/Title100.png" alt="" /> </p>
+<p>Updated: January 29, 2018</p>
+<h2 id="overview">Overview</h2>
+<p>What is Docker? What is a container?</p>
+<ul>
+<li>Docker is the company and containerization technology.</li>
+<li><a href="https://docs.docker.com">Docker Documentation</a></li>
+<li>A container is a runtime instance of a docker image: <a href="https://docs.docker.com/glossary/?term=container">Container Documentation</a></li>
+</ul>
+<p>Containers have been around for many years. Docker created a technology that was usable by mere humans, and was much easier to understand than before. Thus, has enjoyed a tremendous amount of support for creating a technology for packaging applications to be portable and lightweight.</p>
+<h3 id="vm-vs-container">VM vs Container</h3>
+<p><img src="images/100Win/Picture025-1.png" alt="" /></p>
+<p>While containers may sound like a virtual machine (VM), the two are distinct technologies. With VMs each virtual machine includes the application, the necessary binaries and libraries and the entire guest operating system.</p>
+<p>Whereas, Containers include the application, all of its dependencies, but share the kernel with other containers and are not tied to any specific infrastructure, other than having the Docker engine installed on it’s host – allowing containers to run on almost any computer, infrastructure and cloud.</p>
+<h2 id="introduction">Introduction</h2>
+<p>In this lab we introduce some basic concepts of Docker, container architectures and functions.  We will do this using a single container which provides a REST service as part of a node.js application.  The application has two pieces, which provide a microservice.</p>
+<ul>
+<li>Datasource: a simple JSON file included in the container</li>
+<li>REST Client: To serve up data from the datasource</li>
+</ul>
+<p>You will use various Docker commands to setup, run and connect into containers. In this introduction you will explore concepts of Docker volumes, networking and container architecture.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">github oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Deploy and test a simple docker container running a simple application</li>
+<li>Introduce and use the Dockerhub registry</li>
+<li>Familiarize yourself with Docker commands (ps, run, exec)</li>
+<li>Understand foundational concepts of container networking and filesystem mapping</li>
+</ul>
+<h2 id="required-artifacts">Required Artifacts</h2>
+<ul>
+<li>Docker Hub Account: <a href="https://hub.docker.com/">Docker Hub</a></li>
+<li>Docker and GIT installed in your own Mac environment (this guide is tailored to Mac) you can decide if you want to run locally. <strong><em>OR</em></strong>, you can use an available Linux based VirtualBox image</li>
+</ul>
+<h1 id="start-up-and-login-into-your-mac-environment">Start up and login into your Mac environment</h1>
+<p>If you chose to use your own Mac then login and verify that the Docker engine is up and running.</p>
+<h2 id="verify-docker-installation">Verify Docker Installation</h2>
+<h3 id="step-1-open-up-a-terminal-window"><strong>STEP 1</strong>: Open up a Terminal Window</h3>
+<ul>
+<li>On your mac, hit <strong>Command+Space</strong> and search for <code>terminal</code> to open up a terminal session.</li>
+</ul>
+<p><img src="images/200Mac/Picture200-1.png" alt="" /></p>
+<h3 id="step-2-verify-that-docker-is-running"><strong>STEP 2</strong>: Verify that Docker is running</h3>
+<ul>
+<li><p><strong>Type</strong> the following:</p>
+<pre><code>cd
+docker version
+</code></pre></li>
+</ul>
+<p>The information on your docker engine should be displayed:</p>
+<p><img src="images/100Mac/Picture100-2.png" alt="" /></p>
+<h3 id="step-3-see-what-is-running"><strong>STEP 3</strong>: See What is running</h3>
+<p>Let's take a quick look at what is running in the docker engine, if this is a new environment, you should see no docker containers running.</p>
+<ul>
+<li><p><strong>Type</strong> the following into the terminal window:</p>
+<pre><code>docker ps
+</code></pre></li>
+</ul>
+<p><img src="images/100Mac/Picture100-3.png" alt="" /></p>
+<h3 id="step-4-run-the-restclient-docker-image-from-docker-hub"><strong>STEP 4</strong>: Run the restclient docker image from docker hub</h3>
+<p>We will now download and create a container based on an existing docker image stored in the Docker Hub. It uses a JSON formatted datafile to serve the test data via its exposed REST service.</p>
+<ul>
+<li><p>Let's take a look at what the docker <strong>run</strong> command options do:</p>
+<ul>
+<li>"-d" flag runs the container in the background</li>
+<li>"-it" flags instructs Docker to allocate a pseudo-TTY connected to the
+container’s stdin, creating an interactive bash capable shell in the container (which we will use in a moment when we connect into the container)</li>
+<li>"--rm" When this container is stopped all resources associated with it (storage, etc) will be deleted</li>
+<li>"--name" The name of the container will be "restclient"</li>
+<li>"-p" Port 8002 is mapped from the container to port 8002 on the HOST</li>
+<li>"-e" Environment variables used by the application. "DS" setting designates the JSON datasource.</li></ul></li>
+<li><p><strong>Type OR cut and paste</strong> the following (all on one line):</p>
+<pre><code>docker run -d -it --rm --name restclient -p=8002:8002 -e DS='json' wvbirder/restclient
+</code></pre></li>
+</ul>
+<p><img src="images/100Mac/Picture100-4.png" alt="" /></p>
+<h3 id="step-5-check-running-containers"><strong>STEP 5</strong>: Check running containers</h3>
+<ul>
+<li><p>Using the docker ps command, we should see our newly spawned docker container. <strong>Type</strong> fhe following command:</p>
+<pre><code>docker ps
+</code></pre></li>
+<li><p>Note that the container id is unique, and the container's port is mapped to 8002, which is the same as the Host's port.</p></li>
+</ul>
+<p><img src="images/100Mac/Picture100-5.png" alt="" /></p>
+<h3 id="step-6-check-the-application-with-a-browser"><strong>STEP 6</strong>: Check the Application with a browser</h3>
+<ul>
+<li>Navigate in a browser to:</li>
+</ul>
+<pre><code>http://localhost:8002/
+</code></pre>
+<p><img src="images/100Mac/Picture100-6.png" alt="" /></p>
+<ul>
+<li>Now enter this URL into your brower: <code>http://localhost:8002/products</code></li>
+</ul>
+<p><img src="images/100Mac/Picture100-7.png" alt="" /></p>
+<ul>
+<li><p>Now, let's start the container using the host's <strong>18002</strong> port. <strong>Enter the following</strong> into the Terminal window to stop the version running on port 8002, and restart on port 18002:</p>
+<pre><code>docker stop restclient
+docker run -d -it --rm --name restclient -p=18002:8002 -e DS='json' wvbirder/restclient
+docker ps
+</code></pre></li>
+</ul>
+<p><img src="images/100Mac/Picture100-10.png" alt="" /></p>
+<ul>
+<li>If you change your browsers port to 18002, you will see that the Host server is using 18002 and mapping that to our container's port 8002.</li>
+</ul>
+<p><img src="images/100Mac/Picture100-8.png" alt="" /></p>
+<ul>
+<li>Adding <code>/products</code> to the URL allows you see the results of the REST endpoint</li>
+</ul>
+<p><img src="images/100Mac/Picture100-9.png" alt="" /></p>
+<ul>
+<li>Finally, <strong>STOP</strong> the <code>restclient</code> container as we will be re-using it in Lab 200 by <strong>typing</strong>:</li>
+</ul>
+<pre><code>docker stop restclient
+</code></pre>
+<p><strong>This completes the Lab!</strong></p>

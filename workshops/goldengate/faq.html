@@ -1,0 +1,52 @@
+<h2 id="goldengate-cloud-service-workshop-faq">GoldenGate Cloud Service Workshop FAQ</h2>
+<h3 id="q-is-there-a-way-to-easily-clean-up-the-environment-if-an-error-is-made"><strong>Q: Is there a way to easily clean up the environment if an error is made?</strong></h3>
+<ul>
+<li>A: Yes. There are cleanup obey files under the $GGHOME/dirprm/cleanup folder on both the On Premise and GGCS installations.</li>
+</ul>
+<p>Each obey file from the lab has a cleanup “mirror” that will undo any process registrations/adds as well as delete the corresponding trails and report files. There is also a CLEAN_ALL.oby that will clean up everything in that environment.</p>
+<table>
+<thead>
+<tr>
+<th>Lab Number</th>
+<th>Create Obeys</th>
+<th>Cleanup Obeys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lab 200</td>
+<td>ADD<em>EURO</em>EXTRACT.oby (On Prem)</td>
+<td>CLEAN<em>EURO</em>EXTRACT.oby (On Prem)</td>
+</tr>
+<tr>
+<td></td>
+<td>ADD<em>AMER</em>REPLICAT.oby (GGCS)</td>
+<td>CLEAN<em>AMER</em>REPLICAT.oby (GGCS)</td>
+</tr>
+<tr>
+<td>Lab 300</td>
+<td>ADD<em>AMER</em>EXTRACT.oby (GGCS)</td>
+<td>CLEAN<em>AMER</em>EXTRACT.oby (GGCS)</td>
+</tr>
+<tr>
+<td></td>
+<td>ADD<em>EURO</em>REPLICAT.oby (On Prem)</td>
+<td>CLEAN<em>EURO</em>REPLICAT.oby (On Prem)</td>
+</tr>
+<tr>
+<td>Lab 400</td>
+<td>ADD<em>DW</em>ALL.oby (GGCS)</td>
+<td>CLEAN<em>DW</em>ALL.oby (GGCS)</td>
+</tr>
+<tr>
+<td>Lab 500</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>NOTE OF CAUTION:</em></strong> Do not run the cleanup script on the target (ex. CLEAN<em>AMER</em>REPLICAT.oby on the GGCS instance) after starting the GoldenGate pump process (i.e. PEURO) on he source. The cleanup script will delete the remote trail. If this happens you will then need to clean the source and rerun the source setup file (i.e. CLEANUP<em>EURO</em>EXTRACT followed by ADD<em>EURO</em>EXTRACT.oby). You could also delete and re-add the pump manually.</p>
+<h3 id="q-why-does-the-lag-in-ggsci-show-unknown"><strong>Q: Why does the Lag in ggsci show unknown?</strong></h3>
+<ul>
+<li>A: The time zones and system clocks of the on prem, GGCS, and DBCS instances need to be adjusted to get proper lag measurements supported. This was not deemed a requirement for the workshop</li>
+</ul>

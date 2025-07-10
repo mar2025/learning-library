@@ -1,0 +1,57 @@
+<h1 id="cleaning-up-after-the-workshop">Cleaning Up After the Workshop</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Now that you have completed the workshop, you may want to remove the artifacts left behind in your Oracle Cloud trial account and on your local machine. This guide will show you how to remove everything that you created during the workshop. Note that compute instances and load balancers left running in your Oracle Cloud trial account will continue to consume trial credits until they are terminated.</p>
+<p>For the installed software on your local machine, you may pick and choose which pieces to uninstall. For instance, if you want to remove Terraform but keep Docker, simply omit the Uninstall Docker step of the guide.</p>
+<p>If you are using the Oracle-provided client image, you only need to follow the instructions in the first section, 'Clean up Oracle Cloud Account'.</p>
+<p><strong><em>To log issues</em></strong>, click here to go to the <a href="https://github.com/oracle/learning-library/issues/new">GitHub oracle</a> repository issue submission form.</p>
+<h2 id="objectives">Objectives</h2>
+<p><strong>Remove All Deployed and Installed Workshop Components</strong></p>
+<ul>
+<li>Clean up Oracle Cloud Account</li>
+<li>Destroy all Oracle Cloud Infrastructure</li>
+<li>Clean up Locally Installed Software</li>
+<li>Remove Fn</li>
+<li>Remove Helm and the fn-helm Installer</li>
+<li>Remove terraform-kubernetes-installer</li>
+<li>Remove Terraform</li>
+<li>Remove OCI API Keys</li>
+<li>Remove image-resize Function</li>
+<li>Uninstall Docker</li>
+</ul>
+<h1 id="remove-all-deployed-and-installed-workshop-components">Remove All Deployed and Installed Workshop Components</h1>
+<h2 id="clean-up-oracle-cloud-account">Clean up Oracle Cloud Account</h2>
+<h3 id="step-1-destroy-all-oracle-cloud-infrastructure"><strong>STEP 1</strong>: Destroy all Oracle Cloud Infrastructure</h3>
+<ul>
+<li><p>First we need to delete any load balancers created by Kubernetes outside of the Terraform infrastructure we provisioned. From a <strong>terminal window</strong> where you have the <code>KUBECONFIG</code> environment variable correctly set, run the following command:</p>
+<p><code>kubectl delete svc --all</code></p></li>
+<li><p>To remove all Terraform-created infrastructure from your Oracle Cloud trial account, we will make use of the <code>terraform-kubernetes-installer</code> configuration that you created in Lab 200 of the workshop. In a <strong>terminal window</strong>, navigate to the <code>terraform-kubernetes-installer</code> directory (your path may differ):</p>
+<p><code>cd ~/terraform-kubernetes-installer</code></p></li>
+<li><p>Remove all instances, load balancers, and virtual cloud networks from your account with the following command:</p>
+<p><code>terraform destroy</code></p></li>
+<li><p>Type <code>yes</code> when prompted to continue with the destroy command.</p></li>
+<li><p>Wait while Terraform removes your infrastructure and ensure that no errors occur.</p></li>
+</ul>
+<h2 id="clean-up-locally-installed-software">Clean up Locally Installed Software</h2>
+<h3 id="step-2-remove-fn"><strong>STEP 2</strong>: Remove Fn</h3>
+<p><code>rm /usr/local/bin/fn</code></p>
+<h3 id="step-3-remove-helm-and-the-fn-helm-installer"><strong>STEP 3</strong>: Remove Helm and the fn-helm Installer</h3>
+<p><code>cd ~/Downloads/helm/*/fn-helm &amp;&amp; ../helm delete --purge my-release</code>
+  <code>rm -rf ~/Downloads/helm</code></p>
+<h3 id="step-5-remove-terraform-kubernetes-installer"><strong>STEP 5</strong>: Remove terraform-kubernetes-installer</h3>
+<p><strong>NOTE</strong>: Do not remove this directory until you have successfully destroyed your infrastructure following the instructions in <strong>STEP 1</strong>. Terraform will not be able to automate the destruction of your infrastructure once you delete this directory.</p>
+<p><code>rm -rf ~/terraform-kubernetes-installer</code></p>
+<h3 id="step-6-remove-terraform"><strong>STEP 6</strong>: Remove Terraform</h3>
+<p><code>rm /usr/local/bin/terraform</code></p>
+<h3 id="step-7-remove-oci-api-keys"><strong>STEP 7</strong>: Remove OCI API Keys</h3>
+<p><strong>NOTE</strong>: Do not remove this directory until you have successfully destroyed your infrastructure following the instructions in <strong>STEP 1</strong>. Terraform will not be able to automate the destruction of your infrastructure once you delete this directory.</p>
+<p><code>rm -rf ~/.oci</code></p>
+<h3 id="step-8-remove-image-resize-function"><strong>STEP 8</strong>: Remove image-resize Function</h3>
+<p><code>rm -rf ~/image-resize</code></p>
+<h3 id="step-9-uninstall-docker"><strong>STEP 9</strong>: Uninstall Docker</h3>
+<p><strong>MacOS</strong>: <code>/Applications/Docker.app/Contents/MacOS/Docker --uninstall</code>
+  <strong>Linux</strong>:
+    <code>rm -rf /var/lib/docker</code>
+    AND
+    <code>sudo apt-get remove docker docker-engine docker.io</code>
+    OR
+    <code>sudo yum remove docker docker-common docker-selinux docker-engine</code></p>
